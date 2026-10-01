@@ -1,0 +1,5 @@
+REFERENCE REPOSITORY
+C:\Quilltale
+READ-ONLY by workflow convention.
+Inspect engines, templates, tests, data, audit/history files as evidence.
+Do not copy or preserve the v1 module architecture by default.
