@@ -1,0 +1,114 @@
+{
+  "record_type": "curated_content_reference",
+  "reviewed_on": "2026-10-02",
+  "reviewer": "gpt-6.1-sol",
+  "status": "CURATED_REFERENCE",
+  "runtime_imported": false,
+  "source_repository": "C:/Quilltale",
+  "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+  "policy": "Names and edited descriptive text only. No source code, formulas, stats, costs, timing, behavior logic, old schema bindings, or test expectations.",
+  "source_files": [
+    {
+      "path": "data/templates/settlement_templates.json",
+      "sha256": "e84da02af98e5c84cafb20089d121980dc66691ee523a6b23d1f5f4bf40a1a00"
+    },
+    {
+      "path": "data/templates/facility_templates.json",
+      "sha256": "8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83"
+    },
+    {
+      "path": "data/templates/quest_templates.json",
+      "sha256": "4bd1ba1e6be30c864d5e6c8eb22e3df016924f9f19c352435c1bc5652bbf6653"
+    },
+    {
+      "path": "data/templates/monster_templates.json",
+      "sha256": "0f2e64f364c684041d5b00c1387cb312f6c3ff6d70068170598a9ca62a2a7bd1"
+    }
+  ],
+  "entries": [
+    {
+      "candidate_id": "harbor_salt_mist",
+      "category": "settlement_concept",
+      "name_ko": "소금눈물 포구",
+      "description_ko": "해안 절벽 아래 숨어 있는 포구. 소금기 어린 안개 속에서 외지인의 발걸음을 살피는 주민들이 살아간다.",
+      "source_path": "data/templates/settlement_templates.json",
+      "source_entry_id": "settlement_salt_weep_haven",
+      "source_fields": [
+        "name",
+        "description"
+      ],
+      "selection_reason_ko": "분위기와 주민 성향을 짧게 전달하며 특정 엔진에 의존하지 않는다.",
+      "adaptation_ko": "국가·지역 ID와 인구·치안·방어 수치를 제외하고 표현을 다듬었다."
+    },
+    {
+      "candidate_id": "village_tree_canopy",
+      "category": "settlement_concept",
+      "name_ko": "빈뿌리 쉼터",
+      "description_ko": "거목 사이를 밧줄 다리로 잇는 공중 마을. 주민들은 숲 바닥의 맹수들을 피해 나무 위에서 생활한다.",
+      "source_path": "data/templates/settlement_templates.json",
+      "source_entry_id": "settlement_hollow_root_canopy",
+      "source_fields": [
+        "name",
+        "description"
+      ],
+      "selection_reason_ko": "분명한 지형과 생활 방식이 있어 지도·아트·대화 설정의 소재로 쓰기 쉽다.",
+      "adaptation_ko": "국가·지역 연결과 운영 수치 없이 마을 콘셉트만 남겼다."
+    },
+    {
+      "candidate_id": "oasis_caravan_rest",
+      "category": "settlement_concept",
+      "name_ko": "타는 모래 오아시스",
+      "description_ko": "사막을 건너는 상단과 용병들이 물과 휴식을 찾아 모이는 오아시스. 붐비는 길목에서 물을 둘러싼 이해관계가 부딪친다.",
+      "source_path": "data/templates/settlement_templates.json",
+      "source_entry_id": "settlement_parched_mirage",
+      "source_fields": [
+        "name",
+        "description"
+      ],
+      "selection_reason_ko": "장소·사람·갈등 소재가 단순하며 경제·생존 계산식 없이 사용할 수 있다.",
+      "adaptation_ko": "유일한 생명선이라는 세계 단정을 완화하고 통상·생존 수치를 제외했다."
+    },
+    {
+      "candidate_id": "inn_moonlight_traveler",
+      "category": "facility_concept",
+      "name_ko": "달빛 나그네 주점",
+      "description_ko": "여행자와 상인들이 맥주잔을 부딪치며 먼 지방의 소문을 나누는 선술집 겸 여관.",
+      "source_path": "data/templates/facility_templates.json",
+      "source_entry_id": "fac_tmpl_tavern_inn",
+      "source_fields": [
+        "name",
+        "description"
+      ],
+      "selection_reason_ko": "휴식·소문·만남의 간단한 배경이며 기존 시설 구현에 의존하지 않는다.",
+      "adaptation_ko": "건축·소음·조명·내구도·유지비·서비스 구현·기존 타입을 제외했다."
+    },
+    {
+      "candidate_id": "quest_moonflower_premise",
+      "category": "quest_premise",
+      "name_ko": "달빛 아래 피는 약초",
+      "description_ko": "약초사가 안개 숲에서 밤에 피는 달빛꽃을 구해 달라고 부탁한다.",
+      "source_path": "data/templates/quest_templates.json",
+      "source_entry_id": "quest_moonflower_gather",
+      "source_fields": [
+        "title",
+        "description"
+      ],
+      "selection_reason_ko": "한 문장 의뢰 소재이며 보상·상태 전이·스폰은 새로 설계할 수 있다.",
+      "adaptation_ko": "기존 NPC·단계·분기·보상·시간 제한·실패 패널티를 제외했다."
+    },
+    {
+      "candidate_id": "creature_copper_catfish_visual",
+      "category": "creature_visual_concept",
+      "name_ko": "동판 비늘의 벼락 메기",
+      "description_ko": "청록색 녹이 슨 구리 비늘과 황동 피뢰침 모양의 꼬리를 가진 거대한 메기.",
+      "source_path": "data/templates/monster_templates.json",
+      "source_entry_id": "copper_scaled_thunder_catfish",
+      "source_fields": [
+        "name",
+        "visual_anatomy"
+      ],
+      "selection_reason_ko": "분명한 실루엣과 재질이 있어 몬스터 외형·아트 brief로 사용할 수 있다.",
+      "adaptation_ko": "접지 원리·면역·약점·DC·행동 패턴·드롭·전투 수치를 제거하고 외형만 남겼다."
+    }
+  ]
+}

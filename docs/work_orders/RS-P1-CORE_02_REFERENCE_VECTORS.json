@@ -1,0 +1,4665 @@
+{
+  "date": "2026-10-04",
+  "scope": "CORE-02 instruction authoring; independent new trial geometry/schema/rules/ten-step replay and complete publications; no production implementation",
+  "provenance": "New 3x3/cardinal/1000mm/one-second requirements; stdlib JSON/u32/SHA256 only. No v1 or production output used; self-review, not independent-person review.",
+  "baseline": {
+    "head": "efd2478ff8a6ed93ee833c3f8464a0efdd8a181a",
+    "branch": "main",
+    "source_sha256": {
+      "BACKLOG.md": "26e077d4b6cb42cebe22cdd504d65082172422505d3a8205ec8dbf565ae39b75",
+      "docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md": "04dbe5a27d15e2f9eb81bf261d78abdadd275fdbcfefdf54571a33be09e53dd5",
+      "docs/MASTER_GAME_ARCHITECTURE.md": "d706c59e571cefbae05f84624372abe2459651604200208a6f4ca00434a29b59",
+      "docs/prompts/SOL_CODING_WORK_ORDER.md": "8a146675255d0c15b253241b31b9213ca7bb678cb5cee75395acc46be13dc511",
+      "docs/reference/AGENTS_v1.md": "dc63ed856eb3e8b57cfad9a7c67035ca7ec40cce95f00529734c8cdeee4c82e9",
+      "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json": "7923b65eb67de2e0cc82e6249bf08a20ce6dcb4f846106ede961f9ab84e82092",
+      "docs/work_orders/PHASE0_CONTRACTS.md": "de7ccc0f859a70a408d7ef7beea9e0c62beea8c03749409daec952f97a744c8c",
+      "docs/work_orders/PHASE0_REFERENCE_VECTORS.json": "c46cbe82448f83f0237061e61c35766f6b63535225242088ab175d2d79598121",
+      "docs/work_orders/PHASE0_TOOLCHAIN.json": "f8c2eac146854f075fcf61658759590712aeffa95d07a5aaa0eefad603eaa135",
+      "docs/work_orders/RS-P1-CORE_REFERENCE_VECTORS.json": "b8703e0ffac58d8013505a41e0a2e68ae40d753ca6a9e7f9f40593a67f19c6a5",
+      "docs/work_orders/RS-P1-CORE_VERTICAL_SLICE.md": "c9d5e091028a90399606d27bc517e3df1ffb13633d2410fef3bd85a6a3d4bc49",
+      "pyproject.toml": "147a3f5fb8135d9d7ce641cb7269e2fcc735b8b915666fbb827da73eb2ae15a8",
+      "requirements-dev.lock": "4ea4f492e6a744a44924d3b4f2f97ad8e987b25e81a6f3792691495b739af21b",
+      "SESSION_HANDOFF.md": "b6326ab6204133294454c08fe88bac0988eeed277f6e86c5126cf5eeb083536b",
+      "src/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/app/feature_registry.py": "09deccdb9e3de01a778fefa388a7043d910fd3dfc94d84dae9ecd745938558eb",
+      "src/app/headless.py": "b26bc663ec65bfa441011aaf9e24282e170660e20e4524a8f2bbd70b5e728a02",
+      "src/contracts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/contracts/errors.py": "6c8ffa8cad49dd15cfedb324caf6e942fb16e442cd97b9f828daa48a250798cb",
+      "src/contracts/messages.py": "d23946681fdd0783d2d54365125fcb19a872334146edd7cd75298ed42eb78110",
+      "src/contracts/read_views.py": "47c71137717485dc84c7c20ad9664dcb3613611ad1d27d2bc9608e040396032f",
+      "src/contracts/replay.py": "93cb9b116d78976314bfa8eb3ddecf2f415cc6712487fd73d71975290411613c",
+      "src/contracts/skeleton.py": "6879ca1e8cfe246c4031bb73c9b0111e7524432211675313563f650ae21dbee9",
+      "src/contracts/state_io.py": "ee562d320371d8169d49eb5c94e051d2eada2d2e01b3d022c443f2ae91c9b810",
+      "src/contracts/turn.py": "8233215d9feb0a1293f16fe1a88a4081a04a8c19ab1bba5ae75e45a85a98ad3e",
+      "src/domain/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/domain/canonical.py": "f636f2565c7fc52026288971755e74cf43dc630e867162f00e4631b07417fd1c",
+      "src/domain/primitives.py": "9cc389d1caddf8caad1291c1c4be3d855ab4ce0707517cd404fef977149f0de2",
+      "src/domain/state_types.py": "8aa9ceb079d6845c23da41bcb2a2596e6ebf961dda5cfeb73266a0fb78465732",
+      "src/engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/engines/skeleton.py": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578",
+      "src/orchestration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/orchestration/read_views.py": "3f851f01f751a375335685a6067d0125c417ec4a56a95101e6a181797e35e37e",
+      "src/orchestration/replay.py": "58d8c3cc4375b9c8265873dbdd78a087e1433626ca70b901e15154b2c18437a7",
+      "src/orchestration/rng.py": "781f7007aaf5f298f2ea9cb01f9bad5d8e37516e98bfe9bfea622216fa59d27a",
+      "src/orchestration/scheduler.py": "22e1dcd2df67e50cebd7d8de40977055fc0e718d820eefc9b6ee734613160215",
+      "src/orchestration/serialization.py": "ae12cc19696a79280346b7c0deefde83df46d02e2c6867489e7eb01d09ddbfbc",
+      "src/orchestration/skeleton.py": "7e8848d2887fd67870fb0df7898569dc1222a71f45d6b2f086439c26ba7be26e",
+      "src/orchestration/turn.py": "1ec8955dda348dfac37a8957405bba34e0ceb84a8d30892dccd1dd3a48e4da94",
+      "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/integration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/integration/test_registered_state.py": "5dad73a85ad9d3abcbcf3d20aa8c6e80ec4c2e1ee554b43666a8f4402a4e8758",
+      "tests/integration/test_skeleton.py": "ee9cc64a081f0cf0dc72c02ab0b18475281d11daec94e038d654af5d9bd0b55e",
+      "tests/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/replay/fixtures/skeleton_v1.json": "6cc8abd517997f68d49e46816a78d865d8e12c2ea9758037a116d02477512ecb",
+      "tests/replay/test_contamination.py": "77fb652d0cbe27b2506268735563829bf068d6e50303785c3415bcd8db6c1a6f",
+      "tests/replay/test_golden.py": "0c4aa1d783d3b4f038c76f8943f1335f86e36b44880161088098a46f8ba0d92a",
+      "tests/replay/test_registered_replay.py": "f8666c8e551b6c8689dc438843dd23d15e57b5b3d660904911e8ddad4322b65b",
+      "tests/unit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/unit/registered_io_fixtures.py": "e807212df633683bca482ed052c63b4e2e416b64e0cc67bc406245015518b2ec",
+      "tests/unit/test_canonical.py": "54dc42e884a2f74fc836b62c74e837fedaee81bf4e0e178ef246078b2b021ab2",
+      "tests/unit/test_read_views.py": "f16d5191a47d5fee249f0c0dfb278aae984a28831ce3d47eed243332e2ba795d",
+      "tests/unit/test_registered_io.py": "f4a12b463c8c140e5728175436c2c45f76c4a3c9421181d8d56b6ddb4140384b",
+      "tests/unit/test_rng_vectors.py": "257991ce86fb6eb6f62dfcd69dfabf16c32f483c05b5fa265976996e235fe2fd",
+      "tests/unit/test_schedule.py": "fc8976d938bd0bd51bf08f99dff015f1de8bd3eb960af3778827e2aa0688474c",
+      "tests/unit/view_fixtures.py": "31e1d8d0cdee091741ae702652a471965e43ec3aa3aff530c08137ac57d9afaf"
+    },
+    "checks": {
+      "pytest": {
+        "exit": 0,
+        "passed": 59,
+        "seconds": 22.12
+      },
+      "ruff": {
+        "exit": 0
+      },
+      "mypy": {
+        "exit": 0,
+        "files": 41
+      }
+    }
+  },
+  "reference_source": "# CORE-02 requirements reference: stdlib only; no production/test module imports.\nimport copy\nimport hashlib\nimport json\n\nACTOR, SPACE = \"actor:trial\", \"space:trial\"\nWIDTH, HEIGHT, CELL_MM = 3, 3, 1000\nBLOCKED = (1,)\nSEED, BRANCH, STREAM = \"0\" * 64, \"0\" * 32, \"1\" * 32\n\ndef canonical(value):\n    return json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(\",\", \":\"), allow_nan=False).encode(\"utf-8\")\n\ndef frame(*tokens):\n    result = bytearray()\n    for token in tokens:\n        raw = token.encode(\"utf-8\")\n        result.extend(len(raw).to_bytes(4, \"big\"))\n        result.extend(raw)\n    return bytes(result)\n\ndef tagged(tag, value):\n    return hashlib.sha256(frame(tag, canonical(value).decode(\"utf-8\"))).hexdigest()\n\ndef key(kind):\n    return {\"kind\": \"trial.\" + kind, \"version\": 1}\n\ndef integer_field(owner, unit, minimum, maximum):\n    return {\"owner\": owner, \"storage\": \"CORE\", \"tier\": \"A\", \"unit\": unit,\n            \"scale\": 1, \"minimum\": minimum, \"maximum\": maximum}\n\nschema_document = {\"version\": 1, \"unknown_fields\": \"reject\", \"bool_as_integer\": \"reject\",\n \"components\": [\n  {\"schema\": key(\"map\"), \"fields\": {\n   \"width\": integer_field(\"system.bootstrap\", \"cell_count\", 3, 3),\n   \"height\": integer_field(\"system.bootstrap\", \"cell_count\", 3, 3),\n   \"cell_mm\": integer_field(\"system.bootstrap\", \"mm\", 1000, 1000),\n   \"blocked_cells\": {**integer_field(\"system.bootstrap\", \"cell\", 0, 8), \"collection_cap\": 1}}},\n  {\"schema\": key(\"position\"), \"fields\": {\n   \"cell\": integer_field(\"trial.movement\", \"cell\", 0, 8),\n   \"space_id\": {\"owner\": \"system.bootstrap\", \"storage\": \"CORE\", \"tier\": \"A\", \"unit\": \"entity_id\", \"scale\": 1}}}],\n \"payloads\": [\n  {\"schema\": key(\"move\"), \"fields\": [\"dx\", \"dz\"]},\n  {\"schema\": key(\"move-blocked\"), \"fields\": [\"actor_id\", \"space_id\", \"from_cell\", \"dx\", \"dz\", \"reason\"]},\n  {\"schema\": key(\"move-cue\"), \"fields\": [\"actor_id\", \"space_id\", \"from_cell\", \"to_cell\", \"from_x_mm\", \"from_z_mm\", \"to_x_mm\", \"to_z_mm\", \"result\"]},\n  {\"schema\": key(\"moved\"), \"fields\": [\"actor_id\", \"space_id\", \"from_cell\", \"to_cell\"]},\n  {\"schema\": key(\"position-delta\"), \"fields\": [\"entity_id\", \"before_cell\", \"after_cell\"]},\n  {\"schema\": key(\"position-patch\"), \"fields\": [\"cell\"]}]}\nrules_document = {\"version\": 1, \"actor_id\": ACTOR, \"space_id\": SPACE,\n \"width\": WIDTH, \"height\": HEIGHT, \"cell_mm\": CELL_MM, \"blocked_cells\": list(BLOCKED),\n \"initial_cell\": 0, \"duration_seconds\": 1, \"cardinal_directions\": [[-1,0],[0,-1],[0,1],[1,0]],\n \"blocked_attempt_consumes_time\": True, \"boundary_precedes_occupancy\": True,\n \"record_only\": True, \"rng_purposes\": []}\nschedule_document = {\"version\": 1, \"nodes\": [{\n \"phase\": \"RESOLVE\", \"engine_id\": \"trial.movement\", \"lane\": \"A\",\n \"reads\": [\"trial.map.blocked_cells\", \"trial.map.height\", \"trial.map.width\", \"trial.position.cell\", \"trial.position.space_id\"],\n \"writes\": [\"trial.position.cell\"], \"depends_on\": [], \"action_kinds\": [key(\"move\")],\n \"on_matching_events\": False, \"every_tick\": False, \"emits\": [key(\"move-blocked\"), key(\"moved\")],\n \"consumes\": [], \"cost_class\": \"local\"}]}\nSCHEMA_HASH = tagged(\"schema/v1\", schema_document)\nRULES_HASH = tagged(\"rules/v1\", rules_document)\nSCHEDULE_HASH = tagged(\"schedule/v1\", schedule_document)\nCATALOG = tagged(\"gameplay-catalog/v1\", [])\nWORLD = \"w1-\" + hashlib.sha256(frame(\"world-id/v1\", SEED, RULES_HASH, CATALOG)).hexdigest()\npins = {\"schema_fingerprint\": SCHEMA_HASH, \"rules_fingerprint\": RULES_HASH, \"schedule_fingerprint\": SCHEDULE_HASH,\n \"rng_version\": \"sha256-counter-v1\", \"hash_version\": \"sha256-core-tree-v1\", \"gameplay_catalog_hash\": CATALOG, \"gameplay_packages\": []}\n\ndef core(tick, cell):\n    return {\"world_id\": WORLD, \"world_seed_hex\": SEED, \"tick\": tick,\n     \"components\": [\n      {\"schema\": key(\"map\"), \"entity_id\": SPACE, \"fields\": {\"width\": WIDTH, \"height\": HEIGHT, \"cell_mm\": CELL_MM, \"blocked_cells\": list(BLOCKED)}},\n      {\"schema\": key(\"position\"), \"entity_id\": ACTOR, \"fields\": {\"space_id\": SPACE, \"cell\": cell}}],\n     \"pending\": [], \"pins\": pins}\n\ndef core_hash(document):\n    leaves = [{\"schema\": c[\"schema\"], \"entity_id\": c[\"entity_id\"], \"hash\": tagged(\"component/v1\", c)} for c in document[\"components\"]]\n    return tagged(\"core-root/v1\", {**document, \"components\": leaves})\n\ndef command(sequence, dx, dz, revision):\n    return {\"command_id\": f\"c1:{BRANCH}:{STREAM}:{sequence}\", \"actor_id\": ACTOR, \"expected_revision\": revision,\n            \"schema\": key(\"move\"), \"payload\": {\"dx\": dx, \"dz\": dz}}\n\ndef transition(cell, dx, dz):\n    assert type(cell) is int and 0 <= cell <= 8 and cell not in BLOCKED\n    assert type(dx) is int and type(dz) is int and abs(dx) + abs(dz) == 1\n    x, z = cell % WIDTH + dx, cell // WIDTH + dz\n    if not (0 <= x < WIDTH and 0 <= z < HEIGHT):\n        return cell, \"boundary\"\n    target = z * WIDTH + x\n    if target in BLOCKED:\n        return cell, \"occupied\"\n    return target, \"moved\"\n\ndef event_header(tick, schema):\n    identifier = \"e1-\" + hashlib.sha256(frame(\"event-id/v1\", WORLD, str(tick), \"RESOLVE\", \"0\", \"trial.movement\", \"0\")).hexdigest()\n    return {\"event_id\": identifier, \"type_key\": schema, \"producer_id\": \"trial.movement\", \"occurred_at\": tick,\n            \"phase\": \"RESOLVE\", \"wave\": 0, \"producer_rank\": 0, \"sequence\": 0, \"caused_by\": [], \"degraded\": []}\n\ndef make_cue(fact, before, after, result):\n    event_id = fact[\"header\"][\"event_id\"]\n    identifier = \"p1-\" + hashlib.sha256(frame(\"cue-id/v1\", event_id, \"trial.presenter\", \"0\")).hexdigest()\n    return {\"header\": {\"event_id\": identifier, \"type_key\": key(\"move-cue\"), \"producer_id\": \"trial.presenter\",\n     \"occurred_at\": fact[\"header\"][\"occurred_at\"], \"phase\": \"PRESENT\", \"wave\": 0, \"producer_rank\": 0, \"sequence\": 0,\n     \"caused_by\": [event_id], \"degraded\": []}, \"payload\": {\"actor_id\": ACTOR, \"space_id\": SPACE, \"from_cell\": before, \"to_cell\": after,\n     \"from_x_mm\": before % WIDTH * CELL_MM, \"from_z_mm\": before // WIDTH * CELL_MM,\n     \"to_x_mm\": after % WIDTH * CELL_MM, \"to_z_mm\": after // WIDTH * CELL_MM, \"result\": result},\n     \"priority\": \"important\", \"coalesce_policy\": \"keep_all\", \"coalesce_key\": \"\"}\n\nreceipts = []\nrevision, tick, cell, high_water = 0, 0, 0, 0\n\ndef protocol():\n    return {\"branch_id\": BRANCH, \"revision\": revision, \"streams\": [{\"stream_id\": STREAM, \"actor_id\": ACTOR,\n            \"highest_committed_sequence\": high_water, \"status\": \"active\"}], \"receipts\": copy.deepcopy(receipts)}\n\ninitial_core, initial_protocol = core(0, 0), protocol()\nheader = {\"world_id\": WORLD, \"world_seed_hex\": SEED, \"initial_core_hash\": core_hash(initial_core),\n \"initial_protocol_hash\": tagged(\"protocol/v1\", initial_protocol), \"schema_fingerprint\": SCHEMA_HASH,\n \"rules_fingerprint\": RULES_HASH, \"schedule_fingerprint\": SCHEDULE_HASH,\n \"rng_version\": pins[\"rng_version\"], \"hash_version\": pins[\"hash_version\"], \"gameplay_packages\": [], \"build_artifacts\": []}\nsteps, publications = [], []\nflow = [(1,1,0,0), (2,0,1,1), (3,1,0,2), (4,0,-1,3), (5,-1,0,4), (6,-1,0,5), (1,1,0,0), (7,0,1,0), (1,0,1,0), (7,0,1,6)]\nfor index, (sequence, dx, dz, expected_revision) in enumerate(flow):\n    cmd = command(sequence, dx, dz, expected_revision)\n    facts, cues, diagnostics, diff = [], [], [], None\n    if index == 6:\n        outcome = {\"kind\": \"committed\", \"receipt\": copy.deepcopy(receipts[0][\"receipt\"])}\n        diagnostics = [{\"code\": \"RESYNC_REQUIRED\", \"message_key\": \"error.resync_required\"}]\n    elif index in (7,8):\n        code = \"STALE_REVISION\" if index == 7 else \"COMMAND_ID_CONFLICT\"\n        outcome = {\"kind\": \"rejected\", \"failure\": {\"code\": code, \"message_key\": \"error.\" + code.lower()}, \"current_revision\": revision}\n    else:\n        before = cell\n        cell, result = transition(cell, dx, dz)\n        previous = revision\n        revision += 1\n        tick += 1\n        high_water = sequence\n        receipt = {\"command_id\": cmd[\"command_id\"], \"previous_revision\": previous, \"revision\": revision, \"tick\": tick, \"core_hash\": core_hash(core(tick, cell))}\n        outcome = {\"kind\": \"committed\", \"receipt\": receipt}\n        receipts.append({\"command\": cmd, \"command_fingerprint\": tagged(\"command/v1\", {k: v for k,v in cmd.items() if k != \"command_id\"}), \"receipt\": receipt})\n        if result == \"moved\":\n            fact = {\"header\": event_header(tick, key(\"moved\")), \"due_tick\": tick,\n                    \"payload\": {\"actor_id\": ACTOR, \"space_id\": SPACE, \"from_cell\": before, \"to_cell\": cell}}\n            changes = [{\"schema\": key(\"position-delta\"), \"entity_id\": ACTOR, \"before_cell\": before, \"after_cell\": cell}]\n        else:\n            fact = {\"header\": event_header(tick, key(\"move-blocked\")), \"due_tick\": tick,\n                    \"payload\": {\"actor_id\": ACTOR, \"space_id\": SPACE, \"from_cell\": before, \"dx\": dx, \"dz\": dz, \"reason\": result}}\n            changes = []\n        facts = [fact]\n        cues = [make_cue(fact, before, cell, result)]\n        diff = {\"receipt\": receipt, \"changes\": changes}\n    core_doc, protocol_doc = core(tick, cell), protocol()\n    steps.append({\"command\": cmd, \"outcome\": copy.deepcopy(outcome), \"core_hash\": core_hash(core_doc), \"protocol_hash\": tagged(\"protocol/v1\", protocol_doc),\n     \"facts_hash\": tagged(\"turn-facts/v1\", facts), \"diff_hash\": tagged(\"turn-diff/v1\", diff),\n     \"witness\": {\"core\": core_doc, \"protocol\": protocol_doc, \"facts\": copy.deepcopy(facts), \"diff\": copy.deepcopy(diff)}})\n    publications.append({\"outcome\": copy.deepcopy(outcome), \"facts\": copy.deepcopy(facts), \"diff\": copy.deepcopy(diff), \"cues\": copy.deepcopy(cues), \"diagnostics\": diagnostics})\nexpected_fixture = {\"format_version\": 1, \"initial_core\": initial_core, \"initial_protocol\": initial_protocol, \"trace\": {\"header\": header, \"steps\": steps}}\n\n# A valid adjacent alternative 3->6 for step3 vs required Right 3->4; self-consistent witnesses.\nwrong = copy.deepcopy(expected_fixture)\nwrong[\"trace\"][\"steps\"] = wrong[\"trace\"][\"steps\"][:3]\nlast = wrong[\"trace\"][\"steps\"][2]\nwitness = last[\"witness\"]\nwitness[\"core\"][\"components\"][1][\"fields\"][\"cell\"] = 6\nlast[\"core_hash\"] = core_hash(witness[\"core\"])\nfor receipt in (last[\"outcome\"][\"receipt\"], witness[\"protocol\"][\"receipts\"][-1][\"receipt\"], witness[\"diff\"][\"receipt\"]):\n    receipt[\"core_hash\"] = last[\"core_hash\"]\nwitness[\"diff\"][\"changes\"][0][\"after_cell\"] = 6\nwitness[\"facts\"][0][\"payload\"][\"to_cell\"] = 6\nfor category, tag in ((\"protocol\",\"protocol/v1\"),(\"facts\",\"turn-facts/v1\"),(\"diff\",\"turn-diff/v1\")):\n    last[category+\"_hash\"] = tagged(tag, witness[category])\n\nmovement_vectors = []\nfor old in (0,2,3,4,5,6,7,8):\n    for dx,dz in ((-1,0),(0,-1),(0,1),(1,0)):\n        new,result = transition(old,dx,dz)\n        movement_vectors.append({\"from_cell\":old,\"dx\":dx,\"dz\":dz,\"to_cell\":new,\"result\":result,\n                                \"tick_increment\":1,\"revision_increment\":1,\"delta_count\":int(result==\"moved\"),\"fact_count\":1,\"cue_count\":1})\ncoordinates = [{\"cell\":i,\"x_mm\":i%3*1000,\"z_mm\":i//3*1000} for i in range(9)]\nliteral_documents = []\nfor name, tag, doc in ((\"schema\",\"schema/v1\",schema_document),(\"rules\",\"rules/v1\",rules_document),\n                       (\"schedule\",\"schedule/v1\",schedule_document),(\"map\",\"component/v1\",initial_core[\"components\"][0]),\n                       (\"position0\",\"component/v1\",initial_core[\"components\"][1]),\n                       (\"command1\",\"command/v1\",{k:v for k,v in steps[0][\"command\"].items() if k != \"command_id\"})):\n    raw=canonical(doc)\n    literal_documents.append({\"name\":name,\"tag\":tag,\"document\":doc,\"utf8\":raw.decode(\"utf-8\"),\"utf8_hex\":raw.hex(),\"sha256\":tagged(tag,doc)})\nresult = {\"schema_document\":schema_document,\"rules_document\":rules_document,\"schedule_document\":schedule_document,\n \"literal_documents\":literal_documents,\"movement_vectors\":movement_vectors,\"coordinates\":coordinates,\n \"expected_fixture\":expected_fixture,\"expected_fixture_canonical_sha256\":hashlib.sha256(canonical(expected_fixture)).hexdigest(),\n \"expected_publications\":publications,\"negative_self_consistent_step3_fixture\":wrong,\n \"negative_expected_first_mismatch\":{\"step_index\":2,\"path\":\"$core.components[1].fields.cell\",\"expected\":\"6\",\"actual\":\"4\"}}\n",
+  "schema_document": {
+    "version": 1,
+    "unknown_fields": "reject",
+    "bool_as_integer": "reject",
+    "components": [
+      {
+        "schema": {
+          "kind": "trial.map",
+          "version": 1
+        },
+        "fields": {
+          "width": {
+            "owner": "system.bootstrap",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "cell_count",
+            "scale": 1,
+            "minimum": 3,
+            "maximum": 3
+          },
+          "height": {
+            "owner": "system.bootstrap",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "cell_count",
+            "scale": 1,
+            "minimum": 3,
+            "maximum": 3
+          },
+          "cell_mm": {
+            "owner": "system.bootstrap",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "mm",
+            "scale": 1,
+            "minimum": 1000,
+            "maximum": 1000
+          },
+          "blocked_cells": {
+            "owner": "system.bootstrap",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "cell",
+            "scale": 1,
+            "minimum": 0,
+            "maximum": 8,
+            "collection_cap": 1
+          }
+        }
+      },
+      {
+        "schema": {
+          "kind": "trial.position",
+          "version": 1
+        },
+        "fields": {
+          "cell": {
+            "owner": "trial.movement",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "cell",
+            "scale": 1,
+            "minimum": 0,
+            "maximum": 8
+          },
+          "space_id": {
+            "owner": "system.bootstrap",
+            "storage": "CORE",
+            "tier": "A",
+            "unit": "entity_id",
+            "scale": 1
+          }
+        }
+      }
+    ],
+    "payloads": [
+      {
+        "schema": {
+          "kind": "trial.move",
+          "version": 1
+        },
+        "fields": [
+          "dx",
+          "dz"
+        ]
+      },
+      {
+        "schema": {
+          "kind": "trial.move-blocked",
+          "version": 1
+        },
+        "fields": [
+          "actor_id",
+          "space_id",
+          "from_cell",
+          "dx",
+          "dz",
+          "reason"
+        ]
+      },
+      {
+        "schema": {
+          "kind": "trial.move-cue",
+          "version": 1
+        },
+        "fields": [
+          "actor_id",
+          "space_id",
+          "from_cell",
+          "to_cell",
+          "from_x_mm",
+          "from_z_mm",
+          "to_x_mm",
+          "to_z_mm",
+          "result"
+        ]
+      },
+      {
+        "schema": {
+          "kind": "trial.moved",
+          "version": 1
+        },
+        "fields": [
+          "actor_id",
+          "space_id",
+          "from_cell",
+          "to_cell"
+        ]
+      },
+      {
+        "schema": {
+          "kind": "trial.position-delta",
+          "version": 1
+        },
+        "fields": [
+          "entity_id",
+          "before_cell",
+          "after_cell"
+        ]
+      },
+      {
+        "schema": {
+          "kind": "trial.position-patch",
+          "version": 1
+        },
+        "fields": [
+          "cell"
+        ]
+      }
+    ]
+  },
+  "rules_document": {
+    "version": 1,
+    "actor_id": "actor:trial",
+    "space_id": "space:trial",
+    "width": 3,
+    "height": 3,
+    "cell_mm": 1000,
+    "blocked_cells": [
+      1
+    ],
+    "initial_cell": 0,
+    "duration_seconds": 1,
+    "cardinal_directions": [
+      [
+        -1,
+        0
+      ],
+      [
+        0,
+        -1
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "blocked_attempt_consumes_time": true,
+    "boundary_precedes_occupancy": true,
+    "record_only": true,
+    "rng_purposes": []
+  },
+  "schedule_document": {
+    "version": 1,
+    "nodes": [
+      {
+        "phase": "RESOLVE",
+        "engine_id": "trial.movement",
+        "lane": "A",
+        "reads": [
+          "trial.map.blocked_cells",
+          "trial.map.height",
+          "trial.map.width",
+          "trial.position.cell",
+          "trial.position.space_id"
+        ],
+        "writes": [
+          "trial.position.cell"
+        ],
+        "depends_on": [],
+        "action_kinds": [
+          {
+            "kind": "trial.move",
+            "version": 1
+          }
+        ],
+        "on_matching_events": false,
+        "every_tick": false,
+        "emits": [
+          {
+            "kind": "trial.move-blocked",
+            "version": 1
+          },
+          {
+            "kind": "trial.moved",
+            "version": 1
+          }
+        ],
+        "consumes": [],
+        "cost_class": "local"
+      }
+    ]
+  },
+  "literal_documents": [
+    {
+      "name": "schema",
+      "tag": "schema/v1",
+      "document": {
+        "version": 1,
+        "unknown_fields": "reject",
+        "bool_as_integer": "reject",
+        "components": [
+          {
+            "schema": {
+              "kind": "trial.map",
+              "version": 1
+            },
+            "fields": {
+              "width": {
+                "owner": "system.bootstrap",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "cell_count",
+                "scale": 1,
+                "minimum": 3,
+                "maximum": 3
+              },
+              "height": {
+                "owner": "system.bootstrap",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "cell_count",
+                "scale": 1,
+                "minimum": 3,
+                "maximum": 3
+              },
+              "cell_mm": {
+                "owner": "system.bootstrap",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "mm",
+                "scale": 1,
+                "minimum": 1000,
+                "maximum": 1000
+              },
+              "blocked_cells": {
+                "owner": "system.bootstrap",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "cell",
+                "scale": 1,
+                "minimum": 0,
+                "maximum": 8,
+                "collection_cap": 1
+              }
+            }
+          },
+          {
+            "schema": {
+              "kind": "trial.position",
+              "version": 1
+            },
+            "fields": {
+              "cell": {
+                "owner": "trial.movement",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "cell",
+                "scale": 1,
+                "minimum": 0,
+                "maximum": 8
+              },
+              "space_id": {
+                "owner": "system.bootstrap",
+                "storage": "CORE",
+                "tier": "A",
+                "unit": "entity_id",
+                "scale": 1
+              }
+            }
+          }
+        ],
+        "payloads": [
+          {
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "fields": [
+              "dx",
+              "dz"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "trial.move-blocked",
+              "version": 1
+            },
+            "fields": [
+              "actor_id",
+              "space_id",
+              "from_cell",
+              "dx",
+              "dz",
+              "reason"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "fields": [
+              "actor_id",
+              "space_id",
+              "from_cell",
+              "to_cell",
+              "from_x_mm",
+              "from_z_mm",
+              "to_x_mm",
+              "to_z_mm",
+              "result"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "trial.moved",
+              "version": 1
+            },
+            "fields": [
+              "actor_id",
+              "space_id",
+              "from_cell",
+              "to_cell"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "trial.position-delta",
+              "version": 1
+            },
+            "fields": [
+              "entity_id",
+              "before_cell",
+              "after_cell"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "trial.position-patch",
+              "version": 1
+            },
+            "fields": [
+              "cell"
+            ]
+          }
+        ]
+      },
+      "utf8": "{\"bool_as_integer\":\"reject\",\"components\":[{\"fields\":{\"blocked_cells\":{\"collection_cap\":1,\"maximum\":8,\"minimum\":0,\"owner\":\"system.bootstrap\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"cell\"},\"cell_mm\":{\"maximum\":1000,\"minimum\":1000,\"owner\":\"system.bootstrap\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"mm\"},\"height\":{\"maximum\":3,\"minimum\":3,\"owner\":\"system.bootstrap\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"cell_count\"},\"width\":{\"maximum\":3,\"minimum\":3,\"owner\":\"system.bootstrap\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"cell_count\"}},\"schema\":{\"kind\":\"trial.map\",\"version\":1}},{\"fields\":{\"cell\":{\"maximum\":8,\"minimum\":0,\"owner\":\"trial.movement\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"cell\"},\"space_id\":{\"owner\":\"system.bootstrap\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"entity_id\"}},\"schema\":{\"kind\":\"trial.position\",\"version\":1}}],\"payloads\":[{\"fields\":[\"dx\",\"dz\"],\"schema\":{\"kind\":\"trial.move\",\"version\":1}},{\"fields\":[\"actor_id\",\"space_id\",\"from_cell\",\"dx\",\"dz\",\"reason\"],\"schema\":{\"kind\":\"trial.move-blocked\",\"version\":1}},{\"fields\":[\"actor_id\",\"space_id\",\"from_cell\",\"to_cell\",\"from_x_mm\",\"from_z_mm\",\"to_x_mm\",\"to_z_mm\",\"result\"],\"schema\":{\"kind\":\"trial.move-cue\",\"version\":1}},{\"fields\":[\"actor_id\",\"space_id\",\"from_cell\",\"to_cell\"],\"schema\":{\"kind\":\"trial.moved\",\"version\":1}},{\"fields\":[\"entity_id\",\"before_cell\",\"after_cell\"],\"schema\":{\"kind\":\"trial.position-delta\",\"version\":1}},{\"fields\":[\"cell\"],\"schema\":{\"kind\":\"trial.position-patch\",\"version\":1}}],\"unknown_fields\":\"reject\",\"version\":1}",
+      "utf8_hex": "7b22626f6f6c5f61735f696e7465676572223a2272656a656374222c22636f6d706f6e656e7473223a5b7b226669656c6473223a7b22626c6f636b65645f63656c6c73223a7b22636f6c6c656374696f6e5f636170223a312c226d6178696d756d223a382c226d696e696d756d223a302c226f776e6572223a2273797374656d2e626f6f747374726170222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a2263656c6c227d2c2263656c6c5f6d6d223a7b226d6178696d756d223a313030302c226d696e696d756d223a313030302c226f776e6572223a2273797374656d2e626f6f747374726170222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a226d6d227d2c22686569676874223a7b226d6178696d756d223a332c226d696e696d756d223a332c226f776e6572223a2273797374656d2e626f6f747374726170222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a2263656c6c5f636f756e74227d2c227769647468223a7b226d6178696d756d223a332c226d696e696d756d223a332c226f776e6572223a2273797374656d2e626f6f747374726170222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a2263656c6c5f636f756e74227d7d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6170222c2276657273696f6e223a317d7d2c7b226669656c6473223a7b2263656c6c223a7b226d6178696d756d223a382c226d696e696d756d223a302c226f776e6572223a22747269616c2e6d6f76656d656e74222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a2263656c6c227d2c2273706163655f6964223a7b226f776e6572223a2273797374656d2e626f6f747374726170222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a22656e746974795f6964227d7d2c22736368656d61223a7b226b696e64223a22747269616c2e706f736974696f6e222c2276657273696f6e223a317d7d5d2c227061796c6f616473223a5b7b226669656c6473223a5b226478222c22647a225d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6f7665222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b226163746f725f6964222c2273706163655f6964222c2266726f6d5f63656c6c222c226478222c22647a222c22726561736f6e225d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6f76652d626c6f636b6564222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b226163746f725f6964222c2273706163655f6964222c2266726f6d5f63656c6c222c22746f5f63656c6c222c2266726f6d5f785f6d6d222c2266726f6d5f7a5f6d6d222c22746f5f785f6d6d222c22746f5f7a5f6d6d222c22726573756c74225d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6f76652d637565222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b226163746f725f6964222c2273706163655f6964222c2266726f6d5f63656c6c222c22746f5f63656c6c225d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6f766564222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b22656e746974795f6964222c226265666f72655f63656c6c222c2261667465725f63656c6c225d2c22736368656d61223a7b226b696e64223a22747269616c2e706f736974696f6e2d64656c7461222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b2263656c6c225d2c22736368656d61223a7b226b696e64223a22747269616c2e706f736974696f6e2d7061746368222c2276657273696f6e223a317d7d5d2c22756e6b6e6f776e5f6669656c6473223a2272656a656374222c2276657273696f6e223a317d",
+      "sha256": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa"
+    },
+    {
+      "name": "rules",
+      "tag": "rules/v1",
+      "document": {
+        "version": 1,
+        "actor_id": "actor:trial",
+        "space_id": "space:trial",
+        "width": 3,
+        "height": 3,
+        "cell_mm": 1000,
+        "blocked_cells": [
+          1
+        ],
+        "initial_cell": 0,
+        "duration_seconds": 1,
+        "cardinal_directions": [
+          [
+            -1,
+            0
+          ],
+          [
+            0,
+            -1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "blocked_attempt_consumes_time": true,
+        "boundary_precedes_occupancy": true,
+        "record_only": true,
+        "rng_purposes": []
+      },
+      "utf8": "{\"actor_id\":\"actor:trial\",\"blocked_attempt_consumes_time\":true,\"blocked_cells\":[1],\"boundary_precedes_occupancy\":true,\"cardinal_directions\":[[-1,0],[0,-1],[0,1],[1,0]],\"cell_mm\":1000,\"duration_seconds\":1,\"height\":3,\"initial_cell\":0,\"record_only\":true,\"rng_purposes\":[],\"space_id\":\"space:trial\",\"version\":1,\"width\":3}",
+      "utf8_hex": "7b226163746f725f6964223a226163746f723a747269616c222c22626c6f636b65645f617474656d70745f636f6e73756d65735f74696d65223a747275652c22626c6f636b65645f63656c6c73223a5b315d2c22626f756e646172795f70726563656465735f6f63637570616e6379223a747275652c2263617264696e616c5f646972656374696f6e73223a5b5b2d312c305d2c5b302c2d315d2c5b302c315d2c5b312c305d5d2c2263656c6c5f6d6d223a313030302c226475726174696f6e5f7365636f6e6473223a312c22686569676874223a332c22696e697469616c5f63656c6c223a302c227265636f72645f6f6e6c79223a747275652c22726e675f707572706f736573223a5b5d2c2273706163655f6964223a2273706163653a747269616c222c2276657273696f6e223a312c227769647468223a337d",
+      "sha256": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3"
+    },
+    {
+      "name": "schedule",
+      "tag": "schedule/v1",
+      "document": {
+        "version": 1,
+        "nodes": [
+          {
+            "phase": "RESOLVE",
+            "engine_id": "trial.movement",
+            "lane": "A",
+            "reads": [
+              "trial.map.blocked_cells",
+              "trial.map.height",
+              "trial.map.width",
+              "trial.position.cell",
+              "trial.position.space_id"
+            ],
+            "writes": [
+              "trial.position.cell"
+            ],
+            "depends_on": [],
+            "action_kinds": [
+              {
+                "kind": "trial.move",
+                "version": 1
+              }
+            ],
+            "on_matching_events": false,
+            "every_tick": false,
+            "emits": [
+              {
+                "kind": "trial.move-blocked",
+                "version": 1
+              },
+              {
+                "kind": "trial.moved",
+                "version": 1
+              }
+            ],
+            "consumes": [],
+            "cost_class": "local"
+          }
+        ]
+      },
+      "utf8": "{\"nodes\":[{\"action_kinds\":[{\"kind\":\"trial.move\",\"version\":1}],\"consumes\":[],\"cost_class\":\"local\",\"depends_on\":[],\"emits\":[{\"kind\":\"trial.move-blocked\",\"version\":1},{\"kind\":\"trial.moved\",\"version\":1}],\"engine_id\":\"trial.movement\",\"every_tick\":false,\"lane\":\"A\",\"on_matching_events\":false,\"phase\":\"RESOLVE\",\"reads\":[\"trial.map.blocked_cells\",\"trial.map.height\",\"trial.map.width\",\"trial.position.cell\",\"trial.position.space_id\"],\"writes\":[\"trial.position.cell\"]}],\"version\":1}",
+      "utf8_hex": "7b226e6f646573223a5b7b22616374696f6e5f6b696e6473223a5b7b226b696e64223a22747269616c2e6d6f7665222c2276657273696f6e223a317d5d2c22636f6e73756d6573223a5b5d2c22636f73745f636c617373223a226c6f63616c222c22646570656e64735f6f6e223a5b5d2c22656d697473223a5b7b226b696e64223a22747269616c2e6d6f76652d626c6f636b6564222c2276657273696f6e223a317d2c7b226b696e64223a22747269616c2e6d6f766564222c2276657273696f6e223a317d5d2c22656e67696e655f6964223a22747269616c2e6d6f76656d656e74222c2265766572795f7469636b223a66616c73652c226c616e65223a2241222c226f6e5f6d61746368696e675f6576656e7473223a66616c73652c227068617365223a225245534f4c5645222c227265616473223a5b22747269616c2e6d61702e626c6f636b65645f63656c6c73222c22747269616c2e6d61702e686569676874222c22747269616c2e6d61702e7769647468222c22747269616c2e706f736974696f6e2e63656c6c222c22747269616c2e706f736974696f6e2e73706163655f6964225d2c22777269746573223a5b22747269616c2e706f736974696f6e2e63656c6c225d7d5d2c2276657273696f6e223a317d",
+      "sha256": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db"
+    },
+    {
+      "name": "map",
+      "tag": "component/v1",
+      "document": {
+        "schema": {
+          "kind": "trial.map",
+          "version": 1
+        },
+        "entity_id": "space:trial",
+        "fields": {
+          "width": 3,
+          "height": 3,
+          "cell_mm": 1000,
+          "blocked_cells": [
+            1
+          ]
+        }
+      },
+      "utf8": "{\"entity_id\":\"space:trial\",\"fields\":{\"blocked_cells\":[1],\"cell_mm\":1000,\"height\":3,\"width\":3},\"schema\":{\"kind\":\"trial.map\",\"version\":1}}",
+      "utf8_hex": "7b22656e746974795f6964223a2273706163653a747269616c222c226669656c6473223a7b22626c6f636b65645f63656c6c73223a5b315d2c2263656c6c5f6d6d223a313030302c22686569676874223a332c227769647468223a337d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6170222c2276657273696f6e223a317d7d",
+      "sha256": "def7f2abca1e858e46a05dff406128ee4b190e63d5761bac1638eea956498f38"
+    },
+    {
+      "name": "position0",
+      "tag": "component/v1",
+      "document": {
+        "schema": {
+          "kind": "trial.position",
+          "version": 1
+        },
+        "entity_id": "actor:trial",
+        "fields": {
+          "space_id": "space:trial",
+          "cell": 0
+        }
+      },
+      "utf8": "{\"entity_id\":\"actor:trial\",\"fields\":{\"cell\":0,\"space_id\":\"space:trial\"},\"schema\":{\"kind\":\"trial.position\",\"version\":1}}",
+      "utf8_hex": "7b22656e746974795f6964223a226163746f723a747269616c222c226669656c6473223a7b2263656c6c223a302c2273706163655f6964223a2273706163653a747269616c227d2c22736368656d61223a7b226b696e64223a22747269616c2e706f736974696f6e222c2276657273696f6e223a317d7d",
+      "sha256": "f0a32b8e5cee1dfa2909e583b86a0c8101bdf253bea0c0818484daada7a4fa37"
+    },
+    {
+      "name": "command1",
+      "tag": "command/v1",
+      "document": {
+        "actor_id": "actor:trial",
+        "expected_revision": 0,
+        "schema": {
+          "kind": "trial.move",
+          "version": 1
+        },
+        "payload": {
+          "dx": 1,
+          "dz": 0
+        }
+      },
+      "utf8": "{\"actor_id\":\"actor:trial\",\"expected_revision\":0,\"payload\":{\"dx\":1,\"dz\":0},\"schema\":{\"kind\":\"trial.move\",\"version\":1}}",
+      "utf8_hex": "7b226163746f725f6964223a226163746f723a747269616c222c2265787065637465645f7265766973696f6e223a302c227061796c6f6164223a7b226478223a312c22647a223a307d2c22736368656d61223a7b226b696e64223a22747269616c2e6d6f7665222c2276657273696f6e223a317d7d",
+      "sha256": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0"
+    }
+  ],
+  "movement_vectors": [
+    {
+      "from_cell": 0,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 0,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 0,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 0,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 0,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 3,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 0,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 0,
+      "result": "occupied",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 2,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 2,
+      "result": "occupied",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 2,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 2,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 2,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 5,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 2,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 2,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 3,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 3,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 3,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 0,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 3,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 6,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 3,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 4,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 4,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 3,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 4,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 4,
+      "result": "occupied",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 4,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 7,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 4,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 5,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 5,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 4,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 5,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 2,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 5,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 8,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 5,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 5,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 6,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 6,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 6,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 3,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 6,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 6,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 6,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 7,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 7,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 6,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 7,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 4,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 7,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 7,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 7,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 8,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 8,
+      "dx": -1,
+      "dz": 0,
+      "to_cell": 7,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 8,
+      "dx": 0,
+      "dz": -1,
+      "to_cell": 5,
+      "result": "moved",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 1,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 8,
+      "dx": 0,
+      "dz": 1,
+      "to_cell": 8,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    },
+    {
+      "from_cell": 8,
+      "dx": 1,
+      "dz": 0,
+      "to_cell": 8,
+      "result": "boundary",
+      "tick_increment": 1,
+      "revision_increment": 1,
+      "delta_count": 0,
+      "fact_count": 1,
+      "cue_count": 1
+    }
+  ],
+  "coordinates": [
+    {
+      "cell": 0,
+      "x_mm": 0,
+      "z_mm": 0
+    },
+    {
+      "cell": 1,
+      "x_mm": 1000,
+      "z_mm": 0
+    },
+    {
+      "cell": 2,
+      "x_mm": 2000,
+      "z_mm": 0
+    },
+    {
+      "cell": 3,
+      "x_mm": 0,
+      "z_mm": 1000
+    },
+    {
+      "cell": 4,
+      "x_mm": 1000,
+      "z_mm": 1000
+    },
+    {
+      "cell": 5,
+      "x_mm": 2000,
+      "z_mm": 1000
+    },
+    {
+      "cell": 6,
+      "x_mm": 0,
+      "z_mm": 2000
+    },
+    {
+      "cell": 7,
+      "x_mm": 1000,
+      "z_mm": 2000
+    },
+    {
+      "cell": 8,
+      "x_mm": 2000,
+      "z_mm": 2000
+    }
+  ],
+  "expected_fixture": {
+    "format_version": 1,
+    "initial_core": {
+      "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+      "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "tick": 0,
+      "components": [
+        {
+          "schema": {
+            "kind": "trial.map",
+            "version": 1
+          },
+          "entity_id": "space:trial",
+          "fields": {
+            "width": 3,
+            "height": 3,
+            "cell_mm": 1000,
+            "blocked_cells": [
+              1
+            ]
+          }
+        },
+        {
+          "schema": {
+            "kind": "trial.position",
+            "version": 1
+          },
+          "entity_id": "actor:trial",
+          "fields": {
+            "space_id": "space:trial",
+            "cell": 0
+          }
+        }
+      ],
+      "pending": [],
+      "pins": {
+        "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+        "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+        "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+        "gameplay_packages": []
+      }
+    },
+    "initial_protocol": {
+      "branch_id": "00000000000000000000000000000000",
+      "revision": 0,
+      "streams": [
+        {
+          "stream_id": "11111111111111111111111111111111",
+          "actor_id": "actor:trial",
+          "highest_committed_sequence": 0,
+          "status": "active"
+        }
+      ],
+      "receipts": []
+    },
+    "trace": {
+      "header": {
+        "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "initial_core_hash": "e15eab8bd8e4d27b8ac9d0a652a616cb74bd91820befe53dca06118fddaa56aa",
+        "initial_protocol_hash": "9a0f2b5da61bfe3d2fa3ec714dc331dd515038c74939e82c822335225982598d",
+        "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+        "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+        "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_packages": [],
+        "build_artifacts": []
+      },
+      "steps": [
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "actor_id": "actor:trial",
+            "expected_revision": 0,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+            }
+          },
+          "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877",
+          "protocol_hash": "d3e1b49f7ef35f3b01e0aa33d1a43ea48bd2f33445a573c8240866b69c035027",
+          "facts_hash": "99cb47ffb076b2721cf623f0d920adafb3187ac253e9f7bc281efc802692a6fd",
+          "diff_hash": "116688a9e229c4a0b17428af94299981ddc6ef26d8d7ece7c254e77a1338c9e9",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 1,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 1,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 1,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-09e8d2d734aaf3efaa04deca9c321c5a38efe1c48d3bf4f03213a433e5aaf0d3",
+                  "type_key": {
+                    "kind": "trial.move-blocked",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 1,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 1,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 0,
+                  "dx": 1,
+                  "dz": 0,
+                  "reason": "occupied"
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                "previous_revision": 0,
+                "revision": 1,
+                "tick": 1,
+                "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+              },
+              "changes": []
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+            "actor_id": "actor:trial",
+            "expected_revision": 1,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+              "previous_revision": 1,
+              "revision": 2,
+              "tick": 2,
+              "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+            }
+          },
+          "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3",
+          "protocol_hash": "0a71965741350162864230ac9d20b0333520ee7ace0fd01a405b0456a3a94a25",
+          "facts_hash": "a79ef56494380775609ca67378f8747d277ca28ac4e788dee3e2bff4f5550fbb",
+          "diff_hash": "d83c6d9ac48fcc9f44ae3b5643588bc3ac89d8dc1c58d9234c01c728b85f4788",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 2,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 2,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 2,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-fc9745b3a99766b5dcd2700ceafa548949cb199a8022729f26a23603ddaed58e",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 2,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 2,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 0,
+                  "to_cell": 3
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                "previous_revision": 1,
+                "revision": 2,
+                "tick": 2,
+                "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 0,
+                  "after_cell": 3
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+            "actor_id": "actor:trial",
+            "expected_revision": 2,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+              "previous_revision": 2,
+              "revision": 3,
+              "tick": 3,
+              "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+            }
+          },
+          "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69",
+          "protocol_hash": "ac5df63a41348d265ee6cde91551380f609060bec1f60cc431638681326d6acb",
+          "facts_hash": "6ce759d71e57682a3a9c5259946d35fdc81ae36709bfea6b993436c91f7291f1",
+          "diff_hash": "82c6d57c59142f6f1488602ac948c54b8d8a3c4daee71a803673f1ba444f3bf2",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 3,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 4
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 3,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 3,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-b4db9671e751e7139c667b09d4682f0fc848b6ed8bdfc718517fa45bd99c8ed4",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 3,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 3,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 3,
+                  "to_cell": 4
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                "previous_revision": 2,
+                "revision": 3,
+                "tick": 3,
+                "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 3,
+                  "after_cell": 4
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+            "actor_id": "actor:trial",
+            "expected_revision": 3,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": -1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+              "previous_revision": 3,
+              "revision": 4,
+              "tick": 4,
+              "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+            }
+          },
+          "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d",
+          "protocol_hash": "7e9a7fa98d2079e5b9f91f9d0ab6c0143f7c42b39fc0b57dc495671c427d19a8",
+          "facts_hash": "56d63364359911177ace3bebb92d1aab5d9ce987ceee414f3e1be87d10b55a5c",
+          "diff_hash": "a150da401be756a4c65b7e7efb45254ab03a64ad5023646a34ee1069a611d766",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 4,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 4
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 4,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 4,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-09b373c3963c3243504360ac46f7967916f3b81c099b8d53e62ff5aaf2948a93",
+                  "type_key": {
+                    "kind": "trial.move-blocked",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 4,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 4,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 4,
+                  "dx": 0,
+                  "dz": -1,
+                  "reason": "occupied"
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                "previous_revision": 3,
+                "revision": 4,
+                "tick": 4,
+                "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+              },
+              "changes": []
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+            "actor_id": "actor:trial",
+            "expected_revision": 4,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": -1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+              "previous_revision": 4,
+              "revision": 5,
+              "tick": 5,
+              "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+            }
+          },
+          "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800",
+          "protocol_hash": "3cbf3561174eea79825915ce31970f18b38fd34ae14b7496e86db067764eacd8",
+          "facts_hash": "5ea1474041625d1d76c3d2501132cb327d7efa660face0e9b0422b2725e88845",
+          "diff_hash": "b1fd18ac7d165425b562256d17bec88e1337e5f21b344f2b5ee9ceaef7f73815",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 5,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 5,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 5,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-4c79cc28431aef8b6ccbab4bbbe50cee6f9eabbe48e52c163606a4a3eba38103",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 5,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 5,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 4,
+                  "to_cell": 3
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                "previous_revision": 4,
+                "revision": 5,
+                "tick": 5,
+                "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 4,
+                  "after_cell": 3
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+            "actor_id": "actor:trial",
+            "expected_revision": 5,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": -1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+              "previous_revision": 5,
+              "revision": 6,
+              "tick": 6,
+              "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+            }
+          },
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22",
+          "protocol_hash": "a312ab524a90e79940109bd7bac2015c23efffff7de3eed3ed4412669696697d",
+          "facts_hash": "237b0305a64dae262c7e625a237a0583b8ccde8f95c819e4c74b41ac1d524306",
+          "diff_hash": "0873e6542be3d5f8dfd2bf992a8fa74d2a75a5e5e791b06ad6d882b6fce82d2e",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 6,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 6,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 6,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 5,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "d4eeabe8a47bf8bc35876593866c6f0d2747261f4065fffd68be4b24c8c0aacc",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "previous_revision": 5,
+                    "revision": 6,
+                    "tick": 6,
+                    "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-816ec7041580340e80d77d59d8bdb3eeb46a82a147c8eccb622c8d310b9296ef",
+                  "type_key": {
+                    "kind": "trial.move-blocked",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 6,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 6,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 3,
+                  "dx": -1,
+                  "dz": 0,
+                  "reason": "boundary"
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                "previous_revision": 5,
+                "revision": 6,
+                "tick": 6,
+                "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+              },
+              "changes": []
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "actor_id": "actor:trial",
+            "expected_revision": 0,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+            }
+          },
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22",
+          "protocol_hash": "a312ab524a90e79940109bd7bac2015c23efffff7de3eed3ed4412669696697d",
+          "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+          "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 6,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 6,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 6,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 5,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "d4eeabe8a47bf8bc35876593866c6f0d2747261f4065fffd68be4b24c8c0aacc",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "previous_revision": 5,
+                    "revision": 6,
+                    "tick": 6,
+                    "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+                  }
+                }
+              ]
+            },
+            "facts": [],
+            "diff": null
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+            "actor_id": "actor:trial",
+            "expected_revision": 0,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": 1
+            }
+          },
+          "outcome": {
+            "kind": "rejected",
+            "failure": {
+              "code": "STALE_REVISION",
+              "message_key": "error.stale_revision"
+            },
+            "current_revision": 6
+          },
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22",
+          "protocol_hash": "a312ab524a90e79940109bd7bac2015c23efffff7de3eed3ed4412669696697d",
+          "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+          "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 6,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 6,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 6,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 5,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "d4eeabe8a47bf8bc35876593866c6f0d2747261f4065fffd68be4b24c8c0aacc",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "previous_revision": 5,
+                    "revision": 6,
+                    "tick": 6,
+                    "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+                  }
+                }
+              ]
+            },
+            "facts": [],
+            "diff": null
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "actor_id": "actor:trial",
+            "expected_revision": 0,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": 1
+            }
+          },
+          "outcome": {
+            "kind": "rejected",
+            "failure": {
+              "code": "COMMAND_ID_CONFLICT",
+              "message_key": "error.command_id_conflict"
+            },
+            "current_revision": 6
+          },
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22",
+          "protocol_hash": "a312ab524a90e79940109bd7bac2015c23efffff7de3eed3ed4412669696697d",
+          "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+          "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 6,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 6,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 6,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 5,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "d4eeabe8a47bf8bc35876593866c6f0d2747261f4065fffd68be4b24c8c0aacc",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "previous_revision": 5,
+                    "revision": 6,
+                    "tick": 6,
+                    "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+                  }
+                }
+              ]
+            },
+            "facts": [],
+            "diff": null
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+            "actor_id": "actor:trial",
+            "expected_revision": 6,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+              "previous_revision": 6,
+              "revision": 7,
+              "tick": 7,
+              "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85"
+            }
+          },
+          "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85",
+          "protocol_hash": "c8585d85bcfb7370e65fa7c3909f8917549472bf64f40229d36700ad8d236ea3",
+          "facts_hash": "aaaf8f8dcb8fa6789889f02654077bf97e1fda5adb50b37087932e4adec5e224",
+          "diff_hash": "420ceed92b7e897cc348586d0b681ae57046dcdf7f474bf1a80ea34dbf657544",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 7,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 6
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 7,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 7,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 3,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": -1
+                    }
+                  },
+                  "command_fingerprint": "4a2545d95bde629f07ed368caf04a786ba1c5a8f124783224f7ec769429fc117",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+                    "previous_revision": 3,
+                    "revision": 4,
+                    "tick": 4,
+                    "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 4,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "30986bc17c96808628b942ff5052be6ba645dd989ea8d10fa65b026759b9f272",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+                    "previous_revision": 4,
+                    "revision": 5,
+                    "tick": 5,
+                    "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 5,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": -1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "d4eeabe8a47bf8bc35876593866c6f0d2747261f4065fffd68be4b24c8c0aacc",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+                    "previous_revision": 5,
+                    "revision": 6,
+                    "tick": 6,
+                    "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 6,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "59e88b0151a97e9d726d3d1aebbd184c8bb9df3ba563e18da3532a7f2a5ff38f",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+                    "previous_revision": 6,
+                    "revision": 7,
+                    "tick": 7,
+                    "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-9862e480003e379eea4e0094354296e34950b527207c551521cde5f7a91c43b9",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 7,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 7,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 3,
+                  "to_cell": 6
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+                "previous_revision": 6,
+                "revision": 7,
+                "tick": 7,
+                "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 3,
+                  "after_cell": 6
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "expected_fixture_canonical_sha256": "ae6834a21be298a4015f9309bf7b710f977e39e84f3bf1a57679d6c866d59a07",
+  "expected_publications": [
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-09e8d2d734aaf3efaa04deca9c321c5a38efe1c48d3bf4f03213a433e5aaf0d3",
+            "type_key": {
+              "kind": "trial.move-blocked",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 1,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 1,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 0,
+            "dx": 1,
+            "dz": 0,
+            "reason": "occupied"
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+        },
+        "changes": []
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-3e0807855dad7bb38c12a3d5fd1f2db75cc05e4d23adf059ebd49e34c1971e3a",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 1,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-09e8d2d734aaf3efaa04deca9c321c5a38efe1c48d3bf4f03213a433e5aaf0d3"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 0,
+            "to_cell": 0,
+            "from_x_mm": 0,
+            "from_z_mm": 0,
+            "to_x_mm": 0,
+            "to_z_mm": 0,
+            "result": "occupied"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+          "previous_revision": 1,
+          "revision": 2,
+          "tick": 2,
+          "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-fc9745b3a99766b5dcd2700ceafa548949cb199a8022729f26a23603ddaed58e",
+            "type_key": {
+              "kind": "trial.moved",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 2,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 2,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 0,
+            "to_cell": 3
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+          "previous_revision": 1,
+          "revision": 2,
+          "tick": 2,
+          "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "trial.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:trial",
+            "before_cell": 0,
+            "after_cell": 3
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-525c1f7a0ce012d42b999ec521576463abaf03fb6a8a15cbc237b4c344d84f36",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 2,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-fc9745b3a99766b5dcd2700ceafa548949cb199a8022729f26a23603ddaed58e"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 0,
+            "to_cell": 3,
+            "from_x_mm": 0,
+            "from_z_mm": 0,
+            "to_x_mm": 0,
+            "to_z_mm": 1000,
+            "result": "moved"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+          "previous_revision": 2,
+          "revision": 3,
+          "tick": 3,
+          "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-b4db9671e751e7139c667b09d4682f0fc848b6ed8bdfc718517fa45bd99c8ed4",
+            "type_key": {
+              "kind": "trial.moved",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 3,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 3,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "to_cell": 4
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+          "previous_revision": 2,
+          "revision": 3,
+          "tick": 3,
+          "core_hash": "e77dc2db8afa5a3316af541d4c22f3fc5d73a65ba778dd4f0640ad64c967da69"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "trial.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:trial",
+            "before_cell": 3,
+            "after_cell": 4
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-ed0b486f6e3715c982ee99b4bf193483792ea0065f3f5343b339787db699a589",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 3,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-b4db9671e751e7139c667b09d4682f0fc848b6ed8bdfc718517fa45bd99c8ed4"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "to_cell": 4,
+            "from_x_mm": 0,
+            "from_z_mm": 1000,
+            "to_x_mm": 1000,
+            "to_z_mm": 1000,
+            "result": "moved"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+          "previous_revision": 3,
+          "revision": 4,
+          "tick": 4,
+          "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-09b373c3963c3243504360ac46f7967916f3b81c099b8d53e62ff5aaf2948a93",
+            "type_key": {
+              "kind": "trial.move-blocked",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 4,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 4,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 4,
+            "dx": 0,
+            "dz": -1,
+            "reason": "occupied"
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+          "previous_revision": 3,
+          "revision": 4,
+          "tick": 4,
+          "core_hash": "77fe661c36e71d569378d8286f2d15bebf5ee8bf06f59c7fdbd5fb92f690663d"
+        },
+        "changes": []
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-9770a38f261e1122d0ac518ce0d0fbd7a54bc1ade74ffba257ede9654f05735d",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 4,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-09b373c3963c3243504360ac46f7967916f3b81c099b8d53e62ff5aaf2948a93"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 4,
+            "to_cell": 4,
+            "from_x_mm": 1000,
+            "from_z_mm": 1000,
+            "to_x_mm": 1000,
+            "to_z_mm": 1000,
+            "result": "occupied"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+          "previous_revision": 4,
+          "revision": 5,
+          "tick": 5,
+          "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-4c79cc28431aef8b6ccbab4bbbe50cee6f9eabbe48e52c163606a4a3eba38103",
+            "type_key": {
+              "kind": "trial.moved",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 5,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 5,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 4,
+            "to_cell": 3
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:5",
+          "previous_revision": 4,
+          "revision": 5,
+          "tick": 5,
+          "core_hash": "f22b77633b13ac760c5f78aea750f4e60fc4b0a84d81f4ec3a4866bf75414800"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "trial.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:trial",
+            "before_cell": 4,
+            "after_cell": 3
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-339747e07424f2185bd5ec0b701ade9f41adc1461ced41b7aabf9255634337bc",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 5,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-4c79cc28431aef8b6ccbab4bbbe50cee6f9eabbe48e52c163606a4a3eba38103"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 4,
+            "to_cell": 3,
+            "from_x_mm": 1000,
+            "from_z_mm": 1000,
+            "to_x_mm": 0,
+            "to_z_mm": 1000,
+            "result": "moved"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+          "previous_revision": 5,
+          "revision": 6,
+          "tick": 6,
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-816ec7041580340e80d77d59d8bdb3eeb46a82a147c8eccb622c8d310b9296ef",
+            "type_key": {
+              "kind": "trial.move-blocked",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 6,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 6,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "dx": -1,
+            "dz": 0,
+            "reason": "boundary"
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:6",
+          "previous_revision": 5,
+          "revision": 6,
+          "tick": 6,
+          "core_hash": "130309cd222d7a66fc48df03363852b9791f12002b2bb0bcfe17aa51cca5af22"
+        },
+        "changes": []
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-0295b637cdeacefab3c017570ec6129f9274398f4324465f958f95b7ac778134",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 6,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-816ec7041580340e80d77d59d8bdb3eeb46a82a147c8eccb622c8d310b9296ef"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "to_cell": 3,
+            "from_x_mm": 0,
+            "from_z_mm": 1000,
+            "to_x_mm": 0,
+            "to_z_mm": 1000,
+            "result": "boundary"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+        }
+      },
+      "facts": [],
+      "diff": null,
+      "cues": [],
+      "diagnostics": [
+        {
+          "code": "RESYNC_REQUIRED",
+          "message_key": "error.resync_required"
+        }
+      ]
+    },
+    {
+      "outcome": {
+        "kind": "rejected",
+        "failure": {
+          "code": "STALE_REVISION",
+          "message_key": "error.stale_revision"
+        },
+        "current_revision": 6
+      },
+      "facts": [],
+      "diff": null,
+      "cues": [],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "rejected",
+        "failure": {
+          "code": "COMMAND_ID_CONFLICT",
+          "message_key": "error.command_id_conflict"
+        },
+        "current_revision": 6
+      },
+      "facts": [],
+      "diff": null,
+      "cues": [],
+      "diagnostics": []
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+          "previous_revision": 6,
+          "revision": 7,
+          "tick": 7,
+          "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-9862e480003e379eea4e0094354296e34950b527207c551521cde5f7a91c43b9",
+            "type_key": {
+              "kind": "trial.moved",
+              "version": 1
+            },
+            "producer_id": "trial.movement",
+            "occurred_at": 7,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 7,
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "to_cell": 6
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:7",
+          "previous_revision": 6,
+          "revision": 7,
+          "tick": 7,
+          "core_hash": "ec2b4c409f628267a89f8abe8789ac91de97f2aa317806707c9ccc90c6b97a85"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "trial.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:trial",
+            "before_cell": 3,
+            "after_cell": 6
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-df38104dea3c60c980d04e851dde8d812c2e4f149558f24aa888aeffc87dfdbb",
+            "type_key": {
+              "kind": "trial.move-cue",
+              "version": 1
+            },
+            "producer_id": "trial.presenter",
+            "occurred_at": 7,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-9862e480003e379eea4e0094354296e34950b527207c551521cde5f7a91c43b9"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:trial",
+            "space_id": "space:trial",
+            "from_cell": 3,
+            "to_cell": 6,
+            "from_x_mm": 0,
+            "from_z_mm": 1000,
+            "to_x_mm": 0,
+            "to_z_mm": 2000,
+            "result": "moved"
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": []
+    }
+  ],
+  "negative_self_consistent_step3_fixture": {
+    "format_version": 1,
+    "initial_core": {
+      "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+      "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "tick": 0,
+      "components": [
+        {
+          "schema": {
+            "kind": "trial.map",
+            "version": 1
+          },
+          "entity_id": "space:trial",
+          "fields": {
+            "width": 3,
+            "height": 3,
+            "cell_mm": 1000,
+            "blocked_cells": [
+              1
+            ]
+          }
+        },
+        {
+          "schema": {
+            "kind": "trial.position",
+            "version": 1
+          },
+          "entity_id": "actor:trial",
+          "fields": {
+            "space_id": "space:trial",
+            "cell": 0
+          }
+        }
+      ],
+      "pending": [],
+      "pins": {
+        "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+        "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+        "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+        "gameplay_packages": []
+      }
+    },
+    "initial_protocol": {
+      "branch_id": "00000000000000000000000000000000",
+      "revision": 0,
+      "streams": [
+        {
+          "stream_id": "11111111111111111111111111111111",
+          "actor_id": "actor:trial",
+          "highest_committed_sequence": 0,
+          "status": "active"
+        }
+      ],
+      "receipts": []
+    },
+    "trace": {
+      "header": {
+        "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "initial_core_hash": "e15eab8bd8e4d27b8ac9d0a652a616cb74bd91820befe53dca06118fddaa56aa",
+        "initial_protocol_hash": "9a0f2b5da61bfe3d2fa3ec714dc331dd515038c74939e82c822335225982598d",
+        "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+        "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+        "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_packages": [],
+        "build_artifacts": []
+      },
+      "steps": [
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "actor_id": "actor:trial",
+            "expected_revision": 0,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+            }
+          },
+          "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877",
+          "protocol_hash": "d3e1b49f7ef35f3b01e0aa33d1a43ea48bd2f33445a573c8240866b69c035027",
+          "facts_hash": "99cb47ffb076b2721cf623f0d920adafb3187ac253e9f7bc281efc802692a6fd",
+          "diff_hash": "116688a9e229c4a0b17428af94299981ddc6ef26d8d7ece7c254e77a1338c9e9",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 1,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 1,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 1,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-09e8d2d734aaf3efaa04deca9c321c5a38efe1c48d3bf4f03213a433e5aaf0d3",
+                  "type_key": {
+                    "kind": "trial.move-blocked",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 1,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 1,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 0,
+                  "dx": 1,
+                  "dz": 0,
+                  "reason": "occupied"
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                "previous_revision": 0,
+                "revision": 1,
+                "tick": 1,
+                "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+              },
+              "changes": []
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+            "actor_id": "actor:trial",
+            "expected_revision": 1,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 0,
+              "dz": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+              "previous_revision": 1,
+              "revision": 2,
+              "tick": 2,
+              "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+            }
+          },
+          "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3",
+          "protocol_hash": "0a71965741350162864230ac9d20b0333520ee7ace0fd01a405b0456a3a94a25",
+          "facts_hash": "a79ef56494380775609ca67378f8747d277ca28ac4e788dee3e2bff4f5550fbb",
+          "diff_hash": "d83c6d9ac48fcc9f44ae3b5643588bc3ac89d8dc1c58d9234c01c728b85f4788",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 2,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 3
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 2,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 2,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-fc9745b3a99766b5dcd2700ceafa548949cb199a8022729f26a23603ddaed58e",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 2,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 2,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 0,
+                  "to_cell": 3
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                "previous_revision": 1,
+                "revision": 2,
+                "tick": 2,
+                "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 0,
+                  "after_cell": 3
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+            "actor_id": "actor:trial",
+            "expected_revision": 2,
+            "schema": {
+              "kind": "trial.move",
+              "version": 1
+            },
+            "payload": {
+              "dx": 1,
+              "dz": 0
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+              "previous_revision": 2,
+              "revision": 3,
+              "tick": 3,
+              "core_hash": "8e084d3e41af115352335c21cd5d0e2f00113e45d8375a45803ffbd4bd35957d"
+            }
+          },
+          "core_hash": "8e084d3e41af115352335c21cd5d0e2f00113e45d8375a45803ffbd4bd35957d",
+          "protocol_hash": "4806c1a21e436132e1c17d574bf3478609b49ff3beea5a8a32cbd50d71c81e0d",
+          "facts_hash": "71c1432dace5223c2bf13309eec37b58f88d3df33ea6f5fc982aba47e839390d",
+          "diff_hash": "39efe973e226d9baec18f4a001ee3831fc8c384fdc49431094279f754cd4e051",
+          "witness": {
+            "core": {
+              "world_id": "w1-ffbe1b8fa7fde710613f5cfe13f8322fa5bb9b90358509718c41550ed0ae97a8",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 3,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "trial.map",
+                    "version": 1
+                  },
+                  "entity_id": "space:trial",
+                  "fields": {
+                    "width": 3,
+                    "height": 3,
+                    "cell_mm": 1000,
+                    "blocked_cells": [
+                      1
+                    ]
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "trial.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "fields": {
+                    "space_id": "space:trial",
+                    "cell": 6
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "1710269a9d64c442fac450e009de954d1d1701edea193ade4a9abea76e60b8aa",
+                "rules_fingerprint": "dbe7a3c61e1d75b4b7b02b693f90dcaa8202d9b878ed321db767bf3098dbf3a3",
+                "schedule_fingerprint": "d6c54291fd7a0b6ff5e06f1ba1b8b3b7e061ca21ee2d132c4b0632838277d6db",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 3,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:trial",
+                  "highest_committed_sequence": 3,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 0,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "177ffed45843adbf7d4f0f31662f0d0f92ec92bbc8a6659e2f27007543104ef0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "29b770703bad12ad48e0ad7ff3a2c8530b91b360a4546662c79de53af84a8877"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 1,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 0,
+                      "dz": 1
+                    }
+                  },
+                  "command_fingerprint": "09b756d8f8c9e0c7f69c3d77b9fd7016d1bf7bd2a60bbf72963e4b3821debdc0",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "e95ade6c7c26967642ac6944919901c0add12c47b1902e35288f30aedd5d0fa3"
+                  }
+                },
+                {
+                  "command": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "actor_id": "actor:trial",
+                    "expected_revision": 2,
+                    "schema": {
+                      "kind": "trial.move",
+                      "version": 1
+                    },
+                    "payload": {
+                      "dx": 1,
+                      "dz": 0
+                    }
+                  },
+                  "command_fingerprint": "313fd5d06e23597c7d041c69a139f89a422f7c61066dd67c3261487fdf681aa3",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "8e084d3e41af115352335c21cd5d0e2f00113e45d8375a45803ffbd4bd35957d"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-b4db9671e751e7139c667b09d4682f0fc848b6ed8bdfc718517fa45bd99c8ed4",
+                  "type_key": {
+                    "kind": "trial.moved",
+                    "version": 1
+                  },
+                  "producer_id": "trial.movement",
+                  "occurred_at": 3,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 3,
+                "payload": {
+                  "actor_id": "actor:trial",
+                  "space_id": "space:trial",
+                  "from_cell": 3,
+                  "to_cell": 6
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                "previous_revision": 2,
+                "revision": 3,
+                "tick": 3,
+                "core_hash": "8e084d3e41af115352335c21cd5d0e2f00113e45d8375a45803ffbd4bd35957d"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "trial.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:trial",
+                  "before_cell": 3,
+                  "after_cell": 6
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  },
+  "negative_expected_first_mismatch": {
+    "step_index": 2,
+    "path": "$core.components[1].fields.cell",
+    "expected": "6",
+    "actual": "4"
+  }
+}

@@ -1,0 +1,2138 @@
+{
+  "date": "2026-10-03",
+  "provenance": "Independent literal specification calculation before production source exists; Sol self-review only",
+  "pack_vectors": [
+    {
+      "tokens": [],
+      "hex": "",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "tokens": [
+        "ab",
+        "c"
+      ],
+      "hex": "0000000261620000000163",
+      "sha256": "f2939f903016e5bb29b1e4a61cdbd376220ca03a24180b39995f2d50f2e0a647"
+    },
+    {
+      "tokens": [
+        "a",
+        "bc"
+      ],
+      "hex": "0000000161000000026263",
+      "sha256": "b534ce16ac9c8b36823f39a395ce8e0e3c7ad9605b82b5444f18cadacd217a5d"
+    },
+    {
+      "tokens": [
+        "한글",
+        "1"
+      ],
+      "hex": "00000006ed959ceab8800000000131",
+      "sha256": "cb217adcfda7730c29e7604d33d502d2f9eeaa8bf8435241313dcab28ee080c7"
+    }
+  ],
+  "documents": [
+    {
+      "name": "schema",
+      "tag": "schema/v1",
+      "document": {
+        "version": 1,
+        "integer_encoding": "internal-json-int",
+        "integer_bounds": {
+          "signed": [
+            -9223372036854775808,
+            9223372036854775807
+          ],
+          "tick_revision": [
+            0,
+            9223372036854775807
+          ]
+        },
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "fields": {
+              "visits": {
+                "minimum": 0,
+                "maximum": 9223372036854775807,
+                "unit": "count",
+                "scale": 1,
+                "tier": "A",
+                "storage": "CORE",
+                "owner": "skeleton.counter"
+              }
+            }
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "fields": {
+              "x": {
+                "minimum": -9223372036854775808,
+                "maximum": 9223372036854775807,
+                "unit": "step",
+                "scale": 1,
+                "tier": "A",
+                "storage": "CORE",
+                "owner": "skeleton.stepper"
+              }
+            }
+          }
+        ],
+        "payloads": [
+          {
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            },
+            "fields": {
+              "dx": {
+                "enum": [
+                  -1,
+                  0,
+                  1
+                ]
+              }
+            }
+          },
+          {
+            "schema": {
+              "kind": "skeleton.stepped",
+              "version": 1
+            },
+            "fields": [
+              "from_x",
+              "to_x"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "skeleton.counter-delta",
+              "version": 1
+            },
+            "fields": [
+              "entity_id",
+              "expected_old",
+              "new"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position-delta",
+              "version": 1
+            },
+            "fields": [
+              "entity_id",
+              "expected_old",
+              "new"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "skeleton.step-cue",
+              "version": 1
+            },
+            "fields": [
+              "actor_id",
+              "from_x",
+              "to_x"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position-patch",
+              "version": 1
+            },
+            "fields": [
+              "x"
+            ]
+          },
+          {
+            "schema": {
+              "kind": "skeleton.counter-patch",
+              "version": 1
+            },
+            "fields": [
+              "visits"
+            ]
+          }
+        ],
+        "unknown_fields": "reject",
+        "bool_as_integer": "reject"
+      },
+      "utf8": "{\"bool_as_integer\":\"reject\",\"components\":[{\"fields\":{\"visits\":{\"maximum\":9223372036854775807,\"minimum\":0,\"owner\":\"skeleton.counter\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"count\"}},\"schema\":{\"kind\":\"skeleton.counter\",\"version\":1}},{\"fields\":{\"x\":{\"maximum\":9223372036854775807,\"minimum\":-9223372036854775808,\"owner\":\"skeleton.stepper\",\"scale\":1,\"storage\":\"CORE\",\"tier\":\"A\",\"unit\":\"step\"}},\"schema\":{\"kind\":\"skeleton.position\",\"version\":1}}],\"integer_bounds\":{\"signed\":[-9223372036854775808,9223372036854775807],\"tick_revision\":[0,9223372036854775807]},\"integer_encoding\":\"internal-json-int\",\"payloads\":[{\"fields\":{\"dx\":{\"enum\":[-1,0,1]}},\"schema\":{\"kind\":\"skeleton.step\",\"version\":1}},{\"fields\":[\"from_x\",\"to_x\"],\"schema\":{\"kind\":\"skeleton.stepped\",\"version\":1}},{\"fields\":[\"entity_id\",\"expected_old\",\"new\"],\"schema\":{\"kind\":\"skeleton.counter-delta\",\"version\":1}},{\"fields\":[\"entity_id\",\"expected_old\",\"new\"],\"schema\":{\"kind\":\"skeleton.position-delta\",\"version\":1}},{\"fields\":[\"actor_id\",\"from_x\",\"to_x\"],\"schema\":{\"kind\":\"skeleton.step-cue\",\"version\":1}},{\"fields\":[\"x\"],\"schema\":{\"kind\":\"skeleton.position-patch\",\"version\":1}},{\"fields\":[\"visits\"],\"schema\":{\"kind\":\"skeleton.counter-patch\",\"version\":1}}],\"unknown_fields\":\"reject\",\"version\":1}",
+      "utf8_hex": "7b22626f6f6c5f61735f696e7465676572223a2272656a656374222c22636f6d706f6e656e7473223a5b7b226669656c6473223a7b22766973697473223a7b226d6178696d756d223a393232333337323033363835343737353830372c226d696e696d756d223a302c226f776e6572223a22736b656c65746f6e2e636f756e746572222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a22636f756e74227d7d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e636f756e746572222c2276657273696f6e223a317d7d2c7b226669656c6473223a7b2278223a7b226d6178696d756d223a393232333337323033363835343737353830372c226d696e696d756d223a2d393232333337323033363835343737353830382c226f776e6572223a22736b656c65746f6e2e73746570706572222c227363616c65223a312c2273746f72616765223a22434f5245222c2274696572223a2241222c22756e6974223a2273746570227d7d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e706f736974696f6e222c2276657273696f6e223a317d7d5d2c22696e74656765725f626f756e6473223a7b227369676e6564223a5b2d393232333337323033363835343737353830382c393232333337323033363835343737353830375d2c227469636b5f7265766973696f6e223a5b302c393232333337323033363835343737353830375d7d2c22696e74656765725f656e636f64696e67223a22696e7465726e616c2d6a736f6e2d696e74222c227061796c6f616473223a5b7b226669656c6473223a7b226478223a7b22656e756d223a5b2d312c302c315d7d7d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e73746570222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b2266726f6d5f78222c22746f5f78225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e73746570706564222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b22656e746974795f6964222c2265787065637465645f6f6c64222c226e6577225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e636f756e7465722d64656c7461222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b22656e746974795f6964222c2265787065637465645f6f6c64222c226e6577225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e706f736974696f6e2d64656c7461222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b226163746f725f6964222c2266726f6d5f78222c22746f5f78225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e737465702d637565222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b2278225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e706f736974696f6e2d7061746368222c2276657273696f6e223a317d7d2c7b226669656c6473223a5b22766973697473225d2c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e636f756e7465722d7061746368222c2276657273696f6e223a317d7d5d2c22756e6b6e6f776e5f6669656c6473223a2272656a656374222c2276657273696f6e223a317d",
+      "sha256": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c"
+    },
+    {
+      "name": "rules",
+      "tag": "rules/v1",
+      "document": {
+        "version": 1,
+        "actor_id": "actor:toy",
+        "duration_seconds": 1,
+        "step_allowed": [
+          -1,
+          0,
+          1
+        ],
+        "counter_per_tick": 1,
+        "stepped_even_zero": true,
+        "record_only": true,
+        "rng_purposes": [
+          {
+            "engine_id": "skeleton.stepper",
+            "purposes": [
+              "toy.sample",
+              "test.reject"
+            ]
+          }
+        ]
+      },
+      "utf8": "{\"actor_id\":\"actor:toy\",\"counter_per_tick\":1,\"duration_seconds\":1,\"record_only\":true,\"rng_purposes\":[{\"engine_id\":\"skeleton.stepper\",\"purposes\":[\"toy.sample\",\"test.reject\"]}],\"step_allowed\":[-1,0,1],\"stepped_even_zero\":true,\"version\":1}",
+      "utf8_hex": "7b226163746f725f6964223a226163746f723a746f79222c22636f756e7465725f7065725f7469636b223a312c226475726174696f6e5f7365636f6e6473223a312c227265636f72645f6f6e6c79223a747275652c22726e675f707572706f736573223a5b7b22656e67696e655f6964223a22736b656c65746f6e2e73746570706572222c22707572706f736573223a5b22746f792e73616d706c65222c22746573742e72656a656374225d7d5d2c22737465705f616c6c6f776564223a5b2d312c302c315d2c22737465707065645f6576656e5f7a65726f223a747275652c2276657273696f6e223a317d",
+      "sha256": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a"
+    },
+    {
+      "name": "schedule",
+      "tag": "schedule/v1",
+      "document": {
+        "version": 1,
+        "nodes": [
+          {
+            "phase": "RESOLVE",
+            "engine_id": "skeleton.stepper",
+            "lane": "A",
+            "reads": [
+              "skeleton.position.x"
+            ],
+            "writes": [
+              "skeleton.position.x"
+            ],
+            "depends_on": [],
+            "action_kinds": [
+              {
+                "kind": "skeleton.step",
+                "version": 1
+              }
+            ],
+            "on_matching_events": false,
+            "every_tick": false,
+            "emits": [
+              {
+                "kind": "skeleton.stepped",
+                "version": 1
+              }
+            ],
+            "consumes": [],
+            "cost_class": "constant"
+          },
+          {
+            "phase": "POST_TICK",
+            "engine_id": "skeleton.counter",
+            "lane": "A",
+            "reads": [
+              "skeleton.counter.visits"
+            ],
+            "writes": [
+              "skeleton.counter.visits"
+            ],
+            "depends_on": [],
+            "action_kinds": [],
+            "on_matching_events": false,
+            "every_tick": true,
+            "emits": [],
+            "consumes": [],
+            "cost_class": "constant"
+          }
+        ]
+      },
+      "utf8": "{\"nodes\":[{\"action_kinds\":[{\"kind\":\"skeleton.step\",\"version\":1}],\"consumes\":[],\"cost_class\":\"constant\",\"depends_on\":[],\"emits\":[{\"kind\":\"skeleton.stepped\",\"version\":1}],\"engine_id\":\"skeleton.stepper\",\"every_tick\":false,\"lane\":\"A\",\"on_matching_events\":false,\"phase\":\"RESOLVE\",\"reads\":[\"skeleton.position.x\"],\"writes\":[\"skeleton.position.x\"]},{\"action_kinds\":[],\"consumes\":[],\"cost_class\":\"constant\",\"depends_on\":[],\"emits\":[],\"engine_id\":\"skeleton.counter\",\"every_tick\":true,\"lane\":\"A\",\"on_matching_events\":false,\"phase\":\"POST_TICK\",\"reads\":[\"skeleton.counter.visits\"],\"writes\":[\"skeleton.counter.visits\"]}],\"version\":1}",
+      "utf8_hex": "7b226e6f646573223a5b7b22616374696f6e5f6b696e6473223a5b7b226b696e64223a22736b656c65746f6e2e73746570222c2276657273696f6e223a317d5d2c22636f6e73756d6573223a5b5d2c22636f73745f636c617373223a22636f6e7374616e74222c22646570656e64735f6f6e223a5b5d2c22656d697473223a5b7b226b696e64223a22736b656c65746f6e2e73746570706564222c2276657273696f6e223a317d5d2c22656e67696e655f6964223a22736b656c65746f6e2e73746570706572222c2265766572795f7469636b223a66616c73652c226c616e65223a2241222c226f6e5f6d61746368696e675f6576656e7473223a66616c73652c227068617365223a225245534f4c5645222c227265616473223a5b22736b656c65746f6e2e706f736974696f6e2e78225d2c22777269746573223a5b22736b656c65746f6e2e706f736974696f6e2e78225d7d2c7b22616374696f6e5f6b696e6473223a5b5d2c22636f6e73756d6573223a5b5d2c22636f73745f636c617373223a22636f6e7374616e74222c22646570656e64735f6f6e223a5b5d2c22656d697473223a5b5d2c22656e67696e655f6964223a22736b656c65746f6e2e636f756e746572222c2265766572795f7469636b223a747275652c226c616e65223a2241222c226f6e5f6d61746368696e675f6576656e7473223a66616c73652c227068617365223a22504f53545f5449434b222c227265616473223a5b22736b656c65746f6e2e636f756e7465722e766973697473225d2c22777269746573223a5b22736b656c65746f6e2e636f756e7465722e766973697473225d7d5d2c2276657273696f6e223a317d",
+      "sha256": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3"
+    },
+    {
+      "name": "initial_core_root",
+      "tag": "core-root/v1",
+      "document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 0,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "0fc7a064cb243f053d30548e0c73abedfb7703748bfabded30a10391958dfd2c"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      },
+      "utf8": "{\"components\":[{\"entity_id\":\"actor:toy\",\"hash\":\"0fc7a064cb243f053d30548e0c73abedfb7703748bfabded30a10391958dfd2c\",\"schema\":{\"kind\":\"skeleton.counter\",\"version\":1}},{\"entity_id\":\"actor:toy\",\"hash\":\"e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072\",\"schema\":{\"kind\":\"skeleton.position\",\"version\":1}}],\"pending\":[],\"pins\":{\"gameplay_catalog_hash\":\"4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832\",\"gameplay_packages\":[],\"hash_version\":\"sha256-core-tree-v1\",\"rng_version\":\"sha256-counter-v1\",\"rules_fingerprint\":\"69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a\",\"schedule_fingerprint\":\"b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3\",\"schema_fingerprint\":\"45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c\"},\"tick\":0,\"world_id\":\"w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac\",\"world_seed_hex\":\"0000000000000000000000000000000000000000000000000000000000000000\"}",
+      "utf8_hex": "7b22636f6d706f6e656e7473223a5b7b22656e746974795f6964223a226163746f723a746f79222c2268617368223a2230666337613036346362323433663035336433303534386530633733616265646662373730333734386266616264656433306131303339313935386466643263222c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e636f756e746572222c2276657273696f6e223a317d7d2c7b22656e746974795f6964223a226163746f723a746f79222c2268617368223a2265323936303637313434313764333633313733663839373838393335306464353333353266616165353865346534373461646662666361343037376436303732222c22736368656d61223a7b226b696e64223a22736b656c65746f6e2e706f736974696f6e222c2276657273696f6e223a317d7d5d2c2270656e64696e67223a5b5d2c2270696e73223a7b2267616d65706c61795f636174616c6f675f68617368223a2234623834373036623131363630653462333634313033343032366163643163323266313432633266363365373463336261643061353463653135303564383332222c2267616d65706c61795f7061636b61676573223a5b5d2c22686173685f76657273696f6e223a227368613235362d636f72652d747265652d7631222c22726e675f76657273696f6e223a227368613235362d636f756e7465722d7631222c2272756c65735f66696e6765727072696e74223a2236396661313861323035376633323062346163616564303836666232366663333036366665333439306633316137616231623266366430386630393234323261222c227363686564756c655f66696e6765727072696e74223a2262326139623132366131323864313261306335353930356234323362363163653539343534643037313531633961646662376230326638646362376262306133222c22736368656d615f66696e6765727072696e74223a2234356362326666326336366231633539396463653665333866656162613239363336636237326435383361343533393130376433346239663564633162323363227d2c227469636b223a302c22776f726c645f6964223a2277312d63623062643839326437616232643937373730306161363238653539313538333465343139663664313538383931646162633361626132623961373561366163222c22776f726c645f736565645f686578223a2230303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030227d",
+      "sha256": "1c477fb6d8ccdaf252583858c00a696ce619535236e7d1141b2eca34da9957e4"
+    },
+    {
+      "name": "initial_protocol",
+      "tag": "protocol/v1",
+      "document": {
+        "branch_id": "00000000000000000000000000000000",
+        "revision": 0,
+        "streams": [
+          {
+            "stream_id": "11111111111111111111111111111111",
+            "actor_id": "actor:toy",
+            "highest_committed_sequence": 0,
+            "status": "active"
+          }
+        ],
+        "receipts": []
+      },
+      "utf8": "{\"branch_id\":\"00000000000000000000000000000000\",\"receipts\":[],\"revision\":0,\"streams\":[{\"actor_id\":\"actor:toy\",\"highest_committed_sequence\":0,\"status\":\"active\",\"stream_id\":\"11111111111111111111111111111111\"}]}",
+      "utf8_hex": "7b226272616e63685f6964223a223030303030303030303030303030303030303030303030303030303030303030222c227265636569707473223a5b5d2c227265766973696f6e223a302c2273747265616d73223a5b7b226163746f725f6964223a226163746f723a746f79222c22686967686573745f636f6d6d69747465645f73657175656e6365223a302c22737461747573223a22616374697665222c2273747265616d5f6964223a223131313131313131313131313131313131313131313131313131313131313131227d5d7d",
+      "sha256": "a164afb1de1d24a81e4879bff031b462b07a3c68f8d40990dcf36943d5456742"
+    },
+    {
+      "name": "empty_facts",
+      "tag": "turn-facts/v1",
+      "document": [],
+      "utf8": "[]",
+      "utf8_hex": "5b5d",
+      "sha256": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d"
+    },
+    {
+      "name": "null_diff",
+      "tag": "turn-diff/v1",
+      "document": null,
+      "utf8": "null",
+      "utf8_hex": "6e756c6c",
+      "sha256": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff"
+    }
+  ],
+  "payload_hash": "90fd56c80e7d8bdf342ace6af050532481fd9fa9cecbb1df18a42aeffb5158e9",
+  "action_key": "a1-4d44fb66ab07b327c2eae3aadf4f8fe4d73552bc8fa64d819914be6d0ba8ecef",
+  "rng_vectors": [
+    {
+      "address": {
+        "logical_tick": 1,
+        "phase": "RESOLVE",
+        "wave": 0,
+        "engine_id": "skeleton.stepper",
+        "entity_id": "actor:toy",
+        "purpose": "toy.sample",
+        "causal_key": "a1-4d44fb66ab07b327c2eae3aadf4f8fe4d73552bc8fa64d819914be6d0ba8ecef"
+      },
+      "low": 0,
+      "high_exclusive": 10,
+      "pack_hex": "0000000a726e672d6b65792f763100000040303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030300000004377312d636230626438393264376162326439373737303061613632386535393135383334653431396636643135383839316461626333616261326239613735613661630000000131000000075245534f4c5645000000013000000010736b656c65746f6e2e73746570706572000000096163746f723a746f790000000a746f792e73616d706c650000004361312d34643434666236366162303762333237633265616533616164663466386665346437333535326263386661363464383139393134626536643062613865636566",
+      "key_sha256": "9ae61a9b3fbe6f8050b39f94b352eaca75ef4b8693a84ac3fdd4e1ffa1e898ca",
+      "draws": [
+        0,
+        4,
+        0,
+        8
+      ],
+      "attempts": [
+        {
+          "counter": 0,
+          "u": 2287457910909436450,
+          "accepted": true
+        },
+        {
+          "counter": 1,
+          "u": 8478432117349083534,
+          "accepted": true
+        },
+        {
+          "counter": 2,
+          "u": 15133658123316085510,
+          "accepted": true
+        },
+        {
+          "counter": 3,
+          "u": 15659221627773522968,
+          "accepted": true
+        }
+      ],
+      "consumed_counters": 4
+    },
+    {
+      "address": {
+        "logical_tick": 1,
+        "phase": "RESOLVE",
+        "wave": 0,
+        "engine_id": "skeleton.stepper",
+        "entity_id": "actor:toy",
+        "purpose": "toy.sample",
+        "causal_key": "a1-4d44fb66ab07b327c2eae3aadf4f8fe4d73552bc8fa64d819914be6d0ba8ecef"
+      },
+      "low": 7,
+      "high_exclusive": 8,
+      "pack_hex": "0000000a726e672d6b65792f763100000040303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030300000004377312d636230626438393264376162326439373737303061613632386535393135383334653431396636643135383839316461626333616261326239613735613661630000000131000000075245534f4c5645000000013000000010736b656c65746f6e2e73746570706572000000096163746f723a746f790000000a746f792e73616d706c650000004361312d34643434666236366162303762333237633265616533616164663466386665346437333535326263386661363464383139393134626536643062613865636566",
+      "key_sha256": "9ae61a9b3fbe6f8050b39f94b352eaca75ef4b8693a84ac3fdd4e1ffa1e898ca",
+      "draws": [
+        7,
+        7,
+        7,
+        7
+      ],
+      "attempts": [
+        {
+          "counter": 0,
+          "u": 2287457910909436450,
+          "accepted": true
+        },
+        {
+          "counter": 1,
+          "u": 8478432117349083534,
+          "accepted": true
+        },
+        {
+          "counter": 2,
+          "u": 15133658123316085510,
+          "accepted": true
+        },
+        {
+          "counter": 3,
+          "u": 15659221627773522968,
+          "accepted": true
+        }
+      ],
+      "consumed_counters": 4
+    },
+    {
+      "address": {
+        "logical_tick": 1,
+        "phase": "RESOLVE",
+        "wave": 0,
+        "engine_id": "skeleton.stepper",
+        "entity_id": "actor:toy",
+        "purpose": "toy.sample",
+        "causal_key": "a1-4d44fb66ab07b327c2eae3aadf4f8fe4d73552bc8fa64d819914be6d0ba8ecef"
+      },
+      "low": -5,
+      "high_exclusive": 6,
+      "pack_hex": "0000000a726e672d6b65792f763100000040303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030300000004377312d636230626438393264376162326439373737303061613632386535393135383334653431396636643135383839316461626333616261326239613735613661630000000131000000075245534f4c5645000000013000000010736b656c65746f6e2e73746570706572000000096163746f723a746f790000000a746f792e73616d706c650000004361312d34643434666236366162303762333237633265616533616164663466386665346437333535326263386661363464383139393134626536643062613865636566",
+      "key_sha256": "9ae61a9b3fbe6f8050b39f94b352eaca75ef4b8693a84ac3fdd4e1ffa1e898ca",
+      "draws": [
+        4,
+        2,
+        -2,
+        -1
+      ],
+      "attempts": [
+        {
+          "counter": 0,
+          "u": 2287457910909436450,
+          "accepted": true
+        },
+        {
+          "counter": 1,
+          "u": 8478432117349083534,
+          "accepted": true
+        },
+        {
+          "counter": 2,
+          "u": 15133658123316085510,
+          "accepted": true
+        },
+        {
+          "counter": 3,
+          "u": 15659221627773522968,
+          "accepted": true
+        }
+      ],
+      "consumed_counters": 4
+    },
+    {
+      "address": {
+        "logical_tick": 1,
+        "phase": "RESOLVE",
+        "wave": 0,
+        "engine_id": "skeleton.stepper",
+        "entity_id": "actor:toy",
+        "purpose": "test.reject",
+        "causal_key": "a1-4d44fb66ab07b327c2eae3aadf4f8fe4d73552bc8fa64d819914be6d0ba8ecef"
+      },
+      "low": 0,
+      "high_exclusive": 9223372036854775809,
+      "pack_hex": "0000000a726e672d6b65792f763100000040303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030303030300000004377312d636230626438393264376162326439373737303061613632386535393135383334653431396636643135383839316461626333616261326239613735613661630000000131000000075245534f4c5645000000013000000010736b656c65746f6e2e73746570706572000000096163746f723a746f790000000b746573742e72656a6563740000004361312d34643434666236366162303762333237633265616533616164663466386665346437333535326263386661363464383139393134626536643062613865636566",
+      "key_sha256": "4a3c8b5fd8ebb4af11a95545766c4cd1c0de1dca4d0c934a2df5123a92bc9e44",
+      "draws": [
+        2901607185641122928,
+        6255756565915452451,
+        305529799416037375,
+        1387545259785308860
+      ],
+      "attempts": [
+        {
+          "counter": 0,
+          "u": 2901607185641122928,
+          "accepted": true
+        },
+        {
+          "counter": 1,
+          "u": 12032656492085706277,
+          "accepted": false
+        },
+        {
+          "counter": 2,
+          "u": 6255756565915452451,
+          "accepted": true
+        },
+        {
+          "counter": 3,
+          "u": 18412091222262347159,
+          "accepted": false
+        },
+        {
+          "counter": 4,
+          "u": 13780749217150611708,
+          "accepted": false
+        },
+        {
+          "counter": 5,
+          "u": 18102655718792772298,
+          "accepted": false
+        },
+        {
+          "counter": 6,
+          "u": 305529799416037375,
+          "accepted": true
+        },
+        {
+          "counter": 7,
+          "u": 1387545259785308860,
+          "accepted": true
+        }
+      ],
+      "consumed_counters": 8
+    }
+  ],
+  "golden_fixture": {
+    "format_version": 1,
+    "initial_core": {
+      "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+      "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "tick": 0,
+      "components": [
+        {
+          "schema": {
+            "kind": "skeleton.counter",
+            "version": 1
+          },
+          "entity_id": "actor:toy",
+          "fields": {
+            "visits": 0
+          }
+        },
+        {
+          "schema": {
+            "kind": "skeleton.position",
+            "version": 1
+          },
+          "entity_id": "actor:toy",
+          "fields": {
+            "x": 0
+          }
+        }
+      ],
+      "pending": [],
+      "pins": {
+        "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+        "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+        "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+        "gameplay_packages": []
+      }
+    },
+    "initial_protocol": {
+      "branch_id": "00000000000000000000000000000000",
+      "revision": 0,
+      "streams": [
+        {
+          "stream_id": "11111111111111111111111111111111",
+          "actor_id": "actor:toy",
+          "highest_committed_sequence": 0,
+          "status": "active"
+        }
+      ],
+      "receipts": []
+    },
+    "trace": {
+      "header": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "initial_core_hash": "1c477fb6d8ccdaf252583858c00a696ce619535236e7d1141b2eca34da9957e4",
+        "initial_protocol_hash": "a164afb1de1d24a81e4879bff031b462b07a3c68f8d40990dcf36943d5456742",
+        "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+        "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+        "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+        "rng_version": "sha256-counter-v1",
+        "hash_version": "sha256-core-tree-v1",
+        "gameplay_packages": [],
+        "build_artifacts": []
+      },
+      "steps": [
+        {
+          "command": {
+            "actor_id": "actor:toy",
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "expected_revision": 0,
+            "payload": {
+              "dx": 1
+            },
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+            }
+          },
+          "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d",
+          "protocol_hash": "0ce8b5ac39a39705631b8411442af62f3c23c42aa5f2b389b2b59800fccf3bdf",
+          "facts_hash": "8e26afeae4c8e94560304063d2a2e7e19b08c7015d74a366a71f472e9f0dcf95",
+          "diff_hash": "449387a6191789fd2e65cb93011aa5996ba94795f8620e1482aa1d168403ef4c",
+          "witness": {
+            "core": {
+              "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 1,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "visits": 1
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "x": 1
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 1,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:toy",
+                  "highest_committed_sequence": 1,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "expected_revision": 0,
+                    "payload": {
+                      "dx": 1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-bf0074e37ec91e13a4f6b82ae0a94410dec7c6a2a4e9e76e0709c998886d34d6",
+                  "type_key": {
+                    "kind": "skeleton.stepped",
+                    "version": 1
+                  },
+                  "producer_id": "skeleton.stepper",
+                  "occurred_at": 1,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 1,
+                "payload": {
+                  "from_x": 0,
+                  "to_x": 1
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                "previous_revision": 0,
+                "revision": 1,
+                "tick": 1,
+                "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "expected_old": 0,
+                  "new": 1
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "expected_old": 0,
+                  "new": 1
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "actor_id": "actor:toy",
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+            "expected_revision": 1,
+            "payload": {
+              "dx": -1
+            },
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+              "previous_revision": 1,
+              "revision": 2,
+              "tick": 2,
+              "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+            }
+          },
+          "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced",
+          "protocol_hash": "4beb0a89cc7578414eaa54f6a6c7eb22ba484ccac5738ebc02ac06e58d520634",
+          "facts_hash": "940b03631ef8d7b3e9599b1a2900dda25505f41cbcd3e7aaa3f22d9a7ca49a46",
+          "diff_hash": "b146686ae03a29dc409c107ba7c73261ecc30951df81fb9738f4b30178431efa",
+          "witness": {
+            "core": {
+              "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 2,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "visits": 2
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "x": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 2,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:toy",
+                  "highest_committed_sequence": 2,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "expected_revision": 0,
+                    "payload": {
+                      "dx": 1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "expected_revision": 1,
+                    "payload": {
+                      "dx": -1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-3f5a394ce6f07b2b86c70246d22fa4aae921d2e11be955acb58a83e269b29a42",
+                  "type_key": {
+                    "kind": "skeleton.stepped",
+                    "version": 1
+                  },
+                  "producer_id": "skeleton.stepper",
+                  "occurred_at": 2,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 2,
+                "payload": {
+                  "from_x": 1,
+                  "to_x": 0
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                "previous_revision": 1,
+                "revision": 2,
+                "tick": 2,
+                "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "expected_old": 1,
+                  "new": 2
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "expected_old": 1,
+                  "new": 0
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "actor_id": "actor:toy",
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+            "expected_revision": 2,
+            "payload": {
+              "dx": 0
+            },
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+              "previous_revision": 2,
+              "revision": 3,
+              "tick": 3,
+              "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+            }
+          },
+          "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+          "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+          "facts_hash": "26db0638e9d4095a3638e3a65971cd20e96ba994868853d86d10cea860306718",
+          "diff_hash": "698379fb92acc4ae2cd282615ec01f0788250e288c6022a6d13e1e6ff7a4b014",
+          "witness": {
+            "core": {
+              "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 3,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "visits": 3
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "x": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 3,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:toy",
+                  "highest_committed_sequence": 3,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "expected_revision": 0,
+                    "payload": {
+                      "dx": 1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "expected_revision": 1,
+                    "payload": {
+                      "dx": -1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "expected_revision": 2,
+                    "payload": {
+                      "dx": 0
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                  }
+                }
+              ]
+            },
+            "facts": [
+              {
+                "header": {
+                  "event_id": "e1-c1720bc469ba6a59916acf4a864a03350872e38696ffe42625ef319fa70cf57f",
+                  "type_key": {
+                    "kind": "skeleton.stepped",
+                    "version": 1
+                  },
+                  "producer_id": "skeleton.stepper",
+                  "occurred_at": 3,
+                  "phase": "RESOLVE",
+                  "wave": 0,
+                  "producer_rank": 0,
+                  "sequence": 0,
+                  "caused_by": [],
+                  "degraded": []
+                },
+                "due_tick": 3,
+                "payload": {
+                  "from_x": 0,
+                  "to_x": 0
+                }
+              }
+            ],
+            "diff": {
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                "previous_revision": 2,
+                "revision": 3,
+                "tick": 3,
+                "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+              },
+              "changes": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter-delta",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "expected_old": 2,
+                  "new": 3
+                }
+              ]
+            }
+          }
+        },
+        {
+          "command": {
+            "actor_id": "actor:toy",
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "expected_revision": 0,
+            "payload": {
+              "dx": 1
+            },
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            }
+          },
+          "outcome": {
+            "kind": "committed",
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+            }
+          },
+          "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+          "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+          "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+          "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+          "witness": {
+            "core": {
+              "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 3,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "visits": 3
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "x": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 3,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:toy",
+                  "highest_committed_sequence": 3,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "expected_revision": 0,
+                    "payload": {
+                      "dx": 1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "expected_revision": 1,
+                    "payload": {
+                      "dx": -1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "expected_revision": 2,
+                    "payload": {
+                      "dx": 0
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                  }
+                }
+              ]
+            },
+            "facts": [],
+            "diff": null
+          }
+        },
+        {
+          "command": {
+            "actor_id": "actor:toy",
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+            "expected_revision": 0,
+            "payload": {
+              "dx": 1
+            },
+            "schema": {
+              "kind": "skeleton.step",
+              "version": 1
+            }
+          },
+          "outcome": {
+            "kind": "rejected",
+            "failure": {
+              "code": "STALE_REVISION",
+              "message_key": "error.stale_revision"
+            },
+            "current_revision": 3
+          },
+          "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+          "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+          "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+          "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+          "witness": {
+            "core": {
+              "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+              "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+              "tick": 3,
+              "components": [
+                {
+                  "schema": {
+                    "kind": "skeleton.counter",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "visits": 3
+                  }
+                },
+                {
+                  "schema": {
+                    "kind": "skeleton.position",
+                    "version": 1
+                  },
+                  "entity_id": "actor:toy",
+                  "fields": {
+                    "x": 0
+                  }
+                }
+              ],
+              "pending": [],
+              "pins": {
+                "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                "rng_version": "sha256-counter-v1",
+                "hash_version": "sha256-core-tree-v1",
+                "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                "gameplay_packages": []
+              }
+            },
+            "protocol": {
+              "branch_id": "00000000000000000000000000000000",
+              "revision": 3,
+              "streams": [
+                {
+                  "stream_id": "11111111111111111111111111111111",
+                  "actor_id": "actor:toy",
+                  "highest_committed_sequence": 3,
+                  "status": "active"
+                }
+              ],
+              "receipts": [
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "expected_revision": 0,
+                    "payload": {
+                      "dx": 1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                    "previous_revision": 0,
+                    "revision": 1,
+                    "tick": 1,
+                    "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "expected_revision": 1,
+                    "payload": {
+                      "dx": -1
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                    "previous_revision": 1,
+                    "revision": 2,
+                    "tick": 2,
+                    "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                  }
+                },
+                {
+                  "command": {
+                    "actor_id": "actor:toy",
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "expected_revision": 2,
+                    "payload": {
+                      "dx": 0
+                    },
+                    "schema": {
+                      "kind": "skeleton.step",
+                      "version": 1
+                    }
+                  },
+                  "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                  "receipt": {
+                    "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                    "previous_revision": 2,
+                    "revision": 3,
+                    "tick": 3,
+                    "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                  }
+                }
+              ]
+            },
+            "facts": [],
+            "diff": null
+          }
+        }
+      ]
+    }
+  },
+  "publications": [
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-bf0074e37ec91e13a4f6b82ae0a94410dec7c6a2a4e9e76e0709c998886d34d6",
+            "type_key": {
+              "kind": "skeleton.stepped",
+              "version": 1
+            },
+            "producer_id": "skeleton.stepper",
+            "occurred_at": 1,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 1,
+          "payload": {
+            "from_x": 0,
+            "to_x": 1
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "skeleton.counter-delta",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "expected_old": 0,
+            "new": 1
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "expected_old": 0,
+            "new": 1
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-c68ec6b6d0c7f6fbd1c991275fc5068d3034ce920480f2b420a6bf5c1216bb94",
+            "type_key": {
+              "kind": "skeleton.step-cue",
+              "version": 1
+            },
+            "producer_id": "skeleton.presenter",
+            "occurred_at": 1,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-bf0074e37ec91e13a4f6b82ae0a94410dec7c6a2a4e9e76e0709c998886d34d6"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:toy",
+            "from_x": 0,
+            "to_x": 1
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": [],
+      "root_document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 1,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "ba2d4500d10bf1cdae8b1769d2f27b1bcd575320a5de9583f90253b9832f59d0"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "d195f39decd101ba7c11df253486ce5a5642dc52641784f49237c4800c29b3cc"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      }
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+          "previous_revision": 1,
+          "revision": 2,
+          "tick": 2,
+          "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-3f5a394ce6f07b2b86c70246d22fa4aae921d2e11be955acb58a83e269b29a42",
+            "type_key": {
+              "kind": "skeleton.stepped",
+              "version": 1
+            },
+            "producer_id": "skeleton.stepper",
+            "occurred_at": 2,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 2,
+          "payload": {
+            "from_x": 1,
+            "to_x": 0
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+          "previous_revision": 1,
+          "revision": 2,
+          "tick": 2,
+          "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "skeleton.counter-delta",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "expected_old": 1,
+            "new": 2
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position-delta",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "expected_old": 1,
+            "new": 0
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-54bc409cd941f484b11d2d952248156dad9c8e1113f7f5a4ac6f2f13fd3a1c3a",
+            "type_key": {
+              "kind": "skeleton.step-cue",
+              "version": 1
+            },
+            "producer_id": "skeleton.presenter",
+            "occurred_at": 2,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-3f5a394ce6f07b2b86c70246d22fa4aae921d2e11be955acb58a83e269b29a42"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:toy",
+            "from_x": 1,
+            "to_x": 0
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": [],
+      "root_document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 2,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "185cf8fbcefcf129a86e43c8445dcf2351c448d16c04a358786b38762ad4d738"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      }
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+          "previous_revision": 2,
+          "revision": 3,
+          "tick": 3,
+          "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+        }
+      },
+      "facts": [
+        {
+          "header": {
+            "event_id": "e1-c1720bc469ba6a59916acf4a864a03350872e38696ffe42625ef319fa70cf57f",
+            "type_key": {
+              "kind": "skeleton.stepped",
+              "version": 1
+            },
+            "producer_id": "skeleton.stepper",
+            "occurred_at": 3,
+            "phase": "RESOLVE",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [],
+            "degraded": []
+          },
+          "due_tick": 3,
+          "payload": {
+            "from_x": 0,
+            "to_x": 0
+          }
+        }
+      ],
+      "diff": {
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+          "previous_revision": 2,
+          "revision": 3,
+          "tick": 3,
+          "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+        },
+        "changes": [
+          {
+            "schema": {
+              "kind": "skeleton.counter-delta",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "expected_old": 2,
+            "new": 3
+          }
+        ]
+      },
+      "cues": [
+        {
+          "header": {
+            "event_id": "p1-d9e1615b173bde26d409b585bde8a6800bed2e2fba0f1c0f366c96b43bbf827b",
+            "type_key": {
+              "kind": "skeleton.step-cue",
+              "version": 1
+            },
+            "producer_id": "skeleton.presenter",
+            "occurred_at": 3,
+            "phase": "PRESENT",
+            "wave": 0,
+            "producer_rank": 0,
+            "sequence": 0,
+            "caused_by": [
+              "e1-c1720bc469ba6a59916acf4a864a03350872e38696ffe42625ef319fa70cf57f"
+            ],
+            "degraded": []
+          },
+          "payload": {
+            "actor_id": "actor:toy",
+            "from_x": 0,
+            "to_x": 0
+          },
+          "priority": "important",
+          "coalesce_policy": "keep_all",
+          "coalesce_key": ""
+        }
+      ],
+      "diagnostics": [],
+      "root_document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 3,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "c8597d9a9b869b69bcbaa672ad13ba436be7d6b41d36fd6b2518071b5793245f"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      }
+    },
+    {
+      "outcome": {
+        "kind": "committed",
+        "receipt": {
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "previous_revision": 0,
+          "revision": 1,
+          "tick": 1,
+          "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+        }
+      },
+      "facts": [],
+      "diff": null,
+      "cues": [],
+      "diagnostics": [
+        {
+          "code": "RESYNC_REQUIRED",
+          "message_key": "error.resync_required"
+        }
+      ],
+      "root_document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 3,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "c8597d9a9b869b69bcbaa672ad13ba436be7d6b41d36fd6b2518071b5793245f"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      }
+    },
+    {
+      "outcome": {
+        "kind": "rejected",
+        "failure": {
+          "code": "STALE_REVISION",
+          "message_key": "error.stale_revision"
+        },
+        "current_revision": 3
+      },
+      "facts": [],
+      "diff": null,
+      "cues": [],
+      "diagnostics": [],
+      "root_document": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 3,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "c8597d9a9b869b69bcbaa672ad13ba436be7d6b41d36fd6b2518071b5793245f"
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "hash": "e29606714417d363173f897889350dd53352faae58e4e474adfbfca4077d6072"
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      }
+    }
+  ],
+  "negative_vectors": {
+    "self_consistent_wrong_step1_fixture": {
+      "format_version": 1,
+      "initial_core": {
+        "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+        "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+        "tick": 0,
+        "components": [
+          {
+            "schema": {
+              "kind": "skeleton.counter",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "fields": {
+              "visits": 0
+            }
+          },
+          {
+            "schema": {
+              "kind": "skeleton.position",
+              "version": 1
+            },
+            "entity_id": "actor:toy",
+            "fields": {
+              "x": 0
+            }
+          }
+        ],
+        "pending": [],
+        "pins": {
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+          "gameplay_packages": []
+        }
+      },
+      "initial_protocol": {
+        "branch_id": "00000000000000000000000000000000",
+        "revision": 0,
+        "streams": [
+          {
+            "stream_id": "11111111111111111111111111111111",
+            "actor_id": "actor:toy",
+            "highest_committed_sequence": 0,
+            "status": "active"
+          }
+        ],
+        "receipts": []
+      },
+      "trace": {
+        "header": {
+          "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+          "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+          "initial_core_hash": "1c477fb6d8ccdaf252583858c00a696ce619535236e7d1141b2eca34da9957e4",
+          "initial_protocol_hash": "a164afb1de1d24a81e4879bff031b462b07a3c68f8d40990dcf36943d5456742",
+          "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+          "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+          "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+          "rng_version": "sha256-counter-v1",
+          "hash_version": "sha256-core-tree-v1",
+          "gameplay_packages": [],
+          "build_artifacts": []
+        },
+        "steps": [
+          {
+            "command": {
+              "actor_id": "actor:toy",
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "expected_revision": 0,
+              "payload": {
+                "dx": 1
+              },
+              "schema": {
+                "kind": "skeleton.step",
+                "version": 1
+              }
+            },
+            "outcome": {
+              "kind": "committed",
+              "receipt": {
+                "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                "previous_revision": 0,
+                "revision": 1,
+                "tick": 1,
+                "core_hash": "5267bbdfb225ebbd011143ed7d363dab295c3e0f6ddb992644010f99a20e37b8"
+              }
+            },
+            "core_hash": "5267bbdfb225ebbd011143ed7d363dab295c3e0f6ddb992644010f99a20e37b8",
+            "protocol_hash": "1de92001a39104e5895706bd59bdeeb23d11cf57ea51c3cd1c55dd69d9937ad4",
+            "facts_hash": "9043e7d4193541c71d938aba4d9d21ee23c362e7b33d00380f33f3ef765268ae",
+            "diff_hash": "93d85867d606b8fac8b1b668cfde116b1518dc311161e0177b5982c0ea77b6fb",
+            "witness": {
+              "core": {
+                "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+                "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+                "tick": 1,
+                "components": [
+                  {
+                    "schema": {
+                      "kind": "skeleton.counter",
+                      "version": 1
+                    },
+                    "entity_id": "actor:toy",
+                    "fields": {
+                      "visits": 1
+                    }
+                  },
+                  {
+                    "schema": {
+                      "kind": "skeleton.position",
+                      "version": 1
+                    },
+                    "entity_id": "actor:toy",
+                    "fields": {
+                      "x": 2
+                    }
+                  }
+                ],
+                "pending": [],
+                "pins": {
+                  "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+                  "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+                  "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+                  "rng_version": "sha256-counter-v1",
+                  "hash_version": "sha256-core-tree-v1",
+                  "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+                  "gameplay_packages": []
+                }
+              },
+              "protocol": {
+                "branch_id": "00000000000000000000000000000000",
+                "revision": 1,
+                "streams": [
+                  {
+                    "stream_id": "11111111111111111111111111111111",
+                    "actor_id": "actor:toy",
+                    "highest_committed_sequence": 1,
+                    "status": "active"
+                  }
+                ],
+                "receipts": [
+                  {
+                    "command": {
+                      "actor_id": "actor:toy",
+                      "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                      "expected_revision": 0,
+                      "payload": {
+                        "dx": 1
+                      },
+                      "schema": {
+                        "kind": "skeleton.step",
+                        "version": 1
+                      }
+                    },
+                    "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                    "receipt": {
+                      "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                      "previous_revision": 0,
+                      "revision": 1,
+                      "tick": 1,
+                      "core_hash": "5267bbdfb225ebbd011143ed7d363dab295c3e0f6ddb992644010f99a20e37b8"
+                    }
+                  }
+                ]
+              },
+              "facts": [
+                {
+                  "header": {
+                    "event_id": "e1-bf0074e37ec91e13a4f6b82ae0a94410dec7c6a2a4e9e76e0709c998886d34d6",
+                    "type_key": {
+                      "kind": "skeleton.stepped",
+                      "version": 1
+                    },
+                    "producer_id": "skeleton.stepper",
+                    "occurred_at": 1,
+                    "phase": "RESOLVE",
+                    "wave": 0,
+                    "producer_rank": 0,
+                    "sequence": 0,
+                    "caused_by": [],
+                    "degraded": []
+                  },
+                  "due_tick": 1,
+                  "payload": {
+                    "from_x": 0,
+                    "to_x": 2
+                  }
+                }
+              ],
+              "diff": {
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "5267bbdfb225ebbd011143ed7d363dab295c3e0f6ddb992644010f99a20e37b8"
+                },
+                "changes": [
+                  {
+                    "schema": {
+                      "kind": "skeleton.counter-delta",
+                      "version": 1
+                    },
+                    "entity_id": "actor:toy",
+                    "expected_old": 0,
+                    "new": 1
+                  },
+                  {
+                    "schema": {
+                      "kind": "skeleton.position-delta",
+                      "version": 1
+                    },
+                    "entity_id": "actor:toy",
+                    "expected_old": 0,
+                    "new": 2
+                  }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "expected_first_core_path": "$core.components[1].fields.x",
+    "expected_leaf": 2,
+    "actual_leaf": 1
+  },
+  "reference_source": "\"\"\"Independent specification oracle. No project imports/source exists at authoring.\"\"\"\nimport copy\nimport hashlib\nimport json\nfrom pathlib import Path\n\ndef canonical(value):\n    return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')\ndef pack(*tokens):\n    return b''.join(len(t.encode('utf-8')).to_bytes(4,'big')+t.encode('utf-8') for t in tokens)\ndef tagged(tag,value):\n    return hashlib.sha256(pack(tag,canonical(value).decode('utf-8'))).hexdigest()\ndef tk(kind):return {'kind':kind,'version':1}\nseed='0'*64;branch='0'*32;stream='1'*32;actor='actor:toy'\nschema={'version':1,'integer_encoding':'internal-json-int','integer_bounds':{'signed':[-2**63,2**63-1],'tick_revision':[0,2**63-1]},'components':[{'schema':tk('skeleton.counter'),'fields':{'visits':{'minimum':0,'maximum':2**63-1,'unit':'count','scale':1,'tier':'A','storage':'CORE','owner':'skeleton.counter'}}},{'schema':tk('skeleton.position'),'fields':{'x':{'minimum':-2**63,'maximum':2**63-1,'unit':'step','scale':1,'tier':'A','storage':'CORE','owner':'skeleton.stepper'}}}],'payloads':[{'schema':tk('skeleton.step'),'fields':{'dx':{'enum':[-1,0,1]}}},{'schema':tk('skeleton.stepped'),'fields':['from_x','to_x']},{'schema':tk('skeleton.counter-delta'),'fields':['entity_id','expected_old','new']},{'schema':tk('skeleton.position-delta'),'fields':['entity_id','expected_old','new']},{'schema':tk('skeleton.step-cue'),'fields':['actor_id','from_x','to_x']},{'schema':tk('skeleton.position-patch'),'fields':['x']},{'schema':tk('skeleton.counter-patch'),'fields':['visits']}],'unknown_fields':'reject','bool_as_integer':'reject'}\nrules={'version':1,'actor_id':actor,'duration_seconds':1,'step_allowed':[-1,0,1],'counter_per_tick':1,'stepped_even_zero':True,'record_only':True,'rng_purposes':[{'engine_id':'skeleton.stepper','purposes':['toy.sample','test.reject']}]}\nschedule={'version':1,'nodes':[{'phase':'RESOLVE','engine_id':'skeleton.stepper','lane':'A','reads':['skeleton.position.x'],'writes':['skeleton.position.x'],'depends_on':[],'action_kinds':[tk('skeleton.step')],'on_matching_events':False,'every_tick':False,'emits':[tk('skeleton.stepped')],'consumes':[],'cost_class':'constant'},{'phase':'POST_TICK','engine_id':'skeleton.counter','lane':'A','reads':['skeleton.counter.visits'],'writes':['skeleton.counter.visits'],'depends_on':[],'action_kinds':[],'on_matching_events':False,'every_tick':True,'emits':[],'consumes':[],'cost_class':'constant'}]}\npins={'schema_fingerprint':tagged('schema/v1',schema),'rules_fingerprint':tagged('rules/v1',rules),'schedule_fingerprint':tagged('schedule/v1',schedule),'rng_version':'sha256-counter-v1','hash_version':'sha256-core-tree-v1','gameplay_catalog_hash':tagged('gameplay-catalog/v1',[]),'gameplay_packages':[]}\nworld='w1-'+hashlib.sha256(pack('world-id/v1',seed,pins['rules_fingerprint'],pins['gameplay_catalog_hash'])).hexdigest()\ndef core(x,visits,tick):\n    return {'world_id':world,'world_seed_hex':seed,'tick':tick,'components':[{'schema':tk('skeleton.counter'),'entity_id':actor,'fields':{'visits':visits}},{'schema':tk('skeleton.position'),'entity_id':actor,'fields':{'x':x}}],'pending':[],'pins':copy.deepcopy(pins)}\ndef core_hash(c):\n    r=copy.deepcopy(c)\n    r['components']=[{'schema':v['schema'],'entity_id':v['entity_id'],'hash':tagged('component/v1',v)} for v in c['components']]\n    return tagged('core-root/v1',r),r\nprotocol={'branch_id':branch,'revision':0,'streams':[{'stream_id':stream,'actor_id':actor,'highest_committed_sequence':0,'status':'active'}],'receipts':[]}\ninitial_core=core(0,0,0);initial_protocol=copy.deepcopy(protocol)\ndef command(seq,dx,rev):return {'actor_id':actor,'command_id':f'c1:{branch}:{stream}:{seq}','expected_revision':rev,'payload':{'dx':dx},'schema':tk('skeleton.step')}\nsteps=[];published=[];state=copy.deepcopy(initial_core);x=0;visits=0;tick=0\ndef append(cmd,outcome,facts,diff,cues=(),diagnostics=()):\n    ch,rh=core_hash(state)\n    wit={'core':copy.deepcopy(state),'protocol':copy.deepcopy(protocol),'facts':copy.deepcopy(facts),'diff':copy.deepcopy(diff)}\n    steps.append({'command':cmd,'outcome':outcome,'core_hash':ch,'protocol_hash':tagged('protocol/v1',protocol),'facts_hash':tagged('turn-facts/v1',facts),'diff_hash':tagged('turn-diff/v1',diff),'witness':wit})\n    published.append({'outcome':outcome,'facts':facts,'diff':diff,'cues':list(cues),'diagnostics':list(diagnostics),'root_document':rh})\nfor seq,dx in [(1,1),(2,-1),(3,0)]:\n    cmd=command(seq,dx,seq-1);old=x;x+=dx;visits+=1;tick+=1;state=core(x,visits,tick)\n    receipt={'command_id':cmd['command_id'],'previous_revision':seq-1,'revision':seq,'tick':tick,'core_hash':core_hash(state)[0]}\n    protocol['revision']=seq;protocol['streams'][0]['highest_committed_sequence']=seq\n    fingerprint_doc={k:v for k,v in cmd.items() if k!='command_id'}\n    protocol['receipts'].append({'command':copy.deepcopy(cmd),'command_fingerprint':tagged('command/v1',fingerprint_doc),'receipt':receipt})\n    eid='e1-'+hashlib.sha256(pack('event-id/v1',world,str(tick),'RESOLVE','0','skeleton.stepper','0')).hexdigest()\n    event={'header':{'event_id':eid,'type_key':tk('skeleton.stepped'),'producer_id':'skeleton.stepper','occurred_at':tick,'phase':'RESOLVE','wave':0,'producer_rank':0,'sequence':0,'caused_by':[],'degraded':[]},'due_tick':tick,'payload':{'from_x':old,'to_x':x}}\n    changes=[{'schema':tk('skeleton.counter-delta'),'entity_id':actor,'expected_old':visits-1,'new':visits}]\n    if old!=x:changes.append({'schema':tk('skeleton.position-delta'),'entity_id':actor,'expected_old':old,'new':x})\n    diff={'receipt':receipt,'changes':changes}\n    cue={'header':{'event_id':'p1-'+hashlib.sha256(pack('cue-id/v1',eid,'skeleton.presenter','0')).hexdigest(),'type_key':tk('skeleton.step-cue'),'producer_id':'skeleton.presenter','occurred_at':tick,'phase':'PRESENT','wave':0,'producer_rank':0,'sequence':0,'caused_by':[eid],'degraded':[]},'payload':{'actor_id':actor,'from_x':old,'to_x':x},'priority':'important','coalesce_policy':'keep_all','coalesce_key':''}\n    append(cmd,{'kind':'committed','receipt':receipt},[event],diff,[cue])\nappend(command(1,1,0),{'kind':'committed','receipt':copy.deepcopy(protocol['receipts'][0]['receipt'])},[],None,diagnostics=[{'code':'RESYNC_REQUIRED','message_key':'error.resync_required'}])\nappend(command(4,1,0),{'kind':'rejected','failure':{'code':'STALE_REVISION','message_key':'error.stale_revision'},'current_revision':3},[],None)\nheader={'world_id':world,'world_seed_hex':seed,'initial_core_hash':core_hash(initial_core)[0],'initial_protocol_hash':tagged('protocol/v1',initial_protocol),'schema_fingerprint':pins['schema_fingerprint'],'rules_fingerprint':pins['rules_fingerprint'],'schedule_fingerprint':pins['schedule_fingerprint'],'rng_version':pins['rng_version'],'hash_version':pins['hash_version'],'gameplay_packages':[],'build_artifacts':[]}\nfixture={'format_version':1,'initial_core':initial_core,'initial_protocol':initial_protocol,'trace':{'header':header,'steps':steps}}\npayload_hash=tagged('payload/v1',{'schema':tk('skeleton.step'),'payload':{'dx':1}})\naction='a1-'+hashlib.sha256(pack('action-key/v1',world,'1',actor,payload_hash)).hexdigest()\nrng=[]\nfor purpose,low,high in [('toy.sample',0,10),('toy.sample',7,8),('toy.sample',-5,6),('test.reject',0,2**63+1)]:\n    kb=pack('rng-key/v1',seed,world,'1','RESOLVE','0','skeleton.stepper',actor,purpose,action);key=hashlib.sha256(kb).digest();counter=0;draws=[];attempts=[]\n    span=high-low;limit=2**64-(2**64%span)\n    while len(draws)<4:\n        u=int.from_bytes(hashlib.sha256(key+counter.to_bytes(8,'big')).digest()[:8],'big');accepted=u<limit\n        attempts.append({'counter':counter,'u':u,'accepted':accepted});counter+=1\n        if accepted:draws.append(low+u%span)\n    rng.append({'address':{'logical_tick':1,'phase':'RESOLVE','wave':0,'engine_id':'skeleton.stepper','entity_id':actor,'purpose':purpose,'causal_key':action},'low':low,'high_exclusive':high,'pack_hex':kb.hex(),'key_sha256':key.hex(),'draws':draws,'attempts':attempts,'consumed_counters':counter})\nassert any(not a['accepted'] for a in rng[-1]['attempts'])\nencodings=[{'tokens':list(t),'hex':pack(*t).hex(),'sha256':hashlib.sha256(pack(*t)).hexdigest()} for t in [(),('ab','c'),('a','bc'),('한글','1')]]\ndocuments=[]\nfor name,tag,d in [('schema','schema/v1',schema),('rules','rules/v1',rules),('schedule','schedule/v1',schedule),('initial_core_root','core-root/v1',core_hash(initial_core)[1]),('initial_protocol','protocol/v1',initial_protocol),('empty_facts','turn-facts/v1',[]),('null_diff','turn-diff/v1',None)]:\n    b=canonical(d);documents.append({'name':name,'tag':tag,'document':d,'utf8':b.decode(),'utf8_hex':b.hex(),'sha256':tagged(tag,d)})\nalternate=copy.deepcopy(fixture)\nalternate['trace']['steps']=alternate['trace']['steps'][:1]\nwrong=alternate['trace']['steps'][0]\nwrong['witness']['core']['components'][1]['fields']['x']=2\nwrong_hash=core_hash(wrong['witness']['core'])[0]\nwrong['outcome']['receipt']['core_hash']=wrong_hash\nwrong['witness']['protocol']['receipts'][0]['receipt']['core_hash']=wrong_hash\nwrong['witness']['diff']['receipt']['core_hash']=wrong_hash\nwrong['witness']['diff']['changes'][1]['new']=2\nwrong['witness']['facts'][0]['payload']['to_x']=2\nwrong['core_hash']=wrong_hash\nwrong['protocol_hash']=tagged('protocol/v1',wrong['witness']['protocol'])\nwrong['facts_hash']=tagged('turn-facts/v1',wrong['witness']['facts'])\nwrong['diff_hash']=tagged('turn-diff/v1',wrong['witness']['diff'])\nartifact={'date':'2026-10-03','provenance':'Independent literal specification calculation before production source exists; Sol self-review only','pack_vectors':encodings,'documents':documents,'payload_hash':payload_hash,'action_key':action,'rng_vectors':rng,'golden_fixture':fixture,'publications':published,'negative_vectors':{'self_consistent_wrong_step1_fixture':alternate,'expected_first_core_path':'$core.components[1].fields.x','expected_leaf':2,'actual_leaf':1},'reference_source':Path(__file__).read_text(encoding='utf-8')}\nPath('docs/work_orders/PHASE0_REFERENCE_VECTORS.json').write_text(json.dumps(artifact,ensure_ascii=False,indent=2)+'\\n',encoding='utf-8')\nprint(json.dumps({'steps':len(steps),'initial_core_hash':header['initial_core_hash'],'rng_reject_attempts':rng[-1]['consumed_counters']}))\n"
+}

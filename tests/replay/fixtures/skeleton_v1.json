@@ -1,0 +1,891 @@
+{
+  "format_version": 1,
+  "initial_core": {
+    "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+    "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+    "tick": 0,
+    "components": [
+      {
+        "schema": {
+          "kind": "skeleton.counter",
+          "version": 1
+        },
+        "entity_id": "actor:toy",
+        "fields": {
+          "visits": 0
+        }
+      },
+      {
+        "schema": {
+          "kind": "skeleton.position",
+          "version": 1
+        },
+        "entity_id": "actor:toy",
+        "fields": {
+          "x": 0
+        }
+      }
+    ],
+    "pending": [],
+    "pins": {
+      "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+      "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+      "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+      "rng_version": "sha256-counter-v1",
+      "hash_version": "sha256-core-tree-v1",
+      "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+      "gameplay_packages": []
+    }
+  },
+  "initial_protocol": {
+    "branch_id": "00000000000000000000000000000000",
+    "revision": 0,
+    "streams": [
+      {
+        "stream_id": "11111111111111111111111111111111",
+        "actor_id": "actor:toy",
+        "highest_committed_sequence": 0,
+        "status": "active"
+      }
+    ],
+    "receipts": []
+  },
+  "trace": {
+    "header": {
+      "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+      "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+      "initial_core_hash": "1c477fb6d8ccdaf252583858c00a696ce619535236e7d1141b2eca34da9957e4",
+      "initial_protocol_hash": "a164afb1de1d24a81e4879bff031b462b07a3c68f8d40990dcf36943d5456742",
+      "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+      "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+      "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+      "rng_version": "sha256-counter-v1",
+      "hash_version": "sha256-core-tree-v1",
+      "gameplay_packages": [],
+      "build_artifacts": []
+    },
+    "steps": [
+      {
+        "command": {
+          "actor_id": "actor:toy",
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "expected_revision": 0,
+          "payload": {
+            "dx": 1
+          },
+          "schema": {
+            "kind": "skeleton.step",
+            "version": 1
+          }
+        },
+        "outcome": {
+          "kind": "committed",
+          "receipt": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "previous_revision": 0,
+            "revision": 1,
+            "tick": 1,
+            "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+          }
+        },
+        "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d",
+        "protocol_hash": "0ce8b5ac39a39705631b8411442af62f3c23c42aa5f2b389b2b59800fccf3bdf",
+        "facts_hash": "8e26afeae4c8e94560304063d2a2e7e19b08c7015d74a366a71f472e9f0dcf95",
+        "diff_hash": "449387a6191789fd2e65cb93011aa5996ba94795f8620e1482aa1d168403ef4c",
+        "witness": {
+          "core": {
+            "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+            "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+            "tick": 1,
+            "components": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "visits": 1
+                }
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "x": 1
+                }
+              }
+            ],
+            "pending": [],
+            "pins": {
+              "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+              "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+              "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+              "rng_version": "sha256-counter-v1",
+              "hash_version": "sha256-core-tree-v1",
+              "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+              "gameplay_packages": []
+            }
+          },
+          "protocol": {
+            "branch_id": "00000000000000000000000000000000",
+            "revision": 1,
+            "streams": [
+              {
+                "stream_id": "11111111111111111111111111111111",
+                "actor_id": "actor:toy",
+                "highest_committed_sequence": 1,
+                "status": "active"
+              }
+            ],
+            "receipts": [
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "expected_revision": 0,
+                  "payload": {
+                    "dx": 1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                }
+              }
+            ]
+          },
+          "facts": [
+            {
+              "header": {
+                "event_id": "e1-bf0074e37ec91e13a4f6b82ae0a94410dec7c6a2a4e9e76e0709c998886d34d6",
+                "type_key": {
+                  "kind": "skeleton.stepped",
+                  "version": 1
+                },
+                "producer_id": "skeleton.stepper",
+                "occurred_at": 1,
+                "phase": "RESOLVE",
+                "wave": 0,
+                "producer_rank": 0,
+                "sequence": 0,
+                "caused_by": [],
+                "degraded": []
+              },
+              "due_tick": 1,
+              "payload": {
+                "from_x": 0,
+                "to_x": 1
+              }
+            }
+          ],
+          "diff": {
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+              "previous_revision": 0,
+              "revision": 1,
+              "tick": 1,
+              "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+            },
+            "changes": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter-delta",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "expected_old": 0,
+                "new": 1
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position-delta",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "expected_old": 0,
+                "new": 1
+              }
+            ]
+          }
+        }
+      },
+      {
+        "command": {
+          "actor_id": "actor:toy",
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+          "expected_revision": 1,
+          "payload": {
+            "dx": -1
+          },
+          "schema": {
+            "kind": "skeleton.step",
+            "version": 1
+          }
+        },
+        "outcome": {
+          "kind": "committed",
+          "receipt": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+            "previous_revision": 1,
+            "revision": 2,
+            "tick": 2,
+            "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+          }
+        },
+        "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced",
+        "protocol_hash": "4beb0a89cc7578414eaa54f6a6c7eb22ba484ccac5738ebc02ac06e58d520634",
+        "facts_hash": "940b03631ef8d7b3e9599b1a2900dda25505f41cbcd3e7aaa3f22d9a7ca49a46",
+        "diff_hash": "b146686ae03a29dc409c107ba7c73261ecc30951df81fb9738f4b30178431efa",
+        "witness": {
+          "core": {
+            "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+            "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+            "tick": 2,
+            "components": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "visits": 2
+                }
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "x": 0
+                }
+              }
+            ],
+            "pending": [],
+            "pins": {
+              "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+              "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+              "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+              "rng_version": "sha256-counter-v1",
+              "hash_version": "sha256-core-tree-v1",
+              "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+              "gameplay_packages": []
+            }
+          },
+          "protocol": {
+            "branch_id": "00000000000000000000000000000000",
+            "revision": 2,
+            "streams": [
+              {
+                "stream_id": "11111111111111111111111111111111",
+                "actor_id": "actor:toy",
+                "highest_committed_sequence": 2,
+                "status": "active"
+              }
+            ],
+            "receipts": [
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "expected_revision": 0,
+                  "payload": {
+                    "dx": 1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "expected_revision": 1,
+                  "payload": {
+                    "dx": -1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "previous_revision": 1,
+                  "revision": 2,
+                  "tick": 2,
+                  "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                }
+              }
+            ]
+          },
+          "facts": [
+            {
+              "header": {
+                "event_id": "e1-3f5a394ce6f07b2b86c70246d22fa4aae921d2e11be955acb58a83e269b29a42",
+                "type_key": {
+                  "kind": "skeleton.stepped",
+                  "version": 1
+                },
+                "producer_id": "skeleton.stepper",
+                "occurred_at": 2,
+                "phase": "RESOLVE",
+                "wave": 0,
+                "producer_rank": 0,
+                "sequence": 0,
+                "caused_by": [],
+                "degraded": []
+              },
+              "due_tick": 2,
+              "payload": {
+                "from_x": 1,
+                "to_x": 0
+              }
+            }
+          ],
+          "diff": {
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+              "previous_revision": 1,
+              "revision": 2,
+              "tick": 2,
+              "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+            },
+            "changes": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter-delta",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "expected_old": 1,
+                "new": 2
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position-delta",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "expected_old": 1,
+                "new": 0
+              }
+            ]
+          }
+        }
+      },
+      {
+        "command": {
+          "actor_id": "actor:toy",
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+          "expected_revision": 2,
+          "payload": {
+            "dx": 0
+          },
+          "schema": {
+            "kind": "skeleton.step",
+            "version": 1
+          }
+        },
+        "outcome": {
+          "kind": "committed",
+          "receipt": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+            "previous_revision": 2,
+            "revision": 3,
+            "tick": 3,
+            "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+          }
+        },
+        "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+        "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+        "facts_hash": "26db0638e9d4095a3638e3a65971cd20e96ba994868853d86d10cea860306718",
+        "diff_hash": "698379fb92acc4ae2cd282615ec01f0788250e288c6022a6d13e1e6ff7a4b014",
+        "witness": {
+          "core": {
+            "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+            "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+            "tick": 3,
+            "components": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "visits": 3
+                }
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "x": 0
+                }
+              }
+            ],
+            "pending": [],
+            "pins": {
+              "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+              "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+              "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+              "rng_version": "sha256-counter-v1",
+              "hash_version": "sha256-core-tree-v1",
+              "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+              "gameplay_packages": []
+            }
+          },
+          "protocol": {
+            "branch_id": "00000000000000000000000000000000",
+            "revision": 3,
+            "streams": [
+              {
+                "stream_id": "11111111111111111111111111111111",
+                "actor_id": "actor:toy",
+                "highest_committed_sequence": 3,
+                "status": "active"
+              }
+            ],
+            "receipts": [
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "expected_revision": 0,
+                  "payload": {
+                    "dx": 1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "expected_revision": 1,
+                  "payload": {
+                    "dx": -1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "previous_revision": 1,
+                  "revision": 2,
+                  "tick": 2,
+                  "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "expected_revision": 2,
+                  "payload": {
+                    "dx": 0
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "previous_revision": 2,
+                  "revision": 3,
+                  "tick": 3,
+                  "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                }
+              }
+            ]
+          },
+          "facts": [
+            {
+              "header": {
+                "event_id": "e1-c1720bc469ba6a59916acf4a864a03350872e38696ffe42625ef319fa70cf57f",
+                "type_key": {
+                  "kind": "skeleton.stepped",
+                  "version": 1
+                },
+                "producer_id": "skeleton.stepper",
+                "occurred_at": 3,
+                "phase": "RESOLVE",
+                "wave": 0,
+                "producer_rank": 0,
+                "sequence": 0,
+                "caused_by": [],
+                "degraded": []
+              },
+              "due_tick": 3,
+              "payload": {
+                "from_x": 0,
+                "to_x": 0
+              }
+            }
+          ],
+          "diff": {
+            "receipt": {
+              "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+              "previous_revision": 2,
+              "revision": 3,
+              "tick": 3,
+              "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+            },
+            "changes": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter-delta",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "expected_old": 2,
+                "new": 3
+              }
+            ]
+          }
+        }
+      },
+      {
+        "command": {
+          "actor_id": "actor:toy",
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+          "expected_revision": 0,
+          "payload": {
+            "dx": 1
+          },
+          "schema": {
+            "kind": "skeleton.step",
+            "version": 1
+          }
+        },
+        "outcome": {
+          "kind": "committed",
+          "receipt": {
+            "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+            "previous_revision": 0,
+            "revision": 1,
+            "tick": 1,
+            "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+          }
+        },
+        "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+        "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+        "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+        "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+        "witness": {
+          "core": {
+            "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+            "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+            "tick": 3,
+            "components": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "visits": 3
+                }
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "x": 0
+                }
+              }
+            ],
+            "pending": [],
+            "pins": {
+              "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+              "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+              "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+              "rng_version": "sha256-counter-v1",
+              "hash_version": "sha256-core-tree-v1",
+              "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+              "gameplay_packages": []
+            }
+          },
+          "protocol": {
+            "branch_id": "00000000000000000000000000000000",
+            "revision": 3,
+            "streams": [
+              {
+                "stream_id": "11111111111111111111111111111111",
+                "actor_id": "actor:toy",
+                "highest_committed_sequence": 3,
+                "status": "active"
+              }
+            ],
+            "receipts": [
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "expected_revision": 0,
+                  "payload": {
+                    "dx": 1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "expected_revision": 1,
+                  "payload": {
+                    "dx": -1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "previous_revision": 1,
+                  "revision": 2,
+                  "tick": 2,
+                  "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "expected_revision": 2,
+                  "payload": {
+                    "dx": 0
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "previous_revision": 2,
+                  "revision": 3,
+                  "tick": 3,
+                  "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                }
+              }
+            ]
+          },
+          "facts": [],
+          "diff": null
+        }
+      },
+      {
+        "command": {
+          "actor_id": "actor:toy",
+          "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:4",
+          "expected_revision": 0,
+          "payload": {
+            "dx": 1
+          },
+          "schema": {
+            "kind": "skeleton.step",
+            "version": 1
+          }
+        },
+        "outcome": {
+          "kind": "rejected",
+          "failure": {
+            "code": "STALE_REVISION",
+            "message_key": "error.stale_revision"
+          },
+          "current_revision": 3
+        },
+        "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade",
+        "protocol_hash": "9cf3d0cc105354449395f02cc5b05942436641d4a26247bf09d1d262d45ecd77",
+        "facts_hash": "d5767cf28e5241abb4ac27080a0cf1cd2db9e3c04cb6af532325aaf2f0c03d4d",
+        "diff_hash": "4b90f6529bcf192dd63e2e649a770896e56d4a78408c18dae698fa10edddc6ff",
+        "witness": {
+          "core": {
+            "world_id": "w1-cb0bd892d7ab2d977700aa628e5915834e419f6d158891dabc3aba2b9a75a6ac",
+            "world_seed_hex": "0000000000000000000000000000000000000000000000000000000000000000",
+            "tick": 3,
+            "components": [
+              {
+                "schema": {
+                  "kind": "skeleton.counter",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "visits": 3
+                }
+              },
+              {
+                "schema": {
+                  "kind": "skeleton.position",
+                  "version": 1
+                },
+                "entity_id": "actor:toy",
+                "fields": {
+                  "x": 0
+                }
+              }
+            ],
+            "pending": [],
+            "pins": {
+              "schema_fingerprint": "45cb2ff2c66b1c599dce6e38feaba29636cb72d583a4539107d34b9f5dc1b23c",
+              "rules_fingerprint": "69fa18a2057f320b4acaed086fb26fc3066fe3490f31a7ab1b2f6d08f092422a",
+              "schedule_fingerprint": "b2a9b126a128d12a0c55905b423b61ce59454d07151c9adfb7b02f8dcb7bb0a3",
+              "rng_version": "sha256-counter-v1",
+              "hash_version": "sha256-core-tree-v1",
+              "gameplay_catalog_hash": "4b84706b11660e4b3641034026acd1c22f142c2f63e74c3bad0a54ce1505d832",
+              "gameplay_packages": []
+            }
+          },
+          "protocol": {
+            "branch_id": "00000000000000000000000000000000",
+            "revision": 3,
+            "streams": [
+              {
+                "stream_id": "11111111111111111111111111111111",
+                "actor_id": "actor:toy",
+                "highest_committed_sequence": 3,
+                "status": "active"
+              }
+            ],
+            "receipts": [
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "expected_revision": 0,
+                  "payload": {
+                    "dx": 1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "f0e46daea962739217eb2f8b5ba39a7b34f8b93b7b59d2875c6f52fba69f6439",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+                  "previous_revision": 0,
+                  "revision": 1,
+                  "tick": 1,
+                  "core_hash": "c2c46ea39dc67dc75f06a171fdd93a5b7f70768df06f8601469699ac5d1eb44d"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "expected_revision": 1,
+                  "payload": {
+                    "dx": -1
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "b8e85e1887f3f11772906202cb387aae4d1e756506f11dc88334ac8a43797ae6",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:2",
+                  "previous_revision": 1,
+                  "revision": 2,
+                  "tick": 2,
+                  "core_hash": "8dfdd5fe50b0311ea3ef6b3912fffe94c3b0cc54a4d30d1dc61a8ce087f4bced"
+                }
+              },
+              {
+                "command": {
+                  "actor_id": "actor:toy",
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "expected_revision": 2,
+                  "payload": {
+                    "dx": 0
+                  },
+                  "schema": {
+                    "kind": "skeleton.step",
+                    "version": 1
+                  }
+                },
+                "command_fingerprint": "bae0a4d7658d6a34d1a1e8e69d4d077970ded2db2a6015e47d3ffa41f7537432",
+                "receipt": {
+                  "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:3",
+                  "previous_revision": 2,
+                  "revision": 3,
+                  "tick": 3,
+                  "core_hash": "f68c2f043952baa20e96938c4af4c80c519fdbc00ca6e38c57716ca13aa52ade"
+                }
+              }
+            ]
+          },
+          "facts": [],
+          "diff": null
+        }
+      }
+    ]
+  }
+}

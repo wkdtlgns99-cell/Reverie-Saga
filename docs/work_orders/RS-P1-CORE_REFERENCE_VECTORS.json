@@ -1,0 +1,185 @@
+{
+  "date": "2026-10-04",
+  "timezone": "Asia/Seoul",
+  "scope": "CORE-01 preimplementation component/command literals and authoring baseline; not a complete gameplay golden",
+  "provenance": "New requirements-derived test-only Gauge values and stdlib SHA256/u32 framing authored before CORE-01 implementation; no v1 or production output used; self-review only",
+  "baseline": {
+    "head": "efd2478ff8a6ed93ee833c3f8464a0efdd8a181a",
+    "branch": "main",
+    "source_sha256": {
+      "docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md": "04dbe5a27d15e2f9eb81bf261d78abdadd275fdbcfefdf54571a33be09e53dd5",
+      "docs/MASTER_GAME_ARCHITECTURE.md": "d706c59e571cefbae05f84624372abe2459651604200208a6f4ca00434a29b59",
+      "docs/prompts/SOL_CODING_WORK_ORDER.md": "8a146675255d0c15b253241b31b9213ca7bb678cb5cee75395acc46be13dc511",
+      "docs/reference/AGENTS_v1.md": "dc63ed856eb3e8b57cfad9a7c67035ca7ec40cce95f00529734c8cdeee4c82e9",
+      "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json": "7923b65eb67de2e0cc82e6249bf08a20ce6dcb4f846106ede961f9ab84e82092",
+      "docs/work_orders/PHASE0_REFERENCE_VECTORS.json": "c46cbe82448f83f0237061e61c35766f6b63535225242088ab175d2d79598121",
+      "docs/work_orders/PHASE0_TOOLCHAIN.json": "f8c2eac146854f075fcf61658759590712aeffa95d07a5aaa0eefad603eaa135",
+      "pyproject.toml": "147a3f5fb8135d9d7ce641cb7269e2fcc735b8b915666fbb827da73eb2ae15a8",
+      "requirements-dev.lock": "4ea4f492e6a744a44924d3b4f2f97ad8e987b25e81a6f3792691495b739af21b",
+      "src/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/app/feature_registry.py": "9d3f0e5f4153b628d8e5f5b0c6ba25bb63a91d3d6f4cff368bd3818516fbc46a",
+      "src/app/headless.py": "cda7b98e3809a6f6a5760ca254639c53703b1cb621c1a8af24a8490672d377bc",
+      "src/contracts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/contracts/errors.py": "6c8ffa8cad49dd15cfedb324caf6e942fb16e442cd97b9f828daa48a250798cb",
+      "src/contracts/messages.py": "d23946681fdd0783d2d54365125fcb19a872334146edd7cd75298ed42eb78110",
+      "src/contracts/read_views.py": "47c71137717485dc84c7c20ad9664dcb3613611ad1d27d2bc9608e040396032f",
+      "src/contracts/replay.py": "93cb9b116d78976314bfa8eb3ddecf2f415cc6712487fd73d71975290411613c",
+      "src/contracts/skeleton.py": "6fa96f4fbd4be3806b6f7922a9ce4d80e4cdd123bb000a70ab48aee5e59031d3",
+      "src/contracts/turn.py": "8233215d9feb0a1293f16fe1a88a4081a04a8c19ab1bba5ae75e45a85a98ad3e",
+      "src/domain/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/domain/canonical.py": "f636f2565c7fc52026288971755e74cf43dc630e867162f00e4631b07417fd1c",
+      "src/domain/primitives.py": "9cc389d1caddf8caad1291c1c4be3d855ab4ce0707517cd404fef977149f0de2",
+      "src/domain/state_types.py": "8aa9ceb079d6845c23da41bcb2a2596e6ebf961dda5cfeb73266a0fb78465732",
+      "src/engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/engines/skeleton.py": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578",
+      "src/orchestration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/orchestration/read_views.py": "3f851f01f751a375335685a6067d0125c417ec4a56a95101e6a181797e35e37e",
+      "src/orchestration/replay.py": "a1ff927c54fc59f07d53b4c0cf5eda4ce994926ed9b42169c064ea136abd880a",
+      "src/orchestration/rng.py": "781f7007aaf5f298f2ea9cb01f9bad5d8e37516e98bfe9bfea622216fa59d27a",
+      "src/orchestration/scheduler.py": "22e1dcd2df67e50cebd7d8de40977055fc0e718d820eefc9b6ee734613160215",
+      "src/orchestration/skeleton.py": "7ac3ba77a9391eac0caa1bb6d0f1e053a8db90c8359307c63e5b8f654e323010",
+      "src/orchestration/turn.py": "f74f3d1dae2f01817ba164b9e1f7786e4079f3ccaffd184b27d393dfdf65cd45",
+      "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/integration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/integration/test_skeleton.py": "fb5e895c7cc611412185ddeb3d24b3d758027424c85d815c8f341d9449fac5c3",
+      "tests/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/replay/fixtures/skeleton_v1.json": "6cc8abd517997f68d49e46816a78d865d8e12c2ea9758037a116d02477512ecb",
+      "tests/replay/test_contamination.py": "bfa3a8bf7932b0ed1bd35790fa603532d8eb4129d8de28ff4f8d219c13f81557",
+      "tests/replay/test_golden.py": "0ab3a5a3500d8f9680db397e99078cdbac094db4cdd266a2eff4af4ffb7fccb7",
+      "tests/unit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/unit/test_canonical.py": "c44514f51cf757ff397425224d42f8443a2996712549e4e5fae8d209f6251c15",
+      "tests/unit/test_read_views.py": "f16d5191a47d5fee249f0c0dfb278aae984a28831ce3d47eed243332e2ba795d",
+      "tests/unit/test_rng_vectors.py": "257991ce86fb6eb6f62dfcd69dfabf16c32f483c05b5fa265976996e235fe2fd",
+      "tests/unit/test_schedule.py": "fc8976d938bd0bd51bf08f99dff015f1de8bd3eb960af3778827e2aa0688474c",
+      "tests/unit/view_fixtures.py": "31e1d8d0cdee091741ae702652a471965e43ec3aa3aff530c08137ac57d9afaf"
+    },
+    "checks": {
+      "pytest": {
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-m",
+          "pytest",
+          "-q",
+          "tests"
+        ],
+        "exit": 0,
+        "passed": 37,
+        "seconds": 6.89
+      },
+      "ruff": {
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-m",
+          "ruff",
+          "check",
+          "src",
+          "tests"
+        ],
+        "exit": 0
+      },
+      "mypy": {
+        "argv": [
+          ".venv/Scripts/python.exe",
+          "-m",
+          "mypy",
+          "--strict",
+          "src",
+          "tests"
+        ],
+        "exit": 0,
+        "files": 35
+      }
+    }
+  },
+  "components": [
+    {
+      "document": {
+        "schema": {
+          "kind": "fixture.gauge",
+          "version": 1
+        },
+        "entity_id": "actor:sample",
+        "fields": {
+          "value": 2,
+          "label": "계기"
+        }
+      },
+      "utf8": "{\"entity_id\":\"actor:sample\",\"fields\":{\"label\":\"계기\",\"value\":2},\"schema\":{\"kind\":\"fixture.gauge\",\"version\":1}}",
+      "utf8_hex": "7b22656e746974795f6964223a226163746f723a73616d706c65222c226669656c6473223a7b226c6162656c223a22eab384eab8b0222c2276616c7565223a327d2c22736368656d61223a7b226b696e64223a22666978747572652e6761756765222c2276657273696f6e223a317d7d",
+      "tag": "component/v1",
+      "sha256": "903ab3fbc7363b0cbc56d4854eb1ab194891fda99fec5572a9c5862e4d020d53"
+    },
+    {
+      "document": {
+        "schema": {
+          "kind": "fixture.gauge",
+          "version": 1
+        },
+        "entity_id": "actor:sample",
+        "fields": {
+          "value": 5,
+          "label": "계기"
+        }
+      },
+      "utf8": "{\"entity_id\":\"actor:sample\",\"fields\":{\"label\":\"계기\",\"value\":5},\"schema\":{\"kind\":\"fixture.gauge\",\"version\":1}}",
+      "utf8_hex": "7b22656e746974795f6964223a226163746f723a73616d706c65222c226669656c6473223a7b226c6162656c223a22eab384eab8b0222c2276616c7565223a357d2c22736368656d61223a7b226b696e64223a22666978747572652e6761756765222c2276657273696f6e223a317d7d",
+      "tag": "component/v1",
+      "sha256": "45111726d64bb13c954b056cb38f757da3e1ad817a623954fe104ef9ab51b16d"
+    }
+  ],
+  "command": {
+    "document": {
+      "command_id": "c1:00000000000000000000000000000000:11111111111111111111111111111111:1",
+      "actor_id": "actor:sample",
+      "expected_revision": 0,
+      "schema": {
+        "kind": "fixture.adjust",
+        "version": 1
+      },
+      "payload": {
+        "amount": 3
+      }
+    },
+    "utf8": "{\"actor_id\":\"actor:sample\",\"command_id\":\"c1:00000000000000000000000000000000:11111111111111111111111111111111:1\",\"expected_revision\":0,\"payload\":{\"amount\":3},\"schema\":{\"kind\":\"fixture.adjust\",\"version\":1}}",
+    "fingerprint_document": {
+      "actor_id": "actor:sample",
+      "expected_revision": 0,
+      "schema": {
+        "kind": "fixture.adjust",
+        "version": 1
+      },
+      "payload": {
+        "amount": 3
+      }
+    },
+    "fingerprint_utf8": "{\"actor_id\":\"actor:sample\",\"expected_revision\":0,\"payload\":{\"amount\":3},\"schema\":{\"kind\":\"fixture.adjust\",\"version\":1}}",
+    "tag": "command/v1",
+    "sha256": "c5b28ce0ed1c9d176086ef861ca447759a1d500ff46170a5179e882190dde76d"
+  },
+  "expected_values": {
+    "initial_value": 2,
+    "amount": 3,
+    "committed_value": 5,
+    "tick": 1,
+    "revision": 1,
+    "second_amount": -3,
+    "second_value": 2,
+    "second_tick": 2,
+    "second_revision": 2,
+    "retry_initial_command": "original receipt1/no effects/current value2",
+    "stale_next_command": "reject/no time/current value2"
+  },
+  "reference_source": "import hashlib,json,struct\n# Independent reference: no production/domain/engine imports or observed runtime outputs.\ndef canonical(value):\n    return json.dumps(value,ensure_ascii=False,sort_keys=True,separators=(\",\",\":\"),allow_nan=False).encode(\"utf-8\")\ndef tagged(tag,value):\n    fields=[tag.encode(\"utf-8\"),canonical(value)]\n    return hashlib.sha256(b\"\".join(struct.pack(\">I\",len(field))+field for field in fields)).hexdigest()\nfor value in (2,5):\n    document={\"schema\":{\"kind\":\"fixture.gauge\",\"version\":1},\"entity_id\":\"actor:sample\",\"fields\":{\"value\":value,\"label\":\"계기\"}}\n    print(canonical(document).decode(\"utf-8\"),tagged(\"component/v1\",document))\ncommand={\"actor_id\":\"actor:sample\",\"expected_revision\":0,\"schema\":{\"kind\":\"fixture.adjust\",\"version\":1},\"payload\":{\"amount\":3}}\nprint(canonical(command).decode(\"utf-8\"),tagged(\"command/v1\",command))\n",
+  "production_implementation": "NOT_STARTED",
+  "authoring_verification": {
+    "exit": 0,
+    "python_declaration_blocks": 3,
+    "required_fields_links_fences_whitespace": "PASS",
+    "independent_utf8_u32_sha256_reference_execution": "PASS",
+    "unchanged_source_protected_inputs": 45,
+    "production_paths_absent": true,
+    "git_diff_check_exit": 0,
+    "initial_generation_exit": 1,
+    "initial_generation_exit_reason": "Artifact write completed; printing Korean reference text through Windows cp1252 stdout failed. Strict UTF8 JSON/label/hash checks subsequently passed. Reference executed in Unicode capture."
+  }
+}

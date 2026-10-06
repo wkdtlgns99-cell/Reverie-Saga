@@ -1,6 +1,6 @@
-# ASTRA ENGINE ARCHITECTURE PROMPT v2.6 — AI-PRODUCED RPG ARCHITECTURE
+# REVERIE SAGA ARCHITECTURE PROMPT v2.6 — GPT-6.1 SOL DEVELOPMENT
 
-> **Purpose:** Design both (1) the Quilltale v2 graphical turn-based RPG runtime architecture and (2) the AI-first production factory that lets a human director specify the game while specialized AI systems generate, validate, and integrate code, content, images, 3D assets, animation assistance, audio, and build-ready data.
+> **Purpose:** Design both (1) the Reverie Saga graphical turn-based RPG runtime architecture and (2) the AI-first production factory that lets a human director specify the game while specialized AI systems generate, validate, and integrate code, content, images, 3D assets, animation assistance, audio, and build-ready data.
 > **Input profile:** §1 `[GAME_PROFILE]` is project-specific and reusable.
 > **Critical blocks:** §3 Failure Modes, §3B Anti-Patterns, §3C Hard Constraints, and §5 B0 Enforcement Hierarchy MUST remain.
 > **v2.6 changes:** corrects the product identity from a text-TRPG/LLM-narration loop to an AI-produced HD-2D/2.5D graphical turn-based RPG. It keeps the v2.5 governance/evidence framework while replacing natural-language/per-turn narration assumptions with typed player commands, deterministic runtime simulation, optional structured LLM generation at explicit generation windows, and a first-class AI Production Factory.
@@ -11,10 +11,28 @@
 
 These explicit director instructions supersede conflicting role and development-environment assumptions elsewhere in this document for Reverie Saga.
 
-- GPT-6.1 Sol leads architecture, implementation, tests, integration, and routine review. Astra is an optional occasional architecture/audit advisor, not a required work-order author or approval gate. References assigning design decisions exclusively to Astra are interpreted as responsibilities of the current lead agent.
+- GPT-6.1 Sol performs all development work: architecture, work-order authoring, simple and complex implementation, tests, defect diagnosis/repair, integration, and technical review. Use Astra only when Sol is blocked and a second opinion is needed; Astra is never a mandatory author or approval gate. The director superseded the earlier Sol/Luna split on 2026-10-02.
+- The historical `ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md` filename is retained for link compatibility; it does not assign authority to Astra. The current working project is `C:\Reverie Saga`; `C:\Quilltale` is read-only evidence.
+- Maintain concise `SESSION_HANDOFF.md` and `BACKLOG.md` in the project root. Before runnable code/report tooling exists, these are manual factual records, not generated verification reports. The director explicitly authorizes this documentation and role update; it does not authorize production implementation.
 - Use the corrected DEV-A laptop in §1.1 for development, integration, local AI, asset processing, and resource planning. Windows 11 is the current temporary development OS, not a reason to prioritize OS-specific engineering now. Prioritize the portable deterministic core; defer platform-specific packaging and lifecycle implementation until the deployment phase. The existing desktop product goal and MIN-SPEC requirements are separate from this development-machine correction.
 - User-facing reports must be short and focused on decisions, results, and the next action. Detailed contracts belong in project architecture documents when requested; do not repeat the full architecture in chat.
+- AI-facing documents MUST follow the English, compact format below. This director-approved format update changes presentation only; preserve requirements, contracts, evidence, and task state.
+- Director language update 2026-10-06: Use structured English for all AI-facing instructions,architecture,work orders,handoffs,backlogs,schemas,evidence and technical notes. Write only essential human-facing notices/decisions/actions in concise Korean;do not add parallel Korean translations. Preserve Korean player text,quoted source data and historical references as data.
 - This workflow correction does not authorize production implementation during an explicitly design-only task.
+- Latest v1 reuse restriction: author new architecture, engines, formulas, balancing rules, and tests for Reverie Saga. Do not port v1 production code, calculation policies, or test expected values. Reuse only individually reviewed simple content such as names, lore, descriptions, visual concepts, and quest premises; templates can contain embedded mechanics, so extract narrative fields and reject source stats/formulas/behavior/schema bindings. Preserve v1 unchanged as evidence. See `architecture/V1_REUSE_INVENTORY.md` and the small `docs/reference/QUILLTALE_CONTENT_CANDIDATES.json` dossier; it is not runtime-imported content.
+
+## AI Documentation Format — Director Rule 2026-10-02
+
+Scope: active AI rules, prompts, product/architecture specs, BLOCK documents, work orders, handoffs, backlogs, and technical reference inventories.
+
+1. MUST write instructions and technical prose in English. Keep chat/player text in Korean. Preserve quoted Korean content, examples, source names, and historical reference files when translation would change the data.
+2. MUST prioritize accurate AI parsing and low token overhead: short headings, stable IDs, concise normative bullets, and small tables for parallel contracts.
+3. MUST keep one canonical statement per requirement. Link to its file/section; do not copy full specs into handoffs or work orders. Required standalone task contracts and examples may repeat the relevant minimum.
+4. MUST preserve authority, obligations, exceptions, types, units, ordering, ownership, errors, dependencies, approval gates, and evidence status. Compression MUST NOT weaken semantics or omit unresolved risks.
+5. MUST distinguish FIXED/PROVISIONAL and TARGET/ESTIMATE/MEASURED/UNVERIFIED. Mark future paths NEW/PLANNED and missing execution NOT_RUN.
+6. MUST avoid parallel Korean translations, narrative padding, decorative banners, repeated summaries, and redundant diagrams. Do not replace clear terms with cryptic abbreviations.
+7. MUST use UTF-8, descriptive English keys, and stable paths/section IDs. Do not rename files solely for translation.
+8. MUST validate links, IDs, retained requirements, and document consistency after conversion. Do not claim measured token savings without a tokenizer comparison.
 
 # §0 ROLE CONTRACT
 
@@ -57,7 +75,7 @@ The **AI Production Factory is in scope and architecturally first-class**. Detai
 Rules:
 - Existing v1 engine/module decomposition described by MASTER is NOT mandatory for v2.
 - Preserve required gameplay/product capabilities, but you MAY reorganize, merge, replace, or defer their technical implementation.
-- A gameplay capability MUST NOT be silently removed merely because Astra chooses a different module, engine, client, IPC, database, retrieval, packaging, or rendering technology.
+- A gameplay capability MUST NOT be silently removed merely because Sol chooses a different module, engine, client, IPC, database, retrieval, packaging, or rendering technology.
 - If replacing a MASTER technology choice, state: requirement preserved, candidate replaced, chosen alternative, reason, migration/compatibility impact.
 
 ### 3. Existing Quilltale v1 repository
@@ -73,15 +91,15 @@ Use it to identify:
 
 Rules:
 - Do NOT preserve v1 architecture merely for backward compatibility.
-- Reusable data, fixtures, tests, and content assets MAY be migrated when compatible with v2 boundaries.
-- Production code reuse requires explicit architectural justification; never copy a v1 pattern only because it already exists.
+- Only individually curated simple descriptive content may be migrated under the latest director instruction. Historical tests and code are read-only failure evidence, not source for transplanted code, formulas, fixtures, or expected values.
+- Author new production code, numerical rules, fixtures, and tests against v2 requirements. Do not preserve a v1 implementation or calculation policy merely because it already exists.
 - `AGENTS.md` from v1 is **governance evidence/reference only** for this DESIGN run. Do not treat v1-specific wiring names (`TwoPassEngine`, `GameMasterAgent`, `Pass 2 narration`) as mandatory v2 architecture. Any future v2 root `AGENTS.md` is a separate proposal requiring user approval.
 
 ### Conflict rule
 If inputs conflict:
 1. preserve MASTER gameplay/product outcomes;
 2. preserve this prompt's architectural invariants, evidence rules, and governance constraints;
-3. let Astra choose concrete application/runtime infrastructure only within the decision freedom defined by §0.C; fixed language/tool-family/product constraints remain fixed;
+3. let GPT-6.1 Sol choose concrete application/runtime infrastructure only within the decision freedom defined by §0.C; fixed language/tool-family/product constraints remain fixed;
 4. explicitly report the conflict, alternatives considered, and chosen resolution;
 5. never silently discard a gameplay/product requirement;
 6. if the conflict requires changing `AGENTS.md` or another governance/rule file, output a **PROPOSAL ONLY** and require explicit user approval before any edit.
@@ -127,19 +145,29 @@ Mission:
 - specify regression tests and DoD;
 - produce Sol-ready repair orders.
 
-AUDIT MODE MUST NOT dump production fixes. Astra may show minimal interface/skeleton fragments needed to explain the correction, but **Sol performs the implementation**.
+AUDIT MODE specifies findings and repair orders; production patches require an implementation request. Sol may show minimal interface/skeleton fragments explaining a correction. In an authorized implementation task, Sol implements and verifies all repairs.
 
 ### Implementation role
-**GPT-6.1 Sol is the primary end-to-end development agent.**
+**GPT-6.1 Sol owns and performs all development tasks.**
 
-Sol = Architecture / Implementation / Tests / Integration / Routine Review.
-Astra = Optional occasional Architecture / Audit Advisor.
+Sol = Architecture / Precise Work Orders / All Implementation / Tests / Defect Repair / Integration / Technical Review.
+Astra = Second Opinion Only When Sol Is Blocked.
 
-The director explicitly changed the workflow on 2026-10-02. Astra participation is not a prerequisite for Sol work. Independent review remains distinct from the lead agent's self-check.
+The director explicitly changed the workflow on 2026-10-02. Work orders use `gpt-6.1-sol`; changing a document does not automatically change the app's selected model or launch agents. Sol reviews its work against requirements and execution evidence. Do not label a Sol self-check as independent review. A separate review is not a mandatory Astra step.
+
+### Bounded coding work orders
+
+Use `docs/prompts/SOL_CODING_WORK_ORDER.md` to specify each implementation task. Sol MUST first resolve architecture, public signatures, input/output schemas, error behavior, ordering, mutation ownership, and wiring. Attach only relevant approved contracts and source context; the full architecture is not a substitute for task instructions.
+
+Every Sol order MUST specify a baseline commit and dirty-file inventory, exact allowed edit paths, prerequisites, complete behavioral rules, normal/boundary/invalid examples with independently derived outputs, ordered implementation steps, relevant callers, exact verification commands, measurable acceptance criteria, and stop/escalation conditions. No unresolved placeholder or architectural choice may remain in a READY order.
+
+Keep each task to one responsibility and list exact changed paths. Sol may handle simple utilities and complex design/implementation; decompose large work and explicitly resolve architectural choices before coding. Governance, dependency, persistence, or public-contract changes remain subject to applicable scope and approval rules.
+
+Sol checks the actual diff, integration path, and verification evidence before marking a task complete. Missing commands/environment support are `UNVERIFIED`; do not invent execution results. Sol diagnoses and repairs in-scope failures. Use Astra only for a concrete unresolved blocker after local evidence and ordinary alternatives have been examined; provide the blocker, affected contracts, attempted approaches, and evidence. Astra advice still requires validation.
 
 ## 0.C TECHNOLOGY DECISION FREEDOM
 
-Astra is responsible for choosing concrete **application/runtime infrastructure and production-orchestration infrastructure** where this section explicitly grants decision freedom. This freedom does not override fixed product identity, Brain language, governance tool families, or explicit production constraints below.
+GPT-6.1 Sol is responsible for choosing concrete **application/runtime infrastructure and production-orchestration infrastructure** where this section explicitly grants decision freedom. This freedom does not override fixed product identity, Brain language, governance tool families, or explicit production constraints below.
 
 ### FIXED for this run
 - **Product identity:** graphical HD-2D / 2.5D turn-based RPG. It is NOT a text-TRPG runtime and does NOT require per-turn LLM prose narration.
@@ -149,7 +177,7 @@ Astra is responsible for choosing concrete **application/runtime infrastructure 
 - **2D image production pipeline:** SD 1.5 + LoRA + ADetailer is the current fixed production direction for portraits/illustrations unless the user explicitly changes it.
 - **3D / model / animation / music / SFX / voice production policy:** primarily pre-generated during development using suitable paid AI/services and then curated, versioned, imported, and shipped with the game. Exact providers are replaceable unless explicitly fixed later.
 - **Runtime generation rule:** image/3D/audio generation is NOT on the normal gameplay critical path. Runtime LLM use, if retained, is limited to explicit generation windows such as new-game/world generation, chapter transitions, or loading/preparation steps and must output structured validated data rather than mandatory per-turn prose narration.
-- **Governance tool families:** Ruff, mypy, import-linter, coverage.py, mutation testing, and pytest are the default tool families required by §3B/§5. Astra may replace one only with a same-enforcement-layer equivalent that provides equal or stronger coverage and MUST state justification, migration cost, and lost/gained guarantees.
+- **Governance tool families:** Ruff, mypy, import-linter, coverage.py, mutation testing, and pytest are the default tool families required by §3B/§5. Sol may propose replacement only with a same-enforcement-layer equivalent that provides equal or stronger coverage and MUST state justification, migration cost, and lost/gained guarantees; governance approval rules still apply.
 - **Product target:** Windows 11 desktop standalone game.
 - **Core runtime invariants:** deterministic authoritative Brain, one SSOT, presentation cannot own competing truth, evidence rules in §0.5, and governance limits in §5.
 
@@ -170,7 +198,7 @@ The architecture MUST satisfy these outcomes:
 ### Client decision rule
 Because actual 3D/audio/illustration implementation remains deferred until the core runtime boundary is stable, the graphical-client decision in this architecture is **PROVISIONAL**, not an irreversible lock-in.
 
-Astra MUST output:
+GPT-6.1 Sol MUST output:
 - evaluation criteria tied to MASTER presentation goals and MIN-SPEC;
 - at least two viable client candidates when meaningful alternatives exist;
 - a provisional choice;
@@ -196,7 +224,7 @@ OUT OF SCOPE for this architecture run:
 - manually authoring the game's final art/audio/content.
 
 ### Candidate choices — application/runtime and production infrastructure
-Astra may compare and select alternatives for:
+GPT-6.1 Sol may compare and select alternatives for:
 - graphical client: Unity / UE5 / Godot / other suitable client — PROVISIONAL until the client prototype validation gate passes;
 - prototype UI: Gradio / TUI / other;
 - process topology: separate Brain process / embedded runtime / other safe local topology;
@@ -223,7 +251,7 @@ For every major technology choice:
 
 Do NOT implement the game.
 
-Design the **runtime engine + AI Production Factory + governance controls** that let a human director and specialized AI agents build Quilltale incrementally for 6–18 months without:
+Design the **runtime engine + AI Production Factory + governance controls** that let a human director and specialized AI agents build Reverie Saga incrementally for 6–18 months without:
 
 - god files/functions;
 - fake completion;
@@ -257,7 +285,7 @@ In AUDIT MODE, convert findings into precise Sol-ready repair specifications ins
    - validation/approval/import/build flow;
    - provider-adapter boundaries.
 5. Dependency-topological implementation roadmap.
-6. Every implementation-roadmap item MUST be **Sol-ready** and contain, where applicable:
+6. Every implementation-roadmap item MUST be **Sol-ready**, name GPT-6.1 Sol, and contain, where applicable:
    - target file path(s);
    - interface / `Protocol` / signature to implement;
    - wiring point;
@@ -265,7 +293,7 @@ In AUDIT MODE, convert findings into precise Sol-ready repair specifications ins
    - test file + test names or exact test responsibilities;
    - measurable DoD;
    - migration note if v1 assets/data are involved.
-7. Output summaries/explanations in **Korean**; code, identifiers, schemas, interface specifications, and machine-facing keys in **English**.
+7. Write AI-facing summaries/explanations,code,identifiers,schemas,interface specifications and machine-facing keys in structured **English**. Only essential human-facing notices/decisions/actions use concise **Korean**;player-facing language remains Korean.
 
 ## 0.2 MUST NOT
 
@@ -275,7 +303,7 @@ In AUDIT MODE, convert findings into precise Sol-ready repair specifications ins
 | No implementation dump | Interfaces/skeletons only. |
 | No vague wording | Avoid “appropriately”, “as needed”, “etc.” when a concrete rule is possible. |
 | No unsupported decision | Major choices require rejected alternatives. |
-| No blind v1 architecture reuse | v1 is evidence/failure data. Reuse data/tests/assets or code only when explicitly justified against v2 boundaries. |
+| No blind v1 architecture reuse | v1 is evidence/failure data. Curate only simple descriptive content; no transplanted code, formulas, fixtures, test expected values, or source schema bindings under the director's latest restriction. |
 | No fabricated evidence | Never label a number as measured unless an actual run + environment evidence exists. |
 | No silent requirement deletion | Technical reorganization must not silently delete MASTER gameplay/product requirements. |
 | No unauthorized governance edit | Governance/rule-file changes are proposals until the user explicitly approves them. |
@@ -314,14 +342,14 @@ Rules:
    - pass/fail decision rule.
 3. Architecture design MUST NOT invent benchmark results.
 4. Self-check §10 is a **completeness check, not independent validation**. A separate model/reviewer should audit the final architecture before implementation.
-5. Repository counts in §3 are evidence snapshots, not eternal constants. If Astra has repository access, re-scan and report drift before relying on them.
+5. Repository counts in §3 are evidence snapshots, not eternal constants. If Sol has repository access, re-scan and report drift before relying on them.
 
 ---
 
 # §1 GAME_PROFILE
 
 ```yaml
-project_name: Quilltale v2
+project_name: Reverie Saga
 product_identity: AI-produced procedural HD-2D / 2.5D turn-based RPG
 runtime_type: graphical turn-based RPG; NOT a text-TRPG
 
@@ -376,8 +404,8 @@ architecture_outcomes:
   authoritative_simulation: local deterministic Brain
   state_rule: one Single Source of Truth
   presentation_rule: client/view layer MUST NOT own competing authoritative game state
-  client_technology: Astra makes a PROVISIONAL choice under §0.C; final lock-in requires the client prototype validation gate
-  ipc_or_embedding_strategy: Astra chooses based on process topology
+  client_technology: GPT-6.1 Sol makes a PROVISIONAL choice under §0.C; final lock-in requires the client prototype validation gate
+  ipc_or_embedding_strategy: GPT-6.1 Sol chooses based on process topology
   schema_first_boundary: required when crossing process/language boundaries
 
 business_model_runtime_ai:
@@ -390,7 +418,7 @@ packaging_outcomes:
   - no player-installed Docker prerequisite
   - no separately installed external DB/server prerequisite on normal shipping path
   - selected dependencies/runtime must be bundled or otherwise self-contained for the player
-  - packaging technology chosen by Astra after compatibility analysis
+  - packaging technology chosen by GPT-6.1 Sol after compatibility analysis
 ```
 
 ## 1.1 Hardware Tiers
@@ -467,11 +495,10 @@ Do not copy v1 architecture by default. Reuse validated concepts and compatible 
    - 3-stage incremental integration.
 6. **AI-production lesson**
    - external LLM delegation and bulk content generation are useful, but v1 did not define a complete multi-modal production factory; v2 must make orchestration, provenance, validation, approval, and import first-class.
-7. **Reusable non-architecture assets**
-   - validated templates/content data;
-   - save fixtures used for migration testing;
-   - regression tests whose behavior is still desired;
-   - benchmark/playtest traces when their provenance is known.
+7. **Curated content and read-only evidence**
+   - individually reviewed names, lore, descriptions, visual concepts, and quest premises;
+   - historical fixtures/tests as failure evidence only, not copied fixtures or test oracles;
+   - benchmark/playtest traces when their provenance is known, as evidence rather than implementation policy.
 
 Any reused artifact MUST state whether it is:
 - retained unchanged;
@@ -704,7 +731,7 @@ Rules:
 
 Do NOT force a vector/RAG stack merely because v1 had one. First determine whether retained NPC/world-memory or optional runtime-generation features actually need retrieval beyond ordinary structured state queries.
 
-If retrieval is needed, use capability tiers; **implementation technology is selected by Astra**:
+If retrieval is needed, use capability tiers; **implementation technology is selected by GPT-6.1 Sol**:
 
 | Tier | Outcome requirement |
 |---|---|
@@ -722,7 +749,7 @@ Requirements:
 - define a retrieval-quality degradation TARGET/acceptance rule for T1-off mode when T1 exists; measure when evaluation data and implementation exist, otherwise mark `UNVERIFIED`;
 - embedding/indexing work that can stall a turn MUST be asynchronous or moved outside the authoritative turn budget;
 - T1 failure -> T0 fallback + `degraded`;
-- v1 Qdrant/Docker, SQLite, or other existing approaches are evidence/candidates only; Astra must compare them rather than inherit them automatically.
+- v1 Qdrant/Docker, SQLite, or other existing approaches are evidence/candidates only; Sol must compare them rather than inherit them automatically.
 
 ## C-02 Runtime LLM generation / BYOK quota vs production-time paid AI
 
@@ -811,7 +838,7 @@ Distinguish:
 
 ## C-05 Windows process / client lifecycle
 
-Astra MUST choose and justify the Windows-local process topology and, when needed, IPC mechanism. **Named Pipe is a candidate, not a mandate.**
+GPT-6.1 Sol MUST choose and justify the Windows-local process topology and, when needed, IPC mechanism. **Named Pipe is a candidate, not a mandate.**
 
 Required outcomes:
 1. parent/client/backend termination must not leave an orphan authoritative simulation process.
@@ -1038,7 +1065,7 @@ MUST:
 Current template corpus ≈5.53MB MUST remain viable on MIN-SPEC and must scale beyond the current corpus without code changes.
 
 Use:
-- build-time schema validation (`JSON Schema`, `Pydantic`, or equivalent selected by Astra);
+- build-time schema validation (`JSON Schema`, `Pydantic`, or equivalent selected by Sol);
 - lazy loading / indexing / compiled artifacts as justified;
 - adding 120 -> 200 continents MUST require no code change;
 - convert `Any` to typed DTO at load boundary.
@@ -1065,7 +1092,7 @@ Define:
 
 The authoritative Brain MUST remain presentation-client-neutral. The graphical client selected in DESIGN MODE is **PROVISIONAL** until the §0.C client prototype validation gate passes.
 
-Astra MUST first choose the process topology:
+GPT-6.1 Sol MUST first choose the process topology:
 - separate local Brain process + client;
 - embedded Brain runtime;
 - another justified topology that preserves one authoritative state owner.
@@ -1079,7 +1106,7 @@ If a process/language boundary exists, requirements are:
 - lifecycle controls from C-05;
 - any debug/headless harness and the graphical client share the same authoritative simulation rules.
 
-Schema/transport candidates include JSON Schema, Protobuf, FlatBuffers, MessagePack, Named Pipe, loopback IPC, or equivalent. Astra chooses; none is mandatory unless marked `FIXED`.
+Schema/transport candidates include JSON Schema, Protobuf, FlatBuffers, MessagePack, Named Pipe, loopback IPC, or equivalent. Sol chooses; none is mandatory unless marked `FIXED`.
 
 Litmus tests:
 > Authoritative Brain-domain code must not depend on renderer-specific types or behavior.
@@ -1141,8 +1168,8 @@ The architecture SHOULD minimize the need for manual coding, drawing, 3D modelin
 ### A14.2 Specialized production roles
 
 Define clear contracts for at least:
-- Architecture/Audit AI: Astra;
-- Production coding AI: Sol;
+- Architecture/All Coding/Tests/Audit/Defect Repair/Integration AI: GPT-6.1 Sol;
+- Second opinion for a concrete unresolved blocker only: Astra;
 - structured content/data LLM jobs;
 - 2D image production: **SD 1.5 + LoRA + ADetailer**;
 - 3D/model asset generation: pre-generated through selected paid AI/service adapters;
@@ -1260,15 +1287,17 @@ All v1 rules MUST be classified, including:
 - Wiring: no incomplete live path, reachability, no write-only fields, search before new engine, >=1 integration test, capped unbounded lists, docs follow code;
 - mandatory `traits`;
 - 3-stage incremental integration;
-- AI production role division: Astra architecture/audit, Sol implementation, specialized content/image/3D/audio generation jobs, validators, and human approval gates have explicit responsibilities.
+- AI production role division: GPT-6.1 Sol performs architecture/all implementation/tests/audit/repair/integration; Astra is consulted only on blockers; specialized content/image/3D/audio generation jobs, validators, and human approval gates have explicit responsibilities.
 
 **Governance mutation rule:**
 - Any change to `AGENTS.md`, governance rules, CI policy, backlog policy, test-deletion policy, or custom-checker policy is a **proposal** until explicitly approved by the user.
-- Astra MUST NOT assume rule files are editable simply because its proposed architecture differs from v1 governance.
+- Sol MUST NOT assume rule files are editable simply because a proposed architecture differs from v1 governance.
 
 ## B2 Generated progress report
 
 Replace large manual handoff/status documents.
+
+Bootstrap exception authorized by the director: until runtime/tool output exists, keep root `SESSION_HANDOFF.md` as a concise manual context record and root `BACKLOG.md` as the task/dependency source. Store detailed decisions in `architecture/` and detailed work orders in `docs/work_orders/`; link instead of duplicating them. Do not implement a report generator before Phase 1 or claim generated evidence exists. Later reports supplement these context/task records with executable evidence.
 
 One code-generated report MUST include:
 - registered engines + phases/dependencies;
@@ -1393,11 +1422,11 @@ A “refactor” commit MUST attach golden-hash behavior-preservation evidence.
 
 Role rule:
 - Human = Director / Planner / Approver.
-- Astra outputs architecture decisions, audits, and Sol-ready work orders.
-- Sol writes production implementation.
+- GPT-6.1 Sol performs architecture, all implementation, tests, audits, precise work orders, defect repairs, integration, and evidence-based technical acceptance.
+- Astra is used only when Sol encounters a concrete unresolved blocker; its advice is not independent execution proof.
 - Specialized generation tools/agents create content/images/3D/audio artifacts under A14 contracts.
 - Validators + approval gates control what enters the project/build.
-- If Astra finds an implementation defect, Astra specifies root cause + affected files/interfaces + repair contract + regression tests + DoD; Sol applies the patch.
+- If a defect is found, Sol owns root cause + affected files/interfaces + repair contract + regression tests + DoD, applies the repair, and verifies it. Consult Astra only if the diagnosis or remedy remains blocked.
 
 ---
 
@@ -1474,6 +1503,8 @@ Every Sol-ready work order MUST include:
 8. DoD;
 9. forbidden scope creep;
 10. migration/compatibility note if applicable.
+
+Implementation orders MUST also meet the readiness contract in §0.B and `docs/prompts/SOL_CODING_WORK_ORDER.md`. Sol designs and implements the Phase-0 skeleton/replay/proxy contracts after the required design and implementation scope are established.
 
 Do NOT front-load every governance tool.
 
@@ -1583,7 +1614,7 @@ Rules:
 - if a block is too large, split it into `BLOCK 3a / 3b` and state why;
 - never omit code by using placeholders or “same as above”.
 
-## 9.B AUDIT MODE — FINDINGS + SOL REPAIR ORDERS
+## 9.B AUDIT MODE — FINDINGS + EXECUTOR-ASSIGNED REPAIR ORDERS
 
 Do NOT force the 9-block design format when the user explicitly requests AUDIT MODE.
 
@@ -1601,7 +1632,7 @@ Use this structure:
    - root cause
    - affected files/interfaces
    - runtime/data/migration risk
-5. Sol Repair Orders
+5. Sol Repair Orders (executor: GPT-6.1 Sol)
    - target paths
    - exact contract/signature/wiring change
    - tests
@@ -1682,4 +1713,4 @@ If any item is ❌, fix it before submission.
 
 Unless the user explicitly requests `AUDIT MODE`, start in **DESIGN MODE** with **BLOCK 1**.
 
-If `AUDIT MODE` is explicitly requested, use §9.B instead and produce findings + Sol repair orders without implementing production fixes.
+If `AUDIT MODE` is explicitly requested, use §9.B instead and produce findings + executor-assigned repair orders without implementing production fixes. An explicit documentation-maintenance request edits the requested documents; it does not start or advance architecture blocks or authorize production implementation.

@@ -1,0 +1,531 @@
+{
+  "schema_version": 1,
+  "task_id": "RS-P1-GOV",
+  "date": "2026-10-06",
+  "kind": "AUTHORING_INPUT_INVENTORY_NOT_EXECUTION_EVIDENCE",
+  "baseline_head": "efd2478ff8a6ed93ee833c3f8464a0efdd8a181a",
+  "entry_file_count": 139,
+  "entry_hashes": {
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/unit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/unit/watch_fixtures.py": "c75528fc221376706f39524970a748ce3f03cf72591fa1f52512166feb1140a3",
+    "tests/unit/view_fixtures.py": "31e1d8d0cdee091741ae702652a471965e43ec3aa3aff530c08137ac57d9afaf",
+    "tests/unit/trial_fixtures.py": "22a8b2b6687ff997d07a499ddb79574009d43ae2a54006de9a408e080e2b60da",
+    "tests/unit/test_watch.py": "3c83d1ba1966f1441f59c91a048b6e6604955b5bca0efd00ee7d6faa6f28e41d",
+    "tests/unit/test_trial.py": "5972d7780f08a011e3900d3c961dd2f1cee6a19891a02a5193694420cf0a4316",
+    "tests/unit/test_schedule.py": "fc8976d938bd0bd51bf08f99dff015f1de8bd3eb960af3778827e2aa0688474c",
+    "tests/unit/test_save_codec.py": "326a5695e9ba7fa5c5302923306782a8223e07bc95a23509ab1da07a46b39a18",
+    "tests/unit/test_rng_vectors.py": "257991ce86fb6eb6f62dfcd69dfabf16c32f483c05b5fa265976996e235fe2fd",
+    "tests/unit/test_registered_io.py": "f4a12b463c8c140e5728175436c2c45f76c4a3c9421181d8d56b6ddb4140384b",
+    "tests/unit/test_read_views.py": "f16d5191a47d5fee249f0c0dfb278aae984a28831ce3d47eed243332e2ba795d",
+    "tests/unit/test_events.py": "5e9b9d92d1078051f853f3672e2092b391be6e1ef936930983594585d32f0488",
+    "tests/unit/test_encounter.py": "946a5bbea21c9298766916731771dc34b1b344dfb6138d8af2412ef76a268627",
+    "tests/unit/test_canonical.py": "54dc42e884a2f74fc836b62c74e837fedaee81bf4e0e178ef246078b2b021ab2",
+    "tests/unit/registered_io_fixtures.py": "e807212df633683bca482ed052c63b4e2e416b64e0cc67bc406245015518b2ec",
+    "tests/unit/encounter_fixtures.py": "ab0a24a29c17a32fee5dc1dfac05b4f2ab9fbebb4f59d24d135c708c91eddf52",
+    "tests/unit/durability_fixtures.py": "5bacb512c670308bddbe6554a96f0e774909b2b0bb320608f91d0a062f0a85a7",
+    "tests/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/replay/test_watch.py": "bbcfc1f5cb62fdce6be7dd7d930765a543250ace51cdc35bdbf6a6475804afea",
+    "tests/replay/test_trial.py": "0b7d58bf58bee86e2108ecd75c1b2b9a6ba7d25998af54427c8ac4755e197b26",
+    "tests/replay/test_registered_replay.py": "f8666c8e551b6c8689dc438843dd23d15e57b5b3d660904911e8ddad4322b65b",
+    "tests/replay/test_golden.py": "0c4aa1d783d3b4f038c76f8943f1335f86e36b44880161088098a46f8ba0d92a",
+    "tests/replay/test_encounter.py": "21c2d0359d6255672e8d12f7865fdb084c21bcbfc57afaf63840cb35ac65b912",
+    "tests/replay/test_durable_replay.py": "4b6918ba002a935d14cd4d11ada08242cfa633df6cd8f4533674b6b456e94aa7",
+    "tests/replay/test_contamination.py": "77fb652d0cbe27b2506268735563829bf068d6e50303785c3415bcd8db6c1a6f",
+    ".gitignore": "f7ff20d404e077cc5d7b7b42c9f7a64f19e157fb28a450577a48911c27b4fc21",
+    "REFERENCE_REPOSITORY.txt": "c7f0a4143db8428092ca537e2aa39a30d104c66979a0b349759b6931cc82bbea",
+    "tests/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "requirements-dev.lock": "4ea4f492e6a744a44924d3b4f2f97ad8e987b25e81a6f3792691495b739af21b",
+    "SESSION_HANDOFF.md": "e299411409dd490af873f2f49bfb73eb83b22f51bb6d941af399c31026f21264",
+    "BACKLOG.md": "f8d1a604df775cb149fcdf525ed047b111aacaffd07c972b23b18c161b8a4018",
+    "pyproject.toml": "147a3f5fb8135d9d7ce641cb7269e2fcc735b8b915666fbb827da73eb2ae15a8",
+    "tests/replay/fixtures/watch_v1.json": "5417a81e82ad04886d9e63fe7669e409da0a041ef99f80200fa323c7896a2b85",
+    "tests/replay/fixtures/watch_passive_v1.json": "b421e76e9a06b42bf993b251e448858f141454ce0739b7b34e94f46f577a41fb",
+    "tests/replay/fixtures/trial_v1.json": "ae6834a21be298a4015f9309bf7b710f977e39e84f3bf1a57679d6c866d59a07",
+    "tests/replay/fixtures/skeleton_v1.json": "6cc8abd517997f68d49e46816a78d865d8e12c2ea9758037a116d02477512ecb",
+    "tests/replay/fixtures/encounter_v1.json": "aa8cdc879e3bbcdadb19269496a13449f5f1096641226a7eacc29cc44105634c",
+    "tests/replay/fixtures/encounter_death_v1.json": "d21e78ed1362ac2d6eda81eda79996f7081efefe4bcc7a13a7ceba140284919c",
+    "tests/replay/fixtures/durable_watch_v1.json": "4c9dcfea46c1f1ba0c08b0fc94d9a13211fb7e32fd52a43eaf7bdf0233425472",
+    "tests/replay/fixtures/durable_watch_passive_v1.json": "f0adc9c19bbb94fd4fe3f6e1a70bf95e63a1221e7f354b3a09a237c592616951",
+    "tests/integration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/integration/test_watch.py": "890b440eec638b3425519ab4936e2db009ecfaa7cd11be949a25bbdf73dab4f9",
+    "tests/integration/test_trial.py": "0508986c07b6e354b297ae68aa4fa24abe77ce14bac3ecc7eb82f61aa6ed0f8e",
+    "tests/integration/test_sqlite_recovery.py": "0a78f878a40df895176e3b0ec2bf499c270a260603dd197ba1c0a7c59f48a88d",
+    "tests/integration/test_skeleton.py": "ee9cc64a081f0cf0dc72c02ab0b18475281d11daec94e038d654af5d9bd0b55e",
+    "tests/integration/test_save_slots.py": "f61f80e460ff0f53b5d4c67567cf23ff52f3ae3a74007701b8440b26ba84894c",
+    "tests/integration/test_registered_state.py": "5dad73a85ad9d3abcbcf3d20aa8c6e80ec4c2e1ee554b43666a8f4402a4e8758",
+    "tests/integration/test_event_turn.py": "6dd4d03af81b108e8064e458b5f1bc0435e1c8ade768c631fd1f107b33802d03",
+    "tests/integration/test_encounter.py": "c82e13261c5fae942a00c9aa554de6d2f04bb1dd7fcb1fa809737d3c0bb118fe",
+    "tests/integration/test_durable_turn.py": "6223761ed7ff667cc1173b8888deb54dd7d95ad4de61a88f181cf35e2be72480",
+    "tests/integration/test_core_slice.py": "047e3071b4c9be8995c927b731b8265130d075d8e281d65aaf11a6fe96ec61c5",
+    "docs/MASTER_GAME_ARCHITECTURE.md": "d706c59e571cefbae05f84624372abe2459651604200208a6f4ca00434a29b59",
+    "docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md": "04dbe5a27d15e2f9eb81bf261d78abdadd275fdbcfefdf54571a33be09e53dd5",
+    "architecture/V1_REUSE_INVENTORY.md": "aa69236f7a76d27796fd719817b998e9f4b18e02d4373c15c3238af4d1e5a887",
+    "architecture/BLOCK_09.md": "0e4b8e2e69c89c537791e15cac6aff54461f4bb148c4a806e5ae3840fb4b3bb7",
+    "architecture/BLOCK_08.md": "0e47b968ea7a296b871711ed3b531ce8e7e88387d934c293e90384e19c627255",
+    "architecture/BLOCK_07.md": "6284efcdc4f34685ff675a4fc33abaeeb37fd36d2ea53b3ba77bba1a1c9a19c4",
+    "architecture/BLOCK_06.md": "ee50ff240c56a95daa9d86e421c3f6b8f52bbb3ce1887c4c49abdb0d265bdaac",
+    "architecture/BLOCK_05.md": "53fcdc7377c9facd6d764e52bbb6d93bb41a965422f61f1e13bbc9570bba77b0",
+    "architecture/BLOCK_04.md": "6e8bf603d8ee63183be926a247f59bec047fc85ab7b1a3a394d420c6e605d723",
+    "architecture/BLOCK_03.md": "0ee39a36e11e44d141c3fb55330092ce44cd4f03e26d8152188f6208cae71292",
+    "architecture/BLOCK_02.md": "2682c388fda22cf38985e8caaf435bea0539972801d62a3c9288effeca992817",
+    "architecture/BLOCK_01.md": "01e00eeb0bec2e29b722a276351cdbe77e6b760718328bb6ac5408372557d18a",
+    "architecture/ARCHITECTURE_REVIEW.md": "d71f9fd0344a993e7f9de2fb3361a836f71b3018cfd7188fbb9a943d45ff3222",
+    "architecture/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/orchestration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/orchestration/watch.py": "268ebb0214090404dfe6b333e22e706ca270b227e6cde69da8331601932ab138",
+    "src/orchestration/turn.py": "f19d1ad8e97600cb547f0cc5344f0155d748721d9db914582e574b110fe7547c",
+    "src/orchestration/trial.py": "c905a94274df97488e92f0724140e93368fa4e747e6367665cff9a9f9e6ab113",
+    "src/orchestration/skeleton.py": "7e8848d2887fd67870fb0df7898569dc1222a71f45d6b2f086439c26ba7be26e",
+    "src/orchestration/serialization.py": "05a65585ef3a46cff9f23e57c0568116f4d3de2ae48d882ae601eb432ce678eb",
+    "src/orchestration/scheduler.py": "22e1dcd2df67e50cebd7d8de40977055fc0e718d820eefc9b6ee734613160215",
+    "src/orchestration/rng.py": "781f7007aaf5f298f2ea9cb01f9bad5d8e37516e98bfe9bfea622216fa59d27a",
+    "src/orchestration/replay.py": "58d8c3cc4375b9c8265873dbdd78a087e1433626ca70b901e15154b2c18437a7",
+    "src/orchestration/read_views.py": "3f851f01f751a375335685a6067d0125c417ec4a56a95101e6a181797e35e37e",
+    "src/orchestration/persistence.py": "d9e9f6bbb3253e9d93f93a018493d4994d5bfb4e29a6710154ebf8ce7a579e90",
+    "src/orchestration/events.py": "199957bb1ec960026237c8c7219760880e0d79e132101dbc2316bfe79b23d711",
+    "src/orchestration/encounter.py": "ea3055d67f4ec5ac0ac54cb3d0be8718f676386e52a8877956423dbe6b265e80",
+    "docs/work_orders/RS-PREFLIGHT-001_COMPATIBILITY.md": "ffd94f3ca3ee9bcdce91d6b6015ecb9b36596884c2e1079ae2694aab99693cc6",
+    "docs/work_orders/RS-P1-CORE_VERTICAL_SLICE.md": "d34742693ecb2c318f077c160802df0d9248d7cdc58b522b26219870eec70960",
+    "docs/work_orders/RS-P1-CORE_REFERENCE_VECTORS.json": "b8703e0ffac58d8013505a41e0a2e68ae40d753ca6a9e7f9f40593a67f19c6a5",
+    "docs/work_orders/RS-P1-CORE_INTEGRATION_REVIEW.md": "2ef1d0223d2179b1257ae8a8e3510efd6868e713c2d55301faa37f345c4daf0e",
+    "docs/work_orders/RS-P1-CORE_05_REFERENCE_VECTORS.json": "5f1c69051d76b55d8d207e70d5ea9fe3aa2a23841dd10202956d01398fd4e988",
+    "docs/work_orders/RS-P1-CORE_05_DURABILITY_SAVE.md": "19df8c109265294893e12a8451d1c5a9caab5f81dd28f4e39c9a8db1591a001c",
+    "docs/work_orders/RS-P1-CORE_04_REFERENCE_VECTORS.json": "1cbd41e8bb13f11292c6b1d260325f3f7c99eb7c64cf48d8d3e4c641de196fdb",
+    "docs/work_orders/RS-P1-CORE_04_EVENTS_NPC.md": "564cb57a499a4a7a162845bdd0cbaab3431bb2d469a5a23136ac0f815e1d7ec5",
+    "docs/work_orders/RS-P1-CORE_03_REFERENCE_VECTORS.json": "0cf2b2897ef123d8a7c0a30983f0e08558658a7a1a98036df58dee26fa4c01ba",
+    "docs/work_orders/RS-P1-CORE_03_INTERACTION_COMBAT.md": "0d3dfd28d2f35e48972a0713d0a5126be204f94d5660452d867ea74e4294772e",
+    "docs/work_orders/RS-P1-CORE_02_REFERENCE_VECTORS.json": "8fee27767c8059449161ece6f8a3b9c68b1126314d31dddaca034c9d667caa48",
+    "docs/work_orders/RS-P1-CORE_02_GRID_MOVEMENT.md": "630a467fc1a73c02848d863699b22d183a2cbc462dc7e29feab42ec200c53241",
+    "docs/work_orders/RS-DOC-002_README.md": "7cf4b80f2a08942f0b143e29391f68857373126e376bf9c5f656c7950a8e739a",
+    "docs/work_orders/RS-ARCH-003_ARCHITECTURE_REVIEW.md": "2407ab187c1057342e7447f6f7bcd131969d745b2402fa2181f1a26bfe6ca669",
+    "docs/work_orders/PHASE0_WORK_ORDERS.md": "7681725df97118888dedd8f5e6e148577f6e50ed12c8793f9ac4cde7d944ba74",
+    "docs/work_orders/PHASE0_TOOLCHAIN.json": "f8c2eac146854f075fcf61658759590712aeffa95d07a5aaa0eefad603eaa135",
+    "docs/work_orders/PHASE0_REFERENCE_VECTORS.json": "c46cbe82448f83f0237061e61c35766f6b63535225242088ab175d2d79598121",
+    "docs/work_orders/PHASE0_CONTRACTS.md": "54ce6623e63b9db9e3c89c51ff03d916bc866b45cee4adfd20a374ea82fa0448",
+    "docs/work_orders/IMPLEMENTATION_ROADMAP_ORDERS.md": "e683410a70e888e44e7be587b76b708d531790508a211e31fa77ecb8a895dd1b",
+    "docs/prompts/SOL_CODING_WORK_ORDER.md": "8a146675255d0c15b253241b31b9213ca7bb678cb5cee75395acc46be13dc511",
+    "src/.gitkeep": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+    "src/engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/engines/watch.py": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e",
+    "src/engines/trial.py": "42c78264ba8105ab52478e50579e94919852fa992c5e5ccf5aa0c8be19918248",
+    "src/engines/skeleton.py": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578",
+    "src/engines/encounter.py": "8178f32eec6f2ee38eb7b2918a7ce4fca94b79817b09a2a7d1c976b650e03d73",
+    "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json": "7923b65eb67de2e0cc82e6249bf08a20ce6dcb4f846106ede961f9ab84e82092",
+    "docs/reference/AGENTS_v1.md": "dc63ed856eb3e8b57cfad9a7c67035ca7ec40cce95f00529734c8cdeee4c82e9",
+    "src/adapters/sqlite_store.py": "7dd55b81112c785c3056a494ed19e95b3fe29f9ce7a70a5440ac8e09b2defc45",
+    "src/adapters/save_slots.py": "aa4ca123c1c3458630eacc9187bbb17e4a866355c3573c34cf0a0bd848637251",
+    "src/domain/encounter.py": "f8280a43b7e85da955defe171fd47406d8c596f4191aae79da6ace7f6e44763e",
+    "src/domain/canonical.py": "f636f2565c7fc52026288971755e74cf43dc630e867162f00e4631b07417fd1c",
+    "src/domain/primitives.py": "9cc389d1caddf8caad1291c1c4be3d855ab4ce0707517cd404fef977149f0de2",
+    "src/domain/state_types.py": "8aa9ceb079d6845c23da41bcb2a2596e6ebf961dda5cfeb73266a0fb78465732",
+    "src/domain/trial.py": "fffa1b46d3363ba8b395c089704f1b9c9ea63b7db1bef712dc0be6d94311da7f",
+    "src/domain/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/domain/watch.py": "0a82c5c7c268b94d21ab789f9b3288e7d41913f7982b83ffbcbb57339366f0c5",
+    "src/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/app/watch_registry.py": "73e98a8410d893093dccf3f1a6b6d6a7a9fc2094460538b36f5f119e9a3f1c93",
+    "src/app/watch.py": "73a0c1aa8ea5ed7fd369b666dd32192131a5f1ef61a2d68fe8d8e1a2a2bbdce6",
+    "src/app/trial_registry.py": "93c2143b1156dae12327bf58fa661231e59c9f3d0b5626991266bd4c630f61d7",
+    "src/app/trial.py": "5626a91b094c27f6e50a53d623ba300cf021dc1a162000156ea3f9662d049041",
+    "src/app/headless.py": "2cbf1027a3a7ce1a1b437f0b9db23044ab96307515e7d1894dbcd4bc6e7b40d1",
+    "src/app/feature_registry.py": "09deccdb9e3de01a778fefa388a7043d910fd3dfc94d84dae9ecd745938558eb",
+    "src/app/encounter_registry.py": "d5b1239445ee6913b6efa56d43b8942d5ffbbbffa5af5ce385f9710026c34c90",
+    "src/app/encounter.py": "b705a29cd5ae4b602babc52049ccf81b0481a3584d500b2f80f36fc5a1b993a5",
+    "src/app/durable.py": "2a23126df48bc62e9df705d0d7c3a815643efcb8c2d51decc78f89ccf321081a",
+    "src/contracts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/contracts/watch.py": "aab9f202db8cd13ff9839cb902b275f19bdf05dd26079a3532a6e063c4ebc73b",
+    "src/contracts/turn.py": "8233215d9feb0a1293f16fe1a88a4081a04a8c19ab1bba5ae75e45a85a98ad3e",
+    "src/contracts/trial.py": "6377a95a6b667a875620ee60e51148adb5490e10711add41b46be2a9a1d4ed3c",
+    "src/contracts/state_io.py": "9babd676f84d4976592f23b5d977a5ea7748a37c2e74353010391c045c4e3c64",
+    "src/contracts/skeleton.py": "6879ca1e8cfe246c4031bb73c9b0111e7524432211675313563f650ae21dbee9",
+    "src/contracts/replay.py": "93cb9b116d78976314bfa8eb3ddecf2f415cc6712487fd73d71975290411613c",
+    "src/contracts/read_views.py": "47c71137717485dc84c7c20ad9664dcb3613611ad1d27d2bc9608e040396032f",
+    "src/contracts/persistence.py": "6c066900a6b1c620eb3fef10795d29c62c2254ce5ebb3188427c58cdf7bbc661",
+    "src/contracts/messages.py": "d23946681fdd0783d2d54365125fcb19a872334146edd7cd75298ed42eb78110",
+    "src/contracts/events.py": "26b7bc9c225b8138c31d7f5fff3757c26cf4eff89894a58b94fcee5db0b8c448",
+    "src/contracts/errors.py": "6c8ffa8cad49dd15cfedb324caf6e942fb16e442cd97b9f828daa48a250798cb",
+    "src/contracts/encounter.py": "3052270fca53c1ae01421971632612279ea2f9bd45d94df0a95974139697e2c0"
+  },
+  "installed_baseline": {
+    "python": "3.13.12",
+    "ruff": "0.16.6",
+    "mypy": "2.4.0",
+    "pytest": "9.1.1",
+    "lock_sha256": "4ea4f492e6a744a44924d3b4f2f97ad8e987b25e81a6f3792691495b739af21b",
+    "config_sha256": "147a3f5fb8135d9d7ce641cb7269e2fcc735b8b915666fbb827da73eb2ae15a8"
+  },
+  "candidate_tools": [
+    {
+      "name": "import-linter",
+      "version": "2.15",
+      "native_status": "NOT_RUN",
+      "source": "https://pypi.org/project/import-linter/2.15/"
+    },
+    {
+      "name": "grimp",
+      "version": "3.17",
+      "native_status": "NOT_RUN",
+      "source": "https://pypi.org/project/grimp/3.17/"
+    },
+    {
+      "name": "coverage",
+      "version": "7.16.2",
+      "native_status": "NOT_RUN",
+      "source": "https://coverage.readthedocs.io/en/7.16.2/config.html"
+    }
+  ],
+  "layers_high_to_low": [
+    "app",
+    "adapters",
+    "orchestration",
+    "engines",
+    "contracts",
+    "domain"
+  ],
+  "namespace_roots": [
+    "adapters"
+  ],
+  "actual_internal_root_imports": {
+    "domain": [],
+    "contracts": [
+      "domain"
+    ],
+    "engines": [
+      "contracts",
+      "domain"
+    ],
+    "orchestration": [
+      "contracts",
+      "domain"
+    ],
+    "adapters": [
+      "contracts",
+      "domain",
+      "orchestration"
+    ],
+    "app": [
+      "adapters",
+      "contracts",
+      "domain",
+      "engines",
+      "orchestration"
+    ]
+  },
+  "engine_modules": [
+    "engines.skeleton",
+    "engines.trial",
+    "engines.encounter",
+    "engines.watch"
+  ],
+  "public_engine_methods": [
+    {
+      "module": "engines.encounter",
+      "class_name": "EncounterActions",
+      "method": "manifest",
+      "path": "src/engines/encounter.py",
+      "definition_line": 26,
+      "body_start": 27,
+      "body_end": 40,
+      "source_sha256": "8178f32eec6f2ee38eb7b2918a7ce4fca94b79817b09a2a7d1c976b650e03d73"
+    },
+    {
+      "module": "engines.encounter",
+      "class_name": "EncounterActions",
+      "method": "evaluate",
+      "path": "src/engines/encounter.py",
+      "definition_line": 42,
+      "body_start": 43,
+      "body_end": 99,
+      "source_sha256": "8178f32eec6f2ee38eb7b2918a7ce4fca94b79817b09a2a7d1c976b650e03d73"
+    },
+    {
+      "module": "engines.encounter",
+      "class_name": "EncounterMovement",
+      "method": "manifest",
+      "path": "src/engines/encounter.py",
+      "definition_line": 105,
+      "body_start": 106,
+      "body_end": 116,
+      "source_sha256": "8178f32eec6f2ee38eb7b2918a7ce4fca94b79817b09a2a7d1c976b650e03d73"
+    },
+    {
+      "module": "engines.encounter",
+      "class_name": "EncounterMovement",
+      "method": "evaluate",
+      "path": "src/engines/encounter.py",
+      "definition_line": 118,
+      "body_start": 119,
+      "body_end": 156,
+      "source_sha256": "8178f32eec6f2ee38eb7b2918a7ce4fca94b79817b09a2a7d1c976b650e03d73"
+    },
+    {
+      "module": "engines.skeleton",
+      "class_name": "Stepper",
+      "method": "manifest",
+      "path": "src/engines/skeleton.py",
+      "definition_line": 15,
+      "body_start": 16,
+      "body_end": 18,
+      "source_sha256": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578"
+    },
+    {
+      "module": "engines.skeleton",
+      "class_name": "Stepper",
+      "method": "evaluate",
+      "path": "src/engines/skeleton.py",
+      "definition_line": 20,
+      "body_start": 21,
+      "body_end": 27,
+      "source_sha256": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578"
+    },
+    {
+      "module": "engines.skeleton",
+      "class_name": "Counter",
+      "method": "manifest",
+      "path": "src/engines/skeleton.py",
+      "definition_line": 35,
+      "body_start": 36,
+      "body_end": 38,
+      "source_sha256": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578"
+    },
+    {
+      "module": "engines.skeleton",
+      "class_name": "Counter",
+      "method": "evaluate",
+      "path": "src/engines/skeleton.py",
+      "definition_line": 40,
+      "body_start": 41,
+      "body_end": 42,
+      "source_sha256": "ea8d45a7c6e83955fc04ea8c477261310b3f42c1cc6eeb16f07dcad5610b6578"
+    },
+    {
+      "module": "engines.trial",
+      "class_name": "Movement",
+      "method": "manifest",
+      "path": "src/engines/trial.py",
+      "definition_line": 15,
+      "body_start": 16,
+      "body_end": 23,
+      "source_sha256": "42c78264ba8105ab52478e50579e94919852fa992c5e5ccf5aa0c8be19918248"
+    },
+    {
+      "module": "engines.trial",
+      "class_name": "Movement",
+      "method": "evaluate",
+      "path": "src/engines/trial.py",
+      "definition_line": 25,
+      "body_start": 26,
+      "body_end": 48,
+      "source_sha256": "42c78264ba8105ab52478e50579e94919852fa992c5e5ccf5aa0c8be19918248"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchNpc",
+      "method": "manifest",
+      "path": "src/engines/watch.py",
+      "definition_line": 28,
+      "body_start": 29,
+      "body_end": 29,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchNpc",
+      "method": "evaluate",
+      "path": "src/engines/watch.py",
+      "definition_line": 31,
+      "body_start": 32,
+      "body_end": 47,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchBell",
+      "method": "manifest",
+      "path": "src/engines/watch.py",
+      "definition_line": 52,
+      "body_start": 53,
+      "body_end": 53,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchBell",
+      "method": "evaluate",
+      "path": "src/engines/watch.py",
+      "definition_line": 55,
+      "body_start": 56,
+      "body_end": 63,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchRespond",
+      "method": "manifest",
+      "path": "src/engines/watch.py",
+      "definition_line": 68,
+      "body_start": 69,
+      "body_end": 69,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchRespond",
+      "method": "evaluate",
+      "path": "src/engines/watch.py",
+      "definition_line": 71,
+      "body_start": 72,
+      "body_end": 80,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchEchoEngine",
+      "method": "manifest",
+      "path": "src/engines/watch.py",
+      "definition_line": 85,
+      "body_start": 86,
+      "body_end": 86,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchEchoEngine",
+      "method": "evaluate",
+      "path": "src/engines/watch.py",
+      "definition_line": 88,
+      "body_start": 89,
+      "body_end": 110,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchPassive",
+      "method": "manifest",
+      "path": "src/engines/watch.py",
+      "definition_line": 115,
+      "body_start": 116,
+      "body_end": 116,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    },
+    {
+      "module": "engines.watch",
+      "class_name": "WatchPassive",
+      "method": "evaluate",
+      "path": "src/engines/watch.py",
+      "definition_line": 118,
+      "body_start": 119,
+      "body_end": 123,
+      "source_sha256": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e"
+    }
+  ],
+  "golden_nodes": [
+    "tests/replay/test_golden.py::test_core_trace",
+    "tests/replay/test_trial.py::test_trial_core_trace",
+    "tests/replay/test_encounter.py::test_encounter_core_trace",
+    "tests/replay/test_encounter.py::test_encounter_death_trace",
+    "tests/replay/test_watch.py::test_watch_core_trace",
+    "tests/replay/test_watch.py::test_watch_passive_trace"
+  ],
+  "supplemental_nodes": [
+    "tests/integration/test_core_slice.py::test_combined_gameplay_midcombat_save_load_replay[False]",
+    "tests/integration/test_core_slice.py::test_combined_gameplay_midcombat_save_load_replay[True]",
+    "tests/replay/test_registered_replay.py::test_registered_roundtrip_trace"
+  ],
+  "probe_expectations": [
+    {
+      "id": "IMPORT_ALLOWED",
+      "edges": [
+        "app.entry -> adapters.port",
+        "adapters.port -> orchestration.driver",
+        "orchestration.driver -> contracts.port",
+        "engines.skeleton -> contracts.port",
+        "contracts.port -> domain.value"
+      ],
+      "expected": "both contracts KEPT; exit 0"
+    },
+    {
+      "id": "IMPORT_REVERSE",
+      "add_edge": "domain.value -> app.entry",
+      "expected": "layer contract BROKEN; diagnostic has violating edge; nonzero exit"
+    },
+    {
+      "id": "IMPORT_INDIRECT",
+      "add_edges": [
+        "domain.value -> contracts.port",
+        "contracts.port -> app.entry"
+      ],
+      "expected": "layer contract BROKEN; chain through contracts.port; nonzero exit"
+    },
+    {
+      "id": "IMPORT_ENGINE",
+      "add_edge": "engines.skeleton -> engines.trial",
+      "expected": "independence contract BROKEN; nonzero exit"
+    },
+    {
+      "id": "IMPORT_ENGINE_INDIRECT",
+      "add_edges": [
+        "engines.skeleton -> domain.value",
+        "domain.value -> engines.trial"
+      ],
+      "expected": "independence contract BROKEN; transitive chain; nonzero exit"
+    },
+    {
+      "id": "IMPORT_TYPE_CHECKING",
+      "type_checking_edge": "domain.value -> app.entry",
+      "expected": "layer contract BROKEN despite TYPE_CHECKING"
+    },
+    {
+      "id": "IMPORT_NAMESPACE",
+      "expected": "adapters.port present without adapters/__init__.py; allowed case KEPT"
+    },
+    {
+      "id": "IMPORT_MISSING_ROOT",
+      "remove_tree": "adapters",
+      "expected": "missing required root/layer error; nonzero exit; no KEPT qualification"
+    },
+    {
+      "id": "COVERAGE_BODY",
+      "source_lines": [
+        "def required(flag):",
+        "    value = 1",
+        "    if flag:",
+        "        value += 1",
+        "    return value"
+      ],
+      "calls": [
+        false,
+        true
+      ],
+      "expected_returns": [
+        1,
+        2
+      ],
+      "expected_body_lines": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "expected": "native branch data; both arms observed; test_function contexts retained"
+    },
+    {
+      "id": "COVERAGE_IMPORT_ONLY",
+      "source_lines": [
+        "def required(flag):",
+        "    value = 1",
+        "    if flag:",
+        "        value += 1",
+        "    return value"
+      ],
+      "calls": [],
+      "expected_body_lines": [],
+      "expected": "native executed definition is not a body hit; manual preflight verdict ZERO_HIT"
+    },
+    {
+      "id": "COVERAGE_STALE",
+      "expected": "any source/config/fixture/selection/tool/lock hash difference makes earlier evidence STALE; never reuse as CURRENT"
+    }
+  ],
+  "note": "AST was used once to enumerate authoring source ranges, not as a persistent checker or execution/reachability evidence. Independently specified probe expectations above are future tests, all NOT_RUN."
+}
