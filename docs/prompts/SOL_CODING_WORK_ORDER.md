@@ -4,6 +4,7 @@ Owner/executor: GPT-6.1 Sol for architecture, all implementation/tests/repair/in
 Format: [v2.6 prompt](../ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md), **AI Documentation Format**.
 This template is not an executable task. Supply concrete values and required contracts before READY.
 Language: Use structured English for all AI-facing instructions,architecture,work orders,handoffs,backlogs,schemas,evidence and technical notes. Write only essential human-facing notices/decisions/actions in concise Korean;do not add parallel Korean translations. Preserve Korean player text,quoted source data and historical references as data.
+Human-facing exception:the director-authorized [GAME_SYSTEM_SUMMARY_KO.md](../../GAME_SYSTEM_SUMMARY_KO.md) uses concise Korean game-system explanations. Follow the prompt's **Korean Game Progress Companion** rule:every BACKLOG.md change must include the companion update in the same delivery,even for planning/status-only changes.
 
 ## 1. Authoring Rules
 
@@ -19,6 +20,7 @@ Language: Use structured English for all AI-facing instructions,architecture,wor
 10. Missing input/contract/prerequisite, placeholder, or unresolved design means DRAFT, not READY.
 11. Acceptance requires diff/results/scope/wiring/Sol review. Do not add unrelated CI/tools/report generators.
 12. v1 reuse: individually reviewed narrative content only; no code/formulas/stats/balance/behavior/schema bindings/test oracles.
+13. When BACKLOG.md is in scope,include GAME_SYSTEM_SUMMARY_KO.md in required reads/allowed documentation edits/verification/delivery. Keep actual gameplay vs planning/tooling status explicit;do not translate full technical contracts into the companion.
 
 Small tasks include pure functions under settled contracts, DTO conversion, approved-schema data preparation, adapters, tests, indexes.
 Sol resolves boundaries, public contracts, ownership, scheduler/RNG/hash/catch-up/save/IPC/lifecycle/dependencies/concurrency/governance before implementation.
@@ -116,6 +118,7 @@ Each field needs concrete values or NOT_APPLICABLE + reason. This table is a sch
 ## 4. Acceptance
 
 - Inspect actual diff/paths/contracts/wiring.
+- If BACKLOG.md changed,verify the Korean companion changed in the same delivery and accurately summarizes game impact/status/verification limits under the director rule.
 - Check independent expectations, boundaries, and failures; test existence alone is insufficient.
 - Execute specified checks or inspect trustworthy actual results; missing evidence UNVERIFIED.
 - Code features require a live path and stage-appropriate coverage/replay. Accept standalone work only as standalone.

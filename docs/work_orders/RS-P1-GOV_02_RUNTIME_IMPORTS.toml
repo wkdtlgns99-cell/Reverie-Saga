@@ -1,0 +1,13 @@
+# GOV-02 runtime cycle control. Type-only forward cycles are allowed by AP-09.
+# Type-inclusive layer, independence and external bans remain in pyproject.toml.
+[tool.importlinter]
+root_packages = ["app", "adapters", "orchestration", "engines", "contracts", "domain"]
+include_external_packages = false
+exclude_type_checking_imports = true
+
+[[tool.importlinter.contracts]]
+id = "rs-siblings-acyclic"
+name = "Reverie Saga same-layer siblings have no runtime cycles"
+type = "acyclic_siblings"
+ancestors = ["app", "adapters", "orchestration", "engines", "contracts", "domain"]
+depth = 10

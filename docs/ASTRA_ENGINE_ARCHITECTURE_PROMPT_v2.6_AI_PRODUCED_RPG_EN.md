@@ -18,6 +18,7 @@ These explicit director instructions supersede conflicting role and development-
 - User-facing reports must be short and focused on decisions, results, and the next action. Detailed contracts belong in project architecture documents when requested; do not repeat the full architecture in chat.
 - AI-facing documents MUST follow the English, compact format below. This director-approved format update changes presentation only; preserve requirements, contracts, evidence, and task state.
 - Director language update 2026-10-06: Use structured English for all AI-facing instructions,architecture,work orders,handoffs,backlogs,schemas,evidence and technical notes. Write only essential human-facing notices/decisions/actions in concise Korean;do not add parallel Korean translations. Preserve Korean player text,quoted source data and historical references as data.
+- Director human-progress update 2026-10-07:Maintain the Korean user-facing game-system companion [GAME_SYSTEM_SUMMARY_KO.md](../GAME_SYSTEM_SUMMARY_KO.md) whenever BACKLOG.md changes;the dedicated rule below is an explicit exception to the no-parallel-Korean-document restriction,not a translation requirement for technical documents.
 - This workflow correction does not authorize production implementation during an explicitly design-only task.
 - Latest v1 reuse restriction: author new architecture, engines, formulas, balancing rules, and tests for Reverie Saga. Do not port v1 production code, calculation policies, or test expected values. Reuse only individually reviewed simple content such as names, lore, descriptions, visual concepts, and quest premises; templates can contain embedded mechanics, so extract narrative fields and reject source stats/formulas/behavior/schema bindings. Preserve v1 unchanged as evidence. See `architecture/V1_REUSE_INVENTORY.md` and the small `docs/reference/QUILLTALE_CONTENT_CANDIDATES.json` dossier; it is not runtime-imported content.
 
@@ -25,14 +26,22 @@ These explicit director instructions supersede conflicting role and development-
 
 Scope: active AI rules, prompts, product/architecture specs, BLOCK documents, work orders, handoffs, backlogs, and technical reference inventories.
 
-1. MUST write instructions and technical prose in English. Keep chat/player text in Korean. Preserve quoted Korean content, examples, source names, and historical reference files when translation would change the data.
+1. MUST write instructions and technical prose in English. Keep chat/player text and the director-authorized human-facing GAME_SYSTEM_SUMMARY_KO.md companion in Korean. Preserve quoted Korean content, examples, source names, and historical reference files when translation would change the data.
 2. MUST prioritize accurate AI parsing and low token overhead: short headings, stable IDs, concise normative bullets, and small tables for parallel contracts.
 3. MUST keep one canonical statement per requirement. Link to its file/section; do not copy full specs into handoffs or work orders. Required standalone task contracts and examples may repeat the relevant minimum.
 4. MUST preserve authority, obligations, exceptions, types, units, ordering, ownership, errors, dependencies, approval gates, and evidence status. Compression MUST NOT weaken semantics or omit unresolved risks.
 5. MUST distinguish FIXED/PROVISIONAL and TARGET/ESTIMATE/MEASURED/UNVERIFIED. Mark future paths NEW/PLANNED and missing execution NOT_RUN.
-6. MUST avoid parallel Korean translations, narrative padding, decorative banners, repeated summaries, and redundant diagrams. Do not replace clear terms with cryptic abbreviations.
+6. MUST avoid parallel Korean technical translations, narrative padding, decorative banners, repeated summaries, and redundant diagrams. The dedicated human-facing Korean progress companion below is the approved exception;do not translate full contracts into it. Do not replace clear terms with cryptic abbreviations.
 7. MUST use UTF-8, descriptive English keys, and stable paths/section IDs. Do not rename files solely for translation.
 8. MUST validate links, IDs, retained requirements, and document consistency after conversion. Do not claim measured token savings without a tokenizer comparison.
+
+## Korean Game Progress Companion — Director Rule 2026-10-07
+
+- Canonical task/status/evidence remain BACKLOG.md and the linked source orders;[GAME_SYSTEM_SUMMARY_KO.md](../GAME_SYSTEM_SUMMARY_KO.md) is a human-facing explanation,not another technical/status SSOT.
+- Whenever BACKLOG.md is edited for a task,plan,status,verification result,history or correction,MUST update GAME_SYSTEM_SUMMARY_KO.md in the same delivery. Keep its current overview/remaining/next sections consistent and add a brief Korean dated change entry,using existing task IDs where applicable. One entry per logical delivery is enough;do not log every mechanical edit.
+- Explain in2–4 short Korean sentences what changed,what it means for the game/player or development reliability,and the actual completion/verification limits. State explicitly when an update is planning/documentation/tooling only and changes no gameplay. Never present READY/design/probe results as implemented features or stale test results as newly executed.
+- This director rule authorizes the accompanying summary-only edit whenever an order allows BACKLOG.md updates. New orders MUST include the companion in allowed documentation edits/required reads/delivery checks. This does not expand runtime/dependency/policy/commit/push authority.
+- Preserve prior brief history;revise outdated overview statements rather than accumulating contradictory current summaries. Include relevant backlog/order links;avoid exhaustive technical translation,logs,code signatures and duplicated full specifications. Validate UTF-8,links and consistency with BACKLOG.md before completion.
 
 # §0 ROLE CONTRACT
 

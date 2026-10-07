@@ -1,10 +1,17 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-06 (Asia/Seoul). Phase0/representative CORE slice DONE;RS-P1-GOV IN_PROGRESS,staged instruction authoring DONE,GOV-01 native qualification ACCEPTED/DONE;GOV-02/03 DRAFT;later capabilities remain deferred.
+Updated:2026-10-07 (Asia/Seoul). Phase0/representative CORE DONE;RS-P1-GOV IN_PROGRESS,GOV-01 historical qualification DONE,GOV-02 shared G03 ACCEPTED/DONE;GOV-03 order READY/implementation NEXT.
 Task/status/dependency SSOT. Designs: `architecture/`; orders: `docs/work_orders/`; context: `SESSION_HANDOFF.md`.
 Format: prompt **AI Documentation Format**. Preserve task IDs/history; never import v1 backlog automatically or delete tasks without authorization.
+Human-facing companion:[GAME_SYSTEM_SUMMARY_KO.md](GAME_SYSTEM_SUMMARY_KO.md). Every change to this backlog MUST include its concise Korean game-system explanation update in the same delivery;follow the prompt's **Korean Game Progress Companion** rule. Keep task/status/evidence SSOT here;the companion is not a full technical translation.
 
-## Repository Upload — 2026-10-06
+## Repository Publication — 2026-10-07
+
+Director authorized backlog cleanup and publication of all current project changes to origin/main (wkdtlgns99-cell/Reverie-Saga). Pre-publication local/remote HEAD match35f3c45dbd73291879c92044cba52f99d13987d3;no force-push/reset or remote overwrite. Publish shared GOV-02 dependency controls/locked toolchain/79 tests/evidence,GOV-03 READY order/inventory,and Korean progress summary/sync rules with the cleaned backlog/handoff. Existing gameplay unchanged;G07 NOT_IMPLEMENTED. Ignore .venv/venv,caches/private native logs/temporary files. Final commit/push result is verified directly against Git/remote,not inferred from this preparation record.
+
+Staged scope:20 explicit project files. Staged whitespace check reports only pre-existing blank-at-EOF in GOV-02 order/input inventory/candidate TOML;retain those historical artifact bytes rather than silently change hash-bound evidence. No secrets matched the limited private-key/GitHub/API-token pattern scan;this is not an exhaustive security audit. UTF-8/fences/127 local links and targeted runtime checks passed;untracked artifacts are included in the actual staged review,not just tracked diff.
+
+## Historical Repository Upload — 2026-10-06
 
 Director authorized upload to `wkdtlgns99-cell/Reverie-Saga` (`main`);remote/local baseline matched `efd2478ff8a6ed93ee833c3f8464a0efdd8a181a`.
 
@@ -17,11 +24,42 @@ Director authorized upload to `wkdtlgns99-cell/Reverie-Saga` (`main`);remote/loc
 
 ## Status / Acceptance
 
+### Current Snapshot — 2026-10-07
+
+| Area | Actual state | Next / evidence |
+|---|---|---|
+| Phase0 / representative CORE | DONE | Movement,door/combat,time/rule-based NPC,durable save-load/replay connected;not a graphical/full game |
+| GOV-01 / GOV-02 | ACCEPTED/DONE | Python3.13.12/20 pins;shared G03 dependency control active;[GOV-02 evidence](docs/work_orders/RS-P1-GOV_02_ACTIVATION.json) |
+| GOV-03 | Order READY;implementation NOT_STARTED | [Next bounded execution](docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md);G07 NOT_ACTIVE |
+| Korean progress companion | Created;sync rule active | [User-facing summary](GAME_SYSTEM_SUMMARY_KO.md);update with each backlog change |
+| Client/full world/NPC cognition/release | Later implementation/qualification | MASTER requirements retained;no full-game/device/independent-review claim |
+
+Pre-publication checks2026-10-07:Ruff PASS;strict mypy --no-native-parser PASS89files;79 dependency-control tests+6 golden replays=85PASS32.76s with owned workspace basetemp. Initial default pytest Temp directory was access-denied (WinError5;7passed/78setup errors),not a gameplay defect;rerun changed only the temporary path and passed. Last full1192-test result remains prior GOV-02 acceptance;not rerun for this publication. No source/assertion/rule weakening.
+
+### Prior Acceptance Records
+
+Director documentation update2026-10-07:NEW Korean human-facing game-system progress companion;canonical prompt/template/MASTER/handoff now record its language exception and mandatory same-delivery update with every BACKLOG.md change.6 UTF-8 documents/72 local links/fences/whitespace/git diff --check PASS;153 entry hashes compared,148 unchanged/exact5 authorized doc changes+1NEW summary,HEAD unchanged. Existing gameplay/GOV status unchanged;documentation-only,no runtime/config/dependency/CI/agent/commit/push change;runtime tests NOT_RUN for this documentation task. NEXT remains GOV-03 implementation under the READY order.
+
+GOV-03 order authoring2026-10-07:DONE/READY,self-reviewed;implementation NOT_STARTED/G07 NOT_ACTIVE. [Typed native replay-body order](docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md)+[input/native probe inventory](docs/work_orders/RS-P1-GOV_03_INPUT_INVENTORY.json):151 entry hashes,10 actual classes/20 public method ranges,class-key identity,exact six node/context pairs,public coverage7.16.2 API/schema contracts,typed producer/assessor/CLI,malformed/stale/missing/definition-only rejection examples. Fresh native goldens6PASS12.82s/process13.2852s;active PyTracer/branch data/all20 qualified body hits observed. Source/tests/shared config/lock/environment and prior evidence preserved;no G07 implementation/activation,full-suite rerun,CI/agents/commit/push. NEXT execute this bounded READY order when directed;3s/full11/device/full-game/independent review UNQUALIFIED.
+
+GOV-02 installation/activation2026-10-07:director authorized exact Python3.13.12 installation, application and tests. Project-local base C:\ReverieSaga\venv\python-3.13.12 and .venv;20 exact hash-locked packages/pip25.3 bootstrap. Shared G03 ACCEPTED/DONE:three type-inclusive layers/independence/56 named-ban contracts plus one runtime sibling-cycle contract;AP-09 annotation cycles remain legal,TYPE_CHECKING reverse/SDK violations still fail. New79 native subprocess probes,full1192 tests (262.07s),six explicit goldens2.88s/three supplements6.42s,Ruff and strict mypy89files with official --no-native-parser PASS. Windows generated-linter launcher/ast_serialize DLL denial preserved;unchanged installed CLI entry point/Python parser used,no OS-policy changes. All production/prior tests/fixtures preserved;no commit/push/CI/agents. [Acceptance](docs/work_orders/RS-P1-GOV_02_DEPENDENCY_CONTROL.md#10-gov-02-execution--native-corrections--2026-10-07)/[fresh execution evidence](docs/work_orders/RS-P1-GOV_02_ACTIVATION.json). GOV-03 authoring completed;NEXT execute its bounded READY implementation order when directed;G07/all11/hardware/full-game/independent review remain UNQUALIFIED.
+
+Historical authoring snapshot follows; native NOT_RUN there is superseded by the dated acceptance above.
+
+GOV-02 authoring2026-10-07:7 UTF-8 delivery files,strict TOML/JSON,4 distinct contracts/56 banned roots,original13-in20 pin/hash inclusion,88 local links,PowerShell/probe/source syntax and git diff --check PASS.143 entry files:139 unchanged/four authorized factual-doc changes/three NEW artifacts;HEAD unchanged. Historical raw-log/environment availability and newline fingerprints separately recorded;native execution NOT_RUN. [Detailed evidence](docs/work_orders/RS-P1-GOV_02_DEPENDENCY_CONTROL.md#9-authoring-verification--current-outcome).
+
 TODO=unmet specification/prerequisites; READY=complete order, not executed; IN_PROGRESS=active; READY_FOR_REVIEW=evidence submitted; DONE=Sol reviewed/accepted; BLOCKED=concrete impediment; DEFERRED=later phase.
 Code DONE: actual file/live path/commands/results/tests/stage-appropriate coverage/replay. Missing support: UNVERIFIED.
 Document DONE: actual artifact/content/links/diff checks; not gameplay implementation or product approval. Self-review is not independent review.
 
 ## Next Session — Director Resume Note
+
+1. NEXT:execute [GOV-03 native golden body-coverage order](docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md) when directed. Order READY;harness implementation/G07 activation NOT_STARTED.
+2. Preserve accepted gameplay/G03,existing tests/oracles/20 locked dev packages. Refresh source/registry/input hashes before implementation;explicit interpreter C:\ReverieSaga\.venv\Scripts\python.exe.
+3. Last full regression:1192PASS under GOV-02 acceptance. Later covered six-golden probe:6PASS/all20 current engine bodies hit;this is input qualification,not implemented G07 or3s/device/full11 qualification.
+4. Every backlog edit must update [Korean game progress summary](GAME_SYSTEM_SUMMARY_KO.md) in the same delivery. Existing evidence below is historical for its stated date;do not execute its obsolete NEXT instructions.
+
+### Historical Resume Records
 
 Latest director request "다음꺼 ㄱ":Executed [GOV-01 isolated native qualification](docs/work_orders/RS-P1-GOV_STAGED_CONTROLS.md#10-gov-01-execution--acceptance--2026-10-06),ACCEPTED/DONE. [Evidence](docs/work_orders/RS-P1-GOV_01_QUALIFICATION.json)+[hashed20-package lock](docs/work_orders/RS-P1-GOV_01_TOOLCHAIN.lock):Windows CPython3.13.12/import-linter2.15/grimp3.17/coverage7.16.2,pip check/native probes PASS;original13 version/wheel hashes preserved. Real51-module/286-dependency namespace-inclusive graph/both contracts PASS;11independent probe checks;all10 production engine classes/20public bodies hit in six actual golden contexts. Six covered goldens14.92s/process20.446s,separate3supplemental29.20s,1113full tests253.15s/no skips,Ruff/native strict mypy87files PASS. 46raw command records and actual failure/recovery evidence retained.Final delivery6UTF-8 files/2TOML blocks/PowerShell/65local links/raw-license hashes PASS;execution JSON276315bytes/SHA25639c80442d5e4027795ecee1160d2c125d336d599dfb975063571046e1a975761. 141entry files:137protected inputs unchanged,exact4allowed doc changes+2NEW evidence/lock;shared source/tests/config/lock/environment preserved,HEAD unchanged,no active CI/policy/helper/checker/commit/push. GOV parent IN_PROGRESS;GOV-02/03 DRAFT. NEXT author GOV-02 shared native dependency-control order and concrete lock/config/external-import prohibition proposal. G07 3s/full11 60s/device targets UNQUALIFIED;counter/access/historical migration/artifact/report and full-game/NPC emotion/persona/BDI/memory remain later. Self-review only.
 
@@ -38,7 +76,7 @@ Previous director request "다음거 ㄱ":executed [CORE-04 time/events/autonomo
 3. Step3 DONE in order:RS-P0-002 → RS-P0-004 → RS-P0-001 → RS-P0-003. Actual CLI/turn/proxy/RNG/replay implemented;37tests PASS,Ruff PASS,strict mypy35files PASS.
 4. Later family versions/deployment/asset fit and source-specific orders remain deferred at applicable entry. B09 #6/#34 PARTIAL for later tasks;32/34 full-packet completeness retained; parent ARCH-002 IN_PROGRESS.
 
-Phase0 default toy and CORE-01 Gauge paths retain exact behavior. CORE-02 grid movement and CORE-03 gate/combat are accepted. CORE-04 time/events/autonomous NPC is implemented/accepted;1009tests/Ruff/strict mypy75files PASS. CORE-05 ACCEPTED/DONE;representative parent review accepted2026-10-06. NEXT author GOV-02 source-specific native dependency-control execution order and concrete shared lock/config proposal. 1111tests in 271.79s (1009previous+102new),new focused102tests148.72s,Ruff PASS,strict mypy86files PASS; six explicit goldens3.68s/local Ruff+goldens4.5598222s. Self-review only;full-game/bundle/device/performance/independent-person qualification UNVERIFIED. No agents/commit/push;later readiness gaps retained.
+Historical pre-GOV-02 snapshot (superseded by Current Snapshot):Phase0 default toy and CORE-01 Gauge paths retain exact behavior. CORE-02 grid movement and CORE-03 gate/combat are accepted. CORE-04 time/events/autonomous NPC is implemented/accepted;1009tests/Ruff/strict mypy75files PASS. CORE-05 ACCEPTED/DONE;representative parent review accepted2026-10-06. The recorded NEXT was authoring GOV-02;it has since been accepted and current NEXT is GOV-03 implementation. Historical1111tests271.79s/new102tests148.72s,Ruff/strict mypy86files/six goldens3.68s PASS. Self-review only;full-game/bundle/device/performance/independent-person qualification UNVERIFIED. Historical no-agent/no-commit/push scope retained.
 
 ## Execution Order
 
@@ -53,7 +91,7 @@ Phase0 default toy and CORE-01 Gauge paths retain exact behavior. CORE-02 grid m
 9. DONE: RS-ARCH-002-B08, `architecture/BLOCK_08.md`: B3 eleven gates/async qualification → B4 evidence-backed scope → B5 baseline/authority/delivery.
 10. RS-ARCH-003 review and RS-PREFLIGHT-001 Phase0 compatibility/instructions DONE. B09 READY_FOR_REVIEW;32complete,#6/#34 later-order readiness PARTIAL; all four Phase0 instructions finalized.
 11. DONE: RS-P0-002 config → RS-P0-004 proxy → RS-P0-001 skeleton → RS-P0-003 replay. Exactly four Phase0 implementation items; actual acceptance below.
-12. DONE:first representative headless movement/interaction/combat/NPC/save-load/replay slice. Staged RS-P1-GOV instructions authored and GOV-01 native qualification DONE;NEXT author GOV-02 dependency-control order before actual shared G03/G07 activation.
+12. DONE:first representative headless movement/interaction/combat/NPC/save-load/replay slice. Staged RS-P1-GOV instructions authored and GOV-01 native qualification DONE;GOV-02 shared G03 ACCEPTED;NEXT execute the READY GOV-03 coverage order;G07 implementation/activation NOT_STARTED.
 13. Client prototype/MIN-SPEC validation after Brain/client contract; no early final3D/audio/illustration production.
 14. Factory/import validation → curated content into new schema → first-segment playtest → needed bulk production → packaging/lifecycle/release QA.
 
@@ -114,7 +152,7 @@ Review repairs settle nested observation paths/operation order/epoch errors, wav
 | ID | Task | Entry condition |
 |---|---|---|
 | RS-P1-CORE | Combat/movement/interaction/events/save/representative NPC/world | First representative headless slice DONE;CORE-01/02/03/04/05 DONE;[integration acceptance](docs/work_orders/RS-P1-CORE_INTEGRATION_REVIEW.md). Combined movement/interaction/combat/NPC/save-load/replay path;1113tests. Full world/cognition/client remain future capabilities |
-| RS-P1-GOV | import-linter/coverage/manifests/reports/counters/migration | IN_PROGRESS:[staged order](docs/work_orders/RS-P1-GOV_STAGED_CONTROLS.md) authored;GOV-01 native qualification ACCEPTED/DONE;GOV-02/03 DRAFT,later controls DEFERRED;custom planned2/current0/max3,commit gates11 |
+| RS-P1-GOV | import-linter/coverage/manifests/reports/counters/migration | IN_PROGRESS:GOV-01 historical qualification DONE;GOV-02 shared G03 ACCEPTED/DONE ([evidence](docs/work_orders/RS-P1-GOV_02_ACTIVATION.json));GOV-03 order READY/implementation NEXT,later controls DEFERRED;custom planned2/current0/max3,commit gates11 |
 | RS-CLIENT | Camera/modular-assets/client performance prototype | Brain/client boundary; final choice after measurements |
 | RS-FACTORY | Content/image/3D/animation/audio validation/approval/import | Stable contracts; fixed SD1.5+LoRA+ADetailer; pre-generation |
 | RS-V1-MIGRATION | Selected descriptive content in new schema | CONTENT-001 + importer; new IDs/effects/stats/links; no old code/formulas/oracles/schema |
@@ -122,6 +160,8 @@ Review repairs settle nested observation paths/operation order/epoch errors, wav
 | RS-RELEASE | Optimization/bundle/lifecycle/MIN-SPEC/release QA | Playable integrated build |
 
 ## Evidence Log
+
+- GOV-03 order authoring2026-10-07:DONE/READY,self-reviewed;implementation NOT_STARTED/G07 NOT_ACTIVE. [Typed native replay-body order](docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md)+[input/native probe inventory](docs/work_orders/RS-P1-GOV_03_INPUT_INVENTORY.json):151 entry hashes,10 actual classes/20 public method ranges,class-key identity,exact six node/context pairs,public coverage7.16.2 API/schema contracts,typed producer/assessor/CLI,malformed/stale/missing/definition-only rejection examples. Fresh native goldens6PASS12.82s/process13.2852s;active PyTracer/branch data/all20 qualified body hits observed. Source/tests/shared config/lock/environment and prior evidence preserved;no G07 implementation/activation,full-suite rerun,CI/agents/commit/push. NEXT execute this bounded READY order when directed;3s/full11/device/full-game/independent review UNQUALIFIED.
 
 - GOV-01 qualification (2026-10-06):Executed [GOV-01 isolated native qualification](docs/work_orders/RS-P1-GOV_STAGED_CONTROLS.md#10-gov-01-execution--acceptance--2026-10-06),ACCEPTED/DONE. [Evidence](docs/work_orders/RS-P1-GOV_01_QUALIFICATION.json)+[hashed20-package lock](docs/work_orders/RS-P1-GOV_01_TOOLCHAIN.lock):Windows CPython3.13.12/import-linter2.15/grimp3.17/coverage7.16.2,pip check/native probes PASS;original13 version/wheel hashes preserved. Real51-module/286-dependency namespace-inclusive graph/both contracts PASS;11independent probe checks;all10 production engine classes/20public bodies hit in six actual golden contexts. Six covered goldens14.92s/process20.446s,separate3supplemental29.20s,1113full tests253.15s/no skips,Ruff/native strict mypy87files PASS. 46raw command records and actual failure/recovery evidence retained.141entry files:137protected inputs unchanged,exact4allowed doc changes+2NEW evidence/lock;shared source/tests/config/lock/environment preserved,HEAD unchanged,no active CI/policy/helper/checker/commit/push. GOV parent IN_PROGRESS;GOV-02/03 DRAFT. NEXT author GOV-02 shared native dependency-control order and concrete lock/config/external-import prohibition proposal. G07 3s/full11 60s/device targets UNQUALIFIED;counter/access/historical migration/artifact/report and full-game/NPC emotion/persona/BDI/memory remain later. Self-review only.
 

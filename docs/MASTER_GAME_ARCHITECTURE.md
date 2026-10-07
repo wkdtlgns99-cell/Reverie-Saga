@@ -1,8 +1,8 @@
 # MASTER GAME ARCHITECTURE — Reverie Saga
 
 Purpose: canonical product requirements. Engineering constraints: [v2.6 prompt](ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md).
-Format: structured English for all AI-facing material;only essential human-facing notices/decisions/actions in concise Korean. No parallel Korean technical translation;preserve Korean player/source data. Follow the prompt's **AI Documentation Format** rule.
-Updated: 2026-10-02. Translation/compression preserves requirements; no implementation authorization.
+Format: structured English for all AI-facing material;only essential human-facing notices/decisions/actions in concise Korean. No parallel Korean technical translation;preserve Korean player/source data. The director-authorized [Korean game progress companion](../GAME_SYSTEM_SUMMARY_KO.md) is a human-facing exception and follows the prompt's **Korean Game Progress Companion** rule. Follow the prompt's **AI Documentation Format** rule.
+Updated: 2026-10-07 (human-facing progress exception only). Product requirements preserved; no implementation authorization.
 
 ## Current Project Overrides
 

@@ -1,0 +1,853 @@
+{
+  "schema_version": 1,
+  "task_id": "RS-P1-GOV/GOV-02",
+  "date": "2026-10-07",
+  "kind": "AUTHORING_INPUT_INVENTORY_NOT_NATIVE_EXECUTION",
+  "workspace": "C:\\ReverieSaga",
+  "baseline_head": "35f3c45dbd73291879c92044cba52f99d13987d3",
+  "entry_dirty_paths": [],
+  "historical_byte_identical_paths": [
+    "requirements-dev.lock",
+    "src/app/__init__.py",
+    "src/app/feature_registry.py",
+    "src/app/headless.py",
+    "src/app/watch.py",
+    "src/app/watch_registry.py",
+    "src/contracts/__init__.py",
+    "src/contracts/errors.py",
+    "src/contracts/events.py",
+    "src/contracts/messages.py",
+    "src/contracts/read_views.py",
+    "src/contracts/state_io.py",
+    "src/contracts/turn.py",
+    "src/contracts/watch.py",
+    "src/domain/__init__.py",
+    "src/domain/canonical.py",
+    "src/domain/primitives.py",
+    "src/domain/state_types.py",
+    "src/domain/watch.py",
+    "src/engines/__init__.py",
+    "src/engines/watch.py",
+    "src/orchestration/__init__.py",
+    "src/orchestration/events.py",
+    "src/orchestration/read_views.py",
+    "src/orchestration/replay.py",
+    "src/orchestration/serialization.py",
+    "src/orchestration/skeleton.py",
+    "src/orchestration/turn.py",
+    "src/orchestration/watch.py",
+    "tests/__init__.py",
+    "tests/integration/__init__.py",
+    "tests/integration/test_event_turn.py",
+    "tests/integration/test_skeleton.py",
+    "tests/integration/test_watch.py",
+    "tests/replay/__init__.py",
+    "tests/replay/fixtures/durable_watch_passive_v1.json",
+    "tests/replay/fixtures/durable_watch_v1.json",
+    "tests/replay/fixtures/encounter_death_v1.json",
+    "tests/replay/fixtures/encounter_v1.json",
+    "tests/replay/fixtures/skeleton_v1.json",
+    "tests/replay/fixtures/trial_v1.json",
+    "tests/replay/fixtures/watch_passive_v1.json",
+    "tests/replay/fixtures/watch_v1.json",
+    "tests/replay/test_contamination.py",
+    "tests/replay/test_golden.py",
+    "tests/replay/test_watch.py",
+    "tests/unit/__init__.py",
+    "tests/unit/test_canonical.py",
+    "tests/unit/test_events.py",
+    "tests/unit/test_read_views.py",
+    "tests/unit/test_watch.py",
+    "tests/unit/view_fixtures.py",
+    "tests/unit/watch_fixtures.py"
+  ],
+  "historical_lf_equivalent_paths": [
+    "pyproject.toml",
+    "src/.gitkeep",
+    "src/adapters/save_slots.py",
+    "src/adapters/sqlite_store.py",
+    "src/app/durable.py",
+    "src/app/encounter.py",
+    "src/app/encounter_registry.py",
+    "src/app/trial.py",
+    "src/app/trial_registry.py",
+    "src/contracts/encounter.py",
+    "src/contracts/persistence.py",
+    "src/contracts/replay.py",
+    "src/contracts/skeleton.py",
+    "src/contracts/trial.py",
+    "src/domain/encounter.py",
+    "src/domain/trial.py",
+    "src/engines/encounter.py",
+    "src/engines/skeleton.py",
+    "src/engines/trial.py",
+    "src/orchestration/encounter.py",
+    "src/orchestration/persistence.py",
+    "src/orchestration/rng.py",
+    "src/orchestration/scheduler.py",
+    "src/orchestration/trial.py",
+    "tests/.gitkeep",
+    "tests/integration/test_core_slice.py",
+    "tests/integration/test_durable_turn.py",
+    "tests/integration/test_encounter.py",
+    "tests/integration/test_registered_state.py",
+    "tests/integration/test_save_slots.py",
+    "tests/integration/test_sqlite_recovery.py",
+    "tests/integration/test_trial.py",
+    "tests/replay/test_durable_replay.py",
+    "tests/replay/test_encounter.py",
+    "tests/replay/test_registered_replay.py",
+    "tests/replay/test_trial.py",
+    "tests/unit/durability_fixtures.py",
+    "tests/unit/encounter_fixtures.py",
+    "tests/unit/registered_io_fixtures.py",
+    "tests/unit/test_encounter.py",
+    "tests/unit/test_registered_io.py",
+    "tests/unit/test_rng_vectors.py",
+    "tests/unit/test_save_codec.py",
+    "tests/unit/test_schedule.py",
+    "tests/unit/test_trial.py",
+    "tests/unit/trial_fixtures.py"
+  ],
+  "historical_unexplained_paths": [],
+  "historical_raw_artifacts_available": false,
+  "authoring_python": "3.12.14",
+  "selected_execution_python": "3.13.12",
+  "execution_environment_status": "UNAVAILABLE",
+  "static_import_roots_by_source": {
+    "src/adapters/save_slots.py": [
+      "__future__",
+      "adapters",
+      "contracts",
+      "domain",
+      "hashlib",
+      "logging",
+      "os",
+      "pathlib",
+      "re",
+      "secrets"
+    ],
+    "src/adapters/sqlite_store.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "orchestration",
+      "os",
+      "pathlib",
+      "sqlite3",
+      "stat",
+      "typing"
+    ],
+    "src/app/__init__.py": [],
+    "src/app/durable.py": [
+      "__future__",
+      "adapters",
+      "app",
+      "argparse",
+      "collections",
+      "contextlib",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "logging",
+      "orchestration",
+      "pathlib",
+      "secrets",
+      "sys"
+    ],
+    "src/app/encounter.py": [
+      "__future__",
+      "app",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "re",
+      "sys"
+    ],
+    "src/app/encounter_registry.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "engines",
+      "orchestration"
+    ],
+    "src/app/feature_registry.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "engines",
+      "orchestration"
+    ],
+    "src/app/headless.py": [
+      "__future__",
+      "app",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "re",
+      "sys",
+      "typing"
+    ],
+    "src/app/trial.py": [
+      "__future__",
+      "app",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "re",
+      "sys"
+    ],
+    "src/app/trial_registry.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "engines",
+      "orchestration"
+    ],
+    "src/app/watch.py": [
+      "__future__",
+      "app",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "re",
+      "sys"
+    ],
+    "src/app/watch_registry.py": [
+      "__future__",
+      "app",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "engines",
+      "orchestration"
+    ],
+    "src/contracts/__init__.py": [],
+    "src/contracts/encounter.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/errors.py": [
+      "__future__"
+    ],
+    "src/contracts/events.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain"
+    ],
+    "src/contracts/messages.py": [
+      "__future__",
+      "abc",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/persistence.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/read_views.py": [
+      "__future__",
+      "abc",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/replay.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/skeleton.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/state_io.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/trial.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/turn.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/contracts/watch.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/domain/__init__.py": [],
+    "src/domain/canonical.py": [
+      "__future__",
+      "collections",
+      "hashlib",
+      "json",
+      "types",
+      "typing",
+      "unicodedata"
+    ],
+    "src/domain/encounter.py": [
+      "__future__",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/domain/primitives.py": [
+      "__future__",
+      "abc",
+      "dataclasses",
+      "enum",
+      "re",
+      "typing"
+    ],
+    "src/domain/state_types.py": [
+      "__future__",
+      "abc",
+      "dataclasses",
+      "domain"
+    ],
+    "src/domain/trial.py": [
+      "__future__",
+      "dataclasses",
+      "domain"
+    ],
+    "src/domain/watch.py": [
+      "__future__",
+      "dataclasses",
+      "domain"
+    ],
+    "src/engines/__init__.py": [],
+    "src/engines/encounter.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/engines/skeleton.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain"
+    ],
+    "src/engines/trial.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain"
+    ],
+    "src/engines/watch.py": [
+      "__future__",
+      "contracts",
+      "domain"
+    ],
+    "src/orchestration/__init__.py": [],
+    "src/orchestration/encounter.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "typing"
+    ],
+    "src/orchestration/events.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "hashlib",
+      "re"
+    ],
+    "src/orchestration/persistence.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "orchestration",
+      "re"
+    ],
+    "src/orchestration/read_views.py": [
+      "__future__",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "typing"
+    ],
+    "src/orchestration/replay.py": [
+      "__future__",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "orchestration"
+    ],
+    "src/orchestration/rng.py": [
+      "__future__",
+      "contracts",
+      "domain",
+      "hashlib",
+      "re"
+    ],
+    "src/orchestration/scheduler.py": [
+      "__future__",
+      "contracts",
+      "domain"
+    ],
+    "src/orchestration/serialization.py": [
+      "__future__",
+      "collections",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "re",
+      "types"
+    ],
+    "src/orchestration/skeleton.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "typing"
+    ],
+    "src/orchestration/trial.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration",
+      "typing"
+    ],
+    "src/orchestration/turn.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "logging",
+      "orchestration",
+      "re"
+    ],
+    "src/orchestration/watch.py": [
+      "__future__",
+      "contracts",
+      "dataclasses",
+      "domain",
+      "hashlib",
+      "orchestration"
+    ]
+  },
+  "golden_nodes": [
+    "tests/replay/test_golden.py::test_core_trace",
+    "tests/replay/test_trial.py::test_trial_core_trace",
+    "tests/replay/test_encounter.py::test_encounter_core_trace",
+    "tests/replay/test_encounter.py::test_encounter_death_trace",
+    "tests/replay/test_watch.py::test_watch_core_trace",
+    "tests/replay/test_watch.py::test_watch_passive_trace"
+  ],
+  "supplemental_nodes": [
+    "tests/integration/test_core_slice.py::test_combined_gameplay_midcombat_save_load_replay[False]",
+    "tests/integration/test_core_slice.py::test_combined_gameplay_midcombat_save_load_replay[True]",
+    "tests/replay/test_registered_replay.py::test_registered_roundtrip_trace"
+  ],
+  "historical_execution_status": "PASS_RECORDED_RAW_ARTIFACTS_UNAVAILABLE_HERE",
+  "entry_file_count": 143,
+  "input_sha256": {
+    ".gitignore": "726476ba50b83deefd9cf84fe41d1f4fe838c6d9cfe0e75349e6685414302279",
+    "BACKLOG.md": "1cb094dd90afd7815a710ddcd1f1c7a5c0e0a9138655ceab0416135a05ec2a20",
+    "REFERENCE_REPOSITORY.txt": "c7f0a4143db8428092ca537e2aa39a30d104c66979a0b349759b6931cc82bbea",
+    "SESSION_HANDOFF.md": "dc743e880475f777ba414eb766b9177e918a672b3f4a1cedd64a3911d6cca75d",
+    "architecture/.gitkeep": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "architecture/ARCHITECTURE_REVIEW.md": "d71f9fd0344a993e7f9de2fb3361a836f71b3018cfd7188fbb9a943d45ff3222",
+    "architecture/BLOCK_01.md": "c5a4ac0736968259002d81d8b6286ee9d9df9a4c26acf2bb7e629b3a74631720",
+    "architecture/BLOCK_02.md": "6728eb78a88554ee96f46a36959f7f6abaf0eee6708accee571dc8954dd0361a",
+    "architecture/BLOCK_03.md": "96ecbc2ff80ca1dc6a85689028df5fa277b1c89e4a80875f29a6b7ebbb18d59a",
+    "architecture/BLOCK_04.md": "8a3e3a31a8be8833ef116acc5f3c0d0081acc73b21384529277a407c1eefbbdc",
+    "architecture/BLOCK_05.md": "c76aff0ab3a71f9c7c27532a27e0a76c0404f22658c8a675d0c1f6d6584aa364",
+    "architecture/BLOCK_06.md": "701810055868b4a403b8da4b977de7f786682bd502102024c0620e6b1b153ade",
+    "architecture/BLOCK_07.md": "2f173c1f37bddbf8855e343fd106118528f0ec379ca550bab882561e68db6680",
+    "architecture/BLOCK_08.md": "d290c7adec89434c76ef173b49b9f187b7df5b172c0c8a61c48a7e0a3e21a4be",
+    "architecture/BLOCK_09.md": "0e4b8e2e69c89c537791e15cac6aff54461f4bb148c4a806e5ae3840fb4b3bb7",
+    "architecture/V1_REUSE_INVENTORY.md": "9f818d2af676224c36934e5060feaf64b487d8bc6aeca1ead5f5a8df0ae478bb",
+    "docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md": "84259b0213a1100d997766f4ce95dac018b538f6de3f3acdc2e232a389aa858e",
+    "docs/MASTER_GAME_ARCHITECTURE.md": "68fba3c4de3f8500a830ab0bc5792177e57b981ac3416192e3abe8ba809c13a0",
+    "docs/prompts/SOL_CODING_WORK_ORDER.md": "ead0386befa7d9195f6208aa12b3871a9d27ae4ea5bfcc2e100418820caa2f6c",
+    "docs/reference/AGENTS_v1.md": "dc63ed856eb3e8b57cfad9a7c67035ca7ec40cce95f00529734c8cdeee4c82e9",
+    "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json": "b10e8dcab4f6d93a1f60b3e9388897ed8c40a0ea0d63a1c5a8c4a18f9e720b31",
+    "docs/work_orders/IMPLEMENTATION_ROADMAP_ORDERS.md": "4d040215bce8250bdcc48bb808f0246a616b67e435fc78af962ddfea35b17507",
+    "docs/work_orders/PHASE0_CONTRACTS.md": "54ce6623e63b9db9e3c89c51ff03d916bc866b45cee4adfd20a374ea82fa0448",
+    "docs/work_orders/PHASE0_REFERENCE_VECTORS.json": "c46cbe82448f83f0237061e61c35766f6b63535225242088ab175d2d79598121",
+    "docs/work_orders/PHASE0_TOOLCHAIN.json": "f8c2eac146854f075fcf61658759590712aeffa95d07a5aaa0eefad603eaa135",
+    "docs/work_orders/PHASE0_WORK_ORDERS.md": "8ee097b992e32be799bc51983fe02f6a0b696d5d8c2f5198aed32038cb4730aa",
+    "docs/work_orders/RS-ARCH-003_ARCHITECTURE_REVIEW.md": "4bd33615e58d9fdc71be834ad0d79f1885cfbb9a695a6f3ab857685171df0fc0",
+    "docs/work_orders/RS-DOC-002_README.md": "b435af8f4fbb50665ad7deaccc8756a39d1b0720222681df62230d1bad9fe288",
+    "docs/work_orders/RS-P1-CORE_02_GRID_MOVEMENT.md": "909e9be99d5937383eabc3ea8f4c9013eed8d2105e271e5ee90606304db4852a",
+    "docs/work_orders/RS-P1-CORE_02_REFERENCE_VECTORS.json": "8fee27767c8059449161ece6f8a3b9c68b1126314d31dddaca034c9d667caa48",
+    "docs/work_orders/RS-P1-CORE_03_INTERACTION_COMBAT.md": "c538d0c717de06d8eaddc770eb0da4f480c66c1a515ac4777d7f6e826edb8a59",
+    "docs/work_orders/RS-P1-CORE_03_REFERENCE_VECTORS.json": "de3dd8b652b7593628037338ea1efc9f5040f6d67655410761d531a7eb4b7f21",
+    "docs/work_orders/RS-P1-CORE_04_EVENTS_NPC.md": "564cb57a499a4a7a162845bdd0cbaab3431bb2d469a5a23136ac0f815e1d7ec5",
+    "docs/work_orders/RS-P1-CORE_04_REFERENCE_VECTORS.json": "210b54516737ecec5b8655f120915e751e34e49e4df5a34ec11f3558c0eafbd0",
+    "docs/work_orders/RS-P1-CORE_05_DURABILITY_SAVE.md": "19df8c109265294893e12a8451d1c5a9caab5f81dd28f4e39c9a8db1591a001c",
+    "docs/work_orders/RS-P1-CORE_05_REFERENCE_VECTORS.json": "5f1c69051d76b55d8d207e70d5ea9fe3aa2a23841dd10202956d01398fd4e988",
+    "docs/work_orders/RS-P1-CORE_INTEGRATION_REVIEW.md": "2ef1d0223d2179b1257ae8a8e3510efd6868e713c2d55301faa37f345c4daf0e",
+    "docs/work_orders/RS-P1-CORE_REFERENCE_VECTORS.json": "b6b1e0437a8454a287885b1ec731ecff2e0435f54b6dc3b3287a83828ab94f3f",
+    "docs/work_orders/RS-P1-CORE_VERTICAL_SLICE.md": "d34742693ecb2c318f077c160802df0d9248d7cdc58b522b26219870eec70960",
+    "docs/work_orders/RS-P1-GOV_01_QUALIFICATION.json": "77bcd5b613a0568b0b7edda6e4c9bce5449ca80e72ac412f2a0b4966e9e40ed0",
+    "docs/work_orders/RS-P1-GOV_01_TOOLCHAIN.lock": "a64c8668254821a0c7d2d342ee11ac7c7e612b362b13ea43bfb900e8a31c41ef",
+    "docs/work_orders/RS-P1-GOV_INPUT_INVENTORY.json": "1193ad7c44e1699b817ce34a15600a7b59522ad6f5889a8ebc3459789e28d7c6",
+    "docs/work_orders/RS-P1-GOV_STAGED_CONTROLS.md": "c57f4f71edf707a7c17f81a23df8223828982ec0a178f7b7e1b7f85041b1acf3",
+    "docs/work_orders/RS-PREFLIGHT-001_COMPATIBILITY.md": "ffd94f3ca3ee9bcdce91d6b6015ecb9b36596884c2e1079ae2694aab99693cc6",
+    "pyproject.toml": "a02c94abb12b8b72c6a9e7c19cf0ac0302d0533d186f3f71e7b7643236be2aa6",
+    "requirements-dev.lock": "4ea4f492e6a744a44924d3b4f2f97ad8e987b25e81a6f3792691495b739af21b",
+    "src/.gitkeep": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "src/adapters/save_slots.py": "564a6d89a4101625b1610b3a2e68f156ac8d7d9d98bd8115f25d7b7df8935e5f",
+    "src/adapters/sqlite_store.py": "3ffc8b48753ccdb0e0dc410a03a9932d74495d1409cfbb14c3d218132772bd7e",
+    "src/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/app/durable.py": "2f7b689f49ab4a1396af08dc37c489449f9abcff09c430eddef33df9b38a5f52",
+    "src/app/encounter.py": "ff44af309c169447661fea61468a7ae351d9700b9298d0d8f0e96d37a2394106",
+    "src/app/encounter_registry.py": "9a514ba3724df1da51c0fbf506660a58c2a107a3f8e310f1e5a0a024f17af1df",
+    "src/app/feature_registry.py": "09deccdb9e3de01a778fefa388a7043d910fd3dfc94d84dae9ecd745938558eb",
+    "src/app/headless.py": "2cbf1027a3a7ce1a1b437f0b9db23044ab96307515e7d1894dbcd4bc6e7b40d1",
+    "src/app/trial.py": "ec137de09c7b2dfd3e19ada90505efe12e74f4dbc2009a813f30937c3d27aa4a",
+    "src/app/trial_registry.py": "b22fca1bfb17e817fbef773a092a66e288de9bed27a5d529356d115a79595263",
+    "src/app/watch.py": "73a0c1aa8ea5ed7fd369b666dd32192131a5f1ef61a2d68fe8d8e1a2a2bbdce6",
+    "src/app/watch_registry.py": "73e98a8410d893093dccf3f1a6b6d6a7a9fc2094460538b36f5f119e9a3f1c93",
+    "src/contracts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/contracts/encounter.py": "2f39788bceb9b79b5e8b22dc751008bd111be42e10f82bcb88f65c980523503d",
+    "src/contracts/errors.py": "6c8ffa8cad49dd15cfedb324caf6e942fb16e442cd97b9f828daa48a250798cb",
+    "src/contracts/events.py": "26b7bc9c225b8138c31d7f5fff3757c26cf4eff89894a58b94fcee5db0b8c448",
+    "src/contracts/messages.py": "d23946681fdd0783d2d54365125fcb19a872334146edd7cd75298ed42eb78110",
+    "src/contracts/persistence.py": "7fed9f2dc1c0a90b86acdb82c120f8976466169188131c9c52cf20e994451427",
+    "src/contracts/read_views.py": "47c71137717485dc84c7c20ad9664dcb3613611ad1d27d2bc9608e040396032f",
+    "src/contracts/replay.py": "497f0ddafaf3b1972a386b55ebeb2eea30cc2a391b2555252b4fdafacf992705",
+    "src/contracts/skeleton.py": "ec17ed7314ef718d2f069ee76e2343050b8db43a5c36f8cf3e2048959117cccd",
+    "src/contracts/state_io.py": "9babd676f84d4976592f23b5d977a5ea7748a37c2e74353010391c045c4e3c64",
+    "src/contracts/trial.py": "11c573a42b2f8cfa2a4d53953f1f75cec69c9580488b7a7adc23d367cf645502",
+    "src/contracts/turn.py": "8233215d9feb0a1293f16fe1a88a4081a04a8c19ab1bba5ae75e45a85a98ad3e",
+    "src/contracts/watch.py": "aab9f202db8cd13ff9839cb902b275f19bdf05dd26079a3532a6e063c4ebc73b",
+    "src/domain/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/domain/canonical.py": "f636f2565c7fc52026288971755e74cf43dc630e867162f00e4631b07417fd1c",
+    "src/domain/encounter.py": "579b8fdb36cf41a85cb1437d1b191c151b5287868dcf820dc34d95be1bab9292",
+    "src/domain/primitives.py": "9cc389d1caddf8caad1291c1c4be3d855ab4ce0707517cd404fef977149f0de2",
+    "src/domain/state_types.py": "8aa9ceb079d6845c23da41bcb2a2596e6ebf961dda5cfeb73266a0fb78465732",
+    "src/domain/trial.py": "b2d9ed6ef50e13dadf84588679c04e81d3c6c4b75dd3d0c84a65fa35a513db4a",
+    "src/domain/watch.py": "0a82c5c7c268b94d21ab789f9b3288e7d41913f7982b83ffbcbb57339366f0c5",
+    "src/engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/engines/encounter.py": "d5de5fea12b2f0b626ba88c7ddb6978bf96a11f90585e1d9a1b312679d1d735a",
+    "src/engines/skeleton.py": "eebb9a1912c6727b0e30569fe3505a10e19a236a816faa46e841bf822c21b13c",
+    "src/engines/trial.py": "012b74415a924a260082408f3dafcd408fb71c9894ce946454cf62a1b4e8fa44",
+    "src/engines/watch.py": "06f2c52fa52eb60faff42cc0bbc456cb540a2f8773d51e7cb39d412e291d257e",
+    "src/orchestration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "src/orchestration/encounter.py": "dfe5d672b20b9b4a93f38f19ed978055d1be1bd2ab8d3f31fe4a14ff6d6e778a",
+    "src/orchestration/events.py": "199957bb1ec960026237c8c7219760880e0d79e132101dbc2316bfe79b23d711",
+    "src/orchestration/persistence.py": "cdde049602df012ed65b051c2114292ae184b522744ea0e0d097d6dae6670c83",
+    "src/orchestration/read_views.py": "3f851f01f751a375335685a6067d0125c417ec4a56a95101e6a181797e35e37e",
+    "src/orchestration/replay.py": "58d8c3cc4375b9c8265873dbdd78a087e1433626ca70b901e15154b2c18437a7",
+    "src/orchestration/rng.py": "8c270c413baa87cf27005d116ece4600b115c7ce4a968f7f83b2a0d763ae17d0",
+    "src/orchestration/scheduler.py": "6f89c3b3b79ae61929d3469c12592122ab0bd27d87be5d159edacafa5edb97e8",
+    "src/orchestration/serialization.py": "05a65585ef3a46cff9f23e57c0568116f4d3de2ae48d882ae601eb432ce678eb",
+    "src/orchestration/skeleton.py": "7e8848d2887fd67870fb0df7898569dc1222a71f45d6b2f086439c26ba7be26e",
+    "src/orchestration/trial.py": "629c23a18e204a8fe4f49aa5eae2427d69ae0de0c5aa2e4cfcc7aabfe2ee3daa",
+    "src/orchestration/turn.py": "f19d1ad8e97600cb547f0cc5344f0155d748721d9db914582e574b110fe7547c",
+    "src/orchestration/watch.py": "268ebb0214090404dfe6b333e22e706ca270b227e6cde69da8331601932ab138",
+    "tests/.gitkeep": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+    "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/integration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/integration/test_core_slice.py": "51ebf3e7d5ec75f188b1f5ccc393e37fc551674c4a23538e59f9a7262aec7b21",
+    "tests/integration/test_durable_turn.py": "0530b2af665cb762fca4554841c45b7e28fecd6e75734d6eb2fb71dfd2fa68af",
+    "tests/integration/test_encounter.py": "628ab9b95af13dc18e5f3953c0128fb752c726f1d8dbdc43718213aa0a4400b8",
+    "tests/integration/test_event_turn.py": "6dd4d03af81b108e8064e458b5f1bc0435e1c8ade768c631fd1f107b33802d03",
+    "tests/integration/test_registered_state.py": "66712d583c2f7a9793fafa628d62ee75fa3edc0320e0baa4efb91d3731d08b49",
+    "tests/integration/test_save_slots.py": "7a04809b862aab899668b4c28f005851bad2a3eae9990d63ba6a5505c1012624",
+    "tests/integration/test_skeleton.py": "ee9cc64a081f0cf0dc72c02ab0b18475281d11daec94e038d654af5d9bd0b55e",
+    "tests/integration/test_sqlite_recovery.py": "52348133b3ea6b371686b7e325fa06a07b8e4ef5c5a6348f0f868a15cb91f5ce",
+    "tests/integration/test_trial.py": "c78bd7851742e6c8b7249d6a33003d9fb0d2fd08a93f2ba23186897336468a78",
+    "tests/integration/test_watch.py": "890b440eec638b3425519ab4936e2db009ecfaa7cd11be949a25bbdf73dab4f9",
+    "tests/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/replay/fixtures/durable_watch_passive_v1.json": "f0adc9c19bbb94fd4fe3f6e1a70bf95e63a1221e7f354b3a09a237c592616951",
+    "tests/replay/fixtures/durable_watch_v1.json": "4c9dcfea46c1f1ba0c08b0fc94d9a13211fb7e32fd52a43eaf7bdf0233425472",
+    "tests/replay/fixtures/encounter_death_v1.json": "d21e78ed1362ac2d6eda81eda79996f7081efefe4bcc7a13a7ceba140284919c",
+    "tests/replay/fixtures/encounter_v1.json": "aa8cdc879e3bbcdadb19269496a13449f5f1096641226a7eacc29cc44105634c",
+    "tests/replay/fixtures/skeleton_v1.json": "6cc8abd517997f68d49e46816a78d865d8e12c2ea9758037a116d02477512ecb",
+    "tests/replay/fixtures/trial_v1.json": "ae6834a21be298a4015f9309bf7b710f977e39e84f3bf1a57679d6c866d59a07",
+    "tests/replay/fixtures/watch_passive_v1.json": "b421e76e9a06b42bf993b251e448858f141454ce0739b7b34e94f46f577a41fb",
+    "tests/replay/fixtures/watch_v1.json": "5417a81e82ad04886d9e63fe7669e409da0a041ef99f80200fa323c7896a2b85",
+    "tests/replay/test_contamination.py": "77fb652d0cbe27b2506268735563829bf068d6e50303785c3415bcd8db6c1a6f",
+    "tests/replay/test_durable_replay.py": "c66b6d8309e47b8fa6786c44142144f4ff9385e818d904f17e439aaf8cae1516",
+    "tests/replay/test_encounter.py": "35b0998ac8db1b9d03bbb4bd3c035db51edf6a8c009de94ef4c7414479faa5e1",
+    "tests/replay/test_golden.py": "0c4aa1d783d3b4f038c76f8943f1335f86e36b44880161088098a46f8ba0d92a",
+    "tests/replay/test_registered_replay.py": "2c240bf23a432b0e0504b5e7a4a1c656649348d2753830685205e2979174227a",
+    "tests/replay/test_trial.py": "482d6899ec0458eadb426aed90cbe3f38adaf69907f1a66c9a27d52d1ba59c1a",
+    "tests/replay/test_watch.py": "bbcfc1f5cb62fdce6be7dd7d930765a543250ace51cdc35bdbf6a6475804afea",
+    "tests/unit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "tests/unit/durability_fixtures.py": "c0a53a8d9f8bfd8a0d7e52859e46577c3f6cece571ff3451cdd9e9d80631883c",
+    "tests/unit/encounter_fixtures.py": "9f61455a654a81d96dcb986b2ff5c9ed2856f17c1cfe474dce0b44dd8c5824d6",
+    "tests/unit/registered_io_fixtures.py": "84324397f9e0918ac1186b8bff3394feb1bef3f68e1507a49a487643e73fe848",
+    "tests/unit/test_canonical.py": "54dc42e884a2f74fc836b62c74e837fedaee81bf4e0e178ef246078b2b021ab2",
+    "tests/unit/test_encounter.py": "85a4c7638c1a2172bef7d9f0c0da31abf9d385d85d7bbb784bc646770a1e7433",
+    "tests/unit/test_events.py": "5e9b9d92d1078051f853f3672e2092b391be6e1ef936930983594585d32f0488",
+    "tests/unit/test_read_views.py": "f16d5191a47d5fee249f0c0dfb278aae984a28831ce3d47eed243332e2ba795d",
+    "tests/unit/test_registered_io.py": "2018cfa4d81b0fb353b4936ac6c0590ffa959fda02dc5924a072697a25d7589f",
+    "tests/unit/test_rng_vectors.py": "1ae3a7ec7a506610046656fbcb1f25c81975e13596dde3f203395a8c61cdf7e0",
+    "tests/unit/test_save_codec.py": "dbf207e4e16e68e3e2f71503d507d71db8925dc1f653ab99413a278ec6fb62c5",
+    "tests/unit/test_schedule.py": "279d9e898459990042823ccc51814dea6156cb7fad3e04b867bb7e4d51918b28",
+    "tests/unit/test_trial.py": "941a878ea5f5e0195c4c9ee3ffa848045e3867f0415639f5091e1ef7bebd4724",
+    "tests/unit/test_watch.py": "3c83d1ba1966f1441f59c91a048b6e6604955b5bca0efd00ee7d6faa6f28e41d",
+    "tests/unit/trial_fixtures.py": "0e769a2c7ee17293dbdaeb702a3ab39c64dbb7c9774c7903925c260130ae6e4f",
+    "tests/unit/view_fixtures.py": "31e1d8d0cdee091741ae702652a471965e43ec3aa3aff530c08137ac57d9afaf",
+    "tests/unit/watch_fixtures.py": "c75528fc221376706f39524970a748ce3f03cf72591fa1f52512166feb1140a3"
+  },
+  "proposed_contract_ids": [
+    "rs-layers",
+    "rs-engines-independent",
+    "rs-siblings-acyclic",
+    "rs-core-no-external-effects"
+  ],
+  "forbidden_external_roots": [
+    "aiohttp",
+    "anthropic",
+    "ast_serialize",
+    "asyncio",
+    "click",
+    "colorama",
+    "coverage",
+    "ctypes",
+    "datetime",
+    "google",
+    "godot",
+    "grimp",
+    "http",
+    "httpx",
+    "importlib",
+    "importlinter",
+    "iniconfig",
+    "io",
+    "librt",
+    "markdown_it",
+    "mdurl",
+    "multiprocessing",
+    "mypy",
+    "mypy_extensions",
+    "ollama",
+    "openai",
+    "os",
+    "packaging",
+    "pathlib",
+    "pathspec",
+    "pluggy",
+    "production",
+    "pygame",
+    "pygments",
+    "PySide6",
+    "pytest",
+    "pytest_mock",
+    "random",
+    "requests",
+    "rich",
+    "ruff",
+    "secrets",
+    "shutil",
+    "socket",
+    "sqlite3",
+    "subprocess",
+    "sys",
+    "tempfile",
+    "threading",
+    "time",
+    "tools",
+    "typing_extensions",
+    "unittest",
+    "unity",
+    "urllib",
+    "uuid"
+  ],
+  "native_proposal_status": "NOT_RUN",
+  "proposed_shared_lock_source": "docs/work_orders/RS-P1-GOV_01_TOOLCHAIN.lock",
+  "probe_expectations": [
+    {
+      "id": "allowed-dag",
+      "changes": {},
+      "exit": 0,
+      "kept": 4
+    },
+    {
+      "id": "adapter-io",
+      "changes": {
+        "adapters/port.py": "import os\nimport pathlib\nimport sqlite3\n"
+      },
+      "exit": 0,
+      "kept": 4
+    },
+    {
+      "id": "core-pure-stdlib",
+      "changes": {
+        "domain/value.py": "import dataclasses\nimport hashlib\nimport json\n"
+      },
+      "exit": 0,
+      "kept": 4
+    },
+    {
+      "id": "reverse-layer",
+      "changes": {
+        "domain/value.py": "import app.entry\n"
+      },
+      "exit": 1,
+      "broken": "rs-layers"
+    },
+    {
+      "id": "indirect-reverse",
+      "changes": {
+        "domain/value.py": "import contracts.port\n",
+        "contracts/port.py": "import app.entry\n"
+      },
+      "exit": 1,
+      "broken": "rs-layers"
+    },
+    {
+      "id": "direct-engine",
+      "changes": {
+        "engines/skeleton.py": "import engines.trial\n"
+      },
+      "exit": 1,
+      "broken": "rs-engines-independent"
+    },
+    {
+      "id": "indirect-engine",
+      "changes": {
+        "engines/skeleton.py": "import contracts.port\n",
+        "contracts/port.py": "import engines.trial\n"
+      },
+      "exit": 1,
+      "broken": "rs-engines-independent"
+    },
+    {
+      "id": "type-only-reverse",
+      "changes": {
+        "domain/value.py": "from typing import TYPE_CHECKING\nif TYPE_CHECKING:\n    import app.entry\n"
+      },
+      "exit": 1,
+      "broken": "rs-layers"
+    },
+    {
+      "id": "core-indirect-io",
+      "changes": {
+        "engines/skeleton.py": "import contracts.port\n",
+        "contracts/port.py": "import pathlib\n"
+      },
+      "exit": 1,
+      "broken": "rs-core-no-external-effects"
+    },
+    {
+      "id": "core-type-only-sdk",
+      "changes": {
+        "domain/value.py": "from typing import TYPE_CHECKING\nif TYPE_CHECKING:\n    import openai\n"
+      },
+      "exit": 1,
+      "broken": "rs-core-no-external-effects"
+    },
+    {
+      "id": "absent-forbidden-roots",
+      "changes": {},
+      "exit": 0,
+      "kept": 4,
+      "reason": "No import of named forbidden root is present; absence must not be a configuration error."
+    },
+    {
+      "id": "missing-namespace-root",
+      "changes": {},
+      "remove_root": "adapters",
+      "exit": "nonzero",
+      "classification": "TOOL_INPUT_ERROR_NOT_CONTRACT_DETECTION"
+    },
+    {
+      "id": "missing-engine-module",
+      "changes": {},
+      "remove_file": "engines/watch.py",
+      "exit": "nonzero",
+      "classification": "TOOL_INPUT_ERROR_NOT_CONTRACT_DETECTION"
+    }
+  ],
+  "additional_positive_probe": {
+    "id": "allowed-sibling-edge",
+    "changes": {
+      "domain/cycle_a.py": "import domain.cycle_b\n",
+      "domain/cycle_b.py": "VALUE = 1\n"
+    },
+    "exit": 0,
+    "kept": 4
+  },
+  "parameterized_probe_expectations": [
+    {
+      "family": "direct-external",
+      "for_each": "forbidden_external_roots",
+      "source": "engines/skeleton.py",
+      "text_template": "import {root}\n",
+      "exit": 1,
+      "broken": "rs-core-no-external-effects"
+    },
+    {
+      "family": "same-layer-cycle",
+      "roots": [
+        "app",
+        "adapters",
+        "orchestration",
+        "engines",
+        "contracts",
+        "domain"
+      ],
+      "files_template": {
+        "{root}/cycle_a.py": "import {root}.cycle_b\n",
+        "{root}/cycle_b.py": "import {root}.cycle_a\n"
+      },
+      "exit": 1,
+      "broken": "rs-siblings-acyclic"
+    }
+  ]
+}
+
