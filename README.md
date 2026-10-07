@@ -59,6 +59,8 @@ This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC 
 .\.venv\Scripts\python.exe -m mypy --no-native-parser
 .\.venv\Scripts\python.exe -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config pyproject.toml --no-cache
 .\.venv\Scripts\python.exe -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config .importlinter-runtime.toml --no-cache
+New-Item -ItemType Directory -Path .pytest_cache -Force -ErrorAction Stop | Out-Null
+if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Pytest temporary parent is not a directory' }
 .\.venv\Scripts\python.exe -m pytest -q --basetemp .pytest_cache/local-run
 ```
 
@@ -67,7 +69,12 @@ them to permit annotation-only sibling cycles. Both are intentional and required
 The source tree is currently run via PYTHONPATH,not an installable package.
 Selective E501/PT011 checks cover the changed core/replay/client paths;they do not
 claim repository-wide complexity cleanup. Windows GitHub Actions runs these native
-gates after publication;the configuration is locally checked,remote execution not yet verified.
+gates after publication. Latest inspected remote run37578176533 (commit99786af) failed
+because the configured pytest basetemp parent was absent;local publication checks passed.
+Repair/protection follow-ups:[fact check](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md).
+The [RS-CI-001 repair](docs/work_orders/RS-CI-001_CLEAN_RUN.md) explicitly prepares
+that ignored parent and aligns all11formatter targets;local/remote acceptance is recorded
+in the linked order,not inferred from the workflow file alone.
 
 ## Navigation
 

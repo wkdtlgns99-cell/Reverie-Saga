@@ -27,12 +27,17 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m ruff check --config ruff-quality.toml src tests
       - name: Scoped formatting
-        run: python -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py tests/integration/test_client.py
+        run: python -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py
       - name: Strict types
         run: python -m mypy --no-native-parser
       - name: Type-inclusive dependency contracts
         run: python -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config pyproject.toml --no-cache
       - name: Runtime sibling-cycle contract
         run: python -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config .importlinter-runtime.toml --no-cache
+      - name: Prepare pytest temporary parent
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Path .pytest_cache -Force -ErrorAction Stop | Out-Null
+          if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Pytest temporary parent is not a directory' }
       - name: Full regression including goldens
         run: python -m pytest -q --basetemp .pytest_cache/ci-run

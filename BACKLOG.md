@@ -8,10 +8,10 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
 ## Current Snapshot — 2026-10-07
 
 - Phase0 and RS-P1-CORE representative slice DONE:movement/door/combat/rest,timed rule-based NPC/events,SQLite save/load/recovery/replay;not the full world/cognition or finished graphical game.
-- RS-P1-QUALITY sequence and RS-CLIENT-001/002 DONE. Latest runtime evidence:[action history acceptance](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md),1242PASS283.95s,focused36PASS twice,replays45PASS,strict mypy96files/shared+selective lint/scoped format/dependencies3+1contracts PASS. These are prior runs,not fresh QT-F03 checks.
-- Native desktop combat/save/load narration observed;original QT-F01 UX_NOT_ACCEPTED retained. Updated human UX/final graphics/device/release/remote CI/independent review remain UNVERIFIED.
+- RS-P1-QUALITY/RS-CLIENT-001/002 DONE. [Action history acceptance](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):1242PASS283.95s,focused36twice/replays45/mypy96/lint/format/imports PASS;publication rerun1242PASS278.98s. Historical full runs,not current review execution.
+- Native combat/save/load narration observed;QT-F01 UX_NOT_ACCEPTED retained. Remote CI now confirmed FAIL (1065PASS/177temp-setup errors);main protection off. See RS-CI-001/002. Updated human UX/final graphics/device/release/independent review UNVERIFIED.
 - GOV-01/02 DONE;GOV-03 order READY,implementation DEFERRED/G07 NOT_ACTIVE. RS-P1-GOV and RS-ARCH-002 remain IN_PROGRESS;B09 READY_FOR_REVIEW/#6/#34 later-order readiness PARTIAL.
-- QT-F03 DONE. [QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded;rights remain UNVERIFIED,not DONE. Director deferred CP02 once because Claude usage is exhausted;resume when usage is available,before reuse. CP01 still holds core/client expansion;QT-F02/graphics/engine/modeling-AI/QT-F05 stay deferred. Current request authorizes publication of accumulated work only;no new reuse imports,purchase,bulk assets or expansion.
+- QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 holds core/client expansion;QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local1242PASS280.99s/native checks accepted;director approved publishing this repair and pending GPT evaluation. Remote patched-SHA acceptance pending;main settings unchanged. No automatic GOV-03 activation.
 
 ## Highest Priority — Director Execution 2026-10-07
 
@@ -41,9 +41,9 @@ Director-approved scheduling only;no Claude review/repair executed by recording 
 | RS-REVIEW-CP05 | DEFERRED | At first major NPC memory/quest/save-contract change:before implementation for contracts,then after first integrated implementation | Determinism,causal events,memory bounds,persistence/migration/compatibility/failure cases;hold implementation until contract pass and larger integration until repair/retest pass. Track both review passes separately |
 | RS-REVIEW-CP06 | DEFERRED | After integrated feature/content freeze;before RS-RELEASE acceptance/public distribution | Native full regression/replays/crash/offline/device/build/license evidence and unresolved findings;hold release. Review is not release QA or permission to publish |
 
-## External Feedback — Quilltale Comparison (2026-10-07)
+## External Feedback — Recorded Reviews (2026-10-07)
 
-RS-REVIEW-QT-001 DONE for [feedback storage/triage](docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md) only. Existing rules retained;no copied rulebook or v1 engine/schema port.
+RS-REVIEW-QT-001 DONE for [Quilltale feedback storage/triage](docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md);RS-REVIEW-GPT-001 DONE for [structural-plan fact check/storage](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md) only. Confirmed CI/protection/format gaps;many scope/invariant/Driver safeguards already present. Existing rules retained;future tasks below,not implementation approval or Claude checkpoint closure.
 
 | ID | State | Follow-up / entry and acceptance |
 |---|---|---|
@@ -59,6 +59,9 @@ Owner:Sol;Astra blocker advice only. READY does not authorize agent/model change
 
 | ID | Priority | State | Task | Dependency / artifact / acceptance |
 |---|---|---|---|---|
+| RS-CI-001 | P0 | READY_FOR_REVIEW | Repair clean-run CI and align scoped formatter targets | [Native evidence](docs/work_orders/RS-CI-001_CLEAN_RUN.md):clean snapshot1242PASS280.99s/lint/format11/mypy96/imports3+1 PASS;parent/child-preservation/collision probes PASS. Upload approved;actual green patched-SHA Actions still required before DONE. Main settings out of scope |
+| RS-CI-002 | P0 | TODO | Main protection/required CI +PR workflow | After CI-001 real job success;explicit administration approval and actual enforcement/bypass verification. Read-only API confirms protection off;settings untouched |
+| RS-STRUCT-001 | P1 | DEFERRED | Conditional structural/test/format/performance/content improvements | Linked GPT dispositions;CP01 and bounded orders before shared-core changes. Reuse existing GOV/A10/A13/QT-F02 tasks;G07 remains engine-method-only/deferred. No duplicate rules/full rewrite/new library |
 | RS-DOC-001 | P0 | DONE | Handoff/backlog/order foundation | Earlier role split superseded by DOC-003; retain foundation/evidence |
 | RS-DOC-003 | P0 | DONE | All development assigned to Sol | Prompt/MASTER/context/orders agree; Astra blocker-only; `docs/prompts/SOL_CODING_WORK_ORDER.md` |
 | RS-DOC-004 | P0 | DONE | English compact AI documentation | Director-authorized rule;8 active docs in compact English; contracts/status/IDs/links verified; no next BLOCK |
@@ -118,13 +121,9 @@ CORE-01 → CORE-02 → CORE-03 → CORE-04 → CORE-05 → [parent integration 
 - Director-approved Claude checkpoint scheduling2026-10-07:6UTF8 docs/80local links/8fragments/fences/diff checks PASS;42existing task rows retain IDs/states/prerequisites,6pending/deferred review rows added. Exact6existing docs changed/166of172entry files byte-identical/HEAD unchanged;no runtime tests or Claude review executed by scheduling.
 - QT-F04:read-only provenance investigation recorded;rights UNVERIFIED/no imports. CP02 packet PREPARED/review DEFERRED once by director due to usage exhaustion;feedback NOT_RECEIVED. Refresh packet inputs on resume;manual director-forwarded review remains required before reuse. Native game tests NOT_RUN;prior1242PASS historical;CP01 unchanged.
 - Historical Git/source/task transitions and detailed acceptance logs:[backlog archive](docs/history/BACKLOG_2026-10-07.md),[handoff archive](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not import historical v1 task lists or delete task IDs.
+- Publication2026-10-07:31files at254d969126a552d11be678d87f86d144c9c47501 +receipt99786af pushed/remote SHA verified/then tree clean. Local full1242PASS278.98s,Ruff/format11/mypy96/imports3+1/docs18/links210 PASS;secret scan not exhaustive. Actions were UNVERIFIED at publication;later remote FAIL is now recorded above. Publication is not review/rights approval.
 
 ## Status / Acceptance
 
 TODO=unmet prerequisites;READY=complete order,not executed;IN_PROGRESS=active;READY_FOR_REVIEW=evidence awaiting acceptance;DONE=scope accepted by self-review unless stated otherwise;BLOCKED=concrete impediment;DEFERRED=later phase;UNVERIFIED=missing evidence.
 Document DONE is not implemented gameplay/product approval. Code DONE requires actual files/live path/results/stage-appropriate tests/replay. Self-review is not independent review;historical counts are not fresh verification.
-
-## Publication — Director Request 2026-10-07
-
-- Scope:31 accumulated changed/new files,quality rules/router/README/CI,core cleanup/client/action history/tests,feedback/checkpoints/provenance and lossless document archives. Director authorized commit/push to existing origin/main;no force-push or private/generated files.
-- State:PUBLISHED. Content commit254d969126a552d11be678d87f86d144c9c47501 pushed to origin/main;remote SHA verified,postpush tree clean. Fresh full1242PASS278.98s,Ruff shared/selective,format11,mypy96,imports3+1,18UTF8 docs/210links/fences/staged diff PASS. Secret scan not exhaustive. This follow-up records the receipt;CP01 TODO/CP02 DEFERRED/rights UNVERIFIED and remote Actions UNVERIFIED unchanged.
