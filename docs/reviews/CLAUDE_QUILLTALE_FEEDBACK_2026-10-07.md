@@ -1,7 +1,7 @@
 # Claude Quilltale Comparison — Feedback Record
 
 Date:2026-10-07. Source:user-supplied Claude review in this conversation. Director requested storage and placement reporting,not implementation of its proposals. This document preserves the substantive feedback in structured English with current-state corrections;it is not a new architecture/rule authority.
-Follow-up status SSOT:[BACKLOG](../../BACKLOG.md#external-feedback--quilltale-comparison-2026-10-07). Existing uncommitted quality/client work is preserved. No runtime/config/dependency/provider/migration/commit/push changes in this task.
+Follow-up status SSOT:[BACKLOG](../../BACKLOG.md#external-feedback--recorded-reviews-2026-10-07). Existing uncommitted quality/client work is preserved. No runtime/config/dependency/provider/migration/commit/push changes in the original storage task.
 
 ## Claims and disposition
 
@@ -41,3 +41,12 @@ Do not copy thermal/hangover/pupil/other old engines or old test oracles. Reuse 
 ## Verification for this storage task
 
 Document-only acceptance PASS:4strict-UTF8 documents,88local prose links,fences/whitespace,five unique backlog follow-up IDs and git diff --check. The link probe excludes historical code literals and checks target existence,not external license rights or runtime execution. Git status inventory preserves prior dirty work and adds only this review artifact;this task edits three existing progress documents. No production/test/config/lock/rule/Quilltale input changes. Runtime tests NOT_RUN;the prior1221-test result belongs to QUALITY acceptance,not this storage task.
+
+## Antigravity Follow-up — 2026-10-07
+
+Separate source:director-pasted Antigravity review;authorization=fact-check,store nonduplicate findings and publish only,no feature/rule changes. No new confirmed defect or follow-up ID:claims1/2/4 repeat the fixed-scenario,NPC-cognition and approved-content-ingestion gaps already recorded above;retain QT-F02/QT-F04/QT-F05/RS-STRUCT-001 dependencies rather than duplicate tasks. Original Claude evidence/acceptance remains historical;this is not CP01/02 feedback.
+- Claim2 qualification:fact-based fixed Korean narration is confirmed in [client_text](../../src/app/client_text.py);missing NPC memory/dialogue cognition is a future-product gap. Mandatory live AI GM/per-turn LLM is explicitly excluded by [MASTER](../MASTER_GAME_ARCHITECTURE.md),not a defect to reintroduce.
+- Claim3 qualification:multi-file registration/contract boilerplate is visible,but slower development/overengineering has not been measured. "Every simple rule requires edits in all five named layers" is not established:the [Driver](../../src/orchestration/turn.py) already uses registered command/delta/activation contracts rather than per-status branches. Reuse the conditional RS-STRUCT-001 review;no new framework or rule mandate.
+- Claim4 qualification:general approved-template ingestion is not implemented;JSON codecs/save loading do exist. Reuse is held for evidenced rights and intentional new-schema/narrative-only policy,not merely a demonstrated compatibility bug. Existing [reuse inventory](../../architecture/V1_REUSE_INVENTORY.md),[provenance investigation](../work_orders/QT-F04_PROVENANCE.md) and [GPT P9 disposition](GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md) remain canonical.
+- Claim1 comparison limit:the current fixed-room limitation is confirmed in domain/encounter and app/client_session. Quilltale's claimed hundreds of working regions/monsters/quests/ecosystem capabilities were not freshly run/audited here;historical template counts are not verified playable breadth. Do not convert that comparison into a new defect count.
+Follow-up delivery:8strictUTF8docs/116local links/8fragments/fences/diff PASS;exact6document edits,170of176current files unchanged. No runtime/fixture/config/pin/policy/reference changes for this feedback;native/hosted1242PASS results belong to the separately completed RS-CI-001 repair,not a rerun for this document-only triage. Director explicitly authorized this receipt's commit/upload.

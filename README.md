@@ -69,8 +69,10 @@ them to permit annotation-only sibling cycles. Both are intentional and required
 The source tree is currently run via PYTHONPATH,not an installable package.
 Selective E501/PT011 checks cover the changed core/replay/client paths;they do not
 claim repository-wide complexity cleanup. Windows GitHub Actions runs these native
-gates after publication. Latest inspected remote run37578176533 (commit99786af) failed
-because the configured pytest basetemp parent was absent;local publication checks passed.
+gates after publication. Patched commit8d90592 [run37581088580](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37581088580)
+passed all steps and1242tests393.67s;fresh native qualification1242PASS280.99s.
+Baseline run37578176533 (commit99786af) failed because the pytest parent was absent;
+that historical failure remains recorded,not hidden by the successful repair.
 Repair/protection follow-ups:[fact check](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md).
 The [RS-CI-001 repair](docs/work_orders/RS-CI-001_CLEAN_RUN.md) explicitly prepares
 that ignored parent and aligns all11formatter targets;local/remote acceptance is recorded

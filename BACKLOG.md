@@ -9,9 +9,9 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
 
 - Phase0 and RS-P1-CORE representative slice DONE:movement/door/combat/rest,timed rule-based NPC/events,SQLite save/load/recovery/replay;not the full world/cognition or finished graphical game.
 - RS-P1-QUALITY/RS-CLIENT-001/002 DONE. [Action history acceptance](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):1242PASS283.95s,focused36twice/replays45/mypy96/lint/format/imports PASS;publication rerun1242PASS278.98s. Historical full runs,not current review execution.
-- Native combat/save/load narration observed;QT-F01 UX_NOT_ACCEPTED retained. Remote CI now confirmed FAIL (1065PASS/177temp-setup errors);main protection off. See RS-CI-001/002. Updated human UX/final graphics/device/release/independent review UNVERIFIED.
+- Native combat/save/load narration observed;QT-F01 UX_NOT_ACCEPTED retained. Patched-SHA remote CI PASS (1242tests393.67s);old1065PASS/177temp-setup errors retained in RS-CI-001 evidence. Main protection off;RS-CI-002 not executed. Updated human UX/final graphics/device/release/independent review UNVERIFIED.
 - GOV-01/02 DONE;GOV-03 order READY,implementation DEFERRED/G07 NOT_ACTIVE. RS-P1-GOV and RS-ARCH-002 remain IN_PROGRESS;B09 READY_FOR_REVIEW/#6/#34 later-order readiness PARTIAL.
-- QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 holds core/client expansion;QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local1242PASS280.99s/native checks accepted;director approved publishing this repair and pending GPT evaluation. Remote patched-SHA acceptance pending;main settings unchanged. No automatic GOV-03 activation.
+- QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 holds core/client expansion;QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local/remote acceptance DONE;GPT evaluation+CI repair published. Director also authorized Antigravity duplicate/qualification storage and publication,no gameplay/rule/settings changes. No automatic GOV-03 activation.
 
 ## Highest Priority — Director Execution 2026-10-07
 
@@ -43,7 +43,7 @@ Director-approved scheduling only;no Claude review/repair executed by recording 
 
 ## External Feedback — Recorded Reviews (2026-10-07)
 
-RS-REVIEW-QT-001 DONE for [Quilltale feedback storage/triage](docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md);RS-REVIEW-GPT-001 DONE for [structural-plan fact check/storage](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md) only. Confirmed CI/protection/format gaps;many scope/invariant/Driver safeguards already present. Existing rules retained;future tasks below,not implementation approval or Claude checkpoint closure.
+RS-REVIEW-QT-001 DONE for [Quilltale feedback storage/triage](docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md),including Antigravity follow-up:claims1/2/4 duplicate existing gaps;all-layer/productivity claim qualified,not measured defect. No duplicate tasks. RS-REVIEW-GPT-001 DONE for [structural-plan fact check/storage](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md);CI gap subsequently repaired in RS-CI-001. Existing rules retained;no Claude checkpoint closure or further implementation authority.
 
 | ID | State | Follow-up / entry and acceptance |
 |---|---|---|
@@ -59,7 +59,7 @@ Owner:Sol;Astra blocker advice only. READY does not authorize agent/model change
 
 | ID | Priority | State | Task | Dependency / artifact / acceptance |
 |---|---|---|---|---|
-| RS-CI-001 | P0 | READY_FOR_REVIEW | Repair clean-run CI and align scoped formatter targets | [Native evidence](docs/work_orders/RS-CI-001_CLEAN_RUN.md):clean snapshot1242PASS280.99s/lint/format11/mypy96/imports3+1 PASS;parent/child-preservation/collision probes PASS. Upload approved;actual green patched-SHA Actions still required before DONE. Main settings out of scope |
+| RS-CI-001 | P0 | DONE | Repair clean-run CI and align scoped formatter targets | [Acceptance](docs/work_orders/RS-CI-001_CLEAN_RUN.md):clean native1242PASS280.99s/all checks+parent probes;actual patched-SHA8d90592 run37581088580/checks success,remote1242PASS393.67s. Repair/evaluation published;closure receipt is docs only. Main settings untouched |
 | RS-CI-002 | P0 | TODO | Main protection/required CI +PR workflow | After CI-001 real job success;explicit administration approval and actual enforcement/bypass verification. Read-only API confirms protection off;settings untouched |
 | RS-STRUCT-001 | P1 | DEFERRED | Conditional structural/test/format/performance/content improvements | Linked GPT dispositions;CP01 and bounded orders before shared-core changes. Reuse existing GOV/A10/A13/QT-F02 tasks;G07 remains engine-method-only/deferred. No duplicate rules/full rewrite/new library |
 | RS-DOC-001 | P0 | DONE | Handoff/backlog/order foundation | Earlier role split superseded by DOC-003; retain foundation/evidence |
