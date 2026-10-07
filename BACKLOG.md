@@ -127,4 +127,4 @@ Document DONE is not implemented gameplay/product approval. Code DONE requires a
 ## Publication — Director Request 2026-10-07
 
 - Scope:31 accumulated changed/new files,quality rules/router/README/CI,core cleanup/client/action history/tests,feedback/checkpoints/provenance and lossless document archives. Director authorized commit/push to existing origin/main;no force-push or private/generated files.
-- State:LOCAL_VERIFIED/PUSH_PENDING. Fresh full1242PASS278.98s,shared/selective Ruff,11-file format,mypy96files,import contracts3+1 PASS;18UTF8 docs/210local prose links/fences/staged diff checks PASS. Secret-pattern/path scan PASS (not exhaustive). Remote main matched b0f98e2;CP01 TODO/CP02 DEFERRED/rights UNVERIFIED unchanged;remote Actions UNVERIFIED.
+- State:PUBLISHED. Content commit254d969126a552d11be678d87f86d144c9c47501 pushed to origin/main;remote SHA verified,postpush tree clean. Fresh full1242PASS278.98s,Ruff shared/selective,format11,mypy96,imports3+1,18UTF8 docs/210links/fences/staged diff PASS. Secret scan not exhaustive. This follow-up records the receipt;CP01 TODO/CP02 DEFERRED/rights UNVERIFIED and remote Actions UNVERIFIED unchanged.
