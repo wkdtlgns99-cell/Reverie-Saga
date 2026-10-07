@@ -4,40 +4,112 @@ from dataclasses import dataclass
 from typing import Literal
 
 from contracts.encounter import (
-    GATE, HIT_POINTS, STAMINA, AttackCommand, AttackResolved, Defeated,
-    EncounterMoveBlocked, EncounterMoved, GateChanged, GateDelta, HitPointsDelta,
-    InteractCommand, RestCommand, Rested, StaminaDelta,
+    GATE,
+    HIT_POINTS,
+    STAMINA,
+    AttackCommand,
+    AttackResolved,
+    Defeated,
+    EncounterMoveBlocked,
+    EncounterMoved,
+    GateChanged,
+    GateDelta,
+    HitPointsDelta,
+    InteractCommand,
+    RestCommand,
+    Rested,
+    StaminaDelta,
 )
 from contracts.errors import CandidateError
 from contracts.messages import EmittedFact, FactPayload, StateDelta
 from contracts.trial import CELL_POSITION, TRIAL_MAP, CellDelta, MoveCommand
 from contracts.turn import CapabilityManifest, EngineInvocation, EngineResult, PhaseAccess
 from domain.encounter import (
-    ATTACK_PROFILE_ID, ENEMY_CELL, ENEMY_ID, GATE_CELL, GATE_ID,
-    adjacent_cells, resolve_basic_attack,
+    ATTACK_PROFILE_ID,
+    ENEMY_CELL,
+    ENEMY_ID,
+    GATE_CELL,
+    GATE_ID,
+    REST_RECOVERY,
+    STAMINA_MAX,
+    adjacent_cells,
+    resolve_basic_attack,
 )
-from domain.primitives import FieldFamily, Phase, TypeKey
+from domain.primitives import EntityId, FieldFamily, Phase
 from domain.trial import ACTOR_ID, SPACE_ID
+
+
+_ACTIONS_MANIFEST = CapabilityManifest(
+    "encounter.actions",
+    (Phase.RESOLVE,),
+    tuple(
+        PhaseAccess(Phase.RESOLVE, FieldFamily(key.schema.kind, field))
+        for key, field in (
+            (GATE, "cell"),
+            (GATE, "is_open"),
+            (GATE, "space_id"),
+            (HIT_POINTS, "hp"),
+            (STAMINA, "value"),
+            (CELL_POSITION, "cell"),
+            (CELL_POSITION, "space_id"),
+        )
+    ),
+    tuple(
+        PhaseAccess(Phase.RESOLVE, FieldFamily(key.schema.kind, field))
+        for key, field in ((GATE, "is_open"), (HIT_POINTS, "hp"), (STAMINA, "value"))
+    ),
+    (),
+    (AttackResolved.SCHEMA, Defeated.SCHEMA, GateChanged.SCHEMA, Rested.SCHEMA),
+    (),
+    "local",
+)
+
+_MOVEMENT_MANIFEST = CapabilityManifest(
+    "trial.movement",
+    (Phase.RESOLVE,),
+    tuple(
+        PhaseAccess(Phase.RESOLVE, FieldFamily(key.schema.kind, field))
+        for key, field in (
+            (GATE, "cell"),
+            (GATE, "is_open"),
+            (GATE, "space_id"),
+            (HIT_POINTS, "hp"),
+            (TRIAL_MAP, "blocked_cells"),
+            (TRIAL_MAP, "height"),
+            (TRIAL_MAP, "width"),
+            (CELL_POSITION, "cell"),
+            (CELL_POSITION, "space_id"),
+        )
+    ),
+    (PhaseAccess(Phase.RESOLVE, FieldFamily(CELL_POSITION.schema.kind, "cell")),),
+    (),
+    (EncounterMoveBlocked.SCHEMA, EncounterMoved.SCHEMA),
+    (),
+    "local",
+)
+
+
+def _result(
+    invocation: EngineInvocation, deltas: tuple[StateDelta, ...], facts: tuple[FactPayload, ...]
+) -> EngineResult:
+    return EngineResult(
+        deltas, tuple(EmittedFact(f, invocation.logical_tick, ()) for f in facts), ()
+    )
+
+
+def _location(invocation: EngineInvocation) -> tuple[int, EntityId]:
+    position = invocation.state.component(CELL_POSITION, ACTOR_ID)
+    cell, space = position.cell, position.space_id
+    if space != SPACE_ID:
+        raise CandidateError("INVALID_ACTION", "actor space")
+    return cell, space
 
 
 @dataclass(frozen=True, slots=True)
 class EncounterActions:
     @property
     def manifest(self) -> CapabilityManifest:
-        reads = tuple(PhaseAccess(Phase.RESOLVE, FieldFamily(kind, field)) for kind, field in (
-            ("encounter.gate", "cell"), ("encounter.gate", "is_open"),
-            ("encounter.gate", "space_id"), ("encounter.hp", "hp"),
-            ("encounter.stamina", "value"), ("trial.position", "cell"),
-            ("trial.position", "space_id"),
-        ))
-        writes = tuple(PhaseAccess(Phase.RESOLVE, FieldFamily(kind, field)) for kind, field in (
-            ("encounter.gate", "is_open"), ("encounter.hp", "hp"),
-            ("encounter.stamina", "value"),
-        ))
-        emits = tuple(TypeKey("encounter." + kind, 1) for kind in (
-            "attack-resolved", "defeated", "gate-changed", "rested"))
-        return CapabilityManifest("encounter.actions", (Phase.RESOLVE,), reads, writes,
-                                  (), emits, (), "local")
+        return _ACTIONS_MANIFEST
 
     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
         action = invocation.action
@@ -47,73 +119,91 @@ class EncounterActions:
         actor_hp = invocation.state.component(HIT_POINTS, ACTOR_ID).hp
         if actor_hp == 0:
             raise CandidateError("INVALID_ACTION", "admitted actor defeated")
-        deltas: list[StateDelta] = []
-        facts: list[FactPayload] = []
+        # Exact classes are intentional: codec dispatch rejects subclasses too.
         if type(payload) is RestCommand:
-            old = invocation.state.component(STAMINA, ACTOR_ID).value
-            new = min(2, old + 1)
-            if new != old:
-                deltas.append(StaminaDelta(ACTOR_ID, old, new))
-            facts.append(Rested(ACTOR_ID, old, new))
-        elif type(payload) in (InteractCommand, AttackCommand):
-            assert isinstance(payload, (InteractCommand, AttackCommand))
-            position = invocation.state.component(CELL_POSITION, ACTOR_ID)
-            cell, space = position.cell, position.space_id
-            if space != SPACE_ID:
-                raise CandidateError("INVALID_ACTION", "actor space")
-            if isinstance(payload, InteractCommand):
-                gate = invocation.state.component(GATE, GATE_ID)
-                gate_cell, gate_space, old = gate.cell, gate.space_id, gate.is_open
-                if (payload.target_id != GATE_ID or payload.option not in ("open", "close") or
-                    gate_cell != GATE_CELL or gate_space != space or
-                    payload.option == "close" and cell == gate_cell or
-                    not adjacent_cells(cell, gate_cell)):
-                    raise CandidateError("INVALID_ACTION", "admitted gate interaction")
-                new = 1 if payload.option == "open" else 0
-                if new != old:
-                    deltas.append(GateDelta(GATE_ID, old, new))
-                facts.append(GateChanged(ACTOR_ID, GATE_ID, old, new))
-            else:
-                enemy = invocation.state.component(CELL_POSITION, ENEMY_ID)
-                target_hp = invocation.state.component(HIT_POINTS, ENEMY_ID).hp
-                stamina = invocation.state.component(STAMINA, ACTOR_ID).value
-                if (payload.target_id != ENEMY_ID or payload.profile_id != ATTACK_PROFILE_ID or
-                    enemy.cell != ENEMY_CELL or enemy.space_id != space or target_hp == 0 or
-                    stamina == 0 or not adjacent_cells(cell, ENEMY_CELL)):
-                    raise CandidateError("INVALID_ACTION", "admitted attack conditions")
-                new_hp, new_target, new_stamina = resolve_basic_attack(actor_hp, target_hp, stamina)
-                deltas.append(HitPointsDelta(ENEMY_ID, target_hp, new_target))
-                if new_hp != actor_hp:
-                    deltas.append(HitPointsDelta(ACTOR_ID, actor_hp, new_hp))
-                deltas.append(StaminaDelta(ACTOR_ID, stamina, new_stamina))
-                facts.append(AttackResolved(ACTOR_ID, ENEMY_ID, ATTACK_PROFILE_ID,
-                                            actor_hp, new_hp, target_hp, new_target,
-                                            stamina, new_stamina))
-                if new_target == 0:
-                    facts.append(Defeated(ENEMY_ID, ACTOR_ID))
-                elif new_hp == 0:
-                    facts.append(Defeated(ACTOR_ID, ENEMY_ID))
-        else:
-            raise CandidateError("INVALID_ACTION", "encounter action payload")
-        return EngineResult(tuple(deltas), tuple(EmittedFact(f, invocation.logical_tick, ())
-                                                for f in facts), ())
+            return self._rest(invocation)
+        if type(payload) is InteractCommand:
+            return self._interact(invocation, payload)
+        if type(payload) is AttackCommand:
+            return self._attack(invocation, payload, actor_hp)
+        raise CandidateError("INVALID_ACTION", "encounter action payload")
+
+    def _rest(self, invocation: EngineInvocation) -> EngineResult:
+        old = invocation.state.component(STAMINA, ACTOR_ID).value
+        new = min(STAMINA_MAX, old + REST_RECOVERY)
+        deltas = (StaminaDelta(ACTOR_ID, old, new),) if new != old else ()
+        # A consuming no-op still records the accepted action, as required by CORE-03.
+        return _result(invocation, deltas, (Rested(ACTOR_ID, old, new),))
+
+    def _interact(self, invocation: EngineInvocation, payload: InteractCommand) -> EngineResult:
+        cell, space = _location(invocation)
+        gate = invocation.state.component(GATE, GATE_ID)
+        gate_cell, gate_space, old = gate.cell, gate.space_id, gate.is_open
+        if payload.target_id != GATE_ID:
+            raise CandidateError("INVALID_ACTION", "admitted gate target")
+        if payload.option not in ("open", "close"):
+            raise CandidateError("INVALID_ACTION", "admitted gate option")
+        if gate_cell != GATE_CELL or gate_space != space:
+            raise CandidateError("INVALID_ACTION", "admitted gate reference")
+        if payload.option == "close" and cell == gate_cell:
+            raise CandidateError("INVALID_ACTION", "admitted gate occupied")
+        if not adjacent_cells(cell, gate_cell):
+            raise CandidateError("INVALID_ACTION", "admitted gate range")
+        new = 1 if payload.option == "open" else 0
+        deltas = (GateDelta(GATE_ID, old, new),) if new != old else ()
+        return _result(invocation, deltas, (GateChanged(ACTOR_ID, GATE_ID, old, new),))
+
+    def _attack(
+        self, invocation: EngineInvocation, payload: AttackCommand, actor_hp: int
+    ) -> EngineResult:
+        cell, space = _location(invocation)
+        enemy = invocation.state.component(CELL_POSITION, ENEMY_ID)
+        target_hp = invocation.state.component(HIT_POINTS, ENEMY_ID).hp
+        stamina = invocation.state.component(STAMINA, ACTOR_ID).value
+        if payload.target_id != ENEMY_ID:
+            raise CandidateError("INVALID_ACTION", "admitted attack target")
+        if payload.profile_id != ATTACK_PROFILE_ID:
+            raise CandidateError("INVALID_ACTION", "admitted attack profile")
+        if enemy.cell != ENEMY_CELL or enemy.space_id != space:
+            raise CandidateError("INVALID_ACTION", "admitted attack reference")
+        if target_hp == 0:
+            raise CandidateError("INVALID_ACTION", "admitted attack defeated target")
+        if stamina == 0:
+            raise CandidateError("INVALID_ACTION", "admitted attack stamina")
+        if not adjacent_cells(cell, ENEMY_CELL):
+            raise CandidateError("INVALID_ACTION", "admitted attack range")
+        actor_after, target_after, stamina_after = resolve_basic_attack(
+            actor_hp, target_hp, stamina
+        )
+        deltas: list[StateDelta] = [HitPointsDelta(ENEMY_ID, target_hp, target_after)]
+        if actor_after != actor_hp:
+            deltas.append(HitPointsDelta(ACTOR_ID, actor_hp, actor_after))
+        deltas.append(StaminaDelta(ACTOR_ID, stamina, stamina_after))
+        facts: list[FactPayload] = [
+            AttackResolved(
+                ACTOR_ID,
+                ENEMY_ID,
+                ATTACK_PROFILE_ID,
+                actor_hp,
+                actor_after,
+                target_hp,
+                target_after,
+                stamina,
+                stamina_after,
+            )
+        ]
+        if target_after == 0:
+            facts.append(Defeated(ENEMY_ID, ACTOR_ID))
+        elif actor_after == 0:
+            facts.append(Defeated(ACTOR_ID, ENEMY_ID))
+        return _result(invocation, tuple(deltas), tuple(facts))
 
 
 @dataclass(frozen=True, slots=True)
 class EncounterMovement:
     @property
     def manifest(self) -> CapabilityManifest:
-        reads = tuple(PhaseAccess(Phase.RESOLVE, FieldFamily(kind, field)) for kind, field in (
-            ("encounter.gate", "cell"), ("encounter.gate", "is_open"),
-            ("encounter.gate", "space_id"), ("encounter.hp", "hp"),
-            ("trial.map", "blocked_cells"), ("trial.map", "height"),
-            ("trial.map", "width"), ("trial.position", "cell"),
-            ("trial.position", "space_id"),
-        ))
-        return CapabilityManifest("trial.movement", (Phase.RESOLVE,), reads,
-                                  (PhaseAccess(Phase.RESOLVE, FieldFamily("trial.position", "cell")),),
-                                  (), (TypeKey("encounter.move-blocked", 1), TypeKey("encounter.moved", 1)),
-                                  (), "local")
+        return _MOVEMENT_MANIFEST
 
     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
         action = invocation.action
@@ -129,7 +219,13 @@ class EncounterMovement:
         enemy = state.component(CELL_POSITION, ENEMY_ID)
         enemy_cell, enemy_space = enemy.cell, enemy.space_id
         enemy_hp = state.component(HIT_POINTS, ENEMY_ID).hp
-        if space != SPACE_ID or gate_space != space or gate_cell != GATE_CELL or enemy_space != space or enemy_cell != ENEMY_CELL:
+        if (
+            space != SPACE_ID
+            or gate_space != space
+            or gate_cell != GATE_CELL
+            or enemy_space != space
+            or enemy_cell != ENEMY_CELL
+        ):
             raise CandidateError("INVALID_ACTION", "movement references")
         grid = state.component(TRIAL_MAP, space)
         width, height = grid.width, grid.height
@@ -150,7 +246,9 @@ class EncounterMovement:
             if reason is None:
                 deltas = (CellDelta(ACTOR_ID, old, target),)
         if reason is not None:
-            fact = EncounterMoveBlocked(ACTOR_ID, space, old, action.payload.dx, action.payload.dz, reason)
+            fact = EncounterMoveBlocked(
+                ACTOR_ID, space, old, action.payload.dx, action.payload.dz, reason
+            )
         else:
             fact = EncounterMoved(ACTOR_ID, space, old, z * width + x)
         return EngineResult(deltas, (EmittedFact(fact, invocation.logical_tick, ()),), ())

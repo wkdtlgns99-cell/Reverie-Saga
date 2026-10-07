@@ -1,0 +1,21 @@
+# Approved selective rollout; preserve the shared baseline and its exceptions.
+extend = "pyproject.toml"
+include = [
+    "src/orchestration/turn.py",
+    "src/contracts/encounter.py",
+    "src/engines/encounter.py",
+    "src/contracts/client.py",
+    "src/app/client*.py",
+    "tests/replay/test_encounter.py",
+    "tests/integration/test_client.py",
+]
+
+[lint]
+extend-select = ["E501", "PT011"]
+
+[lint.flake8-pytest-style]
+raises-extend-require-match-for = [
+    "contracts.errors.ReplayFormatError",
+    "contracts.errors.CandidateError",
+    "contracts.errors.BootstrapError",
+]

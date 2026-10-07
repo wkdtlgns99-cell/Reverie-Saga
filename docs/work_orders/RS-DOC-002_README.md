@@ -1,6 +1,7 @@
 # RS-DOC-002 — README Index
 
-Status: READY; revalidate baseline before execution.
+Status: DONE under the director-approved2026-10-07 QUALITY sequence;README UTF8/links/actual-state review PASS. Historical preparation below is superseded,not deleted.
+Current authority:[RS-P1-QUALITY](RS-P1-QUALITY.md),baseline b0f98e2/current workspace C:\ReverieSaga. The obsolete design-only README content and README-only delivery bounds below are historical;the approved sequence requires actual runtime/check instructions and synchronized acceptance records. Preserve historical order text,do not publish its stale "no runtime" literal as current fact.
 Executor/reviewer: GPT-6.1 Sol; self-review against requirements/diff/evidence.
 Format: prompt **AI Documentation Format**.
 Prepared order, NOT_EXECUTED. This conversion does not execute README creation or runtime work.

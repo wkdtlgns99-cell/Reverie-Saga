@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Literal, Protocol
+from typing import ClassVar, Literal, Protocol
 
 from contracts.messages import CommandPayload, FactPayload, PresentationPayload, StateDelta
 from contracts.read_views import ComponentKey, ComponentPatch
@@ -34,41 +34,45 @@ STAMINA = ComponentKey[StaminaRead](TypeKey("encounter.stamina", 1))
 
 @dataclass(frozen=True, slots=True)
 class InteractCommand(CommandPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.interact", 1)
     target_id: EntityId
     option: Literal["open", "close"]
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.interact", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class AttackCommand(CommandPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.attack", 1)
     target_id: EntityId
     profile_id: str
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.attack", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class RestCommand(CommandPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.rest", 1)
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.rest", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class GateDelta(StateDelta):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.gate-delta", 1)
     entity_id: EntityId
     before_open: int
     after_open: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.gate-delta", 1)
+        return self.SCHEMA
 
     @property
     def target(self) -> FieldAddress:
@@ -77,13 +81,14 @@ class GateDelta(StateDelta):
 
 @dataclass(frozen=True, slots=True)
 class HitPointsDelta(StateDelta):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.hp-delta", 1)
     entity_id: EntityId
     before_hp: int
     after_hp: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.hp-delta", 1)
+        return self.SCHEMA
 
     @property
     def target(self) -> FieldAddress:
@@ -92,13 +97,14 @@ class HitPointsDelta(StateDelta):
 
 @dataclass(frozen=True, slots=True)
 class StaminaDelta(StateDelta):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.stamina-delta", 1)
     entity_id: EntityId
     before_stamina: int
     after_stamina: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.stamina-delta", 1)
+        return self.SCHEMA
 
     @property
     def target(self) -> FieldAddress:
@@ -107,33 +113,37 @@ class StaminaDelta(StateDelta):
 
 @dataclass(frozen=True, slots=True)
 class GatePatch(ComponentPatch):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.gate-patch", 1)
     is_open: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.gate-patch", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class HitPointsPatch(ComponentPatch):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.hp-patch", 1)
     hp: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.hp-patch", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class StaminaPatch(ComponentPatch):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.stamina-patch", 1)
     value: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.stamina-patch", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class EncounterMoved(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.moved", 1)
     actor_id: EntityId
     space_id: EntityId
     from_cell: int
@@ -141,11 +151,12 @@ class EncounterMoved(FactPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.moved", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class EncounterMoveBlocked(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.move-blocked", 1)
     actor_id: EntityId
     space_id: EntityId
     from_cell: int
@@ -155,11 +166,12 @@ class EncounterMoveBlocked(FactPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.move-blocked", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class GateChanged(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.gate-changed", 1)
     actor_id: EntityId
     target_id: EntityId
     before_open: int
@@ -167,11 +179,12 @@ class GateChanged(FactPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.gate-changed", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class AttackResolved(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.attack-resolved", 1)
     actor_id: EntityId
     target_id: EntityId
     profile_id: str
@@ -184,32 +197,35 @@ class AttackResolved(FactPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.attack-resolved", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class Rested(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.rested", 1)
     actor_id: EntityId
     before_stamina: int
     after_stamina: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.rested", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class Defeated(FactPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.defeated", 1)
     entity_id: EntityId
     killer_id: EntityId
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.defeated", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class EncounterMoveCue(PresentationPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.move-cue", 1)
     actor_id: EntityId
     space_id: EntityId
     from_cell: int
@@ -222,11 +238,12 @@ class EncounterMoveCue(PresentationPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.move-cue", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class GateCue(PresentationPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.gate-cue", 1)
     actor_id: EntityId
     target_id: EntityId
     cell: int
@@ -237,11 +254,12 @@ class GateCue(PresentationPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.gate-cue", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class AttackCue(PresentationPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.attack-cue", 1)
     actor_id: EntityId
     target_id: EntityId
     actor_cell: int
@@ -256,22 +274,24 @@ class AttackCue(PresentationPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.attack-cue", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class RestCue(PresentationPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.rest-cue", 1)
     actor_id: EntityId
     before_stamina: int
     after_stamina: int
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.rest-cue", 1)
+        return self.SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
 class DefeatCue(PresentationPayload):
+    SCHEMA: ClassVar[TypeKey] = TypeKey("encounter.defeat-cue", 1)
     entity_id: EntityId
     killer_id: EntityId
     cell: int
@@ -280,4 +300,4 @@ class DefeatCue(PresentationPayload):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.defeat-cue", 1)
+        return self.SCHEMA

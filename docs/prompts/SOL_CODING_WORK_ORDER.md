@@ -21,6 +21,7 @@ Human-facing exception:the director-authorized [GAME_SYSTEM_SUMMARY_KO.md](../..
 11. Acceptance requires diff/results/scope/wiring/Sol review. Do not add unrelated CI/tools/report generators.
 12. v1 reuse: individually reviewed narrative content only; no code/formulas/stats/balance/behavior/schema bindings/test oracles.
 13. When BACKLOG.md is in scope,include GAME_SYSTEM_SUMMARY_KO.md in required reads/allowed documentation edits/verification/delivery. Keep actual gameplay vs planning/tooling status explicit;do not translate full technical contracts into the companion.
+14. Follow the prompt's **Claude Checkpoints and Defect Repair** rule. Resolve applicable IDs/trigger/downstream hold from the backlog register;specify packet and repair/retest acceptance,or NOT_APPLICABLE with a reason. Do not invent review feedback or automatically contact Claude.
 
 Small tasks include pure functions under settled contracts, DTO conversion, approved-schema data preparation, adapters, tests, indexes.
 Sol resolves boundaries, public contracts, ownership, scheduler/RNG/hash/catch-up/save/IPC/lifecycle/dependencies/concurrency/governance before implementation.
@@ -60,6 +61,7 @@ VERIFY
 18. Separate baseline from new failures; diagnose/repair in-scope failures.
 19. Missing verification support is UNVERIFIED, not invented success or implicit policy/install approval.
 20. Check final diff, edit scope, wiring, and acceptance.
+21. At an applicable Claude checkpoint,prepare the specified real-file review packet,notify the director and hold its dependent step until actual feedback is verified and required scoped fixes/retests pass. Record unresolved/nonblocking dispositions;do not relabel self-review as Claude review.
 
 SCOPE
 Do not change AGENTS/core policy/backlog/save schema/public contracts/dependencies
@@ -112,11 +114,14 @@ Each field needs concrete values or NOT_APPLICABLE + reason. This table is a sch
 | verification_commands | Necessary tests/lint/type/integration/replay |
 | test_responsibilities | Actual/PLANNED paths/names; independent normal/edge/failure/integration checks |
 | acceptance | Measurable files/behavior/wiring/evidence criteria |
+| claude_checkpoints | Backlog IDs/trigger/held downstream step;actual-source/test/evidence packet;feedback/disposition/scoped repair/retest completion,or NOT_APPLICABLE with reason |
 | stop_conditions | Cause/evidence/required decision |
 | delivery | Report, edit list, commit/push authorization |
 
 ## 4. Acceptance
 
+- Follow the prompt's **Implementation Quality and Repair Loop**. Record baseline/new/environmental failures;repair task-scoped/new defects and rerun affected checks without weakening policy/oracles. Escalate scope/semantic/environment blockers with evidence.
+- Shared core changes require full regression and unchanged golden behavior;documentation-only changes use document checks. Mark each accepted item DONE and synchronize backlog/handoff/Korean progress before advancing.
 - Inspect actual diff/paths/contracts/wiring.
 - If BACKLOG.md changed,verify the Korean companion changed in the same delivery and accurately summarizes game impact/status/verification limits under the director rule.
 - Check independent expectations, boundaries, and failures; test existence alone is insufficient.
@@ -124,6 +129,7 @@ Each field needs concrete values or NOT_APPLICABLE + reason. This table is a sch
 - Code features require a live path and stage-appropriate coverage/replay. Accept standalone work only as standalone.
 - Sol diagnoses/repairs reproducible bugs or decomposes scope.
 - Revalidate Astra advice; a proposal is not completion.
+- Applicable Claude checkpoints require actual feedback,verified dispositions and scoped repair/retest evidence per the canonical rule;checkpoints not triggered by this order remain pending/deferred,not silently DONE.
 
 ## 5. References
 
