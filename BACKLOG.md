@@ -8,7 +8,7 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
 ## Immediate Next — RS-CI-002
 
 - Next task:protect main with required Native checks and a PR workflow. Keep RS-CI-002 TODO until explicit repository-administration approval;this session's commit/push authorization does not authorize settings changes.
-- Prerequisites:successful required jobs on this session's published commit,then administration approval. Inspect current protection/rulesets before changing them;verify an invalid/missing check cannot merge and document bypass permissions before DONE.
+- CI prerequisite SATISFIED:published0708483 [Native checks37746111893](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37746111893) SUCCESS,31focused/1270full PASS. Remaining prerequisite:explicit administration approval. Inspect current protection/rulesets before changing them;verify an invalid/missing check cannot merge and document bypass permissions before DONE.
 - Session record:[2026-10-08 delivery](docs/reviews/SESSION_2026-10-08.md). CP02/reuse rights,GOV-03 and graphics holds remain as recorded below;no automatic feature implementation.
 
 ## Current Snapshot — 2026-10-08
@@ -18,7 +18,7 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
 - Native combat/save/load narration observed;QT-F01 UX_NOT_ACCEPTED retained. Patched-SHA remote CI PASS (1242tests393.67s);old1065PASS/177temp-setup errors retained in RS-CI-001 evidence. Main protection off;RS-CI-002 not executed. Updated human UX/final graphics/device/release/independent review UNVERIFIED.
 - GOV-01/02 DONE;GOV-03 order READY,implementation DEFERRED/G07 NOT_ACTIVE. RS-P1-GOV and RS-ARCH-002 remain IN_PROGRESS;B09 READY_FOR_REVIEW/#6/#34 later-order readiness PARTIAL.
 - QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 DONE after actual feedback/verified repairs/native1252PASS313.32s;F4 nonblocking risks linked to RS-STRUCT-001. QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local/remote acceptance DONE;GPT evaluation+CI repair published. No automatic GOV-03/new implementation/settings/publication authority.
-- RS-P1-QUALITY-06 DONE after Claude PASS WITH CORRECTIONS:[F1/F2 repairs](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS;current469word rulebook. [Original465word/24focused/1263full acceptance](docs/work_orders/RS-P1-QUALITY-06_TURN_RULEBOOK.md) historical. Patch external rereview/remote CI UNVERIFIED;no held-gate activation.
+- RS-P1-QUALITY-06 DONE after Claude PASS WITH CORRECTIONS:[F1/F2 repairs](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS;current469word rulebook. [Original465word/24focused/1263full acceptance](docs/work_orders/RS-P1-QUALITY-06_TURN_RULEBOOK.md) historical. [Session publication/remote CI](docs/reviews/SESSION_2026-10-08.md) SUCCESS at0708483:31focused/1270fullPASS;patch external rereview NOT_RECEIVED,no held-gate activation.
 
 ## Highest Priority — Director Execution 2026-10-07
 
@@ -39,7 +39,7 @@ Director2026-10-08 additional governance request:
 
 | ID | State | Scope / acceptance |
 |---|---|---|
-| RS-P1-QUALITY-06 | DONE | [Claude findings/corrections](docs/reviews/RS-P1-QUALITY-06_DISPOSITIONS.md):two current-workspace declarations and renderer reporting corrected;[acceptance](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS,current469words. Ten obligations retained,no redesign. Original465word/native24focused/1263full receipt historical;AI reading cannot be proven by CI,patch external rereview/remote run UNVERIFIED |
+| RS-P1-QUALITY-06 | DONE | [Claude findings/corrections](docs/reviews/RS-P1-QUALITY-06_DISPOSITIONS.md):two current-workspace declarations and renderer reporting corrected;[acceptance](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS,current469words. Ten obligations retained,no redesign. Original465word/native24focused/1263full receipt historical;AI reading cannot be proven by CI,patch external rereview NOT_RECEIVED. [Published0708483 remote acceptance](docs/reviews/SESSION_2026-10-08.md):31focused/1270fullPASS,all steps PASS |
 
 ## Claude Checkpoints and Defect Repair — 2026-10-07
 

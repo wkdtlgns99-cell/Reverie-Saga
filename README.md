@@ -91,7 +91,9 @@ fails collection. To inspect the guard families locally,run:
 ```
 
 This broader local selection is distinct from the CI's bounded named selection.
-The latest unpublished workflow requires a real remote run before claiming GitHub acceptance.
+The published workflow at0708483 passed [Native checks37746111893](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37746111893):
+31focused guards and1270full regression tests,lint/format/strict types/imports all PASS.
+See the [session receipt](docs/reviews/SESSION_2026-10-08.md) for exact SHA/evidence;future changes require their own remote acceptance.
 
 ## Navigation
 
