@@ -50,26 +50,28 @@ class ClientWorker:
                     update = owner.act(request, seconds=seconds)
             self._last = update
         except (SaveError, WorldUnavailable) as error:
-            self._last = replace(
-                self._last,
-                status=error.code,
-                notices=(str(error),),
-                messages=(status_text(error.code),),
-                reset_log=False,
-            )
-        except (ValueError, TypeError, OSError, RuntimeError) as error:
+            self._last = self._error_update(error.code, error)
+        except ValueError as error:
             # Unexpected adapter bugs remain visible,not classified as valid player rejection.
             code = str(error) if str(error) == "NO_RETRY" else "CLIENT_ERROR"
             if code == "CLIENT_ERROR":
                 self._logger.exception("client boundary operation failed")
-            self._last = replace(
-                self._last,
-                status=code,
-                notices=(str(error),),
-                messages=(status_text(code),),
-                reset_log=False,
-            )
+            self._last = self._error_update(code, error)
+        except Exception as error:
+            # Final UI boundary: log ordinary failures and expose an explicit error projection.
+            # Fatal BaseException subclasses still propagate; no gameplay success is fabricated.
+            self._logger.exception("client boundary operation failed")
+            self._last = self._error_update("CLIENT_ERROR", error)
         return self._last
+
+    def _error_update(self, code: str, error: Exception) -> ClientUpdate:
+        return replace(
+            self._last,
+            status=code,
+            notices=(str(error),),
+            messages=(status_text(code),),
+            reset_log=False,
+        )
 
     def close(self) -> Future[None]:
         if self._close_future is None:

@@ -1,0 +1,48 @@
+# RS-REVIEW-CP01 — Feedback Verification / Dispositions
+
+Date:2026-10-08 (Asia/Seoul) | Feedback:RECEIVED | Repair:ACCEPTED | Checkpoint:DONE
+Source:director pasted Claude's answer into this chat;[verbatim receipt](RS-REVIEW-CP01_FEEDBACK.txt),SHA256 `f2c99dca128a3e38eef4c9123d13aa4dc6d3a7c6de75a843939542b280e7fbcc`. Sol received text only,not Claude's five reproduction scripts or raw execution logs. Reviewer-reported results are attributed claims,not Sol-native results.
+
+## Review provenance / limits
+
+- Submitted snapshot:HEAD564c11eb1eb9f7fd7d3e72745c67afb30d9e2848,142hashed inputs/144ZIP entries. Sol rechecked all142raw input hashes/sizes before repairs;all matched. Preserve the [manifest](RS-REVIEW-CP01_INPUTS.json) and original local ZIP as historical reviewed inputs;current repaired files must not be relabeled that snapshot.
+- Reviewer reports full reads of turn/encounter engine/domain/client/worker/session/text/durable/headless/SQLite/slots and selected contracts;partial orchestration/encounter read through700/898lines. Read-view/events/turn/encounter contracts,registry/reducer tail/presenters and CORE-03 admission-priority text were not fully inspected. Reviewer-reported execution:Linux/Python3.12.3/pytest9.1.1,ten modules370PASS57.3s;no native Tk,slots module,full regression/lint/mypy/dependency checks. This is actual supplied review feedback with limited coverage,not blanket independent validation of all CP01 paths or Python3.12 support qualification.
+- Sol repaired under the [bounded order](../work_orders/RS-REVIEW-CP01_REPAIR.md). No governance/lint suppression,deletion/dependency/game rule/save-format/public-signature change;no agents/provider/upload/commit/push. External review of the final patch has not occurred;repair verification is Sol-native execution/self-review.
+
+## Findings
+
+Stable IDs below are Sol's mapping of the unnumbered supplied findings and its F1–F4 disposition summary;no extra reviewer text is invented.
+
+| ID | Classification / blocking | Verified evidence / disposition |
+|---|---|---|
+| CP01-F1 | Confirmed boundary bug;blocking until repair acceptance | Raw sqlite3.OperationalError from export target/previous-generation connection escaped SqliteSlots.export,then worker Future and Tk `_poll`;real native failing cases reproduce this. Add sqlite3.Error to slot catch tuple,retain precise SaveError and post-replace uncertainty. Worker now logs unexpected ordinary Exception and projects CLIENT_ERROR;BaseException remains uncaught. Tk clears pending/checks failed/cancelled Future,projects explicit error,reenables controls and rearms callback in finally;queued close still drains. Native regression cases cover continued worker request and real Tk input/close after failure/cancellation |
+| CP01-F2 | Confirmed bug;same boundary/root as F1 | Raw load-target sqlite3.Error skipped stage_load cleanup. Existing owned-path cleanup now executes through typed catch;SAVE_LOAD_FAILED preserves old CORE/protocol/token/path/owner and slot SHA,no `.loaded-*` leftover. No ownership inferred for unrelated files |
+| CP01-F3 | Confirmed contract deviation;nonblocking but repaired | CORE-05 §7 specifies8managed working files with `.loaded-<token>.sqlite`,regular matching entries. The old broad glob counted `.lock.sqlite` sidecars and directories. Exact32lowercase-hex filename+regular/non-symlink check preserves cap8 and unknown matching-file protection. Eight separate sessions each load a real clone/sidecar successfully;the ninth rejects SAVE_LIMIT with unchanged owner/files. No automatic cleanup/UI or resumed-original behavior change |
+| CP01-F4 | Residual failure-path/maintainability risk;nonblocking,DEFERRED under [RS-STRUCT-001](../../BACKLOG.md#priority-tasks) | Projection failure after COMMIT and old-store close failure after load swap lack a demonstrated normal validated-input trigger. Neither implies authoritative rollback;CLIENT_ERROR is a display/boundary fault,not proof the turn/load was absent. Supplied claim that old-store close necessarily yields SAVE_LOAD_FAILED is unsupported:raw OSError/RuntimeError/sqlite3.Error maps to CLIENT_ERROR in worker,while app load's prepared-attachment exception block is before swap. Retain both risks for bounded fault/reconciliation contracts before future client/content-generalization work;no new rollback/cleanup semantics guessed. Existing cleanup UI remains later RS-CLIENT work |
+
+## Other observations / dispositions
+
+- Actor HP note:FALSE_POSITIVE for current qualified saves. `EncounterCheckpointPolicy.validate` explicitly calls `require_integer(actor_hp.hp,0,3)`;`WatchCheckpointPolicy` invokes it and `RegisteredStateIO.validate_checkpoint` calls the selected policy. The generic HitPointsAdapter accepts both actor/enemy storage range0..5 by responsibility;it is not sole checkpoint validation. Existing actor_hp4 bootstrap rejection is in the regression suite. No need to change the adapter or future balance by inference.
+- Driver `_check_command` outside candidate try:UNVERIFIED extension-failure risk,not reproduced by reviewer. Current registered codec explicitly converts ValueError/TypeError/AttributeError and exact-type checks;no demonstrated accepted-input failure. Route assessment with F4 to existing RS-STRUCT-001 before codec/content extension;do not claim all hypothetical internal bugs are impossible.
+- Reviewed correct paths:CORE-03 arithmetic/no-ops,retry before death admission,pre-barrier reads,fresh epoch factories,postcommit presentation diagnostics,disk-before-memory/proved recovery,read-only expiry and fact-only text. Sol checked source contracts/callers and ran affected native gates/replays;this does not extend reviewer inspection coverage retroactively.
+- Reviewer suggestion to wrap low-level backups with an export-specific code is not required for this repair. `_backup_reserved/_backup_file_reserved` serve both exports,loads and generic backups;their operation-neutral SQLite errors are translated once by the owning slot operation. Tests hit actual `_connect` calls inside both helpers and the raw backup-method worker path. `sqlite_store.py` remains unchanged.
+- Reviewer suggestion that an ordinary catch-all necessarily needs lint-policy edits is not applicable:the final worker handler calls logger.exception and returns an explicit error projection;both existing Ruff configs pass without suppression/config edits. It is a final app boundary,not an engine swallow or fabricated success.
+
+## Native repair evidence
+
+Windows/project `.venv`Python3.13.12,PYTHONPATH=src;pytest basetemps are owned ignored directories. Startup launcher-location stderr persists from baseline;no environment reinstall/policy relaxation. Tests fault-inject adapter/worker/Future boundaries,not domain outcomes.
+
+| Command / responsibility | Actual result |
+|---|---|
+| `-m pytest -q tests/integration/test_save_slots.py tests/integration/test_client.py -k 'sqlite_backup_connect_failure or clone_limit_counts_eight or clone_count_excludes or worker_fault_projects or failed_future_keeps' --basetemp .pytest_cache/cp01-failing-20261008` before production repair | exit1,10FAIL/47deselected5.22s;all ten newly derived cases fail on original source |
+| Same nodes,`--basetemp .pytest_cache/cp01-fixed-20261008` after repair | exit0,10PASS/47deselected6.02s |
+| `-m pytest -q tests/integration/test_client.py tests/unit/test_client_text.py tests/integration/test_save_slots.py tests/integration/test_durable_turn.py --basetemp .pytest_cache/cp01-focused-20261008` | exit0,87PASS29.37s;source formatting overlapped startup,then final full suite uses fixed bytes |
+| `-m ruff check src tests` / `-m ruff check --config ruff-quality.toml src tests` | each exit0/PASS;no new ignores |
+| `-m ruff format --check` README's exact11files | exit0,11already formatted;only client.py required scoped reformat;untouched adapter/slot historical formatting preserved |
+| `-m mypy --no-native-parser` | exit0,PASS96files |
+| Import Linter via installed `from importlinter.cli import lint_imports_command; lint_imports_command()`;`--config pyproject.toml --no-cache` / runtime config | each exit0;3kept/0broken (79files/502dependencies),1kept/0broken (56files/317dependencies) |
+| `-m pytest -q tests/replay/test_golden.py tests/replay/test_trial.py tests/replay/test_encounter.py tests/replay/test_watch.py --basetemp .pytest_cache/cp01-replays-20261008` | exit0,45PASS43.69s |
+| `-m pytest -q --basetemp .pytest_cache/cp01-repair-full-20261008` | exit0,1252PASS313.32s,no skips/failures;all final repair bytes included |
+| One-off native strict document/feedback/input/ZIP/scope probe;`git diff --check` | exit0;7Markdown +JSON/text strictUTF8,133local prose links/fragments/fences/whitespace PASS;134unchanged packet inputs,original144-entry ZIP/142hashes intact;verbatim feedback SHA and unchanged HEAD PASS;exact14dirty paths (includes six earlier preparation documents);all original lines in both edited test modules retained in order |
+
+Native real Tk tests cover previously reviewer-unverified Future failure/cancellation/input/close paths. Windows reparse/physical power-loss/MIN-SPEC/final graphics/human UX/release and remote CI for uncommitted repair remain UNVERIFIED. Old tests/goldens intact. Five repaired-source/test hash values stayed unchanged through full verification. Final scope/document/feedback/historical-input checks PASS;exact results below. F4 nonblocking risks have explicit rationale and linked existing work. CP01 DONE for actual feedback,verified dispositions and accepted scoped repair/native retest;this does not waive CP02/rights/graphics/GOV-03 or authorize further implementation/administration/publication.

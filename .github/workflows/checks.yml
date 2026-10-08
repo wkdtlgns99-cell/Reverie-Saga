@@ -27,7 +27,7 @@ jobs:
           if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
           python -m ruff check --config ruff-quality.toml src tests
       - name: Scoped formatting
-        run: python -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py
+        run: python -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py tests/unit/test_engineering_rules.py
       - name: Strict types
         run: python -m mypy --no-native-parser
       - name: Type-inclusive dependency contracts
@@ -39,5 +39,20 @@ jobs:
         run: |
           New-Item -ItemType Directory -Path .pytest_cache -Force -ErrorAction Stop | Out-Null
           if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Pytest temporary parent is not a directory' }
+      - name: Rulebook and integration boundary guards
+        run: >-
+          python -m pytest -q --basetemp .pytest_cache/ci-boundaries
+          tests/unit/test_engineering_rules.py
+          tests/integration/test_save_slots.py::test_sqlite_backup_connect_failure_preserves_owner_and_slots
+          tests/integration/test_save_slots.py::test_clone_limit_counts_eight_files_across_sessions
+          tests/integration/test_save_slots.py::test_clone_count_excludes_directories_and_nonclone_names
+          tests/integration/test_client.py::test_worker_fault_projects_error_and_next_request_works
+          tests/integration/test_client.py::test_real_tk_failed_future_keeps_input_and_close_alive
+          tests/integration/test_client.py::test_worker_process_control_exception_propagates
+          tests/integration/test_client.py::test_real_tk_render_failure_rearms_poll_and_restores_input
+          tests/integration/test_client.py::test_real_tk_render_process_control_propagates
+          tests/integration/test_durable_turn.py::test_confirmed_rollback_atomic_after_real_wake
+          tests/integration/test_durable_turn.py::test_real_commit_then_exception_resolves_new
+          tests/integration/test_durable_turn.py::test_postcommit_real_presentation_failure
       - name: Full regression including goldens
         run: python -m pytest -q --basetemp .pytest_cache/ci-run

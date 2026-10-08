@@ -5,8 +5,10 @@ from __future__ import annotations
 import argparse
 from collections import deque
 from collections.abc import Sequence
-from concurrent.futures import Future
+from concurrent.futures import CancelledError, Future
+from dataclasses import replace
 from functools import partial
+import logging
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
@@ -61,6 +63,7 @@ class PlayWindow:
         self._closing = False
         self._close_future: Future[None] | None = None
         self._pending: Future[ClientUpdate] | None = None
+        self._logger = logging.getLogger(__name__)
         self.buttons: dict[ClientRequest, ttk.Button] = {}
         self.status = tk.StringVar(root, "연결 중…")
         self.status_text = tk.StringVar(root, "연결 중…")
@@ -212,19 +215,70 @@ class PlayWindow:
         self._enable(False)
 
     def _poll(self) -> None:
-        if self._pending is not None and self._pending.done():
-            update = self._pending.result()
-            self._pending = None
-            self._render(update)
-            self._enable(not self._closing)
-        if self._close_future is not None and self._close_future.done():
-            try:
-                self._close_future.result()
-            finally:
-                self.closed = True
-                self.root.destroy()
+        if self.closed:
             return
-        self.root.after(POLL_MS, self._poll)
+        try:
+            if self._pending is not None and self._pending.done():
+                pending, self._pending = self._pending, None
+                error = (
+                    CancelledError("client request cancelled")
+                    if pending.cancelled()
+                    else pending.exception()
+                )
+                if error is None:
+                    update = pending.result()
+                else:
+                    if not isinstance(error, Exception):
+                        raise error
+                    self._logger.error(
+                        "client request Future failed",
+                        exc_info=(type(error), error, error.__traceback__),
+                    )
+                    previous = self.last_update or ClientUpdate(
+                        None, "CONNECTING", (), "", self.path_text.get()
+                    )
+                    update = replace(
+                        previous,
+                        status="CLIENT_ERROR",
+                        notices=(str(error),),
+                        messages=(status_text("CLIENT_ERROR"),),
+                        reset_log=False,
+                    )
+                try:
+                    self._render(update)
+                except Exception as error:
+                    self._logger.exception("client rendering failed")
+                    self._report_render_failure(update, error)
+                finally:
+                    self._enable(not self._closing)
+            if self._close_future is not None and self._close_future.done():
+                try:
+                    self._close_future.result()
+                finally:
+                    self.closed = True
+                    self.root.destroy()
+        finally:
+            # An exceptional callback must not silently terminate the input/close polling loop.
+            if not self.closed:
+                self.root.after(POLL_MS, self._poll)
+
+    def _report_render_failure(self, update: ClientUpdate, error: Exception) -> None:
+        # The Brain result may already be committed. Keep its view/attachment;report the
+        # display failure through independent status fields without calling the renderer again.
+        failed = replace(
+            update,
+            status="CLIENT_ERROR",
+            notices=(str(error),),
+            messages=(status_text("CLIENT_ERROR"),),
+            reset_log=False,
+        )
+        self.last_update = failed
+        if failed.view is not None:
+            self.view = failed.view
+        self.status.set(failed.status)
+        self.status_text.set(status_text(failed.status))
+        self.notices.set(str(error))
+        self.path_text.set("현재 진행 파일: " + failed.working_path)
 
     def _render(self, update: ClientUpdate) -> None:
         new_update = update is not self.last_update

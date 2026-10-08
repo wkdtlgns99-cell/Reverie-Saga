@@ -1,0 +1,58 @@
+## RS-P1-QUALITY-06 — Independent Review
+
+PASS WITH CORRECTIONS
+
+Scope: Inspected the actual files in the uploaded ZIP, including the rulebook, authority documents, tests, CI workflow, and relevant production code. The local Git history and Windows execution results are not independently verified.
+
+### Confirmed findings
+
+1\. Workspace authority conflict — Medium
+
+- `SESSION_HANDOFF.md` identifies `C:\ReverieSaga` as the current workspace.
+- The architecture prompt and `MASTER_GAME_ARCHITECTURE.md` still identify `C:\Reverie Saga` as current.
+- This creates conflicting active instructions, despite the handoff explaining the historical path.
+
+Required: Correct the current-workspace statements in both authoritative documents. Preserve historical paths in archived records.&#x20;
+
+2\. UI failure-handling gap — Medium
+
+- `src/app/client.py::_poll()` preserves polling and restores input after a rendering exception.
+- However, an ordinary `_render()` exception propagates without being logged or projected as an explicit UI error.
+- The new regression test explicitly expects this exception, so it verifies continuation but not the full rulebook requirement.
+
+Required: Either extend the test and production handling to cover visible error reporting, or explicitly document this limitation. This is a preexisting runtime behavior, not a regression introduced by QUALITY-06.&#x20;
+
+### Verified strengths
+
+- Requirement preservation: All ten original quality obligations are substantively represented in the new rulebook and traceability map.
+- Reading discipline: The mandatory disk-read instruction exists in both `AGENTS.md` and the rulebook.
+- Compactness: Independently confirmed 465 words and all five required stages.
+- Deduplication: Major execution checklists were replaced with references. Remaining short routing reminders are reasonable.
+- CI: The workflow retains lint, formatting, strict typing, import contracts, and full regression, with a focused boundary step added before regression.
+- Testing: Positive/negative Ruff probes and fault-injection integration tests provide meaningful coverage beyond merely checking documentation.
+
+The three documentation guards also passed independently in this review environment (3 passed, 5 Ruff probes not executed because Ruff is unavailable here).&#x20;
+
+### Recommendations (not demonstrated defects)
+
+1. Preserve exact wording: Restore “not arbitrary line counts” to the responsibility-decomposition rule for stricter traceability.
+2. Token efficiency: Measure tokens rather than words. Avoid compressed punctuation that harms readability.
+3. CI coverage: Consider automating Markdown link validation across active documents, not only rulebook links.
+4. Release gate: Require a successful GitHub Actions run on the published commit before claiming remote CI acceptance. Branch protection remains separate.
+
+### Final verdict
+
+Accept the rulebook consolidation with two targeted corrections. No evidence justifies redesigning the rulebook, introducing a custom checker, or expanding the governance framework.
+
+The reported 24 focused passes and 1,263 full-regression passes remain self-reported Windows results, not independently reproduced in this review.
+
+### 한국어 요약
+
+전체적으로 잘 구현됐고, 구조를 다시 만들 필요는 없음.
+
+확인된 문제는 두 가지야.
+
+1. 현재 프로젝트 경로가 일부 핵심 문서에서 다르게 적혀 있음.
+2. 화면 렌더링 오류 발생 시 복구는 되지만, 오류를 기록하고 사용자에게 알리는 처리가 부족함.
+
+기존 10개 품질 규칙은 실질적으로 유지됐고, 중복 제거와 CI 연결도 적절해. 추가 권고사항은 경미한 개선이며, 새 GitHub CI 실행은 아직 검증되지 않았어.

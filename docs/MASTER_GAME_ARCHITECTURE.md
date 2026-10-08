@@ -6,7 +6,7 @@ Updated: 2026-10-07 (human-facing progress exception only). Product requirements
 
 ## Current Project Overrides
 
-- Workspace: `C:\Reverie Saga`. Reference: `C:\Quilltale`, read-only.
+- Workspace: `C:\ReverieSaga`. Reference: `C:\Quilltale`, read-only.
 - GPT-6.1 Sol owns architecture, all simple/complex coding, tests, diagnosis/repair, integration, and technical review. Astra: advice only when Sol is blocked; never mandatory. Earlier Sol/Luna split is superseded.
 - Historical `ASTRA_...` filename preserves links, not model authority. Documents do not change the app model or launch agents.
 - Use actual laptop (§11.0). Current Windows 11 is temporary development OS; prioritize portable core and defer OS-specific implementation to deployment. Windows desktop release remains a separate requirement.

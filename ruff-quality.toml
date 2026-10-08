@@ -8,6 +8,7 @@ include = [
     "src/app/client*.py",
     "tests/replay/test_encounter.py",
     "tests/integration/test_client.py",
+    "tests/unit/test_engineering_rules.py",
 ]
 
 [lint]

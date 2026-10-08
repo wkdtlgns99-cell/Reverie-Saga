@@ -215,6 +215,78 @@ def test_failed_staged_load_keeps_old_attachment(tmp_path: Path, monkeypatch: py
         assert owner.snapshot().tick == 3
 
 
+@pytest.mark.parametrize("operation", ["export", "load", "previous"])
+def test_sqlite_backup_connect_failure_preserves_owner_and_slots(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, operation: str
+) -> None:
+    from adapters import sqlite_store
+
+    with create_durable(tmp_path / "work.sqlite", checkpoint(), bundles=(watch_bundle(),)) as owner:
+        owner.export("slot01")
+        owner.submit(command(WaitCommand(2)), attachment_id=owner.attachment_id)
+        before = owner.snapshot(), owner.protocol(), owner.attachment_id, owner.working_path
+        attachment = owner._attachment
+        slot = tmp_path / "slots/slot01.sqlite"
+        slot_sha = file_sha256(slot)
+        connect = sqlite_store._connect
+        prefix = {"export": ".export-", "load": ".loaded-", "previous": ".previous-"}[operation]
+
+        def failed_connect(path: Path, *, readonly: bool = False) -> sqlite3.Connection:
+            if path.name.startswith(prefix):
+                raise sqlite3.OperationalError("database or disk is full")
+            return connect(path, readonly=readonly)
+
+        expected = "SAVE_LOAD_FAILED" if operation == "load" else "SAVE_EXPORT_FAILED"
+        with monkeypatch.context() as patched:
+            patched.setattr(sqlite_store, "_connect", failed_connect)
+            with pytest.raises(SaveError, match=f"^{expected}:") as failure:
+                if operation == "load":
+                    owner.load("slot01")
+                else:
+                    owner.export("slot01")
+            assert failure.value.code == expected
+            assert isinstance(failure.value.__cause__, sqlite3.OperationalError)
+        assert (owner.snapshot(), owner.protocol(), owner.attachment_id, owner.working_path) == before
+        assert owner._attachment is attachment and file_sha256(slot) == slot_sha
+        assert not tuple(tmp_path.glob(".loaded-*"))
+        assert not tuple(slot.parent.glob(".export-*"))
+        assert not tuple(slot.parent.glob(".previous-*"))
+        owner.submit(command(sequence=2, revision=1), attachment_id=before[2])
+        assert owner.snapshot().tick == 3
+
+
+def test_clone_limit_counts_eight_files_across_sessions(tmp_path: Path) -> None:
+    original = tmp_path / "work.sqlite"
+    with create_durable(original, checkpoint(), bundles=(watch_bundle(),)) as owner:
+        owner.export("slot01")
+    clones: list[Path] = []
+    for _ in range(8):
+        with resume_durable(original, bundles=(watch_bundle(),)) as owner:
+            owner.load("slot01")
+            clones.append(owner.working_path)
+        assert all(path.is_file() and Path(str(path) + ".lock.sqlite").is_file() for path in clones)
+    assert len(set(clones)) == 8
+    before_files = tuple(sorted(path.name for path in tmp_path.iterdir()))
+    with resume_durable(original, bundles=(watch_bundle(),)) as owner:
+        before = owner.snapshot(), owner.protocol(), owner.attachment_id, owner.working_path
+        with pytest.raises(SaveError, match="^SAVE_LIMIT: managed working clone count$"):
+            owner.load("slot01")
+        assert (owner.snapshot(), owner.protocol(), owner.attachment_id, owner.working_path) == before
+    assert tuple(sorted(path.name for path in tmp_path.iterdir())) == before_files
+
+
+def test_clone_count_excludes_directories_and_nonclone_names(tmp_path: Path) -> None:
+    with create_durable(tmp_path / "work.sqlite", checkpoint(), bundles=(watch_bundle(),)) as owner:
+        owner.export("slot01")
+        for index in range(8):
+            (tmp_path / f".loaded-{index:032x}.sqlite").mkdir()
+            (tmp_path / f".loaded-invalid{index}.sqlite").write_bytes(b"unowned")
+        before = tuple(sorted(path.name for path in tmp_path.iterdir()))
+        owner.load("slot01")
+        assert owner.snapshot().tick == 0
+        assert all((tmp_path / name).exists() for name in before)
+
+
 def test_real_durable_json_cli(tmp_path: Path) -> None:
     from domain.canonical import JsonObject, array_value, canonical_json, decode_json, object_value, text_value
     from tests.unit.watch_fixtures import reference

@@ -6,6 +6,7 @@ from pathlib import Path
 import re
 import secrets
 import hashlib
+import sqlite3
 
 from adapters.sqlite_store import (
     SqliteCommitStore, _backup_file_reserved, safe_path, validate_save,
@@ -139,7 +140,7 @@ class SqliteSlots:
             return SaveExportReceipt(slot_id, pinned.protocol.revision, self._io.hash_core(pinned.core),
                                      hash_document("protocol/v1", self._io.encode_protocol(pinned.protocol)),
                                      file_sha256(current), directory_synced)
-        except (OSError, ValueError, TypeError, RuntimeError) as error:
+        except (sqlite3.Error, OSError, ValueError, TypeError, RuntimeError) as error:
             if attempted:
                 # A failed syscall with an unchanged old file AND still-present temp proves absence.
                 absent = not replaced and bool(temporaries) and temporaries[0].exists()
@@ -171,14 +172,19 @@ class SqliteSlots:
             self._store.load()
             validate_save(current, io=self._io)
             root = self._store.path.parent
-            if len(tuple(root.glob(".loaded-*.sqlite"))) >= 8:
+            # Count working clones, not their SQLite lock sidecars or unrelated entries.
+            if sum(
+                1 for child in root.glob(".loaded-*.sqlite")
+                if re.fullmatch(r"\.loaded-[0-9a-f]{32}\.sqlite", child.name)
+                and child.is_file() and not child.is_symlink()
+            ) >= 8:
                 raise SaveError("SAVE_LIMIT", "managed working clone count")
             path = self._reserve(root, ".loaded-")
             _backup_file_reserved(current, path, io=self._io)
             store = SqliteCommitStore.open(path, io=self._io)
             self._owned.remove(path)
             return store
-        except (OSError, ValueError, TypeError, RuntimeError) as error:
+        except (sqlite3.Error, OSError, ValueError, TypeError, RuntimeError) as error:
             if path is not None:
                 self._owned.add(Path(str(path) + ".lock.sqlite"))
                 self._cleanup((path, Path(str(path) + ".lock.sqlite")))

@@ -1,17 +1,24 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-07 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
+Updated:2026-10-08 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SESSION_HANDOFF.md) before execution.
-Every backlog delivery also updates [Korean progress](GAME_SYSTEM_SUMMARY_KO.md);do not copy full specifications here.
+Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
 Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
 
-## Current Snapshot — 2026-10-07
+## Immediate Next — RS-CI-002
+
+- Next task:protect main with required Native checks and a PR workflow. Keep RS-CI-002 TODO until explicit repository-administration approval;this session's commit/push authorization does not authorize settings changes.
+- Prerequisites:successful required jobs on this session's published commit,then administration approval. Inspect current protection/rulesets before changing them;verify an invalid/missing check cannot merge and document bypass permissions before DONE.
+- Session record:[2026-10-08 delivery](docs/reviews/SESSION_2026-10-08.md). CP02/reuse rights,GOV-03 and graphics holds remain as recorded below;no automatic feature implementation.
+
+## Current Snapshot — 2026-10-08
 
 - Phase0 and RS-P1-CORE representative slice DONE:movement/door/combat/rest,timed rule-based NPC/events,SQLite save/load/recovery/replay;not the full world/cognition or finished graphical game.
 - RS-P1-QUALITY/RS-CLIENT-001/002 DONE. [Action history acceptance](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):1242PASS283.95s,focused36twice/replays45/mypy96/lint/format/imports PASS;publication rerun1242PASS278.98s. Historical full runs,not current review execution.
 - Native combat/save/load narration observed;QT-F01 UX_NOT_ACCEPTED retained. Patched-SHA remote CI PASS (1242tests393.67s);old1065PASS/177temp-setup errors retained in RS-CI-001 evidence. Main protection off;RS-CI-002 not executed. Updated human UX/final graphics/device/release/independent review UNVERIFIED.
 - GOV-01/02 DONE;GOV-03 order READY,implementation DEFERRED/G07 NOT_ACTIVE. RS-P1-GOV and RS-ARCH-002 remain IN_PROGRESS;B09 READY_FOR_REVIEW/#6/#34 later-order readiness PARTIAL.
-- QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 holds core/client expansion;QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local/remote acceptance DONE;GPT evaluation+CI repair published. Director also authorized Antigravity duplicate/qualification storage and publication,no gameplay/rule/settings changes. No automatic GOV-03 activation.
+- QT-F03 DONE;[QT-F04 investigation](docs/work_orders/QT-F04_PROVENANCE.md) recorded,rights UNVERIFIED/not DONE. CP02 delayed once due to usage exhaustion;resume before reuse. CP01 DONE after actual feedback/verified repairs/native1252PASS313.32s;F4 nonblocking risks linked to RS-STRUCT-001. QT-F02/graphics/modeling-AI/QT-F05 deferred. RS-CI-001 local/remote acceptance DONE;GPT evaluation+CI repair published. No automatic GOV-03/new implementation/settings/publication authority.
+- RS-P1-QUALITY-06 DONE after Claude PASS WITH CORRECTIONS:[F1/F2 repairs](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS;current469word rulebook. [Original465word/24focused/1263full acceptance](docs/work_orders/RS-P1-QUALITY-06_TURN_RULEBOOK.md) historical. Patch external rereview/remote CI UNVERIFIED;no held-gate activation.
 
 ## Highest Priority — Director Execution 2026-10-07
 
@@ -28,13 +35,19 @@ Director-approved [quality/client order](docs/work_orders/RS-P1-QUALITY.md);all 
 | 7 | RS-CLIENT-001 | DONE | Typed input/derived projection,Tk screen,single-worker durable lifetime;15focused tests and final1221tests280.39s PASS;not final HD-2D qualification |
 | 8 | RS-CLIENT-002 | DONE | [Korean action/dialogue history](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):bounded bottom panel,postcommit explanations,rejection/retry/load;focused36/full1242tests283.95s PASS,actual desktop combat/save/load observed;graphics deferred |
 
+Director2026-10-08 additional governance request:
+
+| ID | State | Scope / acceptance |
+|---|---|---|
+| RS-P1-QUALITY-06 | DONE | [Claude findings/corrections](docs/reviews/RS-P1-QUALITY-06_DISPOSITIONS.md):two current-workspace declarations and renderer reporting corrected;[acceptance](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md),31focusedPASS/full1270PASS311.94s/Ruff/format12/mypy97/imports3+1/docs/scope PASS,current469words. Ten obligations retained,no redesign. Original465word/native24focused/1263full receipt historical;AI reading cannot be proven by CI,patch external rereview/remote run UNVERIFIED |
+
 ## Claude Checkpoints and Defect Repair — 2026-10-07
 
-Director-approved scheduling only;no Claude review/repair executed by recording it. Follow the [canonical review/repair procedure](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md#claude-checkpoints-and-defect-repair--director-rule-2026-10-07);timing/status SSOT is this table. At trigger:notify director → prepare actual files/tests/evidence packet → obtain Claude feedback → verify findings → scoped fixes/retests → close. Hold only the named dependent step;QT-F04 read-only investigation may proceed while CP01 awaits feedback.
+Scheduling was authorized2026-10-07;recording alone executed no review. CP01's subsequent2026-10-08 feedback/repair receipt is recorded below. Follow the [canonical review/repair procedure](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md#claude-checkpoints-and-defect-repair--director-rule-2026-10-07);timing/status SSOT is this table. At trigger:notify director → prepare actual files/tests/evidence packet → obtain Claude feedback → verify findings → scoped fixes/retests → close. Hold only the named dependent step;unrelated authorized read-only/document work may continue.
 
 | ID | State | Insert after / before | Review focus / held downstream step |
 |---|---|---|---|
-| RS-REVIEW-CP01 | TODO | NOW:after QUALITY-05 + CLIENT-002;before next gameplay/core/client expansion | Driver atomic/retry/read lifetimes,encounter contracts,worker ownership,fact-based narration/tests;packet includes actual turn/encounter/client session-worker-text and unit/replay/integration callers. Existing1242PASS is prior evidence,not external review |
+| RS-REVIEW-CP01 | DONE | After QUALITY-05 + CLIENT-002;before next gameplay/core/client expansion | [Feedback/dispositions](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md) RECEIVED/[repair accepted](docs/work_orders/RS-REVIEW-CP01_REPAIR.md):F1/F2 SQLite/Future failures and F3 clone-count repaired;10FAIL→10PASS,focused87PASS/replays45PASS/full1252PASS313.32s,native lint/format/types/imports/docs/scope PASS. F4 nonblocking risks routed with rationale to RS-STRUCT-001;patch self-review/native acceptance,not external patch rereview. Original packet historical;CP02/rights/graphics/GOV-03 unchanged |
 | RS-REVIEW-CP02 | DEFERRED | Director-approved one-time delay:Claude usage exhausted;resume when available,before RS-V1-MIGRATION/any new reuse import | [Prepared packet](docs/reviews/RS-REVIEW-CP02_REQUEST.md) retained;refresh actual input hashes before forwarding. Feedback NOT_RECEIVED,not DONE/waived. Hold imports until evidenced rights and verified review/fixes;CP01 unchanged |
 | RS-REVIEW-CP03 | DEFERRED | After QT-F02 content generalization + first small playable content segment,when authorized;before more engines/bulk content | Multiple independent scenarios,no fixed-target leakage,live consumers/quest consequences/bounds,integrated save-load/replay;hold scenario/world expansion until valid findings repaired |
 | RS-REVIEW-CP04 | DEFERRED | When graphics resumes:after first Brain↔graphical-client room/import sample;before final engine commitment/bulk assets | CORE ownership,coordinate/identity mapping,input/retry/resync,load/UI history,asset provenance/scale/pivot and measured render performance;not final art approval |
@@ -61,7 +74,7 @@ Owner:Sol;Astra blocker advice only. READY does not authorize agent/model change
 |---|---|---|---|---|
 | RS-CI-001 | P0 | DONE | Repair clean-run CI and align scoped formatter targets | [Acceptance](docs/work_orders/RS-CI-001_CLEAN_RUN.md):clean native1242PASS280.99s/all checks+parent probes;actual patched-SHA8d90592 run37581088580/checks success,remote1242PASS393.67s. Repair/evaluation published;closure receipt is docs only. Main settings untouched |
 | RS-CI-002 | P0 | TODO | Main protection/required CI +PR workflow | After CI-001 real job success;explicit administration approval and actual enforcement/bypass verification. Read-only API confirms protection off;settings untouched |
-| RS-STRUCT-001 | P1 | DEFERRED | Conditional structural/test/format/performance/content improvements | Linked GPT dispositions;CP01 and bounded orders before shared-core changes. Reuse existing GOV/A10/A13/QT-F02 tasks;G07 remains engine-method-only/deferred. No duplicate rules/full rewrite/new library |
+| RS-STRUCT-001 | P1 | DEFERRED | Conditional structural/test/format/performance/content improvements | Linked GPT dispositions and [CP01-F4/codec residual risks](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md#findings):no demonstrated normal validated-input trigger;assess projection-after-COMMIT/load-close-after-swap/codec-extension reconciliation before future client/content generalization under a bounded order. Reuse existing GOV/A10/A13/QT-F02 tasks;G07 remains engine-method-only/deferred. No duplicate rules/full rewrite/new library |
 | RS-DOC-001 | P0 | DONE | Handoff/backlog/order foundation | Earlier role split superseded by DOC-003; retain foundation/evidence |
 | RS-DOC-003 | P0 | DONE | All development assigned to Sol | Prompt/MASTER/context/orders agree; Astra blocker-only; `docs/prompts/SOL_CODING_WORK_ORDER.md` |
 | RS-DOC-004 | P0 | DONE | English compact AI documentation | Director-authorized rule;8 active docs in compact English; contracts/status/IDs/links verified; no next BLOCK |

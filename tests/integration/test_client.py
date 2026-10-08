@@ -1,7 +1,10 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Iterator
+from concurrent.futures import Future
+import gc
 from pathlib import Path
+import sqlite3
 import threading
 import time
 import tkinter as tk
@@ -198,6 +201,9 @@ def tk_host() -> Iterator[tk.Tk]:
 
 @pytest.fixture
 def window(tmp_path: Path, tk_host: tk.Tk) -> Iterator[PlayWindow]:
+    # Failed render traces can retain old Tk variables;collect them on their owner thread
+    # before the next worker starts allocating,not from that worker's cyclic GC.
+    gc.collect()
     root = tk.Toplevel(tk_host)
     root.withdraw()
     screen = PlayWindow(root, tmp_path / "ui.sqlite")
@@ -385,3 +391,181 @@ def test_real_tk_log_focus_and_line_length(window: PlayWindow) -> None:
     assert len(window.history[-1]) <= LOG_TEXT_LIMIT
     assert "\r" not in window.history[-1] and "\n" not in window.history[-1]
     assert window.log_scrollbar.cget("command")
+
+
+@pytest.mark.parametrize("fault", ["sqlite", "unlisted"])
+def test_worker_fault_projects_error_and_next_request_works(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, caplog: pytest.LogCaptureFixture, fault: str
+) -> None:
+    from adapters.sqlite_store import SqliteCommitStore
+
+    worker = ClientWorker(tmp_path / "boundary-fault.sqlite")
+    try:
+        worker.request("attach").result(timeout=15)
+        before = worker.request("wait").result(timeout=15)
+
+        def failed_backup(self: SqliteCommitStore, path: Path) -> None:
+            raise sqlite3.OperationalError("database or disk is full")
+
+        def failed_save(self: ClientSession, slot_id: str) -> ClientUpdate:
+            raise ArithmeticError("unlisted boundary fault")
+
+        with monkeypatch.context() as patched:
+            if fault == "sqlite":
+                patched.setattr(SqliteCommitStore, "_backup_reserved", failed_backup)
+            else:
+                patched.setattr(ClientSession, "save", failed_save)
+            failed = worker.request("save").result(timeout=15)
+        expected = "SAVE_EXPORT_FAILED" if fault == "sqlite" else "CLIENT_ERROR"
+        assert failed.status == expected and failed.view == before.view
+        assert failed.attachment_id == before.attachment_id and not failed.reset_log
+        assert not any("기다렸" in line for line in failed.messages)
+        if fault == "unlisted":
+            assert "client boundary operation failed" in caplog.text
+        after = worker.request("wait").result(timeout=15)
+        assert after.status == "COMMITTED" and _view(after).tick == _view(before).tick + 1
+    finally:
+        worker.join()
+
+
+@pytest.mark.parametrize("closing,cancelled", [(False, False), (True, False), (False, True)])
+def test_real_tk_failed_future_keeps_input_and_close_alive(
+    window: PlayWindow, closing: bool, cancelled: bool
+) -> None:
+    previous = window.view
+    failed: Future[ClientUpdate] = Future()
+    if cancelled:
+        assert failed.cancel()
+    else:
+        failed.set_exception(ArithmeticError("unlisted Future failure"))
+    window._pending = failed
+    window._enable(False)
+    if closing:
+        window.close()
+    try:
+        window._poll()
+    finally:
+        # Preserve teardown even against the original failing callback.
+        window._pending = None
+    if not closing:
+        assert not window.busy and window.view == previous
+        assert window.status.get() == "CLIENT_ERROR"
+        assert "오류" in window.log_text.get("1.0", "end-1c")
+        assert all(str(button.cget("state")) == "normal" for button in window.buttons.values())
+        window.buttons["wait"].invoke()
+        _pump(window.root, lambda: not window.busy)
+        assert window.view is not None and previous is not None
+        assert window.view.tick == previous.tick + 1
+        window.close()
+    _pump(window.root, lambda: window.closed)
+    window.worker.join()
+    assert window.closed
+
+
+@pytest.mark.parametrize("fault", [KeyboardInterrupt, SystemExit])
+def test_worker_process_control_exception_propagates(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, fault: type[BaseException]
+) -> None:
+    from adapters.sqlite_store import SqliteCommitStore
+
+    worker = ClientWorker(tmp_path / "process-control.sqlite")
+    try:
+        before = worker.request("attach").result(timeout=15)
+
+        def failed_backup(self: SqliteCommitStore, path: Path) -> None:
+            raise fault("process-control signal")
+
+        with monkeypatch.context() as patched:
+            patched.setattr(SqliteCommitStore, "_backup_reserved", failed_backup)
+            with pytest.raises(fault, match="^process-control signal$"):
+                worker.request("save").result(timeout=15)
+        assert worker._last is before
+        assert not tuple((tmp_path / "slots").glob(".export-*"))
+        after = worker.request("wait").result(timeout=15)
+        assert after.status == "COMMITTED" and _view(after).tick == _view(before).tick + 1
+    finally:
+        worker.join()
+
+
+@pytest.mark.parametrize("stage", ["early", "draw"])
+@pytest.mark.parametrize("closing", [False, True])
+def test_real_tk_render_failure_rearms_poll_and_restores_input(
+    window: PlayWindow,
+    monkeypatch: pytest.MonkeyPatch,
+    caplog: pytest.LogCaptureFixture,
+    stage: str,
+    closing: bool,
+) -> None:
+    previous = window.last_update
+    assert previous is not None
+    committed = window.worker.request("wait").result(timeout=15)
+    assert committed.view is not None and previous.view is not None
+    assert committed.status == "COMMITTED" and committed.view.tick == previous.view.tick + 1
+    completed: Future[ClientUpdate] = Future()
+    completed.set_result(committed)
+    window._pending = completed
+    window._enable(False)
+    before_callbacks = set(window.root.tk.splitlist(window.root.tk.call("after", "info")))
+
+    def failed_render(self: PlayWindow, update: ClientUpdate) -> None:
+        raise ArithmeticError("renderer failed")
+
+    def failed_draw(self: PlayWindow, view: ClientView) -> None:
+        raise ArithmeticError("renderer failed")
+
+    if closing:
+        window.close()
+    with monkeypatch.context() as patched:
+        if stage == "early":
+            patched.setattr(PlayWindow, "_render", failed_render)
+        else:
+            patched.setattr(PlayWindow, "_draw_map", failed_draw)
+        window._poll()
+    after_callbacks = set(window.root.tk.splitlist(window.root.tk.call("after", "info")))
+    if not window.closed:
+        assert after_callbacks - before_callbacks, "Failed callback must schedule the next poll"
+    assert window._pending is None and window.view == committed.view
+    assert window.status.get() == "CLIENT_ERROR" and "오류" in window.status_text.get()
+    assert window.notices.get() == "renderer failed"
+    assert window.last_update is not None and window.last_update.status == "CLIENT_ERROR"
+    assert window.last_update.view == committed.view
+    assert window.last_update.attachment_id == committed.attachment_id
+    assert window.last_update.working_path == committed.working_path
+    records = [record for record in caplog.records if record.message == "client rendering failed"]
+    assert len(records) == 1 and records[0].exc_info is not None
+    assert isinstance(records[0].exc_info[1], ArithmeticError)
+    if closing:
+        assert window.busy  # Closing intentionally blocks new input after pending work drains.
+        _pump(window.root, lambda: window.closed)
+        assert window.closed
+        return
+    assert not window.busy
+    assert all(str(button.cget("state")) == "normal" for button in window.buttons.values())
+    attached = window.worker.request("attach").result(timeout=15)
+    assert attached.view == committed.view  # Reporting the failure never reruns the committed wait.
+    _click(window, "wait")
+    assert window.view is not None
+    assert window.view.tick == committed.view.tick + 1
+    window.close()
+    _pump(window.root, lambda: window.closed)
+    assert window.closed
+
+
+@pytest.mark.parametrize("fault", [KeyboardInterrupt, SystemExit])
+def test_real_tk_render_process_control_propagates(
+    window: PlayWindow, monkeypatch: pytest.MonkeyPatch, fault: type[BaseException]
+) -> None:
+    previous = window.last_update
+    assert previous is not None
+    completed: Future[ClientUpdate] = Future()
+    completed.set_result(previous)
+    window._pending = completed
+
+    def interrupted_render(self: PlayWindow, update: ClientUpdate) -> None:
+        raise fault("render process-control signal")
+
+    with monkeypatch.context() as patched:
+        patched.setattr(PlayWindow, "_render", interrupted_render)
+        with pytest.raises(fault, match="^render process-control signal$"):
+            window._poll()
+    assert not window.busy and window.last_update is previous

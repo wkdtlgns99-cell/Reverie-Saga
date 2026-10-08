@@ -55,7 +55,7 @@ This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC 
 ```powershell
 .\.venv\Scripts\python.exe -m ruff check src tests
 .\.venv\Scripts\python.exe -m ruff check --config ruff-quality.toml src tests
-.\.venv\Scripts\python.exe -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py
+.\.venv\Scripts\python.exe -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py tests/unit/test_engineering_rules.py
 .\.venv\Scripts\python.exe -m mypy --no-native-parser
 .\.venv\Scripts\python.exe -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config pyproject.toml --no-cache
 .\.venv\Scripts\python.exe -c "from importlinter.cli import lint_imports_command; lint_imports_command()" --config .importlinter-runtime.toml --no-cache
@@ -67,7 +67,7 @@ if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Py
 The shared import config includes TYPE_CHECKING imports;the runtime config excludes
 them to permit annotation-only sibling cycles. Both are intentional and required.
 The source tree is currently run via PYTHONPATH,not an installable package.
-Selective E501/PT011 checks cover the changed core/replay/client paths;they do not
+Selective E501/PT011 checks cover the changed core/replay/client and rulebook-guard paths;they do not
 claim repository-wide complexity cleanup. Windows GitHub Actions runs these native
 gates after publication. Patched commit8d90592 [run37581088580](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37581088580)
 passed all steps and1242tests393.67s;fresh native qualification1242PASS280.99s.
@@ -78,10 +78,25 @@ The [RS-CI-001 repair](docs/work_orders/RS-CI-001_CLEAN_RUN.md) explicitly prepa
 that ignored parent and aligns all11formatter targets;local/remote acceptance is recorded
 in the linked order,not inferred from the workflow file alone.
 
+The [per-turn rulebook](ENGINEERING_RULES.md) owns execution/repair policy;
+[enforcement map](docs/ENGINEERING_ENFORCEMENT.md) distinguishes active checks from review/deferred work.
+CI now runs named **Rulebook and integration boundary guards** before full regression:
+entry/link/compactness and real Ruff rejection/acceptance probes,SQLite/clone cleanup,
+worker/Future/Tk continuation,process-control propagation and atomic/postcommit truth.
+The exact small selection lives in [checks.yml](.github/workflows/checks.yml);a missing node
+fails collection. To inspect the guard families locally,run:
+
+```powershell
+.\.venv\Scripts\python.exe -m pytest -q tests/unit/test_engineering_rules.py tests/integration/test_client.py tests/integration/test_save_slots.py tests/integration/test_durable_turn.py --basetemp .pytest_cache/local-boundaries
+```
+
+This broader local selection is distinct from the CI's bounded named selection.
+The latest unpublished workflow requires a real remote run before claiming GitHub acceptance.
+
 ## Navigation
 
 - [Agent entry](AGENTS.md),[backlog](BACKLOG.md),[handoff](SESSION_HANDOFF.md),[Korean game progress](GAME_SYSTEM_SUMMARY_KO.md).
-- [Engineering rules](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),[product requirements](docs/MASTER_GAME_ARCHITECTURE.md).
+- [Every-turn rules](ENGINEERING_RULES.md),[enforcement/residency](docs/ENGINEERING_ENFORCEMENT.md),[engineering contracts](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),[product requirements](docs/MASTER_GAME_ARCHITECTURE.md).
 - [Implementation template](docs/prompts/SOL_CODING_WORK_ORDER.md),[current quality/client order](docs/work_orders/RS-P1-QUALITY.md),[reference location](REFERENCE_REPOSITORY.txt).
 - [Historical backlog](docs/history/BACKLOG_2026-10-07.md),[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md):complete pre-compaction records;their old NEXT instructions are not current. Root backlog/handoff contain current state and resume context.
 

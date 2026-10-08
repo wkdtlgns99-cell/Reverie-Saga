@@ -1,0 +1,65 @@
+Verdict: I confirmed one blocking defect, one related defect that shares its root cause, and one contract deviation. Everything else I traced held up.
+- Package integrity. I extracted the ZIP (144 files) and checked all 142 hashed inputs in the manifest against their SHA-256 and byte size. All matched. I did not check the packaged bytes of the request and manifest themselves, which the manifest excludes.
+- Read in full: 
+  - orchestration/turn.py
+  - engines/encounter.py and domain/encounter.py
+  - app/client.py, client_worker.py, client_session.py, client_text.py
+  - app/durable.py and app/headless.py
+  - adapters/sqlite_store.py and save_slots.py
+  - contracts/errors.py, persistence.py, client.py
+- Read in part: orchestration/encounter.py lines 1–700 of 898. I did not read the reducer tail, presenters or registry, nor read_views.py, events.py, contracts/turn.py or contracts/encounter.py. I checked read-view behavior only by executing it.
+- Docs: I read CORE-05 §Load and the prior test names. I did not re-read the CORE-03 §4.1/§5 text, and I used the request's expectation list instead. I did not check admission priority order against the CORE-03 document, so that is UNVERIFIED.
+- Executed: Python 3.12.3 on Linux, pytest 9.1.1, ten modules (client text, skeleton, durable turn, read views, four replay modules, and the encounter integration and unit tests). 370 passed in 57.3s.
+- Not run: test_client.py and every real_tk test (no tkinter in this sandbox), test_save_slots.py, and the full suite, lint, mypy and dependency gates. Treat the Tk tests as UNVERIFIED by me.
+- Reproductions: I wrote five small scripts. They fault-inject through monkeypatching, and one drives the real PlayWindow._poll against a stub tkinter module.
+Where: app/client_worker.py:33–70 (_run catches only SaveError, ValueError, TypeError, OSError, RuntimeError), app/client.py:214 (_poll), and adapters/save_slots.py:142.
+Contracts violated:
+- CORE-05 export step 6: a failure before the final replace returns SAVE_EXPORT_FAILED.
+- CLIENT-002: worker errors project as an error view, and accepted work drains before owner close.
+Trigger: any sqlite3.Error raised while backing up the working file for a slot save, for example disk full. sqlite3.Error is not an OSError or RuntimeError, and SqliteCommitStore._backup_reserved (sqlite_store.py:497) and _connect do not wrap it. SqliteSlots.export therefore lets it through raw.
+Actual behavior:
+1. Reproduction A. With a real ClientWorker, I injected OperationalError("database or disk is full") when opening the export temp. The save Future raised the raw OperationalError instead of returning a ClientUpdate. Authoritative state was fine: the worker thread stayed alive and the next down committed.
+2. Reproduction B. I called the real PlayWindow._poll with that failed Future. self._pending.result() re-raises, and the code that re-arms root.after is never reached. _pending stays set, so busy is true forever, buttons stay disabled, and the poll loop is dead.
+3. Reproduction B, close path. With close() already called, _poll still raised. root.destroy() was never called and closed stayed false. The finally: worker.join() in main is unreachable until the mainloop exits, so the process has to be killed.
+Verification limit: this used a stub tkinter to call the real method, not a real Tk window. Tk reports an exception inside an after callback and does not reschedule it, which is what the stub showed.
+Expected: a SAVE_EXPORT_FAILED error update, buttons re-enabled, and the window closable.
+Bounded repair:
+1. In the adapters, map sqlite3.Error to SAVE_EXPORT_FAILED / SAVE_LOAD_FAILED. Add it explicitly to the except tuples in export and stage_load, and wrap the backup call in _backup_reserved.
+2. In _poll, check future.exception() before .result() and render a CLIENT_ERROR update. That needs no except Exception, so it avoids the BLE001 lint question.
+3. Re-arm root.after in a finally.
+4. If you also want a catch-all in ClientWorker._run, that touches the lint policy and needs explicit director authority.
+Regression acceptance:
+- Injecting sqlite3.OperationalError into the export backup gives SAVE_EXPORT_FAILED, an unchanged slot, no .export-* leftovers, and unchanged CORE and token.
+- The same fault in staged load gives SAVE_LOAD_FAILED (see F2).
+- A worker test injects an arbitrary unlisted exception and gets CLIENT_ERROR with the previous view, and the next request works.
+- A real-Tk test with a failing pending Future shows the window re-enabled and closable (closed becomes true).
+Where: adapters/save_slots.py:177–181 (_backup_file_reserved inside stage_load).
+Contract violated: CORE-05 Load step 2: failure removes the staging file and sidecar and leaves the old driver, token, CORE, store and slot unchanged.
+Actual behavior (Reproduction D): the same injected fault in load escaped as a raw OperationalError. The owner and token were correctly unchanged. The reserved .loaded-<token>.sqlite was left on disk and counts toward the 8-file cap. A retry load succeeded afterward.
+Repair and acceptance: the F1 adapter change, plus a test that asserts SAVE_LOAD_FAILED and not glob(".loaded-*"). The existing test_failed_staged_load_keeps_old_attachment injects only RuntimeError, so it misses this.
+Where: adapters/save_slots.py:174. The glob .loaded-*.sqlite also matches .loaded-<token>.sqlite.lock.sqlite.
+Contract: CORE-05 Load step 2 allows at most 8 managed working files and counts "regular matching files". Leaving the active clone on close is intentional, as is the cap bounding leftovers across restarts. Cleanup UI is documented as later work.
+Actual behavior (Reproduction C): I ran one attach plus one load per app run. Runs 1–4 succeeded, each leaving two glob matches. Runs 5 and 6 returned SAVE_LIMIT with no in-product way out. The client always restarts on game.sqlite, so loaded progress is abandoned unless --working is passed. That is also documented, so I treat it as intentional.
+Ambiguity: whether sidecars were meant to count is not stated, so the "bug" part rests on reading the contract as 8 clones.
+Fix: match ^\.loaded-[0-9a-f]{32}\.sqlite$ exactly.
+Test gap: test_missing_and_clone_limit seeds 8 files with no sidecars, so it cannot see this. A multi-session test would catch it.
+Blocking: no. Link it to the existing "cleanup UI is later work" backlog item.
+- In ClientSession.act, update() runs after the commit. A projection ValueError would surface as CLIENT_ERROR with the pre-turn view and no narration, although the turn is committed. A later retry would return the original receipt.
+- In DurableSession.load, previous.store.close() runs after the swap (durable.py:153 area). A failure there would report SAVE_LOAD_FAILED ("current progress kept") although the owner has already swapped.
+I judge both implausible on validated state. They are residual risks, not defects.
+- CORE-03 arithmetic. I computed it independently. (3,5,2) gives (2,3,1), (1,1,1) gives (1,0,0) with no counter, and (1,5,1) gives (0,3,0). Rest and repeat-open emit a fact with an empty delta and still consume one second.
+- Driver ordering. In _check_command, retained-receipt resolution comes before admission, so a retry resolves before actor-death. Same ID with a different request gives COMMAND_ID_CONFLICT.
+- Barrier visibility. _run_barrier reads pre-barrier state and publishes staged writes only at the end. The Driver's static caches hold only manifests and routes, and an epoch port is created fresh per invoke.
+- Presentation failure. It happens after commit, adds PRESENTATION_FAILED, and does not roll back.
+- Persistence ordering. _commit swaps the head only after proven durability. _persist_durable sends SaveUnavailable to an abort and everything else to _resolve_durable, which blocks on unproven recovery. SAVE_STALE as a permanent block is intentional.
+- Encounter read views. After close they raise ExpiredReadView, and mutation raises ReadOnlyViolation and is observed as a write.
+- Client text. turn_messages suppresses success facts for non-committed outcomes and distinguishes a retained retry by diff is None. load clears _previous.
+1. No test injects an exception outside OSError, ValueError or RuntimeError through the slot, backup or ClientWorker boundary. The export fault matrix uses only OSError.
+2. test_worker_reports_save_errors_without_mutation uses INVALID_SLOT, which fails before any I/O, so it never exercises I/O fault mapping.
+3. No test covers a failed Future through PlayWindow._poll or close.
+4. No multi-session test exercises the clone-count lifecycle.
+5. No test covers a post-commit projection failure in ClientSession.act.
+- HitPointsAdapter.validate accepts HP 0–5 for every entity, while the actor maximum is 3, which only the delta and arithmetic checks enforce. By reading only, a tampered or future-generalized save could abort as ENGINE_EXCEPTION instead of being rejected at load. This is a future-generalization note, not a defect.
+- Driver._check_command runs outside _submit's try, so an exception from encode_command outside ValueError, TypeError or AttributeError would propagate raw. I did not reproduce one.
+- real_tk coverage and the Windows-specific paths (sync_directory, reparse points) remain UNVERIFIED by me.
+Disposition summary: F1 and F2 are one bounded repair with the acceptance tests above, and F1 should hold expansion until the test passes. F3 and F4 are nonblocking. I found no partial publication, stale read-port reuse, barrier leak or retry-ordering defect in the paths I read.
