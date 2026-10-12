@@ -1,6 +1,6 @@
 # RS-CLIENT-003 — Unity / Unreal Engine 5 Integration and Play Verification
 
-Date:2026-10-12 | Priority:P0,FIRST | State:DRAFT / implementation NOT_STARTED
+Date:2026-10-12 | Priority:P0,FIRST | State:READY_FOR_REVIEW / native prototype implemented;CP04 pending
 Executor:gpt-6.1-sol | Review:director-requested plan,self-review only
 
 ## Director Scope
@@ -12,7 +12,7 @@ deferral and QT-F02-first scheduling for this bounded prototype. It does not sel
 engine or approve production art/bulk content. This delivery records and publishes the
 plan;engine installation,connector setup and implementation have not run.
 
-## Draft Contract
+## Historical Draft Contract — superseded by executable slice
 
 | Field | Contract / missing prerequisite |
 |---|---|
@@ -42,3 +42,55 @@ NPC event → save → alter state → load → retry without duplicate effects 
 Use simple geometry/placeholders first;no modeling subscription or bulk asset generation is
 required merely to verify these systems. Later QT-F02/broad narrative migration/GOV-03/release
 tasks remain recorded after this first-priority prototype.
+
+## Executable Prototype Slice — Director Resume 2026-10-12
+
+Latest director instruction authorizes completing the unfinished implementation,not planning
+only. Select Unity6000.3.25f1 provisionally;official installer downloaded to ignored tmp with
+publisher-signature validation before execution. No final Unity/UE5 comparison or selection
+claim. Plugin-directory search returned no relevant engine connector;use project files,
+Unity batch editor commands,test logs and screenshot artifacts for direct automation.
+
+Allowed NEW:C:/ReverieSaga/src/contracts/narratives.py;src/adapters/narrative_catalog.py;
+src/app/engine_bridge.py;src/app/engine_project.py;tests/integration/test_engine_bridge.py;
+tests/unit/test_narrative_catalog.py;clients/unity/**;content/**;docs/work_orders/QT-F06_NARRATIVE_IMPORT.md;
+docs/reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md under the repository root.
+Allowed MODIFY:this order,BACKLOG,SESSION_HANDOFF,GAME_SYSTEM_SUMMARY_KO,.gitignore,README.
+Allowed NEW:clients/unity/README,docs/reference/QUILLTALE_SELECTION_LEDGER_2026-10-12.json,
+CP04 review packet/manifest/archive and sanitized native evidence under docs/reviews.
+Reference,CORE/engines,existing tests/oracles/pins,accepted CP02 artifacts remain read-only.
+
+Transport:private inherited stdin/stdout binary pipes owned by one Unity-launched Brain child,
+u32 big-endian length plus canonical UTF8 JSON;1..1MiB frames,requests≤16KiB,depth≤32,
+duplicate/nonfinite/extra fields rejected. This is the bounded prototype harness route,
+not the planned production TCP/diff/chunk/ACK/deployment implementation in BLOCK5 A12.
+No network listener or public token. EOF/quit closes the worker/SQLite;client shutdown closes
+input,waits≤5s then terminates its own child. C# SDK types never enter Python Brain.
+
+Request v1 exact fields:kind="request",version="1",request_id=canonical positive decimal
+string,attachment_id=empty for first attach otherwise current32hex,request=ClientRequest or
+"quit",seconds=canonical decimal0..16,slot_id=slot01..slot08. IDs must increase;stale attachment
+cannot issue actions after load. Responses pin schema hash and contain full derived ClientUpdate,
+request ID and a read-only narrative list. ClientUpdate integers become decimal strings;
+bool/strings retain their types. C# DTO/view field declarations are generated from Python
+dataclasses,not manually maintained second models. Same actions route through ClientWorker.
+
+Narratives:strict frozen new definitions,hash-pinned provenance,descriptive text only;no
+legacy entity bindings,stats,conditions,rewards or behavior. First6already qualified adaptations
+are the integrated sample;broader per-entry screening/import queue recorded separately.
+The content list is display-only and cannot affect CORE or save/replay. Malformed/mismatched
+catalog fails startup;no fallback to unverified source templates.
+
+Native Python verification must cover actual subprocess frames/partial reads,invalid inputs,
+stale/duplicate IDs,combat/save/load/retry/resume and EOF cleanup with real durable sessions.
+Unity verification must compile,build the scene,run the matching live flow/assertions and
+capture actual frames before engine success/DONE. License/editor/account failures are recorded
+as actual blockers while independent Python/content work continues. CP04 remains required
+after this first integrated sample;bulk imports/final engine commitment held until dispositions.
+
+## Native result
+
+[Execution receipt](../reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md):editor installed/active license,
+real scene/build plus17fresh graphical checks PASS;6catalog descriptions actually loaded.
+Standalone player OS launch BLOCKED;CP04 feedback pending. Historical planning NOT_RUN fields
+above describe the pre-resume delivery,not current executable status.

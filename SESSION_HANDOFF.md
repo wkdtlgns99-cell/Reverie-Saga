@@ -1,6 +1,6 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-12 | Stage:ENGINE_PLAYTEST_FIRST/CP02_DOCUMENT_REVIEW_ACCEPTED/CI002_ACCEPTED
+Date:2026-10-12 | Stage:UNITY_PROTOTYPE_IMPLEMENTED/CP04_PENDING/QT_F06_SAMPLE_IMPORTED
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
@@ -8,7 +8,7 @@ Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.
 ## Resume Reads
 
 1. Director2026-10-12 authorizes publishing all this session's project changes;[delivery](docs/reviews/SESSION_2026-10-12.md). Verify actual Git HEAD/status and preserve unrelated dirty files. Director2026-10-08 authorized recording this session and committing/pushing its accumulated changes;see [session delivery](docs/reviews/SESSION_2026-10-08.md) for publication/CI evidence. Read current tip from Git,not historical order baselines. Authorization covers this publication/receipt only;no force-push,new feature scope or repository-settings changes.
-2. Read AGENTS → ENGINEERING_RULES,this file,BACKLOG and applicable source order;[QT-F03](docs/work_orders/QT-F03_DOCUMENT_COMPACTION.md) DONE;[QT-F04](docs/work_orders/QT-F04_PROVENANCE.md) investigation/six-candidate generation-terms qualification DONE;other corpus/assets unqualified. CP02 full-input document review/verified repairs DONE2026-10-12;new selections need individual qualification;existing6eligible for future adaptation only. No imports.
+2. Read AGENTS → ENGINEERING_RULES,this file,BACKLOG and applicable source order;[QT-F03](docs/work_orders/QT-F03_DOCUMENT_COMPACTION.md) DONE;[QT-F04](docs/work_orders/QT-F04_PROVENANCE.md) investigation/six-candidate generation-terms qualification DONE;other corpus/assets unqualified. CP02 full-input document review/verified repairs DONE2026-10-12;new selections need individual qualification;6now compiled/displayed underQT-F06;whole templates excluded.
    Read [Claude register](BACKLOG.md#claude-checkpoints-and-defect-repair--2026-10-07):CP01 DONE/feedback RECEIVED/[dispositions](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md),[repair accepted](docs/work_orders/RS-REVIEW-CP01_REPAIR.md);native1252PASS313.32s. Original input manifest/ZIP are historical,not repaired bytes;F4 residual risks routed to RS-STRUCT-001. [CP02 full dispositions](docs/reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md)/[repair](docs/work_orders/RS-REVIEW-CP02_FULL_REPAIR.md)/[final witness](docs/reviews/RS-REVIEW-CP02_INPUTS.json):FULL_INPUT_RECEIVED/document-only,DONE;Sol4original-byte witnesses PASS,patch external rereview NOT_RECEIVED. Current witness digest anchored in user delivery/sidecar;original reviewed ZIP/witness preserved. No import/next-feature authority.
 3. Architecture work:read the applicable engineering prompt/MASTER/[BLOCK1](architecture/BLOCK_01.md) sections and task-specific original contracts. Full historical v1 rules are not default entry input;read [historical v1 AGENTS](docs/reference/AGENTS_v1.md) only for an applicable evidence/mapping audit. Summaries do not replace required contracts.
 4. Runtime/check commands:[README](README.md). Use actual C:\ReverieSaga,not historical producer path;explicit .venv/Scripts/python.exe/PYTHONPATH=src. For document-only tasks use document checks,not invented fresh code results.
@@ -24,7 +24,7 @@ Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.
 
 ## Current State / Evidence
 
-- Implemented:Phase0/CORE first representative slice plus thin Tk boundary harness and Korean bottom action history. Director2026-10-12 promotes Unity/UE5 engine integration/playable-system prototype to FIRST/P0;bulk graphics/modeling-AI remains later,not removed from MASTER.
+- Implemented:Phase0/CORE representative slice,Tk action history,and Unity6000.3.25f1 room/private-pipe Brain connection with6descriptive imports. [Native receipt](docs/reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md):17fresh checks/build PASS,CP04 pending;standalone OS launch blocked. [Run](clients/unity/README.md). Director2026-10-12 promotes Unity/UE5 engine integration/playable-system prototype to FIRST/P0;bulk graphics/modeling-AI remains later,not removed from MASTER.
 - [RS-CLIENT-002 prior evidence](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):full1242PASS283.95s. Latest [CP01 repair](docs/work_orders/RS-REVIEW-CP01_REPAIR.md):full1252PASS313.32s,focused87PASS/replays45PASS,mypy96/shared+selective Ruff/format11/imports3+1/docs/scope PASS;no skip/oracle changes.
 - [RS-P1-QUALITY-06 original acceptance](docs/work_orders/RS-P1-QUALITY-06_TURN_RULEBOOK.md):465word rulebook/24focused/full1263PASS311.12s historical. [Claude corrections accepted](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md):F1 paths agree/F2 logged visible renderer error without reexecuting Brain work;current469words,31focusedPASS/full1270PASS311.94s/Ruff+format12+mypy97+imports3+1/docs/scope PASS. Corrections source only client.py;CORE/save/pins/history unchanged in corrections. Original ZIP retained;patch external rereview NOT_RECEIVED. [Combined session publication/remote CI](docs/reviews/SESSION_2026-10-08.md):0708483,31focused/1270fullPASS,all steps SUCCESS.
 - Worker owns SQLite/session lifetime;Tk receives immutable projections. Committed facts drive bounded200line read-only narration;retries do not repeat attacks;load resets displayed history and creates a private working branch. Resume the displayed path,not the original branch.
@@ -110,3 +110,21 @@ Six [Quilltale descriptive candidates](docs/reference/QUILLTALE_CONTENT_CANDIDAT
 QT-F03/QT-F04 changed documents only;runtime tests NOT_RUN for these tasks. Original record:[backlog archive](docs/history/BACKLOG_2026-10-07.md)/[handoff archive](docs/history/SESSION_HANDOFF_2026-10-07.md);new investigation/check limits belong to QT-F04,not relabeled gameplay verification.
 
 Publication2026-10-07:PUBLISHED,31 accumulated files at254d969126a552d11be678d87f86d144c9c47501 +receipt99786af;push/remote main SHA verified/then tree clean. Private saves/secrets/environment/cache excluded. `.venv/Scripts/python.exe -m pytest -q --basetemp .pytest_cache/publication-20261007` exit0:1242PASS278.98s;Ruff/format11/mypy96/imports3+1/docs18/links210 PASS;11code files unchanged. Remote Actions were UNVERIFIED then;later FAIL now recorded,not a retraction of local results. CP01 pending/CP02 delayed once/rights UNVERIFIED;publication is not review or rights clearance.
+
+## Active resume — actual engine/content implementation
+
+RS-CLIENT-003 READY_FOR_REVIEW,QT-F06 compiler/sample/326ledger DONE. Follow
+[CP04 request](docs/reviews/RS-REVIEW-CP04_REQUEST.md):feedback NOT_RECEIVED;after actual
+reply verify/dispose findings and retest before final engine/bulk assets. QT-F02/generalized
+scenario contract and CP03 still precede bulk narrative imports;6catalog descriptions are UI
+content,not configurable world/quest gameplay.326ledger contains319queued+1rewrite-required
+records and duplicate consolidation notes;no broad template/engine permission inferred.
+
+Unity Personal signed-in/active;editor+CLI and145MB/then89MB player reports are local ignored
+artifacts,not downloads for end users. Final unsigned player OS launch blocked;editor/run/build
+and real screenshot work. No security policy changes. Observed GPU is Intel UHD Graphics750,
+so prior laptop hardware is a recorded target/context,not current device qualification.
+Keep original candidate JSON/CP02 witness9d17a1b5…/ZIPs unchanged. Reference276files+15dirty
+lines andHEAD3c50c34f are preserved. Latest commands/results/failures live in execution receipt.
+
+Final local full1285PASS305.69s/focused15PASS2.59s,mypy103/shared+selective Ruff/format18/imports3+1 PASS. Native editor17checks PASS;standalone OS launch remains blocked.

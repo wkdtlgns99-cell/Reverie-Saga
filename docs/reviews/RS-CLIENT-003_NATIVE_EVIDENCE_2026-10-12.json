@@ -1,0 +1,73 @@
+{
+  "date": "2026-10-12",
+  "editor": "6000.3.25f1",
+  "editor_native_exit": 0,
+  "native_checks": [
+    "catalog_loaded",
+    "initial_actor",
+    "failed_load_preserves_state",
+    "logical_time_advances",
+    "npc_reply_committed",
+    "wall_blocks",
+    "door_blocks",
+    "opened_door_passes",
+    "attack_and_counter",
+    "load_restores",
+    "retry_no_duplicate",
+    "enemy_defeated",
+    "defeated_enemy_cell_passable",
+    "disconnect_visible",
+    "reconnect_committed_branch",
+    "input_after_reconnect",
+    "actual_screen_capture"
+  ],
+  "native_failures": 0,
+  "build_total_size_bytes": 89480783,
+  "standalone_launch": "BLOCKED_WINDOWS_APPLICATION_CONTROL",
+  "performance": {
+    "frames": 120,
+    "median_ms": 1.695104,
+    "p95_ms": 2.588903,
+    "graphics_device": "Intel(R) UHD Graphics 750",
+    "batch_mode": false
+  },
+  "frame_sample_scope": "editor placeholder only;not release/MIN-SPEC acceptance",
+  "screenshot_sha256": "41354787cb8843e1caee0f7cd1bf8a8c26331eafd8fc1319dc97a1b216ea1ded",
+  "final_view": {
+    "width": "3",
+    "height": "3",
+    "walls": [
+      "1"
+    ],
+    "actor_cell": "8",
+    "gate_cell": "4",
+    "gate_open": true,
+    "enemy_cell": "8",
+    "actor_hp": "1",
+    "enemy_hp": "0",
+    "stamina": "0",
+    "npc_cell": "6",
+    "npc_bells": "7",
+    "npc_replies": "1",
+    "charge": "3",
+    "tick": "14",
+    "revision": "14"
+  },
+  "reference_preserved": {
+    "files": 276,
+    "dirty_lines": 15,
+    "head": "3c50c34f4c756e3a27405a1abd1a00ecc6098c51"
+  },
+  "self_review": true,
+  "claude_feedback": "NOT_RECEIVED",
+  "python_final_full_regression": {
+    "passed": 1285,
+    "seconds": 305.69,
+    "exit": 0
+  },
+  "python_final_focused": {
+    "passed": 15,
+    "seconds": 2.59,
+    "exit": 0
+  }
+}

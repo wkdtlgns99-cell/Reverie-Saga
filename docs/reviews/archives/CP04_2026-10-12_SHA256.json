@@ -1,0 +1,7 @@
+{
+  "witness_sha256": "998e7f27163dfd67cfaf45abfd0e51cf94a90808ee245c56cc978901381a2121",
+  "archive_sha256": "65bd76b67a381475837bf6a0b9b8c8acdb6a960682b7915834c390ddf775fb7b",
+  "archive_bytes": 559563,
+  "archive_files": 176,
+  "scope": "outside reviewed/hash set;published Git commit and director delivery anchor these digests"
+}
