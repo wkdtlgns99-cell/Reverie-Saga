@@ -1,0 +1,110 @@
+{
+  "record_type": "CP02_local_review_snapshot",
+  "date": "2026-10-12",
+  "preparation_status": "ACCEPTED",
+  "checkpoint_status": "IN_PROGRESS",
+  "feedback": "RECEIVED_PACKET_ONLY",
+  "full_input_feedback": "NOT_RECEIVED",
+  "head": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+  "git_status_command": "git status --porcelain=v1 --untracked-files=all",
+  "git_status_porcelain": [
+    " M BACKLOG.md",
+    " M GAME_SYSTEM_SUMMARY_KO.md",
+    " M SESSION_HANDOFF.md",
+    " M docs/reviews/RS-REVIEW-CP02_REQUEST.md",
+    "?? docs/reviews/RS-CI-002_ENFORCEMENT_2026-10-12.json",
+    "?? docs/reviews/RS-CI-002_REMOTE_STATE_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_DISPOSITIONS_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_FEEDBACK_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_INPUTS.json",
+    "?? docs/work_orders/RS-CI-002_MAIN_PROTECTION.md",
+    "?? docs/work_orders/RS-REVIEW-CP02_REFRESH.md"
+  ],
+  "inputs": [
+    {
+      "path": "BACKLOG.md",
+      "role": "current-status",
+      "sha256": "b4f30bed7d6205410204e78e40f521c3d3330174b9ab7e4e191c52a4e699ceaf",
+      "bytes": 23039
+    },
+    {
+      "path": "docs/work_orders/QT-F04_PROVENANCE.md",
+      "role": "historical-investigation-evidence",
+      "sha256": "4bc992f43845a41c2c5d148c5e690ada0607f6946c67233b259dbf5812951f22",
+      "bytes": 11058
+    },
+    {
+      "path": "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json",
+      "role": "curated-reference-not-approved-content",
+      "sha256": "b10e8dcab4f6d93a1f60b3e9388897ed8c40a0ea0d63a1c5a8c4a18f9e720b31",
+      "bytes": 5576
+    },
+    {
+      "path": "architecture/V1_REUSE_INVENTORY.md",
+      "role": "reuse-policy-and-historical-inventory",
+      "sha256": "9f818d2af676224c36934e5060feaf64b487d8bc6aeca1ead5f5a8df0ae478bb",
+      "bytes": 4515
+    },
+    {
+      "path": "docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md",
+      "role": "context-only-historical-feedback",
+      "sha256": "d3c7773a0e1d7b64055666a9037938604799fcf6c03a0338ec2c0eb265bd59c8",
+      "bytes": 10991
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_FEEDBACK_2026-10-12.md",
+      "role": "context-only-packet-review-reply",
+      "sha256": "966759e700920a03c7b81ed06cee8d3ea110f44a82d0ed7d28f6888364d44c59",
+      "bytes": 11048
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_DISPOSITIONS_2026-10-12.md",
+      "role": "context-only-Sol-dispositions",
+      "sha256": "f2726807ae759d3c55065ac756cd032b1f172823c82c66fc58c128b9a8281982",
+      "bytes": 4836
+    }
+  ],
+  "request": {
+    "path": "docs/reviews/RS-REVIEW-CP02_REQUEST.md",
+    "sha256": "a29287f3dbc6a50951ab105d49c97d63d5cecfa49830709630248341067de170",
+    "bytes": 8841
+  },
+  "preparation_order": {
+    "path": "docs/work_orders/RS-REVIEW-CP02_REFRESH.md",
+    "role": "context-only-preparation-contract",
+    "sha256": "30f302985ca0cde10ef667b919255d6055138caa6a41567045e9ee3c4d49b7ab",
+    "bytes": 5288
+  },
+  "entry_snapshot": {
+    "head": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+    "git_status_porcelain": [
+      " M BACKLOG.md",
+      " M GAME_SYSTEM_SUMMARY_KO.md",
+      " M SESSION_HANDOFF.md",
+      "?? docs/reviews/RS-CI-002_ENFORCEMENT_2026-10-12.json",
+      "?? docs/reviews/RS-CI-002_REMOTE_STATE_2026-10-12.md",
+      "?? docs/work_orders/RS-CI-002_MAIN_PROTECTION.md"
+    ],
+    "request_sha256": "fde06fd595645e9c3bca973e2fa67283cf96d17813fa176da8e969bbfd8eb903"
+  },
+  "excluded_from_hashes": [
+    "docs/reviews/RS-REVIEW-CP02_INPUTS.json"
+  ],
+  "hash_cycle_policy": "BACKLOG links external witness;request hashes BACKLOG;external witness hashes request;neither request nor witness hashes the witness itself.",
+  "runtime_imported": false,
+  "rights": "UNVERIFIED",
+  "runtime_tests": "NOT_RUN",
+  "source_network_reverification": "NOT_RUN",
+  "archive_path": "tmp/reviews/RS-REVIEW-CP02_2026-10-12.zip",
+  "validation": {
+    "result": "PASS",
+    "document_count": 8,
+    "local_links_and_fragments": 126,
+    "head_dirty_hashes": "PASS",
+    "scope_original_files_unchanged": 189,
+    "runtime_imported_false": "PASS",
+    "task_ids_preserved": "PASS",
+    "request_hash_cycle_avoided": "PASS",
+    "runtime_tests": "NOT_RUN"
+  }
+}

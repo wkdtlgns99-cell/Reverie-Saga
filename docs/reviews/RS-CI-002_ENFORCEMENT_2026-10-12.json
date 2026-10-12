@@ -1,0 +1,236 @@
+{
+  "task_id": "RS-CI-002",
+  "status": "DONE",
+  "observed_at_utc": "2026-10-12 00:12:09 UTC",
+  "authorization": "Director explicitly requested completing inspection, main protection and actual blocking verification, then completion records.",
+  "main_sha": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+  "rule": {
+    "id": 84462169,
+    "pattern": "main",
+    "require_pull_request": true,
+    "require_approvals": false,
+    "required_check": "checks",
+    "check_app_id": 15368,
+    "strict": true,
+    "enforce_administrators": true,
+    "allow_force_pushes": false,
+    "allow_deletions": false,
+    "source": "Authenticated browser DOM and main branch API",
+    "changed": false
+  },
+  "missing": {
+    "number": 2,
+    "state": "open",
+    "head": "d2e14581beee9615c2bafe533f665ce964401125",
+    "base": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "merged": false,
+    "merge_commit_sha": "d50645fceeb4c1e6f9bed2aca9d0c85103d8aed5",
+    "check_runs": [],
+    "ui": "1 expected check; checks Expected - Waiting for status to be reported; Required; Merge pull request disabled; no bypass control observed",
+    "result": "PASS"
+  },
+  "failed": {
+    "number": 3,
+    "head": "3dce5d17383cfd0fab723ba03c7665e11ce65bfd",
+    "base": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+    "mergeable": true,
+    "mergeable_state": "blocked",
+    "merged": false,
+    "ui": "All checks have failed; 2 failing checks; both Required; Merge pull request disabled; no bypass control observed",
+    "pull_request_run_id": 38186970010,
+    "push_run_id": 38186963160,
+    "failed_step": "Shared and selective lint",
+    "result": "PASS",
+    "diagnostic": {
+      "code": "invalid-syntax",
+      "path": "src/ci002_verification_invalid.py",
+      "line": 2,
+      "error_count": 3,
+      "exit_code": 1
+    }
+  },
+  "passing": {
+    "number": 1,
+    "run_id": 38186978420,
+    "job_id": 114611296394,
+    "result": "PASS",
+    "while_latest_check_running": {
+      "historical_success_present": true,
+      "mergeable_state": "blocked",
+      "ui": "1 in progress, 1 successful checks; Merge pull request disabled"
+    },
+    "state": "open",
+    "head": "51616c335718f9b738b2bd55932980b7bc9f8da3",
+    "base": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+    "mergeable": true,
+    "mergeable_state": "clean",
+    "merged": false,
+    "ui": "Ready to merge; All checks have passed; 2 successful checks; No conflicts with base branch; Merge pull request enabled",
+    "job_steps": [
+      {
+        "name": "Set up job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 1
+      },
+      {
+        "name": "Run actions/checkout@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 2
+      },
+      {
+        "name": "Run actions/setup-python@v5",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 3
+      },
+      {
+        "name": "Install exact qualified tool closure",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 4
+      },
+      {
+        "name": "Shared and selective lint",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 5
+      },
+      {
+        "name": "Scoped formatting",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 6
+      },
+      {
+        "name": "Strict types",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 7
+      },
+      {
+        "name": "Type-inclusive dependency contracts",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 8
+      },
+      {
+        "name": "Runtime sibling-cycle contract",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 9
+      },
+      {
+        "name": "Prepare pytest temporary parent",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 10
+      },
+      {
+        "name": "Rulebook and integration boundary guards",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 11
+      },
+      {
+        "name": "Full regression including goldens",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 12
+      },
+      {
+        "name": "Post Run actions/setup-python@v5",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 23
+      },
+      {
+        "name": "Post Run actions/checkout@v6",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 24
+      },
+      {
+        "name": "Complete job",
+        "status": "completed",
+        "conclusion": "success",
+        "number": 25
+      }
+    ],
+    "focused": {
+      "passed": 31,
+      "seconds": 11.21
+    },
+    "full": {
+      "passed": 1270,
+      "seconds": 403.03
+    }
+  },
+  "verification_method": "Live GitHub admission state via API and merge UI as repository owner; no merge command/click or direct push attempted.",
+  "main_mutated": false,
+  "completed_at_utc": "2026-10-12 00:20:17 UTC",
+  "final_state": [
+    {
+      "path": "/branches/main",
+      "sha": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+      "protected": true,
+      "protection": {
+        "enabled": true,
+        "required_status_checks": {
+          "enforcement_level": "everyone",
+          "contexts": [
+            "checks"
+          ],
+          "checks": [
+            {
+              "context": "checks",
+              "app_id": 15368
+            }
+          ]
+        }
+      }
+    },
+    {
+      "path": "/pulls/1",
+      "state": "closed",
+      "merged": false,
+      "merged_at": null,
+      "head": "51616c335718f9b738b2bd55932980b7bc9f8da3"
+    },
+    {
+      "path": "/pulls/2",
+      "state": "closed",
+      "merged": false,
+      "merged_at": null,
+      "head": "d2e14581beee9615c2bafe533f665ce964401125"
+    },
+    {
+      "path": "/pulls/3",
+      "state": "closed",
+      "merged": false,
+      "merged_at": null,
+      "head": "3dce5d17383cfd0fab723ba03c7665e11ce65bfd"
+    },
+    {
+      "path": "/git/refs/heads/codex/ci002-verification-20261008-938fe266",
+      "sha": "51616c335718f9b738b2bd55932980b7bc9f8da3"
+    }
+  ],
+  "acceptance": {
+    "configuration": "PASS",
+    "missing_check_block": "PASS",
+    "failed_check_block": "PASS",
+    "passing_check_eligibility": "PASS",
+    "owner_admin_enforcement": "PASS",
+    "probes_closed_unmerged": "PASS",
+    "main_and_original_probe_unchanged": "PASS"
+  },
+  "limits": [
+    "No merge endpoint request,merge click,direct-push rejection,force-push or branch-deletion attempt was made. Admission was verified by live GitHub server mergeable_state plus authenticated owner merge UI.",
+    "Original setting-change actor/time remains historical provenance UNVERIFIED;current explicit director authorization and verified configuration satisfy this task.",
+    "Completion documentation is local and uncommitted;no production commit/push."
+  ]
+}
