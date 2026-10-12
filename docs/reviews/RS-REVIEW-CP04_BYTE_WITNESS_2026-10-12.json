@@ -1,0 +1,58 @@
+{
+  "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+  "hash_legend": "git_blob_sha256 hashes exact immutable git-show bytes;worktree_sha256 hashes current read-only disk bytes;normalized_lf_sha256 hashes CRLF->LF bytes. Historical source_file_raw_sha256 in frozen QT-F04 evidence means git blob bytes.",
+  "files": [
+    {
+      "path": "data/templates/facility_templates.json",
+      "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+      "git_blob_sha256": "8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83",
+      "worktree_sha256": "e7949bf17c3847634ff8f54fd64cac569f206a2af2b98dcc33d210ea63f54495",
+      "normalized_lf_sha256": "8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83",
+      "dossier_recorded_sha256": "8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83",
+      "dossier_transform": "identity",
+      "git_blob_bytes": 23618,
+      "worktree_bytes": 24379,
+      "git_blob_crlf_count": 0,
+      "worktree_crlf_count": 761
+    },
+    {
+      "path": "data/templates/monster_templates.json",
+      "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+      "git_blob_sha256": "0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd",
+      "worktree_sha256": "0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd",
+      "normalized_lf_sha256": "0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd",
+      "dossier_recorded_sha256": "0f2e64f364c684041d5b00c1387cb312f6c3ff6d70068170598a9ca62a2a7bd1",
+      "dossier_transform": "CRLF->LF then LF->CRLF reconstruction",
+      "git_blob_bytes": 501148,
+      "worktree_bytes": 501148,
+      "git_blob_crlf_count": 0,
+      "worktree_crlf_count": 0
+    },
+    {
+      "path": "data/templates/quest_templates.json",
+      "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+      "git_blob_sha256": "bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a",
+      "worktree_sha256": "bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a",
+      "normalized_lf_sha256": "bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a",
+      "dossier_recorded_sha256": "4bd1ba1e6be30c864d5e6c8eb22e3df016924f9f19c352435c1bc5652bbf6653",
+      "dossier_transform": "CRLF->LF then LF->CRLF reconstruction",
+      "git_blob_bytes": 36420,
+      "worktree_bytes": 36420,
+      "git_blob_crlf_count": 0,
+      "worktree_crlf_count": 0
+    },
+    {
+      "path": "data/templates/settlement_templates.json",
+      "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+      "git_blob_sha256": "594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9",
+      "worktree_sha256": "e84da02af98e5c84cafb20089d121980dc66691ee523a6b23d1f5f4bf40a1a00",
+      "normalized_lf_sha256": "594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9",
+      "dossier_recorded_sha256": "e84da02af98e5c84cafb20089d121980dc66691ee523a6b23d1f5f4bf40a1a00",
+      "dossier_transform": "CRLF->LF then LF->CRLF reconstruction",
+      "git_blob_bytes": 293250,
+      "worktree_bytes": 300346,
+      "git_blob_crlf_count": 0,
+      "worktree_crlf_count": 7096
+    }
+  ]
+}

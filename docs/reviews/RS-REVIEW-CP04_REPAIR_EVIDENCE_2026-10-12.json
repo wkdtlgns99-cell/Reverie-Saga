@@ -1,0 +1,88 @@
+{
+  "date": "2026-10-12",
+  "review": "actual independent source feedback;Sol patch self/native acceptance",
+  "findings_dispositioned": [
+    "C-1",
+    "C-3",
+    "C-4",
+    "C-5",
+    "C-6",
+    "C-7",
+    "C-8",
+    "C-9",
+    "C-10",
+    "C-11",
+    "C-12",
+    "C-14",
+    "C-15"
+  ],
+  "native_full": {
+    "exit": 0,
+    "checks": [
+      "catalog_loaded",
+      "initial_actor",
+      "initial_door_enemy_capture",
+      "failed_load_preserves_state",
+      "malformed_request_visible_child_alive",
+      "changed_board_dimensions_rejected",
+      "changed_board_walls_rejected",
+      "logical_time_advances",
+      "npc_reply_committed",
+      "wall_blocks",
+      "door_blocks",
+      "opened_door_passes",
+      "attack_in_flight_before_kill",
+      "in_flight_disconnect_visible",
+      "in_flight_pre_or_single_commit",
+      "attack_and_counter",
+      "load_restores",
+      "retry_no_duplicate",
+      "enemy_defeated",
+      "defeated_enemy_cell_passable",
+      "disconnect_visible",
+      "reconnect_committed_branch",
+      "input_after_reconnect",
+      "actual_screen_capture"
+    ],
+    "failed": 0
+  },
+  "corrupt_native": {
+    "before_exit": 1,
+    "before_diagnostic": "No playable view",
+    "after_exit": 0,
+    "after_diagnostic": "SAVE_CORRUPT + Korean message"
+  },
+  "release_hook_absent": true,
+  "python_local": {
+    "passed": 1292,
+    "seconds": 308.53
+  },
+  "python_extracted_packet": {
+    "passed": 1292,
+    "seconds": 317.59,
+    "shared_locked_interpreter": true,
+    "first_run_setup_error": "README temporary-parent preparation omitted;1093passed/199fixture errors;fixed command rerun without test changes"
+  },
+  "focused_passed": 22,
+  "mypy_files": 103,
+  "reference_preserved_files": 276,
+  "brain_orphans": 0,
+  "performance": {
+    "frames": 120,
+    "median_ms": 1.696903,
+    "p95_ms": 2.176205,
+    "graphics_device": "Intel(R) UHD Graphics 750",
+    "batch_mode": false
+  },
+  "screenshots": {
+    "CP04_REPAIR_initial-room_2026-10-12.png": "f4aeff8637228a91ef0ff91176883b13c8876f0e1577cb21aeca96cdf549369c",
+    "CP04_REPAIR_playroom_2026-10-12.png": "be927cac7e35fc2079b049f5c5086691d7094f66535dfcb69cb1fe621dda3ff4"
+  },
+  "limits": [
+    "standalone OS launch blocked",
+    "exact SQLite instruction at kill unobserved",
+    "human UX/keyboard and MIN-SPEC not accepted",
+    "320other narratives unqualified/CP03 held",
+    "external patch rereview NOT_RECEIVED"
+  ]
+}

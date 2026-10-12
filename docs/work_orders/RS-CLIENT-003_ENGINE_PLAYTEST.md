@@ -1,6 +1,6 @@
 # RS-CLIENT-003 — Unity / Unreal Engine 5 Integration and Play Verification
 
-Date:2026-10-12 | Priority:P0,FIRST | State:READY_FOR_REVIEW / native prototype implemented;CP04 pending
+Date:2026-10-12 | Priority:P0,FIRST | State:DONE / reviewed native prototype;standalone/release qualification separate
 Executor:gpt-6.1-sol | Review:director-requested plan,self-review only
 
 ## Director Scope
@@ -92,5 +92,7 @@ after this first integrated sample;bulk imports/final engine commitment held unt
 
 [Execution receipt](../reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md):editor installed/active license,
 real scene/build plus17fresh graphical checks PASS;6catalog descriptions actually loaded.
-Standalone player OS launch BLOCKED;CP04 feedback pending. Historical planning NOT_RUN fields
+Standalone player OS launch BLOCKED;CP04 subsequently accepted under linked repair. Historical planning NOT_RUN fields
 above describe the pre-resume delivery,not current executable status.
+
+CP04 subsequent actual feedback/13dispositions and bounded repair accepted: [repair](RS-REVIEW-CP04_REPAIR.md). Native24+corrupt1PASS/release hook absent;local/extracted full1292PASS. Original17-check/input snapshot above is historical. Standalone OS block/final engine/bulk/CP03/UX/release limits retained.

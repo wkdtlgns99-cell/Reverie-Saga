@@ -13,8 +13,8 @@ from typing import IO, Sequence, cast
 
 from adapters.narrative_catalog import load_catalog
 from app.client_worker import ClientWorker
-from contracts.client import ClientRequest, ClientView
-from contracts.narratives import Narrative
+from contracts.client import ClientRequest, ClientUpdate, ClientView
+from contracts.narratives import NARRATIVE_CATEGORIES, Narrative
 from domain.canonical import JsonObject, JsonValue, canonical_json, decode_json, exact_fields, seal
 
 MAX_FRAME = 1024 * 1024
@@ -39,19 +39,43 @@ REQUEST_NAMES = (
     "quit",
 )
 VIEW_FIELDS = tuple((f.name, str(f.type)) for f in fields(ClientView))
-SCHEMA_HASH = hashlib.sha256(
-    canonical_json(
-        seal(
-            {
-                "protocol": "engine-pipe/v1",
-                "request_fields": REQUEST_FIELDS,
-                "requests": REQUEST_NAMES,
-                "view_fields": VIEW_FIELDS,
-                "narrative_fields": tuple(f.name for f in fields(Narrative)),
-            }
+UPDATE_FIELDS = tuple((f.name, str(f.type)) for f in fields(ClientUpdate))
+NARRATIVE_FIELDS = tuple((f.name, str(f.type)) for f in fields(Narrative))
+RESPONSE_FIELDS = (
+    ("kind", "str"),
+    ("version", "str"),
+    ("schema_hash", "str"),
+    ("request_id", "str"),
+    ("error", "str"),
+    ("update", "ClientUpdate"),
+    ("has_view", "bool"),
+    ("narratives", "tuple[Narrative, ...]"),
+)
+
+
+def schema_fingerprint(
+    update_fields: tuple[tuple[str, str], ...] = UPDATE_FIELDS,
+    response_fields: tuple[tuple[str, str], ...] = RESPONSE_FIELDS,
+) -> str:
+    return hashlib.sha256(
+        canonical_json(
+            seal(
+                {
+                    "protocol": "engine-pipe/v1",
+                    "request_fields": REQUEST_FIELDS,
+                    "requests": REQUEST_NAMES,
+                    "view_fields": VIEW_FIELDS,
+                    "update_fields": update_fields,
+                    "narrative_fields": NARRATIVE_FIELDS,
+                    "narrative_categories": NARRATIVE_CATEGORIES,
+                    "response_fields": response_fields,
+                }
+            )
         )
-    )
-).hexdigest()
+    ).hexdigest()
+
+
+SCHEMA_HASH = schema_fingerprint()
 
 
 def read_exact(source: IO[bytes], length: int) -> bytes:

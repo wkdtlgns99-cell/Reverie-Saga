@@ -42,3 +42,8 @@ Authority:MASTER/v2.6 narrative-only reuse;QT-F04 generation/use testimony;CP02 
 descriptions in the real Unity consumer,326entry disposition ledger complete,reference preserved.
 319queued plus1rewrite-required entry are not imported or blanket rights-approved. Scenario
 generalization/bulk import remain subject to QT-F02/CP03. Original reference dossier is frozen.
+
+CP04 repair:the dossier is not consumed at runtime;content/narratives.json is. Original
+runtime_imported=false flags remain historical. Qualification guard now checks each evidence
+row/id/source/adaptation and manifest copies actual qualifications. Ledger qualification count6;
+320other rows explicitly NONE/NOT_QUALIFIED. Git blob/worktree/normalized-LF hashes are distinct.

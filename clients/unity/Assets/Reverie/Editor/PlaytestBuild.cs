@@ -43,6 +43,11 @@ namespace ReverieSaga
                 BuildTarget.StandaloneWindows64,BuildOptions.None);
             if(report.summary.result!=UnityEditor.Build.Reporting.BuildResult.Succeeded)
                 throw new IOException("Native player build failed: "+report.summary.result);
+            var assembly=System.Reflection.Assembly.ReflectionOnlyLoadFrom(
+                Path.Combine(Path.GetDirectoryName(output),"ReverieSaga_Data","Managed","Assembly-CSharp.dll"));
+            if(assembly.GetType("ReverieSaga.LiveVerification",false)!=null)
+                throw new IOException("Release contains verification hook");
+            Debug.Log("RELEASE_VERIFICATION_HOOK_ABSENT");
             Debug.Log("ENGINE_BUILD_PASSED bytes="+report.summary.totalSize);
         }
 
@@ -59,6 +64,14 @@ namespace ReverieSaga
             SessionState.SetBool("Reverie.Verify",true);
             if(!Application.isBatchMode)EditorApplication.ExecuteMenuItem("Window/General/Game");
             EditorApplication.isPlaying=true;
+        }
+
+        public static void VerifyCorrupt()
+        {
+            Verify();
+            string working=Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
+            Directory.CreateDirectory(Path.GetDirectoryName(working));
+            File.WriteAllBytes(working,new byte[]{1,2,3,4});
         }
 
         [InitializeOnLoadMethod]
