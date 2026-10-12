@@ -29,10 +29,12 @@ $env:REVERIE_UNITY_WORKING="C:\ReverieSaga\tmp\unity-verification\run-$([guid]::
 & .\tmp\unity-editor\6000.3.25f1\Editor\Unity.exe -projectPath C:\ReverieSaga\clients\unity -executeMethod ReverieSaga.PlaytestBuild.BuildAndVerify -logFile C:\ReverieSaga\tmp\unity-check.log
 ```
 
-Graphical verification opens the Game window,builds a Windows player and exercises17checks.
+Graphical verification opens the Game window,builds a Windows player and exercises24checks.
 Wait for ENGINE_VERIFY_PASSED and editor exit0,not merely the launcher returning. Fresh empty
 working directory is mandatory;old saves/slots are never deleted to make tests pass.
-Actual screenshot,final view and120frame sample are under tmp/unity-verification.
+Actual initial/final screenshots,final view and120frame sample are under tmp/cp04-native.
+Additional corrupt-file case:REVERIE_UNITY_CASE=corrupt with a fresh working directory,then
+execute ReverieSaga.PlaytestBuild.VerifyCorrupt. Reset the case to normal for the full flow.
 Screen capture needs graphical mode;[Unity coroutine guidance](https://docs.unity3d.com/2021.3/Documentation/Manual/CLIBatchmodeCoroutines.html) excludes WaitForEndOfFrame in editor batch mode.
 Build-only automation:
 
@@ -40,7 +42,8 @@ Build-only automation:
 & .\tmp\unity-editor\6000.3.25f1\Editor\Unity.exe -batchmode -projectPath C:\ReverieSaga\clients\unity -executeMethod ReverieSaga.PlaytestBuild.Build -quit -logFile C:\ReverieSaga\tmp\unity-build.log
 ```
 
-Output:tmp/unity-build/ReverieSaga.exe and supporting files. Native player test is opt-in with
+Output:tmp/unity-build/ReverieSaga.exe and supporting files. Verification class/hook compile only in editor or DEVELOPMENT_BUILD;release assembly inspection
+proves the hook absent. Development player test is opt-in with
 REVERIE_UNITY_VERIFY=1 and a fresh REVERIE_UNITY_WORKING before launching;ordinary players
 never run destructive fault probes. Current Windows application-control policy blocked the
 final unsigned standalone executable. Editor verification passes;standalone runtime acceptance
@@ -59,4 +62,10 @@ Own geometry and built-in shader material are placeholders. No external models/a
 copied into the project;Malgun Gothic is used from the installed OS for Korean UI.
 First startup can log a Unity SearchDatabase indexing exception;it is separate from project
 compilation/gameplay checks and remains recorded. User UX,final HD-2D art,gamepad,MIN-SPEC,
-portable packaging and CP04 independent feedback are pending.
+portable packaging and human UX are pending. CP04 source feedback/repair are accepted;external patch rereview NOT_RECEIVED.
+
+CP04 repair:room geometry is fixed3x3/immutable walls;changed views reject before rendering.
+Transport errors remain visibly recoverable;no-view failures retain status and Korean messages.
+Timeout/shutdown waits run off-thread,reconnect waits by coroutine;recovery button submits the
+existing Brain recover request. Catalog cap64KiB leaves1MiB-frame headroom. Wire hash covers
+view/update/narrative/response fields,and generator uses declared types.

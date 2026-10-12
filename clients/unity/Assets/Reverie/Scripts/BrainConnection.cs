@@ -21,7 +21,9 @@ namespace ReverieSaga
         readonly Task stderrReader;
         long nextId = 1;
         string attachment = "";
-        bool disposed;
+        volatile bool disposed;
+        readonly object shutdownLock = new object();
+        Task shutdown;
         bool awaiting = true;
         long awaitingId;
         readonly Stopwatch deadline = Stopwatch.StartNew();
@@ -99,12 +101,12 @@ namespace ReverieSaga
             while(diagnostics.TryDequeue(out string diagnostic)) UnityEngine.Debug.LogWarning(diagnostic);
             if (errors.TryDequeue(out error)) return false;
             if (awaiting && deadline.Elapsed.TotalSeconds > 10) {
-                error = "Brain response timeout"; Dispose(); return false;
+                error = "Brain response timeout"; StopAsync(); return false;
             }
             if (!updates.TryDequeue(out value)) return false;
             if (!long.TryParse(value.request_id, NumberStyles.None, CultureInfo.InvariantCulture,
-                              out long id) || id != awaitingId) {
-                error = "Unexpected response identity"; Dispose(); value = null; return false;
+                              out long id) || !(id == awaitingId || (id == 0 && !String.IsNullOrEmpty(value.error)))) {
+                error = "Unexpected response identity"; StopAsync(); value = null; return false;
             }
             attachment = value.update.attachment_id;
             awaiting = false;
@@ -127,16 +129,42 @@ namespace ReverieSaga
             awaiting = true; deadline.Restart();
         }
 
-        public void Dispose()
+        public Task StopAsync()
         {
-            if (disposed) return;
-            disposed = true;
-            try { child.StandardInput.Close(); }
-            catch(IOException e) { UnityEngine.Debug.LogWarning("Brain input already closed: "+e.Message); }
-            if (!child.WaitForExit(5000)) child.Kill();
-            child.WaitForExit();
-            Task.WaitAll(new [] {reader, stderrReader}, 5000);
-            child.Dispose();
+            lock(shutdownLock) {
+                if(shutdown!=null)return shutdown;
+                disposed=true;awaiting=false;
+                shutdown=Task.Run(Cleanup);
+                return shutdown;
+            }
         }
+
+        void Cleanup()
+        {
+            try {
+                try { child.StandardInput.Close(); }
+                catch(IOException e) { diagnostics.Enqueue("Brain input already closed: "+e.Message); }
+                if(!child.WaitForExit(5000)) {
+                    child.Kill();
+                    if(!child.WaitForExit(5000))throw new IOException("Brain child did not exit");
+                }
+                if(!Task.WaitAll(new [] {reader, stderrReader},5000))
+                    throw new IOException("Brain readers did not exit");
+            } finally { child.Dispose(); }
+        }
+
+        public void Dispose() { StopAsync().GetAwaiter().GetResult(); }
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public void SendMalformedForVerification()
+        {
+            if(disposed||awaiting)throw new InvalidOperationException("Brain unavailable/busy");
+            byte[] bad=Encoding.UTF8.GetBytes("{\"kind\":\"request\",\"kind\":\"request\"}");
+            Stream target=child.StandardInput.BaseStream;
+            target.WriteByte(0);target.WriteByte(0);target.WriteByte(0);target.WriteByte((byte)bad.Length);
+            target.Write(bad,0,bad.Length);target.Flush();
+            awaitingId=nextId++;awaiting=true;deadline.Restart();
+        }
+#endif
     }
 }

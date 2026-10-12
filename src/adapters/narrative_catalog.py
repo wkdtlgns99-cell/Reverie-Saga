@@ -17,7 +17,7 @@ from domain.canonical import (
     text_value,
 )
 
-MAX_CATALOG_BYTES = 1024 * 1024
+MAX_CATALOG_BYTES = 64 * 1024
 CATALOG_FORMAT = "reverie-narratives/v1"
 
 

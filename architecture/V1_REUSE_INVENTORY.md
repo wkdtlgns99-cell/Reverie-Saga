@@ -22,7 +22,10 @@ Reuse individually reviewed descriptive content only. Author new architecture/en
 
 File: `docs/reference/QUILLTALE_CONTENT_CANDIDATES.json`.
 State: CURATED_REFERENCE; runtime_imported=false.
-Four source files, selected narrative fields only; no source JSON wholesale or runtime/importer connection.
+Historical curation:four source files,selected narrative fields only;no source JSON wholesale.
+Current QT-F06:the dossier is not consumed at runtime;content/narratives.json is the compiled
+six-entry descriptive catalog read/displayed by Unity. runtime_imported=false describes the
+frozen reference dossier,not the compiled consumer. Other320entries remain unqualified.
 2026-10-12:[QT-F04 generation/use qualification](../docs/work_orders/QT-F04_GENERATION_TERMS.md)
 accepts these six for future narrative adaptation on director testimony,official consumer terms
 and individual text screening. Not a blanket corpus/license/legal/import/release approval;
@@ -70,3 +73,11 @@ pytest/coverage/replay/v2 importer/integration/final product approval: NOT_RUN.
 Task authority: [BACKLOG](../BACKLOG.md).
 BLOCK1 complete → BLOCK2–9 new contracts → review/preflight → authorized four-item Phase0 → suitable importer/new schema → assign new IDs/effects/numbers → playtest small segment.
 Use descriptions only; expand selection when needed. No wholesale corpus/code/formula/test migration.
+
+## CP04 hash-label clarification
+
+Frozen generation evidence source_file_raw_sha256 means exact immutable Git blob bytes,
+which use LF. It does not mean historical CRLF dossier/worktree bytes. Current ledger uses
+git_blob_sha256/worktree_sha256/normalized_lf_sha256;[four-file witness](../docs/reviews/RS-REVIEW-CP04_BYTE_WITNESS_2026-10-12.json)
+records all three plus original recorded hash and explicit LF/CRLF transform. Historical
+values/reference files were not rewritten.

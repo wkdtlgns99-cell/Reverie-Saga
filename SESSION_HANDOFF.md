@@ -1,6 +1,6 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-12 | Stage:UNITY_PROTOTYPE_IMPLEMENTED/CP04_PENDING/QT_F06_SAMPLE_IMPORTED
+Date:2026-10-12 | Stage:CP04_FEEDBACK_REPAIR_ACCEPTED/UNITY_PROTOTYPE_DONE/QT_F06_SAMPLE_IMPORTED
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
@@ -24,7 +24,7 @@ Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.
 
 ## Current State / Evidence
 
-- Implemented:Phase0/CORE representative slice,Tk action history,and Unity6000.3.25f1 room/private-pipe Brain connection with6descriptive imports. [Native receipt](docs/reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md):17fresh checks/build PASS,CP04 pending;standalone OS launch blocked. [Run](clients/unity/README.md). Director2026-10-12 promotes Unity/UE5 engine integration/playable-system prototype to FIRST/P0;bulk graphics/modeling-AI remains later,not removed from MASTER.
+- Implemented:Phase0/CORE representative slice,Tk action history,and Unity6000.3.25f1 room/private-pipe Brain connection with6descriptive imports. [Native receipt](docs/reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md):historical17checks/build PASS;current CP04 feedback/repair DONE;standalone OS launch blocked. [Run](clients/unity/README.md). Director2026-10-12 promotes Unity/UE5 engine integration/playable-system prototype to FIRST/P0;bulk graphics/modeling-AI remains later,not removed from MASTER.
 - [RS-CLIENT-002 prior evidence](docs/work_orders/RS-CLIENT-002_ACTION_LOG.md):full1242PASS283.95s. Latest [CP01 repair](docs/work_orders/RS-REVIEW-CP01_REPAIR.md):full1252PASS313.32s,focused87PASS/replays45PASS,mypy96/shared+selective Ruff/format11/imports3+1/docs/scope PASS;no skip/oracle changes.
 - [RS-P1-QUALITY-06 original acceptance](docs/work_orders/RS-P1-QUALITY-06_TURN_RULEBOOK.md):465word rulebook/24focused/full1263PASS311.12s historical. [Claude corrections accepted](docs/work_orders/RS-P1-QUALITY-06_CORRECTIONS.md):F1 paths agree/F2 logged visible renderer error without reexecuting Brain work;current469words,31focusedPASS/full1270PASS311.94s/Ruff+format12+mypy97+imports3+1/docs/scope PASS. Corrections source only client.py;CORE/save/pins/history unchanged in corrections. Original ZIP retained;patch external rereview NOT_RECEIVED. [Combined session publication/remote CI](docs/reviews/SESSION_2026-10-08.md):0708483,31focused/1270fullPASS,all steps SUCCESS.
 - Worker owns SQLite/session lifetime;Tk receives immutable projections. Committed facts drive bounded200line read-only narration;retries do not repeat attacks;load resets displayed history and creates a private working branch. Resume the displayed path,not the original branch.
@@ -47,7 +47,7 @@ Director visual request:record the low-resolution 3D-to-2D/pixel intent and asse
 - Before purchase/export,recheck official [Meshy plans](https://help.meshy.ai/en/articles/12062933-which-meshy-plan-is-right-for-you-free-vs-pro-vs-premium-vs-ultra) and [Tripo pricing](https://www.tripo3d.ai/pricing). Current advice:Meshy free generated-model downloads restricted;Tripo free use non-commercial. Check input rights and asset-specific terms;do not rely on stale price/free-credit claims. Tripo's claimed official Codex plugin was not found in the accessible directory;do not assume that integration exists.
 - Suggested sequence:validate a tiny modular room/render style → compare a few assets → trial one paid service if needed → define import/rig contracts before bulk production. NOT_STARTED:downloads/generation/imports/subscriptions/plugin installation/3D client implementation. This request authorizes recording only;backlog priorities and task states unchanged.
 
-## Next / Order
+## Earlier Next / Order — historical;active resume overrides
 
 FIRST/P0:[RS-CLIENT-003](docs/work_orders/RS-CLIENT-003_ENGINE_PLAYTEST.md),Unity OR UE5 agent
 integration plus actual small playable scene/system verification. TODO/scope DRAFT;engine/editor
@@ -113,9 +113,8 @@ Publication2026-10-07:PUBLISHED,31 accumulated files at254d969126a552d11be678d87
 
 ## Active resume — actual engine/content implementation
 
-RS-CLIENT-003 READY_FOR_REVIEW,QT-F06 compiler/sample/326ledger DONE. Follow
-[CP04 request](docs/reviews/RS-REVIEW-CP04_REQUEST.md):feedback NOT_RECEIVED;after actual
-reply verify/dispose findings and retest before final engine/bulk assets. QT-F02/generalized
+RS-CLIENT-003 first reviewed prototype DONE,QT-F06 compiler/sample/326ledger DONE. Follow
+[CP04 dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):feedback/verified repair DONE;final engine/bulk/release acceptance separate. QT-F02/generalized
 scenario contract and CP03 still precede bulk narrative imports;6catalog descriptions are UI
 content,not configurable world/quest gameplay.326ledger contains319queued+1rewrite-required
 records and duplicate consolidation notes;no broad template/engine permission inferred.
@@ -128,3 +127,11 @@ Keep original candidate JSON/CP02 witness9d17a1b5…/ZIPs unchanged. Reference27
 lines andHEAD3c50c34f are preserved. Latest commands/results/failures live in execution receipt.
 
 Final local full1285PASS305.69s/focused15PASS2.59s,mypy103/shared+selective Ruff/format18/imports3+1 PASS. Native editor17checks PASS;standalone OS launch remains blocked.
+
+## CP04 returned feedback / active repair
+
+Director returned independent source review with partial Python execution. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md)/[repair](docs/work_orders/RS-REVIEW-CP04_REPAIR.md):error/schema/qualification/lifecycle/oracle/packet findings repaired. Native full24+corrupt1 PASS,release hook absent,focused22/full1292PASS308.53s. Fresh packet reproduction full1292PASS317.59s;original witnesses/ZIPs frozen. Current stage overrides earlier pending/historical NEXT text;no bulk/CP03/release advancement.
+
+## Current acceptance / next dependency
+
+CP04 feedback RECEIVED/13findings dispositioned/repair DONE;RS-CLIENT-003 first reviewed prototype DONE. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):local1292PASS308.53s/extracted1292PASS317.59s,focused22PASS,native24+corrupt1PASS,release hook absent,types/lint/format/imports/source preservation PASS. Earlier pending/READY/historical NEXT text is superseded. Original CP04/CP02 witnesses/ZIPs immutable;repaired witness/archive separate. No new blanket rights/final engine/standalone/release/human UX acceptance. QT-F02 bounded content-generalization order and CP03 precede broad320entry adaptation/import;no automatic next task. Native kill is while client awaiting attack;exact SQLite commit instruction/all crash timings are unobserved and belong to RS-RELEASE.

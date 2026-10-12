@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
@@ -14,13 +15,18 @@ namespace ReverieSaga
         readonly List<Material> materials = new List<Material>();
         readonly List<string> messages = new List<string>();
         string failure = "";
-        bool boardCreated;
+        bool boardCreated, connecting, destroyed;
+        int boardWidth,boardHeight;
+        string boardWalls;
+        string transportError="";
         Vector2 scroll;
         int selected;
         Font koreanFont;
         string root, working;
         public WireResponse Latest { get { return latest; } }
-        public bool Busy { get { return brain == null || brain.Busy; } }
+        public bool Busy { get { return connecting || brain == null || brain.Busy; } }
+        public bool Connecting { get { return connecting; } }
+        public string TransportError { get { return transportError; } }
         public string Failure { get { return failure; } }
 
         public static int Number(string value)
@@ -44,11 +50,17 @@ namespace ReverieSaga
 
         void Update()
         {
-            if (brain == null || failure != "") return;
+            if (brain == null || connecting || failure != "") return;
             try {
                 if (brain.Poll(out WireResponse reply, out string error)) {
-                    if (!reply.has_view || reply.update.view == null) throw new IOException("No playable view");
-                    if (reply.error != "") throw new IOException(reply.error);
+                    if (!String.IsNullOrEmpty(reply.error)) {
+                        transportError=reply.error;
+                        Debug.LogWarning("Brain request rejected: "+transportError);
+                        return;
+                    }
+                    transportError="";
+                    if (!reply.has_view || reply.update.view == null)
+                        throw new IOException(reply.update.status+": "+String.Join("\n",reply.update.messages));
                     latest=reply;
                     working=reply.update.working_path;
                     Apply(reply.update.view);
@@ -82,7 +94,10 @@ namespace ReverieSaga
         void Apply(WireView view)
         {
             int width=Number(view.width),height=Number(view.height);
-            if(width<1||height<1||width>64||height>64) throw new IOException("View bounds");
+            if(width!=3||height!=3) throw new IOException("PROTOTYPE_BOARD_BOUNDS");
+            string walls=String.Join(",",view.walls);
+            if(boardCreated&&(width!=boardWidth||height!=boardHeight||walls!=boardWalls))
+                throw new IOException("PROTOTYPE_BOARD_CHANGED");
             int size=checked(width*height);
             foreach(string cell in new [] {view.actor_cell,view.enemy_cell,view.gate_cell,view.npc_cell})
                 if(Number(cell)>=size) throw new IOException("Entity cell bounds");
@@ -109,7 +124,7 @@ namespace ReverieSaga
                 npc=Shape("NPC",PrimitiveType.Capsule,new Color(.7f,.8f,.3f));
                 actor.transform.localScale=enemy.transform.localScale=npc.transform.localScale=Vector3.one*.45f;
                 gate.transform.localScale=new Vector3(.8f,.8f,.18f);
-                boardCreated=true;
+                boardWidth=width;boardHeight=height;boardWalls=walls;boardCreated=true;
             }
             actor.transform.position=Position(Number(view.actor_cell),width);
             enemy.transform.position=Position(Number(view.enemy_cell),width);
@@ -125,15 +140,32 @@ namespace ReverieSaga
 
         void Connect()
         {
+            if(connecting||destroyed)return;
+            connecting=true;StartCoroutine(ConnectRoutine());
+        }
+
+        IEnumerator ConnectRoutine()
+        {
+            if(brain!=null) {
+                var stopped=brain.StopAsync();
+                while(!stopped.IsCompleted)yield return null;
+                if(stopped.IsFaulted) {connecting=false;Fail(stopped.Exception);yield break;}
+                brain=null;
+            }
+            if(destroyed)yield break;
             try {
-                if(brain!=null) {brain.Dispose();brain=null;}
                 brain=new BrainConnection(root,working);
-                failure="";
-            } catch(Exception e) { Fail(e); }
+                failure="";transportError="";
+            } catch(Exception e) {Fail(e);}
+            finally {connecting=false;}
         }
 
         public void Reconnect() { Connect(); }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
         public int BrainProcessId { get { return brain.ProcessId; } }
+        public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
+        public void ApplyForVerification(WireView view) {Apply(view);}
+#endif
         void Fail(Exception error) { failure=error.Message;Debug.LogException(error); }
 
         static string Label(string intent)
@@ -146,6 +178,7 @@ namespace ReverieSaga
                 case "wait": return "대기"; case "bell": return "NPC 호출";
                 case "save": return "저장"; case "load": return "불러오기";
                 case "retry": return "재전송";
+                case "recover": return "복구";
                 default: throw new ArgumentException("Unknown UI intent");
             }
         }
@@ -156,6 +189,7 @@ namespace ReverieSaga
             GUI.skin.font=koreanFont;
             GUILayout.BeginArea(new Rect(12,12,380,Screen.height-24),GUI.skin.box);
             GUILayout.Label("Reverie Saga — 플레이테스트");
+            if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
             if(failure!="") {
                 GUILayout.Label("연결 오류: "+failure);
                 if(GUILayout.Button("다시 연결")) Reconnect();
@@ -175,7 +209,7 @@ namespace ReverieSaga
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal();
-            foreach(string intent in new [] {"save","load","retry"})
+            foreach(string intent in new [] {"save","load","retry","recover"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();GUI.enabled=true;
             if(latest!=null&&latest.narratives.Length>0) {
@@ -191,7 +225,14 @@ namespace ReverieSaga
 
         void OnDestroy()
         {
-            try { if(brain!=null)brain.Dispose(); }
+            destroyed=true;
+            try {
+                if(brain!=null) {
+                    var stopped=brain.StopAsync();
+                    stopped.ContinueWith(task=>Debug.LogException(task.Exception),
+                        System.Threading.Tasks.TaskContinuationOptions.OnlyOnFaulted);
+                }
+            }
             finally {
                 foreach(var material in materials)Destroy(material);
                 if(koreanFont!=null)Destroy(koreanFont);
