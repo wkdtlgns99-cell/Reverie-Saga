@@ -3,6 +3,13 @@
 Date:2026-10-07 | State:UNVERIFIED | Investigation:RECORDED | Reuse rights:NOT_ESTABLISHED | Review:self-review only
 Authorization:director requested the next backlog task;read-only provenance investigation,not import/license assignment/runtime work.
 
+2026-10-12 CP02 full-input document review and scoped corrections:
+[feedback/dispositions](../reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md).
+2026-10-12 later:[generation/use qualification](QT-F04_GENERATION_TERMS.md) accepted for the six
+existing narrative selections only. Other source artifacts remain unqualified;no imports.
+Original scope/acceptance/execution receipts below remain historical. Current status is BACKLOG;
+CP01 is DONE. New byte recheck is explicitly labeled below;no rights clearance/import.
+
 ## Scope / acceptance contract
 
 - Baseline:Reverie main/HEAD b0f98e2aa19c5db11d0c746226d4bf321b34dee8,172 nonignored input files;preserve prior dirty work. Reference C:/Quilltale HEAD3c50c34f4c756e3a27405a1abd1a00ecc6098c51,276 present nonignored input files/15 dirty paths;read-only with GIT_OPTIONAL_LOCKS=0.
@@ -34,7 +41,7 @@ Four initial-upload blobs are identical to the pinned Aeesh tree:
 | assets/styles.css | b8ca98029f8ef639d49f778a29bd6d3b7ec7de2d |
 | data/worlds/default.json | eba6b59ea9cb8642dee5d4a0989049cbf7c2a62b |
 
-Combined with historical README links,this establishes shared file content and an evidenced origin relationship despite fork=false. It does not prove copying direction/ownership for every later file. Upstream pinned tree has no data/templates/ paths;the selected descriptions entered the practice repository later,so do not label all six as copied from Aeesh or automatically original.
+Combined with historical README links,this establishes shared-content and linkage evidence;direction unestablished. fork=false does not establish copying direction/ownership for any later file. Upstream pinned tree has no data/templates/ paths;the selected descriptions entered the practice repository later,so do not label all six as copied from Aeesh or automatically original.
 
 ## Candidate trace / artifact-specific rights
 
@@ -62,11 +69,51 @@ Initial raw comparison found3of4 current-file SHA256 values different from the h
 
 Future import orders must pin immutable source blobs plus explicit encoding/EOL/normalization;never silently overwrite historical SHA values or accept unexplained content changes as newline fixes.
 
+### CP02 Reproducible Byte Recheck — 2026-10-12
+
+Sol read binary `git show` bytes from read-only C:/Quilltale at dossier source commit
+9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec and each introduction commit in the candidate table.
+All4first-introduction raw hashes equal the source-commit raw hashes below;all raw blobs use LF
+with no CRLF/lone CR. The four blobs also match local reference HEAD3c50c34f.
+This is a fresh local immutable-object recheck,not a new public GitHub fetch or Claude test.
+
+| Source file | Historical recorded SHA256 | Raw SHA256 at introduction AND dossier commit | Raw/dossier EOL | Normalized-LF SHA256 | Transform and explicit equality |
+|---|---|---|---|---|---|
+| settlement_templates.json | e84da02af98e5c84cafb20089d121980dc66691ee523a6b23d1f5f4bf40a1a00 | 594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9 | LF/CRLF | 594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9 | CRLF→LF then LF→CRLF;recorded=SHA256(reconstructed_CRLF) |
+| facility_templates.json | 8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83 | 8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83 | LF/LF | 8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83 | identity;recorded=SHA256(raw) |
+| quest_templates.json | 4bd1ba1e6be30c864d5e6c8eb22e3df016924f9f19c352435c1bc5652bbf6653 | bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a | LF/CRLF | bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a | CRLF→LF then LF→CRLF;recorded=SHA256(reconstructed_CRLF) |
+| monster_templates.json | 0f2e64f364c684041d5b00c1387cb312f6c3ff6d70068170598a9ca62a2a7bd1 | 0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd | LF/CRLF | 0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd | CRLF→LF then LF→CRLF;recorded=SHA256(reconstructed_CRLF) |
+
+The initial raw/current-EOL table above is historical and unchanged. Exact refs,raw hashes,
+EOL counts,normalized hashes,reconstructed CRLF hashes and Git blob IDs:
+[portable byte witness](../reviews/RS-REVIEW-CP02_BYTE_WITNESS_2026-10-12.json).
+No historical SHA or source/candidate file rewritten;all4recorded values reconstructed.
+
 ## Decision / manual checkpoint
 
 QT-F04 remains UNVERIFIED:origin investigation recorded,artifact ownership/license/permission not established. Public visibility is not a reuse grant;see [GitHub's licensing guidance](https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/licensing-a-repository). This is evidence triage,not legal clearance. No license text is invented or added.
 Asked director whether the six descriptions are self-authored/AI-generated anew or from external sources,and for source/permission if external. If original,gather provenance/input/service terms when relevant;Git identity alone is insufficient. If external,obtain artifact-applicable grant and attribution requirements;otherwise reject/defer or separately authorize newly authored replacements. Do not delete existing historical references or add a blanket license to third-party work.
 [CP02 request](../reviews/RS-REVIEW-CP02_REQUEST.md) is prepared for director-mediated Claude review:Sol flags timing/lists files → director shows files/project → director returns Claude reply → Sol verifies findings and performs only approved scoped fixes/retests. Claude cannot replace the missing rights evidence. Review NOT_RECEIVED;CP02 not DONE. CP01 code review is separately pending,not waived by this investigation.
+
+2026-10-12 update:full-input Claude document review RECEIVED and scoped repairs accepted per
+current BACKLOG;the previous NOT_RECEIVED/CP01-pending receipt is historical. Director now
+states the six broad concepts were theirs and AI expanded details during Quilltale development;
+[verbatim testimony](../reviews/RS-REVIEW-CP02_AUTHOR_STATEMENT_2026-10-12.md).
+Follow-up identifies Antigravity template structure and GPT/Gemini content expansion,with
+Civilization systems and Tolkien/Rowling narrative progression as broad references and no
+detailed copying according to the director. Exact prompts/applicable service terms are not
+independently inspected. Qualification must cover intended use and adaptation in Reverie Saga;
+rights remain UNVERIFIED/no imports. Old engine/template structures remain outside the selection.
+
+## Generation / Use Follow-up — 2026-10-12
+
+Director confirms ordinary ChatGPT free web/Gemini paid web generation around late August/early
+September2026. Official consumer terms applicable to that declared window and all six selected
+original/adapted texts inspected;[current acceptance](QT-F04_GENERATION_TERMS.md) resolves the
+generator/terms hold for these six as future narrative-adaptation inputs. Exact dates/models/
+prompt transcripts/provider split remain unrecorded,not invented. All historical decisions and
+CP02 snapshots above are preserved as earlier states;they are not the later qualification.
+No legal guarantee,whole-template/engine/shared-blob/assets grant,import or release approval.
 
 ## Actual execution / verification
 

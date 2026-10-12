@@ -1,0 +1,19 @@
+{
+  "record_type": "immutable_review_packet_archive",
+  "copied_on": "2026-10-12",
+  "packets": [
+    {
+      "path": "RS-REVIEW-CP02_2026-10-12.zip",
+      "sha256": "04257a5e1f3f6ddfb8ac6c0505f9a06bcab9f2d3811b8450d4e8b4e75e28ff0e",
+      "bytes": 40169,
+      "files": 10
+    },
+    {
+      "path": "RS-REVIEW-CP02_REPAIRED_2026-10-12.zip",
+      "sha256": "3b3a3e9c7eb862132670179af33d9876792a496c5d57bc0df9a7d8a68985999b",
+      "bytes": 57716,
+      "files": 16
+    }
+  ],
+  "repaired_inputs_sha256": "9d17a1b588d34583db45e269b7953a9b39ef27321ade6515899729609c74cd61"
+}

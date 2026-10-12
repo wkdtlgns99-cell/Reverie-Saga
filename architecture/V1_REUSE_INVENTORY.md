@@ -23,6 +23,10 @@ Reuse individually reviewed descriptive content only. Author new architecture/en
 File: `docs/reference/QUILLTALE_CONTENT_CANDIDATES.json`.
 State: CURATED_REFERENCE; runtime_imported=false.
 Four source files, selected narrative fields only; no source JSON wholesale or runtime/importer connection.
+2026-10-12:[QT-F04 generation/use qualification](../docs/work_orders/QT-F04_GENERATION_TERMS.md)
+accepts these six for future narrative adaptation on director testimony,official consumer terms
+and individual text screening. Not a blanket corpus/license/legal/import/release approval;
+other entries and shared visual/code blobs remain unqualified. Historical dossier bytes retained.
 Korean names below are source/content data, not AI instructions.
 
 | Source name | Retained concept | Removed |
@@ -53,7 +57,7 @@ Pre-existing tracked changes: `D ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.1_LEAN_EN.m
 | README | Historical689passed; pytest NOT_RUN here |
 | Saved audit | 71world modules/606methods=498live+82test-only+26never; earlier prompt80/692 differs; no rerun audit |
 | Audio | BGM7+SFX13=20references; actual files0; no reusable audio imported |
-| Visual files | Map JPG/icon/CSS exist; not copied; usage rights/provenance checked before actual import |
+| Visual files | Map JPG/icon/CSS exist;not copied. assets/styles.css matches the historical Aeesh shared blob in [QT-F04](../docs/work_orders/QT-F04_PROVENANCE.md#origin-chain-evidence--do-not-infer-blanket-rights);rights UNVERIFIED,qualification required before import |
 | Legacy | Only.gitkeep; no assumed save fixtures |
 
 Read: README/audit/handoff excerpts/requirements/file inventory/representative templates/source/tests.

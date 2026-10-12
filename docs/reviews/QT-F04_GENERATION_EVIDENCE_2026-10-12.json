@@ -1,0 +1,147 @@
+{
+  "record_type": "scoped_generation_and_terms_qualification",
+  "checked_on": "2026-10-12",
+  "reviewer": "gpt-6.1-sol",
+  "review_independence": "SELF_REVIEW",
+  "runtime_imported": false,
+  "candidate_dossier_sha256": "b10e8dcab4f6d93a1f60b3e9388897ed8c40a0ea0d63a1c5a8c4a18f9e720b31",
+  "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+  "testimony_basis": "direct human replies;not provider account/transcript inspection",
+  "service_reply_verbatim": "gpt랑 Gemini  둘다 웹브라우저/웹사이트로 들어가서 사용하는 웹이었어. gpt는 무료였고, 안티그래비티/Gemini는 유료였어.",
+  "generation_window_reply_verbatim": "quilltale을 말하는거라면 그 즈음 맞을거야. 전부 그 때쯤 만든거야",
+  "generation_window_declared": "approximately2026-08-31 through2026-09-06;not exact generation dates",
+  "unrecorded": [
+    "exact generation timestamps",
+    "model versions",
+    "per-candidate GPT/Gemini split",
+    "full prompt transcripts"
+  ],
+  "decision_scope": "six named existing selections only;future narrative adaptation eligibility;no blanket corpus/legal/import/release approval",
+  "inspection": {
+    "rows": [
+      {
+        "candidate_id": "harbor_salt_mist",
+        "source_entry_id": "settlement_salt_weep_haven",
+        "source_path": "data/templates/settlement_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "name": "소금눈물 포구",
+          "description": "가파른 해안 절벽 아래 숨겨진 음산한 포구. 비린내와 소금기 어린 안개가 걷히지 않으며 외지인의 발걸음을 철저히 감시한다."
+        },
+        "adapted_name": "소금눈물 포구",
+        "adapted_description": "해안 절벽 아래 숨어 있는 포구. 소금기 어린 안개 속에서 외지인의 발걸음을 살피는 주민들이 살아간다.",
+        "file_introduction_metadata": [
+          "34706e0b2ce6b8fc74dc9105dd36a7537fe775b8|2026-09-05T00:31:36+09:00|2026-09-05T00:31:36+09:00"
+        ],
+        "selected_fields_sha256": "8ade958cf64c5d7b7378992be8171bceac22af4d176d5b342708f4c6f095033e",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      },
+      {
+        "candidate_id": "village_tree_canopy",
+        "source_entry_id": "settlement_hollow_root_canopy",
+        "source_path": "data/templates/settlement_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "name": "빈뿌리 쉼터",
+          "description": "거목들의 굵은 줄기 위에 밧줄 다리로 얽힌 은신처 형태의 마을. 숲 바닥의 맹수들을 피해 공중에서 생활을 영위한다."
+        },
+        "adapted_name": "빈뿌리 쉼터",
+        "adapted_description": "거목 사이를 밧줄 다리로 잇는 공중 마을. 주민들은 숲 바닥의 맹수들을 피해 나무 위에서 생활한다.",
+        "file_introduction_metadata": [
+          "34706e0b2ce6b8fc74dc9105dd36a7537fe775b8|2026-09-05T00:31:36+09:00|2026-09-05T00:31:36+09:00"
+        ],
+        "selected_fields_sha256": "8452829a871e1a82d124523578887a8cf85933cf5acf5ab155dae34675caa41e",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      },
+      {
+        "candidate_id": "oasis_caravan_rest",
+        "source_entry_id": "settlement_parched_mirage",
+        "source_path": "data/templates/settlement_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "name": "타는 모래 오아시스",
+          "description": "모래사막 한가운데 자리 잡은 유일한 생명선. 물과 휴식을 찾는 상단과 용병들로 낮밤 없이 북적이며 이권 다툼이 치열하다."
+        },
+        "adapted_name": "타는 모래 오아시스",
+        "adapted_description": "사막을 건너는 상단과 용병들이 물과 휴식을 찾아 모이는 오아시스. 붐비는 길목에서 물을 둘러싼 이해관계가 부딪친다.",
+        "file_introduction_metadata": [
+          "34706e0b2ce6b8fc74dc9105dd36a7537fe775b8|2026-09-05T00:31:36+09:00|2026-09-05T00:31:36+09:00"
+        ],
+        "selected_fields_sha256": "34c7528ab79b2d8db1f1d96dbf1988d8ec9ba9c7b41e60a8a58542ef65e60f4e",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "594ae8b95e2726ee910f2584b5658be4aa8f823f9ce01104819af6d9f52e2fc9",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      },
+      {
+        "candidate_id": "inn_moonlight_traveler",
+        "source_entry_id": "fac_tmpl_tavern_inn",
+        "source_path": "data/templates/facility_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "name": "달빛 나그네 주점",
+          "description": "험한 여행길에 지친 방랑자와 상인들이 모여 맥주잔을 부딪치고 대륙 각지의 소문을 나누는 유서 깊은 선술집 겸 여관."
+        },
+        "adapted_name": "달빛 나그네 주점",
+        "adapted_description": "여행자와 상인들이 맥주잔을 부딪치며 먼 지방의 소문을 나누는 선술집 겸 여관.",
+        "file_introduction_metadata": [
+          "657fdc11225815f42a1a78f0b641ab403c1ac07b|2026-09-06T12:20:07+09:00|2026-09-06T12:20:07+09:00"
+        ],
+        "selected_fields_sha256": "d899474f988cc12d100758c448e912a61e6d9bb0fae8bb16fb5a6d63ace33d5a",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "8a23083db8fd6b07a527dbd6812c66077340f2d2d6240e559bd631230f7bfb83",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      },
+      {
+        "candidate_id": "quest_moonflower_premise",
+        "source_entry_id": "quest_moonflower_gather",
+        "source_path": "data/templates/quest_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "title": "달빛 아래 피는 약초",
+          "description": "약초상 엘레나는 희귀한 달빛꽃이 필요하다고 합니다. 꽃은 밤이 되면 안개 숲 깊은 곳에서만 피어납니다."
+        },
+        "adapted_name": "달빛 아래 피는 약초",
+        "adapted_description": "약초사가 안개 숲에서 밤에 피는 달빛꽃을 구해 달라고 부탁한다.",
+        "file_introduction_metadata": [
+          "3d800d4c8ada4abf94037e84a309ea4f06eb2bd3|2026-09-01T16:34:35+09:00|2026-09-01T16:34:35+09:00"
+        ],
+        "selected_fields_sha256": "0a55def28239295225abb41abe4ef8c5f62c3c6cc80bdb26093aa6d978370366",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "bc8d18103bc74f8c3b39146fa3423d21f916ad7d27171af25925f71689d8d19a",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      },
+      {
+        "candidate_id": "creature_copper_catfish_visual",
+        "source_entry_id": "copper_scaled_thunder_catfish",
+        "source_path": "data/templates/monster_templates.json",
+        "source_commit": "9f2ec20a7a06fedf01dd141b740bf4da8c3fc3ec",
+        "source_fields": {
+          "name": "동판 비늘의 벼락 메기",
+          "visual_anatomy": "청록색 녹이 슨 구리 동판 비늘로 덮여 번뜩이며, 꼬리 끝에는 지면에 깊게 박혀 전하를 흘려보내는 거대한 황동 피뢰침이 달려 있음."
+        },
+        "adapted_name": "동판 비늘의 벼락 메기",
+        "adapted_description": "청록색 녹이 슨 구리 비늘과 황동 피뢰침 모양의 꼬리를 가진 거대한 메기.",
+        "file_introduction_metadata": [
+          "cae4c48261c91ef4452dc5270d3bf0307ab538ff|2026-08-31T17:04:49+09:00|2026-08-31T17:04:49+09:00"
+        ],
+        "selected_fields_sha256": "317ed049e13c8ac44ebc017feafaf3afc18b13dcac6365338a02d5cc5a887a7c",
+        "hash_encoding": "UTF-8 JSON;ensure_ascii=false;sort_keys=true;separators=comma/colon;no newline",
+        "source_file_raw_sha256": "0eed145400dc00d307e547d9cfd1b33a7ae6326453ca0120ff4578af4ccdcdfd",
+        "qualification": "QUALIFIED_FOR_FUTURE_NARRATIVE_ADAPTATION",
+        "provider_attribution": "GPT/Gemini collectively;per-candidate split UNRECORDED"
+      }
+    ],
+    "reference_unchanged": true,
+    "reference_file_count": 276,
+    "reference_head": "3c50c34f4c756e3a27405a1abd1a00ecc6098c51"
+  }
+}

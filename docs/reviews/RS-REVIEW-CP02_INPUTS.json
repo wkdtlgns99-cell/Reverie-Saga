@@ -1,0 +1,155 @@
+{
+  "record_type": "CP02_repaired_document_review_snapshot",
+  "date": "2026-10-12",
+  "checkpoint_status": "DONE",
+  "review_scope": "document_consistency_review_only",
+  "feedback": "FULL_INPUT_RECEIVED",
+  "patch_external_rereview": "NOT_RECEIVED",
+  "rights": "UNVERIFIED",
+  "runtime_imported": false,
+  "head": "a5dca63e2903dc3a415cb8c5957cecfe71ab0312",
+  "git_status_command": "git status --porcelain=v1 --untracked-files=all",
+  "git_status_porcelain": [
+    " M BACKLOG.md",
+    " M GAME_SYSTEM_SUMMARY_KO.md",
+    " M SESSION_HANDOFF.md",
+    " M architecture/V1_REUSE_INVENTORY.md",
+    " M docs/reviews/RS-REVIEW-CP02_REQUEST.md",
+    " M docs/work_orders/QT-F04_PROVENANCE.md",
+    "?? docs/reviews/RS-CI-002_ENFORCEMENT_2026-10-12.json",
+    "?? docs/reviews/RS-CI-002_REMOTE_STATE_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_AUTHOR_STATEMENT_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_BYTE_WITNESS_2026-10-12.json",
+    "?? docs/reviews/RS-REVIEW-CP02_DISPOSITIONS_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_FEEDBACK_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_FULL_FEEDBACK_2026-10-12.md",
+    "?? docs/reviews/RS-REVIEW-CP02_INPUTS.json",
+    "?? docs/reviews/RS-REVIEW-CP02_REVIEWED_INPUTS_2026-10-12.json",
+    "?? docs/work_orders/RS-CI-002_MAIN_PROTECTION.md",
+    "?? docs/work_orders/RS-REVIEW-CP02_FULL_REPAIR.md",
+    "?? docs/work_orders/RS-REVIEW-CP02_REFRESH.md"
+  ],
+  "inputs": [
+    {
+      "path": "BACKLOG.md",
+      "role": "current-status",
+      "sha256": "05582eba0aae88da68468853a9e687b59efeba7ec7529525d3387f83a28a9235",
+      "bytes": 23436
+    },
+    {
+      "path": "docs/work_orders/QT-F04_PROVENANCE.md",
+      "role": "investigation-with-Sol-byte-recheck",
+      "sha256": "7fc0fd2e50784217ebbce8e66b3356e24b7b3993ae62eb9abec424a5f4999d57",
+      "bytes": 14415
+    },
+    {
+      "path": "docs/reference/QUILLTALE_CONTENT_CANDIDATES.json",
+      "role": "curated-reference-not-approved-content",
+      "sha256": "b10e8dcab4f6d93a1f60b3e9388897ed8c40a0ea0d63a1c5a8c4a18f9e720b31",
+      "bytes": 5576
+    },
+    {
+      "path": "architecture/V1_REUSE_INVENTORY.md",
+      "role": "reuse-policy-with-visual-provenance-clarifier",
+      "sha256": "e2071d0cbc06a7d6e960e704baa548ccdd1a4e61b6fa80918d46429e181cf916",
+      "bytes": 4680
+    },
+    {
+      "path": "docs/reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md",
+      "role": "context-only-historical-feedback",
+      "sha256": "d3c7773a0e1d7b64055666a9037938604799fcf6c03a0338ec2c0eb265bd59c8",
+      "bytes": 10991
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_FEEDBACK_2026-10-12.md",
+      "role": "context-only-original-packet-review",
+      "sha256": "966759e700920a03c7b81ed06cee8d3ea110f44a82d0ed7d28f6888364d44c59",
+      "bytes": 11048
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_DISPOSITIONS_2026-10-12.md",
+      "role": "context-only-original-packet-dispositions",
+      "sha256": "f2726807ae759d3c55065ac756cd032b1f172823c82c66fc58c128b9a8281982",
+      "bytes": 4836
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_FULL_FEEDBACK_2026-10-12.md",
+      "role": "actual-full-input-document-review",
+      "sha256": "27a63a81bc25ff85034210074db1b3308f2de1b1882b1df916ba68717f94379d",
+      "bytes": 13991
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md",
+      "role": "Sol-full-repair-dispositions",
+      "sha256": "174b7a7123de20b365252830f7489ef30da112b6ec88c2df64a75d135e4598a8",
+      "bytes": 3760
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_BYTE_WITNESS_2026-10-12.json",
+      "role": "Sol-local-immutable-source-byte-recheck",
+      "sha256": "6ef1e8b12c9713dd48fab1498c72a3eacdddf0698438bb9eafe371efc6111c9d",
+      "bytes": 4953
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_REVIEWED_INPUTS_2026-10-12.json",
+      "role": "context-only-original-reviewed-witness",
+      "sha256": "69d7f105570d5c99e28c2fd9465c6f3ce4dfd733930c317b4bcfedf906380467",
+      "bytes": 4185
+    },
+    {
+      "path": "docs/reviews/RS-REVIEW-CP02_AUTHOR_STATEMENT_2026-10-12.md",
+      "role": "director-post-review-source-testimony",
+      "sha256": "1f9ec587c511d48a63ae53d6fcc43584884adaf5b2edd3a2c463ac9886ce829c",
+      "bytes": 3002
+    }
+  ],
+  "request": {
+    "path": "docs/reviews/RS-REVIEW-CP02_REQUEST.md",
+    "sha256": "d76b3a00e05dfb2a9163733b7ad63234ffb998a647e96f54d2a4b9171f21167c",
+    "bytes": 11104
+  },
+  "context_orders": [
+    {
+      "path": "docs/work_orders/RS-REVIEW-CP02_REFRESH.md",
+      "sha256": "30f302985ca0cde10ef667b919255d6055138caa6a41567045e9ee3c4d49b7ab",
+      "bytes": 5288
+    },
+    {
+      "path": "docs/work_orders/RS-REVIEW-CP02_FULL_REPAIR.md",
+      "sha256": "774c8da030cbf99c2da447a4277ccb252b702156fdac723904883168cbf8219a",
+      "bytes": 5700
+    }
+  ],
+  "reviewed_original": {
+    "request_sha256": "a29287f3dbc6a50951ab105d49c97d63d5cecfa49830709630248341067de170",
+    "witness_sha256": "69d7f105570d5c99e28c2fd9465c6f3ce4dfd733930c317b4bcfedf906380467",
+    "witness_path": "docs/reviews/RS-REVIEW-CP02_REVIEWED_INPUTS_2026-10-12.json",
+    "archive_path": "tmp/reviews/RS-REVIEW-CP02_2026-10-12.zip",
+    "archive_sha256": "04257a5e1f3f6ddfb8ac6c0505f9a06bcab9f2d3811b8450d4e8b4e75e28ff0e"
+  },
+  "source_byte_recheck": "Sol4localGitobjectsPASS;upstreamremoteNOT_RUN",
+  "director_origin_statement": "RECEIVED;ownconcepts,Antigravitystructure,GPT/Geminicontent,system/storystructureinspiration,detailedcopyingdenied",
+  "service_prompt_terms_verification": "NOT_RUN",
+  "hash_cycle_policy": "BACKLOG links witness;request hashes BACKLOG;witness hashes request;witness digest delivered outside hashed set.",
+  "excluded_from_hashes": [
+    "docs/reviews/RS-REVIEW-CP02_INPUTS.json"
+  ],
+  "witness_anchor": "final user delivery and tmp/reviews/RS-REVIEW-CP02_REPAIRED_2026-10-12.sha256 outside hashed set",
+  "archive_path": "tmp/reviews/RS-REVIEW-CP02_REPAIRED_2026-10-12.zip",
+  "runtime_tests": "NOT_RUN",
+  "validation": {
+    "result": "PASS",
+    "scoped_documents": 13,
+    "local_links_fragments": 140,
+    "retained_entry_files": 197,
+    "unchanged_entry_files": 190,
+    "reference_files_unchanged": 276,
+    "source_byte_table": "4PASS",
+    "original_reviewed_archive": "UNCHANGED",
+    "task_rows": "PASS",
+    "hashes_head_dirty_scope": "PASS",
+    "runtime_tests": "NOT_RUN",
+    "upstream_remote_fetch": "NOT_RUN"
+  }
+}
