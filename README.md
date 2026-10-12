@@ -2,7 +2,7 @@
 
 An AI-produced HD-2D / 2.5D graphical turn-based RPG in development.
 Current implementation:deterministic 3×3 movement,doors,combat/rest,timed NPC/events,
-SQLite save/load,recovery,replay,and a provisional 2D playable boundary harness.
+SQLite save/load,recovery,replay,Tk boundary harness and a provisional Unity graphical room.
 Not a finished HD-2D graphical game.
 
 ## Runtime
@@ -49,6 +49,13 @@ To resume that loaded branch after exit,pass the displayed path to --working.
 The original working file remains a separate branch. Closing drains accepted work
 and closes SQLite on its single owner thread;game/save work never runs on the Tk thread.
 This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC or release QA.
+
+## Unity graphical prototype
+
+Unity6000.3.25f1 is installed locally and connected to the same Python Brain.
+[Project/run/build/native verification](clients/unity/README.md);6adapted descriptions are loaded
+from content/narratives.json. Editor/build/17play checks PASS;standalone launch is blocked by
+current Windows application control. Final-engine/CP04/HD-2D release acceptance remains pending.
 
 ## Verification
 

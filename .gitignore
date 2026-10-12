@@ -29,3 +29,11 @@ logs/
 tmp/
 scratch/
 
+# Unity generated/runtime output;keep source Assets,Packages and ProjectSettings
+clients/unity/Library/
+clients/unity/Temp/
+clients/unity/Obj/
+clients/unity/Logs/
+clients/unity/UserSettings/
+clients/unity/Builds/
+
