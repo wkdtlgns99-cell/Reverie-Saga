@@ -7,6 +7,10 @@ Not a finished HD-2D graphical game.
 
 ## Runtime
 
+When switching computers or resuming a task with local tools,follow [workstation setup](docs/WORKSTATION_SETUP.md):
+discover/reuse matching installations,install missing approved prerequisites,and verify on this host.
+Git transfers project files,not editors/environments/login/license/private saves.
+
 Validated development runtime:CPython3.13.12,Windows AMD64. Ruff/mypy currently
 analyze Python3.12-compatible syntax/APIs;this is not a tested Python3.12 support claim.
 Existing environment:`.venv`. Fresh setup requires Python3.13.12:
@@ -52,10 +56,11 @@ This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC 
 
 ## Unity graphical prototype
 
-Unity6000.3.25f1 is installed locally and connected to the same Python Brain.
+Unity6000.3.25f1 is installed on the observed host and connected to the same Python Brain.
 [Project/run/build/native verification](clients/unity/README.md);6adapted descriptions are loaded
-from content/narratives.json. Editor/build/17play checks PASS;standalone launch is blocked by
-current Windows application control. Final-engine/CP04/HD-2D release acceptance remains pending.
+from content/narratives.json. CP04 feedback/repair accepted:24play/failure checks plus1corrupt-save check PASS;
+release verification hook absent. Standalone launch is blocked by current-host Windows application control.
+Other-device setup/native verification and final-engine/HD-2D release acceptance remain pending.
 
 ## Verification
 

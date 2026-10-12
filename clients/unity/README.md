@@ -5,6 +5,11 @@ Python remains authoritative. Source Assets/meta,Packages/lock and ProjectSettin
 Library,editor/license/account caches,local saves and builds are ignored. No engine plugin or
 MCP server is required:edit project files,execute public editor methods,read actual logs/captures.
 
+On another computer,start with [workstation setup](../../docs/WORKSTATION_SETUP.md).
+Discover/reuse the exact editor version or install missing approved prerequisites;verify local
+Python/login/license and actual editor/Brain execution. Git does not deliver those installations.
+Current-host PASS and application-control failures are per-device evidence,not results for both PCs.
+
 ## Play
 
 Open C:/ReverieSaga/clients/unity with the installed editor,open
