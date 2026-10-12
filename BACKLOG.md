@@ -5,9 +5,24 @@ Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SE
 Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
 Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
 
+## Workstation Prerequisites — Director Request 2026-10-12
+
+- RS-ENV-001 DONE for [setup routing/documentation](docs/work_orders/RS-ENV-001_WORKSTATION_HANDOFF.md);
+  [per-device setup/evidence](docs/WORKSTATION_SETUP.md) is the installation SSOT,linked from AGENTS.
+  On either computer's next authorized task,discover/reuse installed tools,install missing
+  approved required pins,and verify before dependent work. This prerequisite procedure is
+  authorized;unrelated feature/engine upgrades remain separate tasks.
+- Python/editor/CLI exist on the current observed host. Named laptop/other-PC installation,
+  login/license and native qualification remain UNVERIFIED until checked there. Current
+  host identity mapping is unconfirmed;do not mark both machines installed or qualified.
+  Permitted fresh current-host license probe confirms active=true/signedIn=true;other host unknown.
+- Future local installations/integrations must record versions,setup sources,local-only
+  state and the other device's remaining setup in the linked document and handoff.
+  Git transfers source/locks/project settings,not editor/.venv/licenses/caches/private saves.
+
 ## First Priority — Engine Integration / Play Verification 2026-10-12
 
-- RS-CLIENT-003 native prototype implemented:Unity6000.3.25f1 installed,Personal license active,
+- RS-CLIENT-003 native prototype implemented on the observed host:Unity6000.3.25f1 installed,Personal license activated in the prior run,
   real scene connected to Python Brain,Windows build and17fresh graphical checks PASS.
   [Execution](docs/reviews/RS-CLIENT-003_EXECUTION_2026-10-12.md),[run](clients/unity/README.md).
   State DONE for first reviewed prototype;CP04 feedback/repair accepted. Final unsigned standalone executable is
