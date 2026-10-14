@@ -23,6 +23,11 @@ namespace ReverieSaga
         int selected;
         Font koreanFont;
         string root, working;
+        string scenario = "legacy";
+        string questCatalog="",questSha256="";
+        bool npcMemory;
+        public string QuestCatalog { get { return questCatalog; } }
+        public bool NpcMemoryEnabled { get { return npcMemory; } }
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
@@ -41,8 +46,37 @@ namespace ReverieSaga
             Application.runInBackground=true;
             try {
                 root = Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",".."));
+                string scenarioSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
+                string memorySelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_MEMORY");
+                questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
+                questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
+                bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
+                    String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(questSha256)&&
+                    String.IsNullOrEmpty(memorySelection);
+                if(approvedPreset) {
+                    scenario="harbor";npcMemory=true;
+                    questCatalog=Path.Combine(root,"content","dialogue","harbor-memory-v1.json");
+                    questSha256=File.ReadAllText(Path.Combine(root,"content","dialogue",
+                        "harbor-memory-v1.sha256")).Trim();
+                } else {
+                    scenario=String.IsNullOrEmpty(scenarioSelection)?"legacy":scenarioSelection;
+                    if(!String.IsNullOrEmpty(memorySelection)&&memorySelection!="0"&&memorySelection!="1")
+                        throw new IOException("NPC_MEMORY_SELECTION");
+                    npcMemory=memorySelection=="1";
+                }
+                if(scenario!="legacy"&&scenario!="harbor"&&scenario!="grove")
+                    throw new IOException("SCENARIO_SELECTION");
+                if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
+                    questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
+                    throw new IOException("NPC_MEMORY_CONTENT");
                 working = Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
-                if (String.IsNullOrEmpty(working)) working=Path.Combine(root,"tmp","unity-play","game.sqlite");
+                if (String.IsNullOrEmpty(working)) working=scenario=="legacy" ?
+                    Path.Combine(root,"tmp","unity-play","game.sqlite") :
+                    Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
+                if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
+                    Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play","harbor-memory",questSha256,"game.sqlite"):
+                        Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
             } catch(Exception e) { Fail(e); }
@@ -61,12 +95,20 @@ namespace ReverieSaga
                     transportError="";
                     if (!reply.has_view || reply.update.view == null)
                         throw new IOException(reply.update.status+": "+String.Join("\n",reply.update.messages));
+                    if(!String.IsNullOrEmpty(questCatalog)) {
+                        int stage=Number(reply.update.quest_stage),reward=Number(reply.update.quest_reward);
+                        if(stage>3||reward!=(stage==3?1:0)||reply.update.quest_id!="quest:harbor-sentinel"||
+                           reply.update.dialogue_sha256!=questSha256)
+                            throw new IOException("QUEST_PROJECTION_INVALID");
+                    } else if(reply.update.quest_stage!="-1"||reply.update.quest_reward!="0")
+                        throw new IOException("QUEST_PROJECTION_INVALID");
                     latest=reply;
                     working=reply.update.working_path;
                     Apply(reply.update.view);
                     if (reply.update.reset_log) messages.Clear();
                     messages.AddRange(reply.update.messages);
                     if(messages.Count>200) messages.RemoveRange(0,messages.Count-200);
+                    if(reply.update.messages.Length>0) scroll.y=float.MaxValue;
                 } else if(error!=null) throw new IOException(error);
                 if (!Busy) {
                     if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow)) Send("up");
@@ -154,7 +196,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
@@ -176,6 +218,7 @@ namespace ReverieSaga
                 case "open": return "문 열기"; case "close": return "문 닫기";
                 case "attack": return "공격"; case "rest": return "휴식";
                 case "wait": return "대기"; case "bell": return "NPC 호출";
+                case "talk": return "NPC 대화·보고";
                 case "save": return "저장"; case "load": return "불러오기";
                 case "retry": return "재전송";
                 case "recover": return "복구";
@@ -189,6 +232,7 @@ namespace ReverieSaga
             GUI.skin.font=koreanFont;
             GUILayout.BeginArea(new Rect(12,12,380,Screen.height-24),GUI.skin.box);
             GUILayout.Label("Reverie Saga — 플레이테스트");
+            if(latest!=null)GUILayout.Label(latest.update.scenario_name);
             if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
             if(failure!="") {
                 GUILayout.Label("연결 오류: "+failure);
@@ -198,12 +242,18 @@ namespace ReverieSaga
                 var v=latest.update.view;
                 GUILayout.Label("체력 "+v.actor_hp+" / 적 "+v.enemy_hp+" / 기력 "+v.stamina);
                 GUILayout.Label("시간 "+v.tick+" / NPC 응답 "+v.npc_replies);
+                if(latest.update.quest_stage!="-1") {
+                    string[] stages={"미수락","진행 중","보고 가능","완료"};
+                    GUILayout.Label("임무 "+stages[Number(latest.update.quest_stage)]+
+                                    " / 포구의 호의 "+latest.update.quest_reward);
+                }
             }
             GUI.enabled=!Busy&&failure=="";
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"up","down","left","right"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();
+            if(!String.IsNullOrEmpty(questCatalog)&&GUILayout.Button(Label("talk"))) Send("talk");
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"open","close","attack","rest","wait","bell"})
                 if(GUILayout.Button(Label(intent))) Send(intent);

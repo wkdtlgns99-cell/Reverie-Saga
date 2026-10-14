@@ -10,12 +10,26 @@ from pathlib import Path
 from app.client_session import ClientSession
 from app.client_text import status_text
 from contracts.client import ClientRequest, ClientUpdate
+from contracts.dialogue import QuestContent
 from contracts.persistence import SaveError, WorldUnavailable
+from domain.scenario import LEGACY, Scenario
 
 
 class ClientWorker:
-    def __init__(self, path: Path) -> None:
+    def __init__(
+        self,
+        path: Path,
+        layout: Scenario = LEGACY,
+        *,
+        quest_content: QuestContent | None = None,
+        npc_memory: bool = False,
+    ) -> None:
+        if type(npc_memory) is not bool or npc_memory and quest_content is None:
+            raise ValueError("NPC_MEMORY_CONTENT")
         self._path = path
+        self._layout = layout
+        self._quest_content = quest_content
+        self._npc_memory = npc_memory
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
         self._last = ClientUpdate(None, "CONNECTING", (), "", str(path))
@@ -33,7 +47,16 @@ class ClientWorker:
     def _run(self, request: ClientRequest, seconds: int, slot_id: str) -> ClientUpdate:
         try:
             if self._owner is None:
-                self._owner = ClientSession(self._path)
+                self._owner = (
+                    ClientSession(self._path, self._layout)
+                    if self._quest_content is None
+                    else ClientSession(
+                        self._path,
+                        self._layout,
+                        quest_content=self._quest_content,
+                        npc_memory=self._npc_memory,
+                    )
+                )
             owner = self._owner
             match request:
                 case "attach":
@@ -53,7 +76,7 @@ class ClientWorker:
             self._last = self._error_update(error.code, error)
         except ValueError as error:
             # Unexpected adapter bugs remain visible,not classified as valid player rejection.
-            code = str(error) if str(error) == "NO_RETRY" else "CLIENT_ERROR"
+            code = str(error) if str(error) in ("NO_RETRY", "QUEST_UNAVAILABLE") else "CLIENT_ERROR"
             if code == "CLIENT_ERROR":
                 self._logger.exception("client boundary operation failed")
             self._last = self._error_update(code, error)

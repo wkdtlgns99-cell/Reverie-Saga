@@ -14,14 +14,50 @@ Current-host PASS and application-control failures are per-device evidence,not r
 
 Open C:/ReverieSaga/clients/unity with the installed editor,open
 Assets/Reverie/Scenes/PlayRoom.unity and press Play. Use WASD/arrows or Korean buttons.
-Default save:C:/ReverieSaga/tmp/unity-play/game.sqlite. The view is a 3x3 test room.
+With no scenario/quest/memory selectors,the ordinary editor starts the director-approved harbor
+quest with persisted NPC memory. Catalog:content/dialogue/harbor-memory-v1.json;trusted pin in
+harbor-memory-v1.sha256. Save:tmp/unity-play/harbor-memory/<catalog-pin>/game.sqlite. The view is a 3x3 test room.
 The catalog browser displays6adapted Quilltale descriptions;it does not instantiate six worlds,
 quest mechanics or old template stats. Loaded save branches retain their own working path.
 The reconnect button resumes the current branch;reconnection appends a new attachment notice to the session-local history.
 
+QT-F02 selectors:`REVERIE_UNITY_SCENARIO=legacy|harbor|grove` before starting the editor.
+Explicit legacy retains tmp/unity-play/game.sqlite;harbor/grove get separate default subdirectories.
+REVERIE_UNITY_NPC_MEMORY=1 enables memory for an explicitly selected harbor quest catalog;0keeps
+the old quest mode;unset with explicit old selectors also keeps old behavior. Other values reject.
+Changing a selector does not convert an existing save. Explicit resume selection must match saved
+rule/schema fingerprints. Two new placeholder rooms vary role IDs,wall/enemy/NPC positions;
+their settlement labels refer to accepted descriptions,not complete towns or quest mechanics.
+
 The local editor is C:/ReverieSaga/tmp/unity-editor/6000.3.25f1/Editor/Unity.exe.
 Python environment and repository must exist at C:/ReverieSaga;this is a local development
 harness,not a relocatable/bundled release. Catalog and generated DTOs are hash checked.
+
+## First Quest
+
+The ordinary no-selector preset now runs QT-F07 with the approved editorial catalog and memory.
+For a different explicitly selected catalog,use a validated approved catalog from the root
+[preparation instructions](../../README.md#first-quest--prepared-gemini-dialogue).
+Before starting the editor:
+
+```powershell
+$env:REVERIE_UNITY_SCENARIO="harbor"
+$env:REVERIE_UNITY_QUEST_CATALOG="C:\ReverieSaga\tmp\dialogue\harbor-v1.json"
+$env:REVERIE_UNITY_QUEST_SHA256="<printed-catalog-sha256>"
+```
+
+Both catalog/hash are required. Default quest working path is tmp/unity-play/harbor-quest/game.sqlite;
+use a fresh path for different content pins. Talk beside the NPC:accept,defeat the target,return
+and report. The Brain records one favor;the screen selects prepared dialogue from committed facts.
+Load/reconnect retain the current branch and catalog pins. Gameplay does not need GEMINI_API_KEY
+or a network call. Unset both quest variables to return to the earlier quest-less rooms.
+
+For native qualification,set those same selectors with a fresh REVERIE_UNITY_WORKING directory,
+then call ReverieSaga.PlaytestBuild.Verify. QuestFlow exercises14checks and captures public state,
+screenshot and120frames. Local [QT-F07 acceptance](../../docs/reviews/QT-F07_EXECUTION_2026-10-13.md):
+quest14+legacy24+harbor11+grove11+corrupt1=61PASS,Windows build/release-hook absence PASS.
+That run used an offline automated-test-only receipt/catalog,not production content approval
+or an actual Gemini response. Director deferred live preparation;setup instructions are in the root README.
 
 ## Generate / verify / build
 
@@ -41,6 +77,12 @@ Actual initial/final screenshots,final view and120frame sample are under tmp/cp0
 Additional corrupt-file case:REVERIE_UNITY_CASE=corrupt with a fresh working directory,then
 execute ReverieSaga.PlaytestBuild.VerifyCorrupt. Reset the case to normal for the full flow.
 Screen capture needs graphical mode;[Unity coroutine guidance](https://docs.unity3d.com/2021.3/Documentation/Manual/CLIBatchmodeCoroutines.html) excludes WaitForEndOfFrame in editor batch mode.
+For QT-F02:set REVERIE_UNITY_SCENARIO to harbor or grove,use a new empty REVERIE_UNITY_WORKING
+directory per run,and call ReverieSaga.PlaytestBuild.Verify. The dedicated scenario path checks
+selected positions,combat,load/retry,NPC and loaded-branch reconnect and records a screenshot,
+final response and120-frame sample in that working directory's evidence subdirectory.
+Run legacy separately for the retained full boundary/fault matrix. Verify does not build;
+BuildAndVerify/Build still own release-build and hook-absence qualification.
 Build-only automation:
 
 ```powershell

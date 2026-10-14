@@ -29,6 +29,26 @@ namespace ReverieSaga
         }
         PlayRoom room;
         bool failed;
+        [Serializable] sealed class QuestTextLine { public string intent;public string text_ko; }
+        [Serializable] sealed class QuestTextCandidate { public QuestTextLine[] lines; }
+        [Serializable] sealed class QuestTextCatalog { public QuestTextCandidate candidate; }
+        string QuestText(string intent)
+        {
+            string path=room.QuestCatalog;
+            if(String.IsNullOrEmpty(path)||new FileInfo(path).Length>16384)
+                throw new IOException("QUEST_TEST_CATALOG_INVALID");
+            var catalog=JsonUtility.FromJson<QuestTextCatalog>(File.ReadAllText(path));
+            if(catalog==null||catalog.candidate==null||catalog.candidate.lines==null||
+               catalog.candidate.lines.Length!=4)throw new IOException("QUEST_TEST_CATALOG_INVALID");
+            string[] order={"completion","gratitude","offer","reminder"};
+            for(int i=0;i<order.Length;i++) {
+                var line=catalog.candidate.lines[i];
+                if(line==null||line.intent!=order[i]||String.IsNullOrEmpty(line.text_ko))
+                    throw new IOException("QUEST_TEST_CATALOG_INVALID");
+                if(line.intent==intent)return line.text_ko;
+            }
+            throw new IOException("QUEST_TEST_INTENT_INVALID");
+        }
         IEnumerator Ready()
         {
             float start=Time.realtimeSinceStartup;
@@ -48,9 +68,131 @@ namespace ReverieSaga
             else Debug.Log("VERIFY_PASS "+label);
         }
 
+        IEnumerator ScenarioFlow(string scenario)
+        {
+            yield return Ready();if(failed){Exit(1);yield break;}
+            bool grove=scenario=="grove";
+            Check(room.Latest.update.scenario_id=="scenario:"+scenario,"scenario_pin_display");
+            Check(room.Latest.update.view.actor_cell==(grove?"6":"0"),"scenario_initial");
+            Check(room.Latest.update.view.npc_cell==(grove?"0":"6"),"scenario_npc_position");
+            string initial=JsonUtility.ToJson(room.Latest.update.view);
+            yield return Intent("load");
+            Check(room.Latest.update.status=="SAVE_NOT_FOUND"&&
+                  JsonUtility.ToJson(room.Latest.update.view)==initial,"scenario_failed_load_preserves");
+            foreach(string action in new [] {grove?"up":"down","open","right",grove?"up":"down"})
+                yield return Intent(action);
+            yield return Intent("attack");
+            var first=room.Latest.update.view;
+            Check(first.actor_cell==(grove?"1":"7")&&first.actor_hp=="2"&&first.enemy_hp=="3"&&
+                  first.stamina=="1"&&first.tick=="5","scenario_first_attack");
+            string saved=JsonUtility.ToJson(first);
+            yield return Intent("save");yield return Intent("attack");yield return Intent("load");
+            Check(room.Latest.update.reset_log&&JsonUtility.ToJson(room.Latest.update.view)==saved,
+                  "scenario_load_exact_state");
+            yield return Intent("attack");
+            string second=JsonUtility.ToJson(room.Latest.update.view);
+            yield return Intent("retry");
+            Check(JsonUtility.ToJson(room.Latest.update.view)==second,"scenario_retry_once");
+            yield return Intent("rest");yield return Intent("attack");
+            Check(room.Latest.update.view.actor_hp=="1"&&room.Latest.update.view.enemy_hp=="0"&&
+                  room.Latest.update.view.tick=="8","scenario_defeat_no_counter");
+            yield return Intent("bell");
+            Check(room.Latest.update.view.npc_replies=="1"&&room.Latest.update.view.npc_bells=="4",
+                  "scenario_npc_chain");
+            string before=JsonUtility.ToJson(room.Latest.update.view);
+            int pid=room.BrainProcessId;
+            room.Reconnect();yield return Ready();
+            Check(room.BrainProcessId!=pid&&JsonUtility.ToJson(room.Latest.update.view)==before,
+                  "scenario_loaded_branch_reconnect");
+            string output=Path.Combine(Path.GetDirectoryName(
+                Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")),"evidence");
+            Directory.CreateDirectory(output);
+            if(!Application.isBatchMode) {
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(output,"scenario.png"));
+                yield return new WaitForSecondsRealtime(1);
+                Check(File.Exists(Path.Combine(output,"scenario.png")),"scenario_capture");
+            }
+            var times=new float[120];
+            for(int i=0;i<times.Length;i++){yield return null;times[i]=Time.unscaledDeltaTime;}
+            Array.Sort(times);
+            File.WriteAllText(Path.Combine(output,"performance.json"),
+                "{\"frames\":120,\"median_ms\":"+(times[60]*1000).ToString(System.Globalization.CultureInfo.InvariantCulture)+
+                ",\"p95_ms\":"+(times[114]*1000).ToString(System.Globalization.CultureInfo.InvariantCulture)+"}");
+            File.WriteAllText(Path.Combine(output,"final-view.json"),JsonUtility.ToJson(room.Latest));
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
+        }
+
+        IEnumerator QuestFlow()
+        {
+            yield return Ready();if(failed){Exit(1);yield break;}
+            Check(room.Latest.update.quest_stage=="0"&&room.Latest.update.quest_reward=="0","quest_initial");
+            yield return Intent("talk");
+            Check(room.Latest.update.status=="OUT_OF_RANGE"&&room.Latest.update.view.tick=="0",
+                  "quest_out_of_range_preserves");
+            yield return Intent("down");yield return Intent("talk");
+            Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="2","quest_accepted");
+            Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("offer")),"quest_offer_text");
+            yield return Intent("talk");
+            Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="3"&&
+                  String.Join("\n",room.Latest.update.messages).Contains(QuestText("reminder")),"quest_reminder_text");
+            foreach(string action in new [] {"open","right","down","attack","attack","rest","attack"})
+                yield return Intent(action);
+            Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
+                  room.Latest.update.view.tick=="10"&&room.Latest.update.view.enemy_hp=="0", "quest_goal_met");
+            yield return Intent("save");yield return Intent("left");yield return Intent("talk");
+            Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1"&&
+                  room.Latest.update.view.tick=="12","quest_report_grants_once");
+            Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("completion")),"quest_completion_text");
+            string committed=JsonUtility.ToJson(room.Latest.update.view);
+            yield return Intent("retry");
+            Check(JsonUtility.ToJson(room.Latest.update.view)==committed&&room.Latest.update.quest_reward=="1",
+                  "quest_retry_no_second_grant");
+            Check(!String.Join("\n",room.Latest.update.messages).Contains(QuestText("completion")),"quest_retry_no_repeat_line");
+            yield return Intent("talk");
+            Check(room.Latest.update.view.tick=="13"&&room.Latest.update.quest_reward=="1"&&
+                  String.Join("\n",room.Latest.update.messages).Contains(QuestText("gratitude")),"quest_gratitude");
+            yield return Intent("load");
+            Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
+                  room.Latest.update.reset_log&&room.Latest.update.view.tick=="10","quest_load_progress");
+            int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.BrainProcessId!=pid&&room.Latest.update.quest_stage=="2"&&
+                  room.Latest.update.view.tick=="10","quest_loaded_branch_reconnect");
+            yield return Intent("left");yield return Intent("talk");
+            Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1","quest_branch_report_once");
+            string output=Path.Combine(Path.GetDirectoryName(Environment.GetEnvironmentVariable(
+                "REVERIE_UNITY_WORKING")),"evidence");Directory.CreateDirectory(output);
+            if(!Application.isBatchMode) {
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(output,"quest.png"));
+                yield return new WaitForSecondsRealtime(1);
+                Check(File.Exists(Path.Combine(output,"quest.png")),"quest_capture");
+            }
+            File.WriteAllText(Path.Combine(output,"final-view.json"),JsonUtility.ToJson(room.Latest));
+            var questTimes=new float[120];
+            for(int i=0;i<questTimes.Length;i++){yield return null;questTimes[i]=Time.unscaledDeltaTime;}
+            Array.Sort(questTimes);
+            File.WriteAllText(Path.Combine(output,"performance.json"),
+                "{\"frames\":120,\"median_ms\":"+(questTimes[60]*1000).ToString(System.Globalization.CultureInfo.InvariantCulture)+
+                ",\"p95_ms\":"+(questTimes[114]*1000).ToString(System.Globalization.CultureInfo.InvariantCulture)+"}");
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
+        }
+
         public IEnumerator Run()
         {
             room=FindFirstObjectByType<PlayRoom>();
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")!="corrupt") {
+                yield return Ready();if(failed){Exit(1);yield break;}
+            }
+            if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
+                if(Environment.GetEnvironmentVariable("REVERIE_UNITY_EXPECT_MEMORY")=="1")
+                    Check(room.NpcMemoryEnabled,"quest_memory_mode_forwarded");
+                yield return QuestFlow();yield break;
+            }
+            string scenario=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
+            if(scenario=="harbor"||scenario=="grove") {
+                yield return ScenarioFlow(scenario);yield break;
+            }
             if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")=="corrupt") {
                 float until=Time.realtimeSinceStartup+12;
                 while(room.Failure==""&&Time.realtimeSinceStartup<until)yield return null;
@@ -62,7 +204,8 @@ namespace ReverieSaga
             yield return Ready();if(failed){Exit(1);yield break;}
             Check(room.Latest.has_view&&room.Latest.narratives.Length==6,"catalog_loaded");
             Check(room.Latest.update.view.actor_cell=="0","initial_actor");
-            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..","..","tmp","cp04-native"));
+            string output=Path.Combine(Path.GetDirectoryName(
+                Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")),"evidence");
             Directory.CreateDirectory(output);
             if(!Application.isBatchMode) {
                 ScreenCapture.CaptureScreenshot(Path.Combine(output,"initial-room.png"));

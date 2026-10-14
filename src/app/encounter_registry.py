@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from app.scenarios import bind_documents
+from domain.scenario import LEGACY, Scenario
+
 from contracts.messages import EventPolicy
 from contracts.read_views import AdapterBinding
 from contracts.skeleton import FeatureBundle, PresenterBinding
@@ -19,8 +22,8 @@ from orchestration.trial import (
 )
 
 
-def encounter_bundle() -> FeatureBundle:
-    actions, movement = EncounterActions(), EncounterMovement()
+def encounter_bundle(layout: Scenario = LEGACY) -> FeatureBundle:
+    actions, movement = EncounterActions(layout=layout), EncounterMovement(layout=layout)
     action_kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack", "interact", "rest"))
     bindings = (
         EngineBinding(actions, "engines.encounter", (NodeActivation(NodeKey(Phase.RESOLVE, "encounter.actions"), action_kinds, False, False, "A"),)),
@@ -35,27 +38,29 @@ def encounter_bundle() -> FeatureBundle:
         FieldSpec(FieldFamily("trial.position", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
         FieldSpec(FieldFamily("trial.position", "cell"), "CORE", "A", "trial.movement", consumers, "integer", "cell", 1, 0, 8, None),
         FieldSpec(FieldFamily("encounter.gate", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
-        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, 4, 4, None),
+        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, layout.gate_cell, layout.gate_cell, None),
         FieldSpec(FieldFamily("encounter.gate", "is_open"), "CORE", "A", "encounter.actions", consumers, "integer", "boolean_integer", 1, 0, 1, None),
         FieldSpec(FieldFamily("encounter.hp", "hp"), "CORE", "A", "encounter.actions", consumers, "integer", "hp", 1, 0, 5, None),
         FieldSpec(FieldFamily("encounter.stamina", "value"), "CORE", "A", "encounter.actions", ("encounter.actions", "encounter.presenter", "system.admission"), "integer", "stamina", 1, 0, 2, None),
     )
     kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack-resolved", "defeated", "gate-changed", "move-blocked", "moved", "rested"))
+    schema, rules = bind_documents(object_value(decode_json(SCHEMA_DOCUMENT)),
+                                   object_value(decode_json(RULES_DOCUMENT)), layout)
     return FeatureBundle(
         "encounter.local", bindings,
-        (AdapterBinding(GateAdapter()), AdapterBinding(HitPointsAdapter()), AdapterBinding(StaminaAdapter()), AdapterBinding(TrialMapAdapter()), AdapterBinding(CellPositionAdapter())),
+        (AdapterBinding(GateAdapter(layout=layout)), AdapterBinding(HitPointsAdapter(layout=layout)), AdapterBinding(StaminaAdapter(layout=layout)), AdapterBinding(TrialMapAdapter(layout=layout)), AdapterBinding(CellPositionAdapter(layout=layout))),
         specs,
         tuple(EventPolicy(k, "record_only", Phase.PRESENT, 0, "reject", ("trial.movement" if k.kind in ("encounter.move-blocked", "encounter.moved") else "encounter.actions",), (), ()) for k in kinds),
-        tuple(EncounterAdmission(k) for k in (*action_kinds, TypeKey("trial.move", 1))),
-        (EncounterCellReducer(), GateReducer(), HitPointsReducer(), StaminaReducer()),
-        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter()),),
-        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1)) for k in (
+        tuple(EncounterAdmission(k, layout=layout) for k in (*action_kinds, TypeKey("trial.move", 1))),
+        (EncounterCellReducer(layout=layout), GateReducer(layout=layout), HitPointsReducer(layout=layout), StaminaReducer(layout=layout)),
+        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter(layout=layout)),),
+        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1), layout=layout) for k in (
             "attack", "attack-cue", "attack-resolved", "defeat-cue", "defeated", "gate-changed", "gate-cue", "gate-delta", "gate-patch", "hp-delta", "hp-patch", "interact", "move-blocked", "move-cue", "moved", "rest", "rest-cue", "rested", "stamina-delta", "stamina-patch",
-        )) + tuple(TrialPayloadCodec(TypeKey("trial." + k, 1)) for k in ("move", "position-delta", "position-patch")),
-        object_value(decode_json(SCHEMA_DOCUMENT)), object_value(decode_json(RULES_DOCUMENT)),
-        (GateCodec(), HitPointsCodec(), StaminaCodec(), TrialMapCodec(), CellPositionCodec()),
-        (GatePatchRoute(), HitPointsPatchRoute(), StaminaPatchRoute(), CellPatchRoute()),
-        EncounterCheckpointPolicy(),
+        )) + tuple(TrialPayloadCodec(TypeKey("trial." + k, 1), layout=layout) for k in ("move", "position-delta", "position-patch")),
+        schema, rules,
+        (GateCodec(layout=layout), HitPointsCodec(layout=layout), StaminaCodec(layout=layout), TrialMapCodec(layout=layout), CellPositionCodec(layout=layout)),
+        (GatePatchRoute(layout=layout), HitPointsPatchRoute(layout=layout), StaminaPatchRoute(layout=layout), CellPatchRoute(layout=layout)),
+        EncounterCheckpointPolicy(layout=layout),
     )
 
 

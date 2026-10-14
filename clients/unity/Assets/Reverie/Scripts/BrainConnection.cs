@@ -30,16 +30,26 @@ namespace ReverieSaga
         public int ProcessId { get { return child.Id; } }
         public bool Busy { get { return awaiting; } }
 
-        public BrainConnection(string root, string workingFile)
+        public BrainConnection(string root, string workingFile, string scenario = "legacy",
+            string questCatalog = "", string questSha256 = "", bool npcMemory = false)
         {
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             string catalog = Path.Combine(root, "content", "narratives.json");
             if (!File.Exists(python) || !File.Exists(catalog))
                 throw new IOException("Python runtime or accepted catalog is missing");
+            string questArgs="";
+            if(npcMemory&&(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256)))
+                throw new IOException("NPC_MEMORY_CONTENT");
+            if(!String.IsNullOrEmpty(questCatalog)||!String.IsNullOrEmpty(questSha256)) {
+                if(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256))
+                    throw new IOException("QUEST_CONTENT_UNAVAILABLE");
+                questArgs=" --quest-catalog "+Quote(questCatalog)+" --quest-sha256 "+Quote(questSha256);
+            }
             var start = new ProcessStartInfo {
                 FileName = python, WorkingDirectory = root,
                 Arguments = "-m app.engine_bridge --working " + Quote(workingFile) +
-                    " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash,
+                    " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash +
+                    " --scenario " + Quote(scenario) + questArgs + (npcMemory?" --npc-memory":""),
                 UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardInput = true, RedirectStandardOutput = true,
                 RedirectStandardError = true

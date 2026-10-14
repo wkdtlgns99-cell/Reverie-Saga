@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from domain.scenario import LEGACY, Scenario, ScenarioBound
+
 from dataclasses import replace
 import hashlib
 from typing import Literal, cast
@@ -24,7 +26,7 @@ from domain.primitives import (
 )
 from domain.state_types import ComponentRecord, CoreSnapshot
 from domain.trial import (
-    ACTOR_ID, BLOCKED_CELLS, CELL_MM, HEIGHT, SPACE_ID, WIDTH,
+    CELL_MM, HEIGHT, WIDTH,
     CellPositionRecord, TrialMapRecord, cell_coordinates,
 )
 from orchestration.serialization import key_document
@@ -34,9 +36,9 @@ def _cell(value: int) -> None:
     require_integer(value, 0, WIDTH * HEIGHT - 1)
 
 
-def _free(value: int) -> None:
+def _free(value: int, layout: Scenario = LEGACY) -> None:
     _cell(value)
-    if value in BLOCKED_CELLS:
+    if value in layout.blocked_cells:
         raise ValueError("actor cannot occupy wall")
 
 
@@ -47,19 +49,19 @@ def _cardinal(dx: int, dz: int) -> None:
         raise ValueError("exact cardinal direction required")
 
 
-def _adjacent(before: int, after: int) -> None:
-    _free(before)
-    _free(after)
+def _adjacent(before: int, after: int, layout: Scenario = LEGACY) -> None:
+    _free(before, layout=layout)
+    _free(after, layout=layout)
     x, z = cell_coordinates(before)
     tx, tz = cell_coordinates(after)
     if abs(tx - x) + abs(tz - z) != CELL_MM:
         raise ValueError("distinct adjacent free cells required")
 
 
-def _subjects(actor: EntityId, space: EntityId) -> None:
+def _subjects(actor: EntityId, space: EntityId, layout: Scenario = LEGACY) -> None:
     require_namespace(actor)
     require_namespace(space)
-    if actor != ACTOR_ID or space != SPACE_ID:
+    if actor != layout.actor_id or space != layout.space_id:
         raise ValueError("invalid trial subjects")
 
 
@@ -130,7 +132,7 @@ class _PositionView(_View):
         return self._record.cell
 
 
-class TrialMapAdapter:
+class TrialMapAdapter(ScenarioBound):
     @property
     def key(self) -> ComponentKey[TrialMapRead]:
         return TRIAL_MAP
@@ -146,7 +148,7 @@ class TrialMapAdapter:
             raise ValueError("immutable blocks required")
         for cell in record.blocked_cells:
             _cell(cell)
-        if record.blocked_cells != BLOCKED_CELLS:
+        if record.blocked_cells != self._layout.blocked_cells:
             raise ValueError("fixed sorted unique wall required")
 
     def wrap(self, record: ComponentRecord, access: ViewAccess) -> TrialMapRead:
@@ -155,7 +157,7 @@ class TrialMapAdapter:
         return _MapView(record, access)
 
 
-class CellPositionAdapter:
+class CellPositionAdapter(ScenarioBound):
     @property
     def key(self) -> ComponentKey[CellPositionRead]:
         return CELL_POSITION
@@ -173,7 +175,7 @@ class CellPositionAdapter:
         return _PositionView(record, access)
 
 
-class TrialMapCodec:
+class TrialMapCodec(ScenarioBound):
     @property
     def schema(self) -> TypeKey:
         return TRIAL_MAP.schema
@@ -183,17 +185,17 @@ class TrialMapCodec:
         record = TrialMapRecord(entity_id, int_value(d["width"]), int_value(d["height"]),
                                 int_value(d["cell_mm"]),
                                 tuple(int_value(c) for c in array_value(d["blocked_cells"])))
-        TrialMapAdapter().validate(record)
+        TrialMapAdapter(layout=self._layout).validate(record)
         return record
 
     def encode(self, record: ComponentRecord) -> JsonObject:
-        TrialMapAdapter().validate(record)
+        TrialMapAdapter(layout=self._layout).validate(record)
         assert isinstance(record, TrialMapRecord)
         return {"width": record.width, "height": record.height, "cell_mm": record.cell_mm,
                 "blocked_cells": record.blocked_cells}
 
 
-class CellPositionCodec:
+class CellPositionCodec(ScenarioBound):
     @property
     def schema(self) -> TypeKey:
         return CELL_POSITION.schema
@@ -202,17 +204,18 @@ class CellPositionCodec:
         d = exact_fields(fields, ("space_id", "cell"))
         record = CellPositionRecord(entity_id, EntityId(text_value(d["space_id"])),
                                     int_value(d["cell"]))
-        CellPositionAdapter().validate(record)
+        CellPositionAdapter(layout=self._layout).validate(record)
         return record
 
     def encode(self, record: ComponentRecord) -> JsonObject:
-        CellPositionAdapter().validate(record)
+        CellPositionAdapter(layout=self._layout).validate(record)
         assert isinstance(record, CellPositionRecord)
         return {"space_id": record.space_id, "cell": record.cell}
 
 
-class TrialPayloadCodec:
-    def __init__(self, schema: TypeKey) -> None:
+class TrialPayloadCodec(ScenarioBound):
+    def __init__(self, schema: TypeKey, layout: Scenario = LEGACY) -> None:
+        super().__init__(layout)
         if schema.version != 1 or schema.kind not in (
             "trial.move", "trial.position-delta", "trial.position-patch",
             "trial.moved", "trial.move-blocked", "trial.move-cue",
@@ -240,27 +243,27 @@ class TrialPayloadCodec:
             _cell(payload.cell)
             return {"cell": payload.cell}
         if type(payload) is Moved:
-            _subjects(payload.actor_id, payload.space_id)
-            _adjacent(payload.from_cell, payload.to_cell)
+            _subjects(payload.actor_id, payload.space_id, layout=self._layout)
+            _adjacent(payload.from_cell, payload.to_cell, layout=self._layout)
             return {"actor_id": payload.actor_id, "space_id": payload.space_id,
                     "from_cell": payload.from_cell, "to_cell": payload.to_cell}
         if type(payload) is MoveBlocked:
-            _subjects(payload.actor_id, payload.space_id)
-            _free(payload.from_cell)
+            _subjects(payload.actor_id, payload.space_id, layout=self._layout)
+            _free(payload.from_cell, layout=self._layout)
             _cardinal(payload.dx, payload.dz)
             x = payload.from_cell % WIDTH + payload.dx
             z = payload.from_cell // WIDTH + payload.dz
             expected = "boundary" if not (0 <= x < WIDTH and 0 <= z < HEIGHT) else "occupied"
             if (payload.reason != expected or
-                (expected == "occupied" and z * WIDTH + x not in BLOCKED_CELLS)):
+                (expected == "occupied" and z * WIDTH + x not in self._layout.blocked_cells)):
                 raise ValueError("inconsistent blockage")
             return {"actor_id": payload.actor_id, "space_id": payload.space_id,
                     "from_cell": payload.from_cell, "dx": payload.dx, "dz": payload.dz,
                     "reason": payload.reason}
         if type(payload) is MoveCue:
-            _subjects(payload.actor_id, payload.space_id)
-            _free(payload.from_cell)
-            _free(payload.to_cell)
+            _subjects(payload.actor_id, payload.space_id, layout=self._layout)
+            _free(payload.from_cell, layout=self._layout)
+            _free(payload.to_cell, layout=self._layout)
             for value in (payload.from_x_mm, payload.from_z_mm,
                           payload.to_x_mm, payload.to_z_mm):
                 require_integer(value)
@@ -268,7 +271,7 @@ class TrialPayloadCodec:
                 (payload.to_x_mm, payload.to_z_mm) != cell_coordinates(payload.to_cell)):
                 raise ValueError("cue coordinate mismatch")
             if payload.result == "moved":
-                _adjacent(payload.from_cell, payload.to_cell)
+                _adjacent(payload.from_cell, payload.to_cell, layout=self._layout)
             elif payload.result in ("boundary", "occupied"):
                 if payload.from_cell != payload.to_cell:
                     raise ValueError("blocked cue endpoints differ")
@@ -315,7 +318,7 @@ class TrialPayloadCodec:
         return value
 
 
-class MoveAdmission:
+class MoveAdmission(ScenarioBound):
     @property
     def schema(self) -> TypeKey:
         return TypeKey("trial.move", 1)
@@ -326,13 +329,13 @@ class MoveAdmission:
 
     def admit(self, command: GameCommand, state: ReadPort, *,
               start_tick: Tick, world_id: str) -> AdmissionOutcome:
-        if command.actor_id != ACTOR_ID:
+        if command.actor_id != self._layout.actor_id:
             return TurnRejected(failure("UNAUTHORIZED_ACTOR"), command.expected_revision)
         try:
-            payload = TrialPayloadCodec(self.schema).encode(command.payload)
+            payload = TrialPayloadCodec(self.schema, layout=self._layout).encode(command.payload)
             position = state.component(CELL_POSITION, command.actor_id)
-            _free(position.cell)
-            if position.space_id != SPACE_ID:
+            _free(position.cell, layout=self._layout)
+            if position.space_id != self._layout.space_id:
                 raise ValueError("invalid space reference")
         except ValueError:
             return TurnRejected(failure("INVALID_COMMAND"), command.expected_revision)
@@ -345,7 +348,7 @@ class MoveAdmission:
                                AdmittedAction(command.actor_id, command.payload, key))
 
 
-class CellReducer:
+class CellReducer(ScenarioBound):
     @property
     def schema(self) -> TypeKey:
         return TypeKey("trial.position-delta", 1)
@@ -358,7 +361,7 @@ class CellReducer:
         if type(delta) is not CellDelta:
             raise CandidateError("INVALID_DELTA", "wrong cell delta class")
         try:
-            TrialPayloadCodec(self.schema).encode(delta)
+            TrialPayloadCodec(self.schema, layout=self._layout).encode(delta)
         except ValueError as error:
             raise CandidateError("INVALID_DELTA", "invalid cell delta shape") from error
         return delta
@@ -366,7 +369,7 @@ class CellReducer:
     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
         value = self._validate(delta)
         try:
-            _adjacent(value.before_cell, value.after_cell)
+            _adjacent(value.before_cell, value.after_cell, layout=self._layout)
         except ValueError as error:
             raise CandidateError("INVALID_DELTA", "illegal cell movement") from error
         if before.component(CELL_POSITION, value.entity_id).cell != value.before_cell:
@@ -395,7 +398,7 @@ class CellReducer:
             raise CandidateError("INVALID_DELTA", "net delta does not match head")
 
 
-class CellPatchRoute:
+class CellPatchRoute(ScenarioBound):
     @property
     def schema(self) -> TypeKey:
         return TypeKey("trial.position-patch", 1)
@@ -409,31 +412,31 @@ class CellPatchRoute:
         return FieldFamily("trial.position", "cell")
 
     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
-        CellPositionAdapter().validate(before)
-        TrialPayloadCodec(self.schema).encode(patch)
+        CellPositionAdapter(layout=self._layout).validate(before)
+        TrialPayloadCodec(self.schema, layout=self._layout).encode(patch)
         assert isinstance(before, CellPositionRecord) and isinstance(patch, CellPatch)
         return replace(before, cell=patch.cell)
 
 
-class TrialCheckpointPolicy:
+class TrialCheckpointPolicy(ScenarioBound):
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         if len(core.components) != 2:
             raise ValueError("exact trial map and actor required")
         grid, position = core.components
-        TrialMapAdapter().validate(grid)
-        CellPositionAdapter().validate(position)
+        TrialMapAdapter(layout=self._layout).validate(grid)
+        CellPositionAdapter(layout=self._layout).validate(position)
         assert isinstance(grid, TrialMapRecord) and isinstance(position, CellPositionRecord)
-        if grid.entity_id != SPACE_ID:
+        if grid.entity_id != self._layout.space_id:
             raise ValueError("invalid trial map identity")
-        _subjects(position.entity_id, position.space_id)
-        _free(position.cell)
-        if any(s.actor_id != ACTOR_ID for s in protocol.streams):
+        _subjects(position.entity_id, position.space_id, layout=self._layout)
+        _free(position.cell, layout=self._layout)
+        if any(s.actor_id != self._layout.actor_id for s in protocol.streams):
             raise ValueError("invalid trial stream actor")
         if core.pending or core.pins.gameplay_packages:
             raise ValueError("trial has no pending or gameplay packages")
 
 
-class MovePresenter:
+class MovePresenter(ScenarioBound):
     def map(self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt,
             committed: ReadPort) -> tuple[PresentationEvent, ...]:
         cues: list[PresentationEvent] = []
@@ -442,7 +445,7 @@ class MovePresenter:
             if type(fact) not in (Moved, MoveBlocked):
                 raise SchemaError("UNSUPPORTED_SCHEMA", "trial presenter fact")
             assert isinstance(fact, (Moved, MoveBlocked))
-            TrialPayloadCodec(fact.schema).encode(fact)
+            TrialPayloadCodec(fact.schema, layout=self._layout).encode(fact)
             position = committed.component(CELL_POSITION, fact.actor_id)
             space, cell = position.space_id, position.cell
             grid = committed.component(TRIAL_MAP, space)

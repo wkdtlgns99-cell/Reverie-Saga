@@ -223,6 +223,31 @@ def _click(window: PlayWindow, action: ClientAction) -> None:
     _pump(window.root, lambda: not window.busy)
 
 
+def test_real_tk_quest_button_state_and_dialogue(tmp_path: Path, tk_host: tk.Tk) -> None:
+    from tests.unit.quest_fixtures import content
+    from tests.integration.test_quest import GOAL
+
+    selected = content()
+    gc.collect()
+    root = tk.Toplevel(tk_host)
+    root.withdraw()
+    screen = PlayWindow(
+        root, tmp_path / "quest-ui.sqlite", selected.definition.layout, quest_content=selected
+    )
+    try:
+        _pump(root, lambda: not screen.busy)
+        assert "talk" in screen.buttons
+        for action in (*GOAL, "left", "talk"):
+            _click(screen, action)
+        assert screen.last_update is not None and screen.last_update.quest_reward == 1
+        assert "임무 완료" in screen.stats.get() and "호의 1" in screen.stats.get()
+        assert selected.dialogue.text("completion") in "\n".join(screen.history)
+    finally:
+        screen.close()
+        _pump(root, lambda: screen.closed)
+        screen.worker.join()
+
+
 def test_real_tk_buttons_render_combat_save_load(window: PlayWindow) -> None:
     assert window.view is not None and window.view.actor_cell == 0
     assert window.canvas.find_all()

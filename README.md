@@ -56,11 +56,211 @@ This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC 
 
 ## Unity graphical prototype
 
+QT-F02 adds two embedded scenarios using the same Brain rules:harbor and grove,with different
+role IDs and positions. Tk:append `--scenario harbor` or `--scenario grove` and use a separate
+fresh `--working` path. Resume with the same selector and the displayed loaded-branch path;
+wrong-scenario saves fail explicitly without changing current progress. Default legacy remains
+compatible with the earlier prototype. This is two small test rooms,not full settlement/quest gameplay.
+
 Unity6000.3.25f1 is installed on the observed host and connected to the same Python Brain.
 [Project/run/build/native verification](clients/unity/README.md);6adapted descriptions are loaded
 from content/narratives.json. CP04 feedback/repair accepted:24play/failure checks plus1corrupt-save check PASS;
 release verification hook absent. Standalone launch is blocked by current-host Windows application control.
 Other-device setup/native verification and final-engine/HD-2D release acceptance remain pending.
+
+## First quest / prepared Gemini dialogue
+
+QT-F07 adds an opt-in harbor quest. The Brain owns acceptance,enemy-defeat observation,reporting
+and one recorded favor. The dialogue bundle only provides four Korean lines selected from
+committed state. Default legacy/harbor/grove remain the earlier quest-less rooms;old saves are
+not silently converted. The first quest contract review passed with verified corrections;
+implementation/native evidence and the separate CP05 integration review are tracked in
+[the order](docs/work_orders/QT-F07_QUEST_DIALOGUE.md).
+
+Preparation and play are separate. Director authorized an actual primary-key test2026-10-14;
+[service/diagnostic result](docs/reviews/QT-F07_LIVE_GEMINI_2026-10-14.md):1call and7game checks PASS.
+Generated candidate is NEEDS_REVIEW;account tier/quota and production approval remain separate.
+Local/native deterministic verification needs no per-turn provider call.
+Local ignored key file:`C:/ReverieSaga/.env`,with three Gemini entries (director-filled local values):
+GEMINI_API_KEY (primary),GEMINI_API_KEY_2 and GEMINI_API_KEY_3 (manual spares).
+Paste each key after = without quotes. The CLI does not auto-load .env or rotate keys;
+load the primary explicitly with the command below. .env is excluded from Git/review packets.
+The earlier tmp/gemini-api-key.txt remains a historical local alternative.
+Configure your own `GEMINI_API_KEY` outside source/chat and
+use a confirmed free-tier project. Current account/model availability and quotas require local
+qualification;the program does not enable billing or choose a paid fallback. The free-service
+brief/output data-use acknowledgement refers to [Google terms](https://ai.google.dev/gemini-api/terms).
+The generation CLI has no local daily call/token ceiling after the director's2026-10-14 request.
+It retains at most2attempts per explicit job,60s cross-process spacing and durable usage accounting.
+No automatic network call occurs when the game starts or a turn/replay runs.
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+$taskGeminiEntries=@(Get-Content -LiteralPath C:\ReverieSaga\.env | Where-Object { $_ -match "^GEMINI_API_KEY=" })
+if ($taskGeminiEntries.Count -ne 1) { throw "Expected one primary GEMINI_API_KEY entry" }
+$env:GEMINI_API_KEY=($taskGeminiEntries[0] -split "=",2)[1].Trim()
+.\.venv\Scripts\python.exe -m app.dialogue_prepare --live --free-tier-confirmed --free-data-use-confirmed --output tmp/dialogue/candidate.json
+```
+
+The output and metadata are NEEDS_REVIEW,not approved gameplay content. Review the four lines;
+an exact director approval is recorded in a hash-bound receipt before compilation. The assistant
+can create that receipt after your explicit approval;you need not hand-author the JSON.
+Offline validation and subsequent approved compilation:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.dialogue_prepare --candidate tmp/dialogue/candidate.json
+.\.venv\Scripts\python.exe -m app.dialogue_prepare --candidate tmp/dialogue/candidate.json --receipt tmp/dialogue/approval.json --output tmp/dialogue/harbor-v1.json
+```
+
+Compilation prints the catalog SHA256. Use that digest and a fresh game path:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.client --scenario harbor --working tmp/quest-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <printed-catalog-sha256>
+```
+
+Down → NPC talk → Open → Right → Down → Attack → Attack → Rest → Attack → Left → NPC talk.
+Goal becomes reportable at tick9;report completes at tick11 and records one favor. Exact retry
+does not grant or narrate it again;later talk expresses gratitude. Save/load/reconnect retain
+progress and require the same approved content pins. Different texts require a fresh game.
+Provider failure cannot change progress or overwrite an accepted artifact. The checked-in
+QT-F07 example is offline test/review data,not Gemini output or a director-approved shipped asset.
+
+## NPC-known quest context
+
+QT-F08 adds read-only structured context for the harbor NPC. It reads an existing quest save
+with the exact catalog used to create it;it never creates/replaces that game or advances time.
+Stage1/2 both mean the NPC knows acceptance;unreported enemy defeat is not exported as witnessed
+knowledge. Stage3 includes the report and one recorded favor. This is a current-state projection,
+not a full episodic-memory/vector/relationship system.
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+.\.venv\Scripts\python.exe -m app.npc_prepare --working tmp/quest-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --output tmp/npc/context.json
+```
+
+Default output is CONTEXT_ONLY and performs no network call. For explicit generation,load the
+primary key using the .env command above and add --live --free-tier-confirmed --free-data-use-confirmed.
+It uses the same shared usage ledger/60s spacing;there is no spare-key rotation. Output/pending paths must
+be fresh. Generation rechecks source freshness and emits NEEDS_REVIEW;it does not replace a
+running game's dialogue or grant production approval. Local tests/CLI PASS;
+[initial attempt](docs/reviews/QT-F08_EXECUTION_2026-10-14.md) failed before the daily limit was removed.
+[Real retest](docs/reviews/GEMINI_RETEST_2026-10-14.md) PASS:1request/19.716s/561tokens,
+source unchanged,candidate NEEDS_REVIEW. Full-memory and semantic retrieval remain later.
+
+## Persisted NPC quest evidence
+
+QT-F09 adds an opt-in persisted evidence slice for the harbor NPC. Python boundary sessions use
+`ClientSession(path, harbor_layout, quest_content=content, npc_memory=True)` with a fresh path.
+The existing default quest/scenario sessions are unchanged;old saves are not upgraded.
+Acceptance and completion-report conversations retain source event IDs and logical ticks at COMMIT.
+Unreported enemy defeat is excluded;repeat talk/retry adds no duplicate memory. This is two scoped
+level1evidence records,not the full NPC personality/relationship/five-level/vector system.
+QT-F10's EvidenceQuery/select_evidence helper supports subject/kind/inclusive-time/limit filters
+and newest-first ordering. Memory preparation uses its default query and retains both required records.
+Read-only preparation from that opt-in save:
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+.\.venv\Scripts\python.exe -m app.npc_memory_prepare --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --output tmp/npc/memory-context.json
+```
+
+Offline default performs no network;explicit live generation uses the same primary key/free flags,
+60s spacing and max2requests/job. Output remains NEEDS_REVIEW;no current-world dialogue overwrite.
+Image/model/asset/camera production is deferred by the director;essential internal/client wiring
+may proceed. See [task](docs/work_orders/QT-F09_NPC_EVIDENCE_MEMORY.md).
+
+Developer-only filtered memory inspection is offline:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.npc_memory_export --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --kind accepted --output tmp/npc/acceptance-query.json
+```
+
+Optional --subject-id/--kind/--since/--limit use the typed query rules. The fresh SNAPSHOT file records
+source/query provenance;no provider call,save mutation or gameplay-content approval occurs.
+Check a stored snapshot against the current save offline:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.npc_memory_check --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --snapshot tmp/npc/acceptance-query.json
+```
+
+MEMORY_QUERY_CURRENT means consistency at check time;changed source returns NPC_CONTEXT_STALE.
+Modified/malformed contents reject;the checker never rewrites either file or grants approval.
+
+## Previewed memory dialogue generation
+
+QT-F13 connects an offline input preview to optional generation. Use a fresh output for each step:
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+.\.venv\Scripts\python.exe -m app.npc_memory_prepare --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --preview --output tmp/npc/dialogue-plan.json
+# Load the primary key with the earlier .env command before explicit live generation.
+.\.venv\Scripts\python.exe -m app.npc_memory_prepare --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --plan tmp/npc/dialogue-plan.json --live --free-tier-confirmed --free-data-use-confirmed --output tmp/npc/plan-candidate.json
+```
+
+Preview requires no key/network. The plan exposes the exact brief/context and model/request hashes;
+edited or stale plans reject before generation. Source/plan freshness is rechecked after generation.
+Plan-driven output uses preparation/v2 with plan/request provenance;without --plan the v1 behavior
+is retained. Omit --live for offline validation/CONTEXT_ONLY output. --preview excludes --live/--plan.
+Generated output remains NEEDS_REVIEW and is not installed into gameplay.
+[Qualification](docs/reviews/QT-F13_EXECUTION_2026-10-14.md):98affected checks and real Gemini workflow PASS.
+
+## Reviewing a generated memory dialogue candidate
+
+After plan-driven generation,inspect the saved candidate offline:
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+.\.venv\Scripts\python.exe -m app.npc_dialogue_review --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --plan tmp/npc/dialogue-plan.json --preparation tmp/npc/plan-candidate.json --output tmp/npc/candidate-review.md
+```
+
+Omit --output for Korean Markdown on stdout. The fresh report shows four conditional lines,
+observed/reported memories,source/request/output fingerprints and nullable usage. Preparation/v2
+must match the current save and exact preview;legacy v1/CONTEXT_ONLY/modified metadata reject.
+No API/key is needed. Current-source/schema/hash checks do not approve narrative truth or prove
+provider authenticity;NEEDS_REVIEW remains. Existing report/pending files are never overwritten.
+
+## Compiling explicitly approved memory dialogue
+
+After reviewing the Korean report,create a non-approved receipt draft:
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+.\.venv\Scripts\python.exe -m app.npc_dialogue_compile --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --plan tmp/npc/dialogue-plan.json --preparation tmp/npc/plan-candidate.json --draft-approval --output tmp/npc/approval.json
+```
+
+The draft is PENDING with blank approved_by/approved_utc;it cannot compile. After the director's
+explicit content approval,set decision to APPROVED,approved_by to the approver,and approved_utc
+to the actual UTC ISO8601 timestamp. Preserve the artifact/output/brief hashes. Then compile:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.npc_dialogue_compile --working tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --plan tmp/npc/dialogue-plan.json --preparation tmp/npc/plan-candidate.json --receipt tmp/npc/approval.json --output tmp/dialogue/memory-approved-v1.json
+```
+
+The receipt must match both raw candidate and current memory brief. Source/plan/preparation/receipt
+are checked again before fresh publication;existing files/pending paths are preserved. Output is the
+existing catalog/v1 accepted by the current quest client with the printed catalog SHA256. Start a
+fresh game with that catalog;existing saves require their original content pin and are never upgraded.
+This command trusts explicit local approval metadata;it does not authenticate the human identity.
+No network/key/provider profile is used. --draft-approval excludes --receipt.
+
+## Approved harbor memory in the ordinary client
+
+The no-selector Unity editor path now uses the director-approved harbor dialogue and persisted
+NPC acceptance/report memories. See [Unity play](clients/unity/README.md#play). Explicit legacy/
+harbor/grove selectors retain prior modes;REVERIE_UNITY_NPC_MEMORY=1 opts a selected harbor quest
+into memory. A separate catalog-pin save directory preserves existing non-memory games.
+Tk and binary Brain bridge accept --npc-memory with a valid harbor quest catalog:
+
+```powershell
+$env:PYTHONPATH="$PWD/src"
+$taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha256 -Raw).Trim()
+.\.venv\Scripts\python.exe -m app.client --working tmp/client-harbor-memory/game.sqlite --scenario harbor --quest-catalog content/dialogue/harbor-memory-v1.json --quest-sha256 $taskDialoguePin --npc-memory
+```
+
+Source catalog/approval/editorial lineage are tracked;raw original Gemini bytes remain retained.
+Ordinary turns select saved approved lines and commit memory locally,with no network/API calls.
+Use the actual current working path after load for offline npc_memory_prepare --preview;source
+catalog+SHA must match the save. Old saves reject unsupported memory pins without conversion.
 
 ## Verification
 

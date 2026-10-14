@@ -1,0 +1,81 @@
+Status: still reviewing the CP05 contract. I'm now checking where net validation runs and how the checkpoint policy slices components.Status: I've covered the engine, scheduler, and checkpoint side of the contract. I'm now checking the Gemini model and free-tier claims against current Google documentation.## CP05-CONTRACT review: PASS WITH CORRECTIONS
+
+The design fits this repository. I found no contract-level blocker, but two items (H1, H2) must be fixed before implementation starts.
+
+**Inspected:** the QT-F07 contracts and the request. In the code: `contracts/turn.py`, `orchestration/scheduler.py`, `orchestration/turn.py` (barrier, `_stage`, `_compose`, `validate_registry`), `orchestration/serialization.py`, `orchestration/persistence.py` (pin check), `orchestration/watch.py` and `orchestration/encounter.py` (admission, checkpoint, reducers), `app/watch.py`, both registries, `client_session.py`, `client_text.py`, `domain/scenario.py`, and `pyproject.toml`.
+**Omitted:** `durable.py`/`sqlite_store.py` retry and recovery internals, Unity and bridge code, `engine_project.py`, the order document, and the example JSON.
+**Commands:** `unzip`, `grep` and `sed`, plus one web search for Gemini facts. I ran no tests.
+
+## High
+
+**H1. The layering as written is unimplementable.** `pyproject.toml` (rs-layers, rs-core-no-external-effects) makes `domain` the lowest layer. It forbids `os`, `pathlib`, `io`, `time`, `datetime`, `socket` and `urllib` in `domain`, `contracts` and `engines`.
+- `domain.quest.QuestDefinition` cannot call `select_scenario("harbor")`, which lives in `app/scenarios.py`.
+- `QuestContent` holds a `contracts.dialogue.QuestDialogue`, so it cannot live in `domain`.
+- `compile_dialogue` and `load_dialogue` do file I/O, and the contracts never say where they live.
+- `engines.quest` must be added to the `rs-engines-independent` list. That edits `pyproject.toml`, which CP03 had marked as a forbidden edit.
+
+**Repair:**
+- Put `QuestDefinition` in `domain` and have it check structure only.
+- Create the harbor instance in an `app` factory that asserts equality with `select_scenario("harbor").layout`.
+- Put `QuestContent` and `QuestConsumer` in `contracts`.
+- Put compile and load in `adapters`.
+- Name the `pyproject.toml` edit explicitly.
+- Keep `created_utc` as a string in `contracts`, since `datetime` is banned there.
+
+**H2. The proposed `QuestConsumer` check fails open.** The existing `_validate_scenario_binding` (`serialization.py:153-170`) only inspects consumers that satisfy the runtime protocol and silently skips the rest. The contract promises that a missing or skipped constructor raises `INVALID_QUEST_BINDING`, but copying that pattern cannot detect a consumer that lacks the property.
+**Repair:** `quest_bundle` declares the exact set of consumers that must be quest-bound: engine, admission, reducer, patch route, adapter, presenter, `quest.*` codecs, and checkpoint policy. Boot fails if any of them is not a `QuestConsumer`, and also compares the definition and catalog hash. Add a test with a consumer that lacks the property.
+
+## Medium
+
+**M1. Cross-family invariants cannot live in reducers.** `_stage` rejects any reducer read outside its target (`turn.py:~546-551`), and the net validator does the same (`serialization.py:~646-650`). So "stage 2/3 requires targetHP 0" can only be enforced by the `QuestRules` POST_TICK read and by `QuestCheckpointPolicy`.
+- **Repair:** say so in the contract.
+- **Repair:** also require stage 1 ⇒ target alive at checkpoints. POST_TICK would have advanced it otherwise, so this catches forged saves.
+
+**M2. The composed 0→2 transition needs a stated split.** `_compose` runs `encode_payload` on the composed delta, and persisted diffs are decoded through the same codec. So the codec must accept 0→2.
+**Repair:** the codec checks range and ordering only, `stage` enforces single steps, and `compose` and `validate_net` enforce the allowed net set {0→1, 0→2, 1→2, 2→3}. Add forged-diff tests for 0→3, 1→3, downgrade and identity.
+
+**M3. Admission precedence is ambiguous.** The contract lists INVALID_TARGET before ACTOR_DEFEATED. The existing `WatchAdmission` (`watch.py:633-645`) checks actor, then codec, then dead, then target. Admission also needs its `reads` property declared. State the order and test the combinations.
+
+**M4. `bootstrap_quest` cannot reuse `_bootstrap`.** `_bootstrap` in `app/watch.py` hard-codes `watch_bundle(layout)`. It needs a bundle parameter. Also note that `RegisteredStateIO` requires exactly one bundle, so `quest_bundle` must be one merged `FeatureBundle` that keeps the `scenario` key in its rules.
+
+**M5. Pinned provenance causes churn.** Timestamps, usage counts and `approved_by` do not affect behavior but would change the rules fingerprint and world ID. Pin the four texts plus the approval hashes (`artifact_id`, `output_sha256`, `brief_sha256`) and keep the rest in a sidecar.
+
+**M6. The Gemini budget is at risk from thinking tokens.** With only two attempts per day, a thinking model could spend `maxOutputTokens` on thoughts and return a non-STOP result. The contract treats that as `GENERATION_OUTPUT` with no retry. Record thought tokens in usage and have qualification fix the thinking configuration.
+
+**M7. The stdlib transport has gaps.**
+- `urllib` follows redirects and honors proxy environment variables by default, so both need explicit handlers.
+- DNS can block past the socket timeout.
+- The worst case with one retry is about 240 s, above the 180 s target.
+- The ledger needs OS-level cross-process locking (`msvcrt` on Windows, `fcntl` elsewhere), tested with real processes rather than threads.
+
+## Low
+
+- `ClientUpdate.quest_stage=""` is a string for an integer state. Use an int with a sentinel.
+- `fact_messages` has no content parameter, and its fallback line "설명이 준비되지 않은 사건입니다" would reach players if quest facts are unhandled.
+- A brief sent on the free tier may be used by Google. Third-party guides citing Google's terms say free-tier inputs and outputs can be used to improve Google's models. That is a rights decision for the director.
+- The model ID looks real. One guide says gemini-3.5-flash-lite is live under that ID with a free tier in AI Studio. A July 2026 guide lists it among text models that still have free-tier tokens. I could not see the free-tier cells in Google's own table snippet, so the account's quota stays UNVERIFIED, as the contract already states.
+
+## Answers to the seven questions
+
+1. **One engine in two phases:** yes. `compile_schedule` loops over `manifest.phases`, and write conflicts are keyed per phase. It needs one activation per node with the same lane, so a manual two-activation `EngineBinding` is required. Barrier publication (`turn.py:~639-690`) lets POST_TICK see RESOLVE's staged state, and `_compose` groups by target across the whole turn. The 0→2 composition is atomic within one candidate.
+2. **POST_TICK observation:** sufficient. Kills occur only in RESOLVE, and no encounter coupling or policy change is needed. Add `quest.rules` to the HP field consumers, following the `watch.bell` precedent.
+3. **Exactly-once grant:** sound by construction, since stage 3 is the receipt. This rests on the existing command-id and revision machinery, which I did not trace through recovery. The tests below cover it.
+4. **Pins and rejection:** `persistence.py:~130` compares whole pins before decoding, so old and new saves are rejected in both directions without migration. See M5 for the pin contents.
+5. **Generated content:** the four-intent contract cannot mutate state, and local validation versus director approval is cleanly separated. Whole-catalog pinning is not needed (M5). Static binding validation works with the H2 repair.
+6. **Gemini adapter:** implementable with M6 and M7 addressed.
+7. **Acceptance vector:** I recomputed it independently and it is correct. Actor at cell 0, NPC at 6, door at 4, enemy at 8.
+   - Distances: cell 3 is within 1 of the NPC, and cell 0 is at distance 2, so the first talk from cell 0 is OUT_OF_RANGE.
+   - Combat: attacks give enemy 5→3→1→0 and actor 3→2→1, with stamina 2→1→0, rest to 1, then 0.
+   - Stages and ticks: stage 2 at tick 9 in POST_TICK, completion at tick 11 from cell 6, gratitude at tick 12.
+
+## Tests to add before CP05-INTEGRATION
+
+- Forged diffs and checkpoints (M1, M2): stage 1 with a dead target, stage 2/3 with a living target, duplicate quest records, noncanonical order.
+- Precommit failure on the composed 0→2 talk, leaving stage 0.
+- Uncertain commit of the 2→3 talk followed by recovery, then the same command id (original receipt) and a new talk (gratitude, no second grant).
+- Quest-less harbor saves into the quest bundle and back, plus a hash mismatch.
+- Altered provenance with the same text.
+- A consumer that lacks the binding property (H2).
+- An independently generated replay fixture, with existing goldens unchanged.
+- A zero-network guard during quest play and replay.
+- Candidate checks: NFD input rejected, the 1024-byte boundary (341 vs 342 Hangul syllables), redirect, oversize, slow reads, and cross-process ledger contention.

@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from app.scenarios import bind_documents
+from domain.scenario import LEGACY, Scenario
+
 from dataclasses import replace
 from app.encounter_registry import encounter_bundle
 from contracts.messages import EventPolicy
@@ -12,15 +15,15 @@ from engines.watch import WatchNpc, WatchBell, WatchRespond, WatchEchoEngine, Wa
 from orchestration.watch import (WatchNpcAdapter, LanternAdapter, ReplyAdapter, WatchNpcCodec, LanternCodec, ReplyCodec, WatchPayloadCodec, WatchAdmission, ChargeReducer, BellsReducer, ReplyReducer, ChargePatchRoute, BellsPatchRoute, ReplyPatchRoute, WatchCheckpointPolicy, WatchPresenter)
 
 
-def watch_bundle() -> FeatureBundle:
-    base = encounter_bundle()
-    engines: tuple[Engine, ...] = (WatchNpc(), WatchBell(), WatchRespond(), WatchEchoEngine(), WatchPassive())
+def watch_bundle(layout: Scenario = LEGACY) -> FeatureBundle:
+    base = encounter_bundle(layout=layout)
+    engines: tuple[Engine, ...] = (WatchNpc(layout=layout), WatchBell(layout=layout), WatchRespond(layout=layout), WatchEchoEngine(layout=layout), WatchPassive(layout=layout))
     bindings = tuple(EngineBinding(e, "engines.watch", (NodeActivation(NodeKey(e.manifest.phases[0], e.manifest.engine_id), (TypeKey("watch.bell", 1),) if e.manifest.engine_id == "watch.bell" else (), bool(e.manifest.consumes), e.manifest.engine_id == "watch.passive", "A"),)) for e in engines)
     specs = tuple(replace(s, consumers=(*s.consumers, "watch.bell")) if s.family in (FieldFamily("encounter.hp", "hp"), FieldFamily("trial.position", "space_id")) else s for s in base.field_specs)
     npc_consumers = ("watch.npc", "watch.bell", "watch.presenter", "system.admission")
     specs += (
         FieldSpec(FieldFamily("watch.npc", "space_id"), "CORE", "A", "system.bootstrap", npc_consumers, "string", "entity_id", 1, None, None, None),
-        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, 6, 6, None),
+        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, layout.npc_cell, layout.npc_cell, None),
         FieldSpec(FieldFamily("watch.npc", "bells"), "CORE", "A", "watch.npc", npc_consumers, "integer", "count", 1, 0, MAX_INT, None),
         FieldSpec(FieldFamily("watch.lantern", "charge"), "CORE", "A", "watch.passive", ("watch.passive", "watch.presenter"), "integer", "charge", 1, 0, 3, None),
         FieldSpec(FieldFamily("watch.reply", "count"), "CORE", "A", "watch.echo", ("watch.echo", "watch.presenter"), "integer", "count", 1, 0, MAX_INT, None),
@@ -33,7 +36,9 @@ def watch_bundle() -> FeatureBundle:
         EventPolicy(TypeKey("watch.bell-rung", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.bell",), (), ()),
         EventPolicy(TypeKey("watch.replied", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.echo",), (), ()),
     )
-    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter()), AdapterBinding(LanternAdapter()), AdapterBinding(ReplyAdapter())), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1)), WatchAdmission(TypeKey("watch.bell", 1))), delta_routes=(*base.delta_routes, ChargeReducer(), BellsReducer(), ReplyReducer()), patch_routes=(*base.patch_routes, ChargePatchRoute(), BellsPatchRoute(), ReplyPatchRoute()), component_codecs=(*base.component_codecs, WatchNpcCodec(), LanternCodec(), ReplyCodec()), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1)) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter())), schema_document=object_value(decode_json(SCHEMA_DOCUMENT)), rules_document=object_value(decode_json(RULES_DOCUMENT)), checkpoint_policy=WatchCheckpointPolicy())
+    schema, rules = bind_documents(object_value(decode_json(SCHEMA_DOCUMENT)),
+                                   object_value(decode_json(RULES_DOCUMENT)), layout)
+    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter(layout=layout)), AdapterBinding(LanternAdapter(layout=layout)), AdapterBinding(ReplyAdapter(layout=layout))), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1), layout=layout), WatchAdmission(TypeKey("watch.bell", 1), layout=layout)), delta_routes=(*base.delta_routes, ChargeReducer(layout=layout), BellsReducer(layout=layout), ReplyReducer(layout=layout)), patch_routes=(*base.patch_routes, ChargePatchRoute(layout=layout), BellsPatchRoute(layout=layout), ReplyPatchRoute(layout=layout)), component_codecs=(*base.component_codecs, WatchNpcCodec(layout=layout), LanternCodec(layout=layout), ReplyCodec(layout=layout)), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1), layout=layout) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter(layout=layout))), schema_document=schema, rules_document=rules, checkpoint_policy=WatchCheckpointPolicy(layout=layout))
 
 
 WATCH_KINDS = ('bell', 'bell-cue', 'bell-rung', 'bells-delta', 'bells-patch', 'charge-delta', 'charge-patch', 'echo', 'npc-acted', 'npc-cue', 'replied', 'reply-cue', 'reply-delta', 'reply-patch', 'requested', 'wait', 'wake')

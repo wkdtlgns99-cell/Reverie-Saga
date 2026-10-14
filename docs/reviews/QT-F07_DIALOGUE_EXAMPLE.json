@@ -1,0 +1,23 @@
+{
+  "format": "reverie-quest-dialogue-candidate/v1",
+  "quest_id": "quest:harbor-sentinel",
+  "npc_id": "actor:harbor-watcher",
+  "lines": [
+    {
+      "intent": "completion",
+      "text_ko": "포구를 지켜 줬군. 약속대로 포구의 호의 하나를 기록해 두겠네."
+    },
+    {
+      "intent": "gratitude",
+      "text_ko": "자네가 해 준 일은 잊지 않았네. 포구의 호의도 그대로 기록되어 있지."
+    },
+    {
+      "intent": "offer",
+      "text_ko": "길을 막고 있는 적을 쓰러뜨려 주겠나? 일을 마치고 돌아오면 포구의 호의 하나를 기록해 주겠네."
+    },
+    {
+      "intent": "reminder",
+      "text_ko": "길을 막고 있는 적을 쓰러뜨리면 내게 돌아와 주게. 아직 보고를 기다리고 있네."
+    }
+  ]
+}

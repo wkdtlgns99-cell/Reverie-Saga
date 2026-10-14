@@ -1,15 +1,17 @@
 from __future__ import annotations
 
-from dataclasses import fields, is_dataclass
+from dataclasses import asdict, fields, is_dataclass
 from collections.abc import Mapping
 import hashlib
 import re
 from types import MappingProxyType
 
 from contracts.events import ExecutionLimits, QueuedEvent
+from contracts.dialogue import QuestConsumer, QuestContent
 from contracts.errors import BootstrapError, CandidateError, SchemaError
 from contracts.messages import CommandPayload, EventHeader, FactPayload, PresentationPayload, StateDelta, WorldEvent
-from contracts.read_views import ComponentPatch, ViewEpoch
+from contracts.read_views import AdapterBinding, ComponentPatch, ViewEpoch
+from domain.scenario import Scenario, ScenarioConsumer
 from contracts.replay import PackagePin
 from contracts.skeleton import FeatureBundle
 from contracts.turn import (CommitReceipt, CompiledSchedule, Failure, GameCommand, NodeKey,
@@ -149,6 +151,64 @@ def _immutable(value: object, depth: int = 0) -> None:
 
 
 
+def _validate_scenario_binding(bundle: FeatureBundle) -> None:
+    if "scenario" not in bundle.rules_document:
+        return  # Legacy feature descriptors have no selected-scenario extension.
+    expected = canonical_json(object_value(bundle.rules_document["scenario"]))
+    consumers: tuple[object, ...] = (
+        *(b.engine for b in bundle.bindings),
+        *(r.adapter if isinstance(r, AdapterBinding) else r for r in bundle.read_adapters),
+        *bundle.command_routes, *bundle.delta_routes,
+        *(p.presenter for p in bundle.presenters), *bundle.codecs,
+        *bundle.component_codecs, *bundle.patch_routes, bundle.checkpoint_policy,
+    )
+    for consumer in consumers:
+        if isinstance(consumer, ScenarioConsumer):
+            layout = consumer.scenario_layout
+            if type(layout) is not Scenario or canonical_json(seal(asdict(layout))) != expected:
+                raise BootstrapError("INVALID_SCENARIO_BINDING", type(consumer).__name__)
+
+
+def _validate_quest_binding(bundle: FeatureBundle) -> None:
+    roles: list[tuple[str, object]] = []
+    roles.extend(("engine:" + b.engine.manifest.engine_id, b.engine) for b in bundle.bindings
+                 if b.engine.manifest.engine_id.startswith("quest."))
+    roles.extend(("adapter:" + r.schema.kind, r.adapter if isinstance(r, AdapterBinding) else r)
+                 for r in bundle.read_adapters if r.schema.kind.startswith("quest."))
+    for category, routes in (("admission", bundle.command_routes), ("reducer", bundle.delta_routes),
+                            ("patch", bundle.patch_routes), ("component", bundle.component_codecs),
+                            ("payload", bundle.codecs)):
+        roles.extend((category + ":" + r.schema.kind, r) for r in routes
+                     if r.schema.kind.startswith("quest."))
+    roles.extend(("presenter:" + p.presenter_id, p.presenter) for p in bundle.presenters
+                 if p.presenter_id.startswith("quest."))
+    present = bool(roles) or any(p.schema.kind.startswith("quest.") for p in bundle.events) or any(
+        spec.family.component.startswith("quest.") for spec in bundle.field_specs
+    )
+    if ("quest" in bundle.rules_document) != present:
+        raise BootstrapError("INVALID_QUEST_BINDING", "quest declaration/registration mismatch")
+    if not present:
+        return
+    quest = object_value(bundle.rules_document["quest"])
+    expected_roles = tuple(text_value(v) for v in array_value(quest["consumer_roles"]))
+    expected_definition = canonical_json(quest["definition"])
+    expected_catalog = hashlib.sha256(canonical_json(bundle.rules_document["dialogue"])).hexdigest()
+    roles.append(("checkpoint:quest.progress", bundle.checkpoint_policy))
+    if tuple(sorted(role for role, _ in roles)) != expected_roles:
+        raise BootstrapError("INVALID_QUEST_BINDING", "required quest consumer roles")
+    for role, consumer in roles:
+        if not isinstance(consumer, QuestConsumer):
+            raise BootstrapError("INVALID_QUEST_BINDING", role + ":missing property")
+        try:
+            content = consumer.quest_content
+        except AttributeError as error:
+            raise BootstrapError("INVALID_QUEST_BINDING", role + ":uninitialized") from error
+        if (type(content) is not QuestContent
+                or canonical_json(seal(asdict(content.definition))) != expected_definition
+                or content.catalog_sha256 != expected_catalog):
+            raise BootstrapError("INVALID_QUEST_BINDING", role + ":mismatch")
+
+
 class RegisteredStateIO:
     def __init__(self, bundles: tuple[FeatureBundle, ...], schedule: CompiledSchedule) -> None:
         from orchestration.turn import validate_registry
@@ -159,6 +219,8 @@ class RegisteredStateIO:
             raise BootstrapError("INVALID_ACTIVATION", "registered schedule differs")
         validate_registry(bundles, schedule)
         bundle = bundles[0]
+        _validate_quest_binding(bundle)
+        _validate_scenario_binding(bundle)
         self._schedule = schedule
         self._registrations = tuple(bundle.read_adapters)
         self._policy = bundle.checkpoint_policy

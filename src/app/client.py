@@ -15,9 +15,13 @@ from tkinter import ttk
 
 from app.client_worker import ClientWorker
 from app.client_text import status_text
+from app.scenarios import select_scenario
+from app.quest import client_quest
+from contracts.dialogue import QuestContent
 from contracts.client import ClientRequest, ClientUpdate, ClientView
 from domain.encounter import ACTOR_HP_MAX, ENEMY_HP_MAX, STAMINA_MAX
 from domain.watch import CHARGE_MAX, WAIT_MAX
+from domain.scenario import LEGACY, Scenario
 
 CELL_PIXELS = 144
 POLL_MS = 20
@@ -53,9 +57,18 @@ KEYS: dict[str, ClientRequest] = {
 
 
 class PlayWindow:
-    def __init__(self, root: tk.Tk | tk.Toplevel, path: Path) -> None:
+    def __init__(
+        self,
+        root: tk.Tk | tk.Toplevel,
+        path: Path,
+        layout: Scenario = LEGACY,
+        *,
+        quest_content: QuestContent | None = None,
+        npc_memory: bool = False,
+    ) -> None:
         self.root = root
-        self.worker = ClientWorker(path)
+        self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
+        self._quest_content = quest_content
         self.view: ClientView | None = None
         self.last_update: ClientUpdate | None = None
         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
@@ -115,16 +128,17 @@ class PlayWindow:
         ttk.Label(controls, textvariable=self.stats, font=("맑은 고딕", 11)).grid(
             row=0, column=0, columnspan=2, sticky="w", pady=(0, 12)
         )
-        for index, (request, label) in enumerate(LABELS):
+        labels = LABELS if self._quest_content is None else (*LABELS, ("talk", "NPC 대화·보고"))
+        for index, (request, label) in enumerate(labels):
             button = ttk.Button(controls, text=label, command=partial(self._send, request))
             button.grid(row=1 + index // 2, column=index % 2, sticky="ew", padx=3, pady=3)
             self.buttons[request] = button
-        ttk.Label(controls, text="대기 시간(게임 초)").grid(row=8, column=0, sticky="w")
+        ttk.Label(controls, text="대기 시간(게임 초)").grid(row=9, column=0, sticky="w")
         self.wait_input = ttk.Spinbox(
             controls, from_=1, to=WAIT_MAX, textvariable=self.wait_seconds, width=10
         )
-        self.wait_input.grid(row=8, column=1, sticky="ew", pady=6)
-        ttk.Label(controls, text="저장 슬롯").grid(row=9, column=0, sticky="w")
+        self.wait_input.grid(row=9, column=1, sticky="ew", pady=6)
+        ttk.Label(controls, text="저장 슬롯").grid(row=10, column=0, sticky="w")
         self.slot_input = ttk.Combobox(
             controls,
             values=tuple(f"slot0{index}" for index in range(1, 9)),
@@ -132,7 +146,7 @@ class PlayWindow:
             state="readonly",
             width=10,
         )
-        self.slot_input.grid(row=9, column=1, sticky="ew")
+        self.slot_input.grid(row=10, column=1, sticky="ew")
         ttk.Label(panel, text="파랑: 플레이어   빨강: 적   금색: 문   초록: NPC   회색: 벽").grid(
             row=3, column=0, columnspan=2, sticky="w", pady=(12, 0)
         )
@@ -302,6 +316,9 @@ class PlayWindow:
             f"게임 시간 {view.tick}초  턴 {view.revision}\n"
             f"NPC 종 {view.npc_bells}  응답 {view.npc_replies}"
         )
+        if update.quest_stage >= 0:
+            stage = ("미수락", "진행 중", "보고 가능", "완료")[update.quest_stage]
+            self.stats.set(self.stats.get() + f"\n임무 {stage} · 포구의 호의 {update.quest_reward}")
         self._draw_map(view)
 
     def _draw_map(self, view: ClientView) -> None:
@@ -348,9 +365,19 @@ class PlayWindow:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Provisional Reverie Saga playable harness")
     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
+    parser.add_argument("--scenario", default="legacy")
+    parser.add_argument("--quest-catalog", type=Path)
+    parser.add_argument("--quest-sha256")
+    parser.add_argument("--npc-memory", action="store_true")
     args = parser.parse_args(argv)
+    layout = select_scenario(args.scenario).layout
+    content = client_quest(layout, args.quest_catalog, args.quest_sha256)
+    if args.npc_memory and content is None:
+        raise ValueError("NPC_MEMORY_CONTENT")
     root = tk.Tk()
-    window = PlayWindow(root, args.working)
+    window = PlayWindow(
+        root, args.working, layout, quest_content=content, npc_memory=args.npc_memory
+    )
     try:
         root.mainloop()
     finally:

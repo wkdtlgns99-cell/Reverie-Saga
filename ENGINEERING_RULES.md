@@ -54,6 +54,7 @@ after compaction. Apply only relevant actions;reload contracts on task entry/sco
 
 ## Delivery
 
+- When explaining project work or answering where it belongs,read [numbered structure](docs/GAME_STRUCTURE_GUIDE_EN.md);report its primary1–7 number/name,related numbers when relevant,and current implementation status. Label supporting work explicitly rather than claiming a new gameplay capability.
 - Self-review diff,scope,contracts,wiring and acceptance. Report actual commands/results,
   baseline failures and NOT_RUN/UNVERIFIED limits;never relabel historical/self-review evidence.
 - Mark DONE only after acceptance;update backlog,handoff and Korean progress together before

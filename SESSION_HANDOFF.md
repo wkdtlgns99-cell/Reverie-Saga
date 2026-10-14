@@ -1,9 +1,211 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-12 | Stage:CP04_FEEDBACK_REPAIR_ACCEPTED/UNITY_PROTOTYPE_DONE/QT_F06_SAMPLE_IMPORTED
+Date:2026-10-14 | Stage:OPEN_WORK_CLOSURE_A1_A2_A3_V1_ACCEPTED
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
+
+## Active Closure — Actual Director Approval 2026-10-14
+
+Director requests all audited remainder except images/modeling/camera completed sequentially.
+[Order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md)/[ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md)
+own per-item acceptance. A1DONE:after explanation and renewed four-text question,human explicitly
+approved call_854f99f76ffc41ff84622fb66e846a31. Separate corrected derivative+source lineage+actual
+receipt+catalog under content/dialogue/harbor-memory-v1.*;source provider bytes unchanged/API0.
+Pin a8ec2de96a23b0c0a7824e874bac96279194e550581a610308846d742c2fd74d.
+A2DONE:15actual native approved-line checks and inspected capture;A3DONE:worker/bridge/Tk/memory
+default Unity route,51affected/94native/build/hook/readback PASS. V1fresh1664PASS490.10s/static
+and imports PASS. Scene regenerated IDs were restored to verified entry bytes;no art/camera edits.
+V2IN_PROGRESS:permitted GitHub authentication/public repo/remote main verified;no re-login needed.
+Other audited authorized groups remain;no overall completion. No approval
+question needs repeating for these exact texts. Do not claim other groups/other hosts/CI/review done.
+
+## Latest Audit — Unfinished Follow-ups 2026-10-14
+
+Director asks why prose approval remained and how much was left after completions.
+[Audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md):3unfinished delivery links(A1editorial proposal/
+director decision,A2actual approved catalog/graphical delivery,A3memory option through worker/Unity),
+5qualification limits,7planned/deferred groups.15groups are not15failed accepted tasks;four
+unapproved diagnostic bundles are alternatives,latest1needs selection/decision,not all4approval.
+Actual worker lacks memory forwarding;normal Unity startup leaves npc_memory default false.
+Current narrow task acceptance stays truthful;overall production connection is incomplete.
+Do not invent approval or claim mere schema/hash review is editorial acceptance. Prepare concrete
+corrected prose before requesting final director decision. No code/provider/approval/publication/
+new checkpoint/execution this audit;existing CP01–05 closed/CP06 held.
+
+## Latest Completion — QT-F15 Approved Memory Dialogue Compilation 2026-10-14
+
+Director requests next task;[order](docs/work_orders/QT-F15_APPROVED_MEMORY_DIALOGUE.md)/
+[receipt](docs/reviews/QT-F15_EXECUTION_2026-10-14.md). Primary3;related4/6;diagnostic7. Offline CLI
+drafts existing six-field PENDING receipt or compiles explicit approval bound to raw candidate AND
+current brief. Source/plan/preparation/receipt rechecked;fresh catalog/v1 consumed by existing game.
+32new+62regression PASS;Ruff/format/mypy155/imports3+1 PASS. Fresh test-only catalog/game validates
+all4intents/reward1/retry/memory boundary/save/load/resume/replay;old save pins reject new catalog.
+Actual QTF13 Gemini artifact gets only PENDING draft;pending compile refuses,API0/1.499s/4inputs
+unchanged. No real content approval/import/CORE/save/client/art/provider/profile/policy/agents/
+publication/admin/further task. CP06 held;editorial director approval still outstanding.
+
+## Previous Completion — QT-F14 Dialogue Candidate Review 2026-10-14
+
+Director requests next task;[order](docs/work_orders/QT-F14_DIALOGUE_CANDIDATE_REVIEW.md)/
+[receipt](docs/reviews/QT-F14_EXECUTION_2026-10-14.md). Primary4support,related3/6. Standalone offline
+candidate review checks exact v2metadata/raw hash/current source/plan,then renders Korean prose,
+observed/reported evidence and provenance. Source/plan/preparation rechecked;fresh report only.
+39new+27regression PASS;Ruff/format/mypy153/imports3+1 PASS. Real QTF13 Gemini artifact reused
+offline with network forbidden/API0/0.600s;4inputs unchanged. Candidate NEEDS_REVIEW,not approved.
+No CORE/save/client/art/API/profile/policy/import/agents/publication or further task. CP06 held.
+
+## Previous Completion — QT-F13 Previewed Dialogue Generation 2026-10-14
+
+Director requests next normal-sized task;[order](docs/work_orders/QT-F13_DIALOGUE_PREVIEW_GENERATION.md)/
+[receipt](docs/reviews/QT-F13_EXECUTION_2026-10-14.md). Primary4,related3/6. Offline --preview plan and
+--plan generation verify unchanged source/brief/model/request;source/plan rechecked after send.
+No-plan v1 retained;plan mode v2 adds provenance. Shared memory_brief reexport remains compatible.
+98affected tests/Ruff/format/mypy151/imports3+1 PASS;historical context/brief hashes preserved.
+Actual Gemini PASS1request/2.149s/865tokens;source/plan unchanged,output NEEDS_REVIEW.
+No CORE/save/UI/art/gameplay import/approval/agents/publication/billing or next task.
+
+## Previous Completion — QT-F12 Snapshot Check 2026-10-14
+
+Director requests similarly small task. [Order](docs/work_orders/QT-F12_MEMORY_SNAPSHOT_CHECK.md)/
+[receipt](docs/reviews/QT-F12_EXECUTION_2026-10-14.md);primary4support,related3/6. Shared canonical
+query_document used by export/new offline checker;current binding/full document verified read-only.
+21affected tests/Ruff/format/mypy147/imports3+1 PASS;actual offline subprocess/files unchanged.
+Point-in-time consistency,not authenticity/approval. No CORE/save/UI/API/agents/publication/next task.
+
+## Previous Completion — QT-F11 Offline Query Export 2026-10-14
+
+Director requests a similarly small task. [Order](docs/work_orders/QT-F11_MEMORY_QUERY_EXPORT.md)/
+[receipt](docs/reviews/QT-F11_EXECUTION_2026-10-14.md);primary4support,related3/6.
+Actual offline CLI exports filtered source-bound SNAPSHOT;fresh publication/stale-source checks.
+21affected tests/Ruff/format/mypy145/imports3+1 PASS;real network-forbidden subprocess/source unchanged.
+No CORE/save/UI/API/dependency/agents/publication/further task;prior evidence retained.
+
+## Previous Completion — QT-F10 Small Memory Query 2026-10-14
+
+Director requests a small next task with10%usage remaining. [Order](docs/work_orders/QT-F10_MEMORY_QUERY.md)/
+[receipt](docs/reviews/QT-F10_EXECUTION_2026-10-14.md);primary4,related3/6. Typed pure selector supports
+subject/kind/inclusive-time/limit,newest first;actual preparation default keeps both required memories.
+29affected tests/static/mypy143/imports3+1 PASS;source preserved,no new CORE/save/UI/live API call.
+Prior qualification retained;no next task/agent/publication/dependency.
+
+## Previous Completion — QT-F09 Persisted NPC Evidence 2026-10-14
+
+Director authorizes next internal-memory work;image/model/asset/camera deferred,essential client
+wiring allowed. [Order](docs/work_orders/QT-F09_NPC_EVIDENCE_MEMORY.md);primary2,related3/6/4/7.
+Opt-in ClientSession npc_memory=True requires fresh harbor quest source;default features unchanged.
+Acceptance@2observed/report@11reported persist at COMMIT,goal@9does not create witnessed-death memory.
+Read-only memory context/new CLI reuses strict generation validation and shared provider controls.
+Acceptance:[receipt](docs/reviews/QT-F09_EXECUTION_2026-10-14.md). Focused39/static/mypy141/imports3+1 PASS;
+full1525PASS/2new governance assertion failures corrected,2rechecked PASS (not a second green full run).
+Wrong test-only submit API fixed. Real Gemini memory context PASS1request/2.059s/939tokens,
+source unchanged,candidate NEEDS_REVIEW;no production import/approval or native memory demonstration.
+CP05 prior hold closed;no new checkpoint schedule/automatic review;CP06 release held.
+No C#/wire/asset/old save conversion/goldens/witness rewrite/agents/publication/billing changes.
+
+## Previous Completion — Daily Limit Removal / Real Context Retest 2026-10-14
+
+Director explicitly removed local daily limits and requested retest;[order](docs/work_orders/GEMINI_DAILY_LIMIT_REMOVAL.md)/
+[receipt](docs/reviews/GEMINI_RETEST_2026-10-14.md). Both daily caps removed,ledger preserved;
+60s spacing/max2HTTP per explicit job remain. Retry reservation failure retains first error.
+78affected tests/Ruff/format/mypy132/imports3+1 PASS. Real NPC-context Gemini PASS:
+1attempt/19.716s/561tokens,primary key only,source unchanged,candidate NEEDS_REVIEW.
+No account administration/rotation/budget reset/production approval/CORE/Unity changes/agents/publication.
+Primary4support;related6. Historical failed request stays a failure;current result supersedes UNVERIFIED.
+
+## Previous Completion — QT-F08 Read-Only NPC Context 2026-10-14
+
+Director authorized next task;[order](docs/work_orders/QT-F08_NPC_CONTEXT.md)/
+[execution](docs/reviews/QT-F08_EXECUTION_2026-10-14.md). Primary4;related3/6.
+Two new modules provide typed source-bound NPC-known quest facts and real preparation CLI;
+existing read-only validate_save/quest registry reused. No new CORE memory/save/client schema.
+Local100focused/30new,Ruff/format/mypy132/imports3+1 and actual offline CLI PASS.
+Live-context request failed;retry hit existing shared local daily2attempt cap,UNVERIFIED;
+source bytes unchanged,no candidate/key rotation/budget reset/paid fallback. Earlier Gemini success separate.
+The director's later policy change and fresh live success are recorded above;full semantic
+memory/relationships/vector/BDI not implemented.
+Original source/witnesses/ZIPs preserved;no Unity/remote/new full regression/publication/agents.
+
+## Numbered Structure Reference — Director Request 2026-10-14
+
+Director requested two matched files:[Korean](docs/GAME_STRUCTURE_KO.md)/
+[English agent reference](docs/GAME_STRUCTURE_GUIDE_EN.md),covering stable categories1–7.
+ENGINEERING_RULES Delivery now routes work/location explanations through the English file.
+Report primary number/name,related numbers and current state;supporting docs/tools are not new gameplay.
+English file is now a compact classification index551words/57lines;detailed Korean file retained.
+No dated runtime snapshot in the index;read actual current evidence rather than stale completion claims.
+This human-readable documentation exception is explicitly director-authorized;MASTER remains product authority.
+
+## Latest Qualification — Actual Gemini 2026-10-14
+
+Director authorized test now/any time;[receipt](docs/reviews/QT-F07_LIVE_GEMINI_2026-10-14.md)/
+[order](docs/work_orders/QT-F07_LIVE_GEMINI_QUALIFICATION.md). Primary .env key only,not printed.
+Real gemini-3.5-flash-lite call PASS1attempt/2.341s/452tokens;ordered4-intent candidate validated;
+network-forbidden actual diagnostic ClientSession7checks PASS. No production approval/catalog installation.
+Actual account tier/quota/error induction remain unverified;no source edits/rotation/publication.
+No scheduler needed after director authorized immediate execution. Vector retrieval/AI quests unimplemented.
+
+## Local Credential Template — 2026-10-14
+
+Director requested3blank Gemini entries;ignored C:/ReverieSaga/.env created.
+GEMINI_API_KEY primary,GEMINI_API_KEY_2/_3 manual spares. [Load command](README.md#first-quest--prepared-gemini-dialogue).
+No auto-load/rotation/runtime change or provider call. Earlier ignored key text file retained.
+
+## Active Resume — CP05 Integration Repair 2026-10-14
+
+Director supplied actual PASS_WITH_CORRECTIONS;[reply](docs/reviews/RS-REVIEW-CP05_INTEGRATION_FEEDBACK.txt)/
+[dispositions](docs/reviews/RS-REVIEW-CP05_INTEGRATION_DISPOSITIONS_2026-10-14.md)/
+[repair order](docs/work_orders/RS-REVIEW-CP05_INTEGRATION_REPAIR.md). P2-1/P2-2 verified and repaired;
+before8failures/1pass,after88focused PASS12.15s. Guard detects quest registrations before optional
+declaration;budget removes only owned pending under exclusive lock;watch policy owns base count.
+Final1451full PASS341.35s;Ruff/format/mypy127/imports3+1 PASS;fresh native quest14PASS.
+CP05-INTEGRATION DONE for bounded first quest;patch external rereview NOT_RECEIVED.
+Prior C#/61native/build/hook evidence unchanged;no automatic expansion or new task. All P3 comments have explicit dispositions;
+API qualification deferred by director,not a live call prerequisite. No keys/agents/new dependencies/
+publication/new feature. Freeze original integrated witness/ZIP;new repair snapshot334files.
+
+## Previous Local Acceptance — QT-F07 2026-10-13
+
+Director authorizes executing Brain-owned quest success/AI-conditioned dialogue and selects
+Gemini free API. [Order](docs/work_orders/QT-F07_QUEST_DIALOGUE.md)/
+[proposed contracts](docs/work_orders/QT-F07_QUEST_DIALOGUE_CONTRACTS.md) define one opt-in harbor
+quest and a validated,approved four-intent preparation bundle. CP05-CONTRACT PASS_WITH_CORRECTIONS
+received;[dispositions](docs/reviews/RS-REVIEW-CP05_CONTRACT_DISPOSITIONS.md) verify H1/H2/M1–M7/
+low repairs. Contract hold was released;actual integrated reply/repair now tracked above.
+[request](docs/reviews/RS-REVIEW-CP05_CONTRACT_REQUEST.md)/
+[preparation](docs/reviews/QT-F07_CONTRACT_PREPARATION_2026-10-13.md) ready for director handoff.
+Quest/content/adapter/CLI/client/Unity code implemented;local qualification DONE.
+Final1437full PASS333.03s;61native checks/Windows build/release-hook absence PASS;Ruff/format/
+mypy127files/imports3+1 PASS. [Execution](docs/reviews/QT-F07_EXECUTION_2026-10-13.md)/
+[CP05-INTEGRATION request](docs/reviews/RS-REVIEW-CP05_INTEGRATION_REQUEST.md) ready for review.
+Local/native initial acceptance complete;actual CP05 integrated review now received.
+Required repair acceptance remains above;no review/model call happened automatically.
+Last key probe found GEMINI_API_KEY absent;free project/quotas and actual Gemini response
+remain UNVERIFIED/NOT_RUN. Offline test approval/data are not production content approval.
+Director deferred live qualification;empty ignored tmp/gemini-api-key.txt and
+[setup memo](docs/WORKSTATION_SETUP.md) prepared. Fill it locally later;never copy key into source/review packet. No dependency/billing/
+publication change. Implementation baseline307files includes frozen original CP05 witness;
+prior QT-F02/CP03 inputs/archives retained. No agent or new dependency.
+
+## Previous Completion — QT-F02 2026-10-13
+
+[Bounded order](docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md) authoring DONE;director
+subsequently authorized remaining design/code/tests. [Embedded contract](docs/work_orders/QT-F02_SCENARIO_CONTRACTS.md)
+implemented/native accepted;CP03 actual static subset feedback/verified scoped repair DONE.
+[Dispositions](docs/reviews/RS-REVIEW-CP03_DISPOSITIONS_2026-10-13.md)/[repair](docs/work_orders/RS-REVIEW-CP03_REPAIR.md).
+F1–F4 reproduced/repaired,F5 intentional;1360fullPASS321.92s/133focused/47native/build/hook-absence,
+Ruff/format16/mypy107/imports3+1 PASS. Original packet/witness frozen;repaired inputs separate.
+Patch external rereview NOT_RECEIVED;reviewer did not run tests/Unity or fully inspect orchestration/C#.
+[Execution](docs/reviews/QT-F02_EXECUTION_2026-10-13.md)/[packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md).
+Baseline HEAD1ad22446d48c50b8b72a6d3af8de3c9d775134ea unchanged;earlier four document edits retained.
+Final1304fullPASS314.13s,332focused/47native/build/hook-absence/Ruff/format15/mypy106/imports3+1 PASS.
+Initial10full failures diagnosed/repaired without test/golden weakening;native sandbox startup failed,
+permitted current-host runs PASS. Standalone/new remote CI/extracted packet execution NOT_RUN.
+Two selected role-ID/layout scenarios reuse existing combat/watch rules;new definitions join
+existing rule/schema fingerprints,save format/package storage unchanged. CP05 not triggered
+for this bounded scope;CP03 DONE only for the first embedded segment. Further work needs its
+own authorized scope/order;no automatic world/bulk implementation. Six qualified
+descriptions retained;320other entries held. No publication. Earlier scheduling is historical.
 
 ## Resume Reads
 

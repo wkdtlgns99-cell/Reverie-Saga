@@ -29,6 +29,12 @@ public sealed class WireUpdate {
     public string working_path;
     public string[] messages;
     public bool reset_log;
+    public string scenario_id;
+    public string scenario_name;
+    public string quest_id;
+    public string quest_stage;
+    public string quest_reward;
+    public string dialogue_sha256;
 }
 [Serializable]
 public sealed class WireNarrative {
@@ -58,5 +64,5 @@ public sealed class WireRequest {
     public string seconds;
     public string slot_id;
 }
-public static class WireSchema { public const string Hash = "451e90cb59cebdf90a38023caa051da695e94bf21a2299960b58eb92b015ff2e"; }
+public static class WireSchema { public const string Hash = "b7b0820833f1e644fc946ff3a7e4c5544eb3efffd03c81f21feaef50d078b069"; }
 }

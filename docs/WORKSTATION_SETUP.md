@@ -1,10 +1,47 @@
 # Workstation Setup — Laptop and Other PC
 
-Updated:2026-10-12. Installation/discovery SSOT for the two director-owned computers.
+Updated:2026-10-13. Installation/discovery SSOT for the two director-owned computers.
 Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification),
 [Unity run/build](../clients/unity/README.md). Source baseline:63670be2.
 
 ## Task Entry and Authorization
+
+Current-host closure2026-10-14:[ledger](reviews/OPEN_WORK_CLOSURE_2026-10-14.md). Existing pinned
+Python/editor reused;director-approved editorial dialogue and ordinary Unity memory route qualified:
+51affected/1664full Python and94native checks/Windows build/release-hook absence PASS. Original
+restricted licensing initialization failed;permitted current-host native runs succeeded without
+license/security settings changes. Actual original/slot/loaded NPC memories and offline preview
+checked. No-selector editor now uses approved harbor-memory preset;[Unity run](../clients/unity/README.md).
+This is current-host evidence only;other computer/account tier/release acceptance still open.
+
+QT-F07 director initially deferred live calls2026-10-13;on2026-10-14 supplied keys and authorized
+testing now/any time. [Actual qualification](reviews/QT-F07_LIVE_GEMINI_2026-10-14.md):1call/7diagnostic checks PASS. API adapter/CLI uses existing stdlib runtime,
+no SDK/dependency install. Director2026-10-14 requested a local .env with three blank Gemini key entries.
+Current ignored file:C:/ReverieSaga/.env;GEMINI_API_KEY primary,GEMINI_API_KEY_2/_3 manual spares.
+The previous tmp/gemini-api-key.txt is retained as a historical local alternative.
+The CLI reads only the primary process variable;no auto-load or key rotation was added.
+The director can enter the keys there later,then load the primary into GEMINI_API_KEY using the
+[README preparation command](../README.md#first-quest--prepared-gemini-dialogue).
+Never put key contents into tracked docs,source,chat,logs or review ZIPs. The file is local-only;
+the other device requires its own credential setup. Current complete Gemini request/STOP output/local validation PASS;actual project billing/remaining
+quota remain UNVERIFIED. This deferred API qualification does not
+block deterministic gameplay/replay using approved prepared content.
+
+QT-F07 current-host acceptance2026-10-13:[execution](reviews/QT-F07_EXECUTION_2026-10-13.md).
+Same installed tools reused;61native checks/Windows build/release-hook absence PASS;
+quest120frames median1.870699ms/p952.767404ms on this host. Offline test-only dialogue catalog.
+Live API/other-device/standalone acceptance remains deferred/unverified;no install or login change.
+
+QT-F02 current-host receipt2026-10-13:[execution](reviews/QT-F02_EXECUTION_2026-10-13.md).
+Reused Python3.13.12 AMD64/Tk8.6 and editor6000.3.25f1/e1dba0a9aba4;fresh permitted license
+status success/active/signedIn=true. Two scenarios11+11,legacy24,corrupt1 native checks and
+Windows build/release-hook absence PASS on observed Intel UHD750 host. No installation/version/
+license-policy change. Named other-device readiness and new standalone launch remain UNVERIFIED/NOT_RUN.
+Sandboxed initialization failure and successful permitted runs are distinct facts in the receipt.
+
+CP03 repair2026-10-13:[current acceptance](reviews/RS-REVIEW-CP03_DISPOSITIONS_2026-10-13.md).
+Same installed tools/current-host license reused;current-source47native checks plus Windows
+build/release-hook absence PASS. No installation or other-device/standalone qualification change.
 
 Director2026-10-12 authorizes an agent working on either computer to discover local tools,
 reuse matching installations,and install missing **approved task-required prerequisites**

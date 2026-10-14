@@ -2,12 +2,21 @@
 
 from __future__ import annotations
 
+from app.scenarios import scenario_name
+from domain.scenario import LEGACY, Scenario
+from types import MappingProxyType
+
 from pathlib import Path
 
 from app.client_text import status_text, turn_messages
 from app.durable import DurableSession, create_durable, resume_durable
 from app.watch import WatchBootstrapSpec, bootstrap_watch
 from app.watch_registry import watch_bundle
+from app.quest import bootstrap_quest, harbor_definition
+from app.quest_registry import quest_bundle
+from app.npc_memory import bootstrap_memory, memory_bundle
+from contracts.dialogue import QuestContent
+from contracts.quest import QuestTalkCommand
 from contracts.client import ClientAction, ClientUpdate, ClientView
 from contracts.encounter import AttackCommand, InteractCommand, RestCommand
 from contracts.messages import CommandPayload
@@ -17,16 +26,15 @@ from contracts.turn import GameCommand, TurnCommitted, TurnPublication
 from contracts.watch import BellCommand, WaitCommand
 from domain.encounter import (
     ATTACK_PROFILE_ID,
-    ENEMY_ID,
-    GATE_ID,
     GateRecord,
     HitPointsRecord,
     StaminaRecord,
 )
 from domain.primitives import CommandId, EntityId
 from domain.state_types import ComponentRecord, CoreSnapshot
-from domain.trial import ACTOR_ID, SPACE_ID, CellPositionRecord, TrialMapRecord
-from domain.watch import LANTERN_ID, NPC_ID, LanternRecord, ReplyRecord, WatchNpcRecord
+from domain.trial import CellPositionRecord, TrialMapRecord
+from domain.watch import LanternRecord, ReplyRecord, WatchNpcRecord
+from domain.quest import QuestRecord, reward_for
 
 
 def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: EntityId) -> T:
@@ -36,7 +44,7 @@ def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: Entit
     return records[0]
 
 
-def _payload(action: ClientAction, seconds: int) -> CommandPayload:
+def _payload(action: ClientAction, seconds: int, layout: Scenario = LEGACY) -> CommandPayload:
     match action:
         case "up":
             return MoveCommand(0, -1)
@@ -47,15 +55,17 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
         case "right":
             return MoveCommand(1, 0)
         case "open" | "close":
-            return InteractCommand(GATE_ID, action)
+            return InteractCommand(layout.gate_id, action)
         case "attack":
-            return AttackCommand(ENEMY_ID, ATTACK_PROFILE_ID)
+            return AttackCommand(layout.enemy_id, ATTACK_PROFILE_ID)
         case "rest":
             return RestCommand()
         case "wait":
             return WaitCommand(seconds)
         case "bell":
-            return BellCommand(NPC_ID)
+            return BellCommand(layout.npc_id)
+        case "talk":
+            return QuestTalkCommand(layout.npc_id)
         case _:
             raise ValueError("UNKNOWN_CLIENT_ACTION")
 
@@ -63,12 +73,54 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
 class ClientSession:
     """All calls, including construction and close, belong to one owner thread."""
 
-    def __init__(self, path: Path) -> None:
-        bundles = (watch_bundle(),)
+    def __init__(
+        self,
+        path: Path,
+        layout: Scenario = LEGACY,
+        *,
+        quest_content: QuestContent | None = None,
+        npc_memory: bool = False,
+    ) -> None:
+        if type(layout) is not Scenario:
+            raise ValueError("SCENARIO_TYPE")
+        self._layout = layout
+        if quest_content is not None and (
+            type(quest_content) is not QuestContent
+            or quest_content.definition != harbor_definition()
+            or layout != quest_content.definition.layout
+        ):
+            raise ValueError("QUEST_DEFINITION")
+        self._quest_content = quest_content
+        if type(npc_memory) is not bool or npc_memory and quest_content is None:
+            raise ValueError("NPC_MEMORY_CONTENT")
+        self._names = MappingProxyType(
+            {
+                layout.actor_id: "플레이어",
+                layout.enemy_id: "적",
+                layout.npc_id: "NPC",
+                layout.gate_id: "문",
+            }
+        )
+        bundles = (
+            watch_bundle(layout)
+            if quest_content is None
+            else memory_bundle(quest_content)
+            if npc_memory
+            else quest_bundle(quest_content),
+        )
         if path.exists():
             self._owner = resume_durable(path, bundles=bundles)
         else:
-            initial = bootstrap_watch(WatchBootstrapSpec("0" * 64, "0" * 32, "1" * 32))
+            spec = WatchBootstrapSpec(
+                "0" * 64, "0" * 32, "1" * 32, initial_cell=layout.initial_cell
+            )
+            initial = (
+                bootstrap_watch(spec, layout=layout)
+                if quest_content is None
+                else bootstrap_memory(spec, quest_content)
+                if npc_memory
+                else bootstrap_quest(spec, quest_content)
+            )
             self._owner = create_durable(
                 path, DurableCheckpoint(initial.snapshot(), initial.protocol()), bundles=bundles
             )
@@ -88,26 +140,31 @@ class ClientSession:
         reset_log: bool = False,
     ) -> ClientUpdate:
         core = self._owner.snapshot()
-        board = _record(core, TrialMapRecord, SPACE_ID)
-        gate = _record(core, GateRecord, GATE_ID)
-        npc = _record(core, WatchNpcRecord, NPC_ID)
+        board = _record(core, TrialMapRecord, self._layout.space_id)
+        gate = _record(core, GateRecord, self._layout.gate_id)
+        npc = _record(core, WatchNpcRecord, self._layout.npc_id)
         view = ClientView(
             board.width,
             board.height,
             board.blocked_cells,
-            _record(core, CellPositionRecord, ACTOR_ID).cell,
+            _record(core, CellPositionRecord, self._layout.actor_id).cell,
             gate.cell,
             bool(gate.is_open),
-            _record(core, CellPositionRecord, ENEMY_ID).cell,
-            _record(core, HitPointsRecord, ACTOR_ID).hp,
-            _record(core, HitPointsRecord, ENEMY_ID).hp,
-            _record(core, StaminaRecord, ACTOR_ID).value,
+            _record(core, CellPositionRecord, self._layout.enemy_id).cell,
+            _record(core, HitPointsRecord, self._layout.actor_id).hp,
+            _record(core, HitPointsRecord, self._layout.enemy_id).hp,
+            _record(core, StaminaRecord, self._layout.actor_id).value,
             npc.cell,
             npc.bells,
-            _record(core, ReplyRecord, NPC_ID).count,
-            _record(core, LanternRecord, LANTERN_ID).charge,
+            _record(core, ReplyRecord, self._layout.npc_id).count,
+            _record(core, LanternRecord, self._layout.lantern_id).charge,
             core.tick,
             self._owner.protocol().revision,
+        )
+        quest_stage = (
+            -1
+            if self._quest_content is None
+            else _record(core, QuestRecord, EntityId(self._quest_content.definition.quest_id)).stage
         )
         return ClientUpdate(
             view,
@@ -117,6 +174,12 @@ class ClientSession:
             str(self._owner.working_path),
             messages or ((status_text(status),) if status == "ATTACHED" else ()),
             reset_log,
+            self._layout.scenario_id,
+            scenario_name(self._layout),
+            "" if self._quest_content is None else self._quest_content.definition.quest_id,
+            quest_stage,
+            0 if quest_stage == -1 else reward_for(quest_stage),
+            "" if self._quest_content is None else self._quest_content.catalog_sha256,
         )
 
     def _publication(
@@ -131,13 +194,25 @@ class ClientSession:
             diagnostic.code for diagnostic in publication.diagnostics
         )
         return self.update(
-            status, notices, messages=turn_messages(publication, wait_seconds=wait_seconds)
+            status,
+            notices,
+            messages=turn_messages(
+                publication,
+                wait_seconds=wait_seconds,
+                names=self._names,
+                actor_id=self._layout.actor_id,
+                quest_content=self._quest_content,
+            ),
         )
 
     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
+        if action == "talk" and self._quest_content is None:
+            raise ValueError("QUEST_UNAVAILABLE")
         protocol = self._owner.protocol()
         streams = tuple(
-            s for s in protocol.streams if s.status == "active" and s.actor_id == ACTOR_ID
+            s
+            for s in protocol.streams
+            if s.status == "active" and s.actor_id == self._layout.actor_id
         )
         if len(streams) != 1:
             raise ValueError("CLIENT_ACTIVE_STREAM")
@@ -145,7 +220,12 @@ class ClientSession:
         identifier = CommandId(
             f"c1:{protocol.branch_id}:{stream.stream_id}:{stream.highest_committed_sequence + 1}"
         )
-        command = GameCommand(identifier, ACTOR_ID, protocol.revision, _payload(action, seconds))
+        command = GameCommand(
+            identifier,
+            self._layout.actor_id,
+            protocol.revision,
+            _payload(action, seconds, self._layout),
+        )
         token = self._owner.attachment_id
         self._previous = command, token
         before_tick = self._owner.snapshot().tick

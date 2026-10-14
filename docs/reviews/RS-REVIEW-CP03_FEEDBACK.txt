@@ -1,0 +1,51 @@
+The message only said to answer in English, so I took the task to be the review that `RS-REVIEW-CP03_REQUEST.md` asks for: the five focused questions on the embedded harbor/grove scenarios.
+
+My review is **static only**. I read the contract, the execution receipt, `domain/scenario`, `app/scenarios`, `app/watch`, both registries, `engines/watch` and `engines/encounter`, `client_session`, `client_text` and the key tests. I also grep-audited the orchestration call sites for default-ID leakage. I did not run the tests or Unity, and I did not read `orchestration/*` line by line, the generated C#, or the Unity scripts. The packet itself says an extracted-packet run was not done.
+
+## Verdict
+
+The design is sound. One immutable `Scenario` flows through the bundle builders. The scenario definition is carried in the rules document and gate/NPC cell bounds are specialised in the schema document, so the existing fingerprints pin it. I found no missed call sites in the code I audited: every module-level helper that defaults to `LEGACY` is called with `layout=` explicitly.
+
+The weak points are fail-open defaults and a few test gaps, none of them blocking.
+
+## Findings
+
+**F1 (Medium): Missing binding fails open.**
+- **Where:** `domain/scenario.py`, `ScenarioBound._layout = LEGACY` at class level, plus the comment about legacy extensions that skip `super().__init__`.
+- **Trigger:** An extension subclass in a harbor or grove bundle that never calls the base initializer.
+- **Effect:** It silently validates against legacy IDs instead of failing. `encounter_bundle` and `watch_bundle` never check that each component's `_layout` is the selected one.
+- **Repair:** Add a bundle-level assertion that every `ScenarioBound` component has `_layout is layout`. Add a test with a constructor-skipping extension in a non-legacy bundle. This keeps legacy compatibility, since legacy bundles pass trivially.
+
+**F2 (Medium): `bootstrap_watch` can disagree with its own pins.**
+- **Where:** `app/watch.py`, `WatchBootstrapSpec.initial_cell = 0`.
+- **Trigger:** `bootstrap_watch(spec, layout=grove)` with a default spec.
+- **Effect:** The rules document pins `initial_cell=6`, but the actor starts at cell 0, so the world contradicts its own pin. Only `ClientSession` sets the cell correctly.
+- **Repair:** For a non-legacy layout, either reject a spec whose `initial_cell` differs from the layout or default it from the layout. Add a test.
+
+**F3 (Low): Hard-coded name in narration.**
+- **Where:** `app/client_text.py`, `turn_messages`.
+- **Trigger:** A wait action, and any caller that omits `names`.
+- **Effect:** The wait line is hard-coded as "플레이어", and `names=None` falls back to the legacy `NAMES`. Today the only caller passes the map, so this is latent.
+- **Repair:** Resolve the actor through the map. Consider making `names` required.
+
+**F4 (Low): Engines don't type-check `layout`.**
+- **Where:** `EncounterActions` and `EncounterMovement` are dataclasses with `layout: Scenario = LEGACY`.
+- **Effect:** `ScenarioBound` enforces `type(layout) is Scenario`, but these two do not, so the guarantee is inconsistent.
+- **Repair:** Add a `__post_init__` check.
+
+**F5 (Low): Unknown layouts get a fallback label.**
+- **Where:** `app/scenarios.py`, `scenario_name`.
+- **Effect:** Any `Scenario` not in the registry gets the label "연습 구간" instead of an error. It is display-only, so harmless today.
+
+## Answers to the focused questions
+
+1. **One binding on every path:** Yes in the paths I audited, subject to F1 and F2.
+2. **Pins and CP05:** The pin comparison in `orchestration/persistence.py` is whole-pin equality and raises `UNSUPPORTED_RULESET` without touching the source file. Marking CP05 as not triggered is justified for this scope. I could not verify the claim that legacy fingerprints and goldens are unchanged without running the tests.
+3. **Registered consumers and legacy constructors:** The compatibility fix works, but F1 is the price of it. I did not trace the COMMIT-only write and atomic-rejection claims through `orchestration/*`.
+4. **Test adequacy:** Mostly adequate. Concrete gaps in `tests/integration/test_scenarios.py`:
+   - The old-target test only submits the legacy `ENEMY_ID` attack. There is no case for a legacy gate ID in `InteractCommand`, a legacy NPC ID in `BellCommand`, or a legacy actor ID.
+   - The wrong-pin test only covers harbor against grove. Legacy-to-scenario and scenario-to-legacy are missing.
+   - The boundary test checks `True` only for `initial_cell`. It does not cover bool, float, or `list` instead of `tuple` for the other cells and the wall, IDs over 128 characters, or a `Scenario` subclass.
+   - Retry and recover are only tested on the success path. There is no uncertain-save case in a non-legacy scenario.
+   - Lexical role swap is tested in replay only, not through SQLite save and load.
+5. **Schema hash, generated C#, and reinterpretation of another scenario's save:** I found no path in the Python sources that reinterprets another scenario's save. The generated C# and the Unity reconnect and load paths are not covered, so I can't confirm the schema hash update agrees with them.
