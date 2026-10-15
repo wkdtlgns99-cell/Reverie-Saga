@@ -1,11 +1,36 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-14 | Stage:OPEN_WORK_CLOSURE_A1_A2_A3_V1_ACCEPTED
+Date:2026-10-15 | Stage:D5_LOCAL_ACCEPTED_REVIEW_PUBLICATION
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
 
-## Active Closure — Actual Director Approval 2026-10-14
+## Current Resume — 2026-10-15
+
+Latest director2026-10-15explicitly requests GitHub publication for Claude review,superseding the
+earlier local-only instruction. Use existing PR8branch,no main merge/release/reviewer call.
+[Review entry and exact file list](docs/reviews/OPEN_WORK_REVIEW_START_HERE_2026-10-15.md).
+D5LOCAL_ACCEPTED:unchanged retained inputs,full1675PASS549.13s;reuse55focused/static/import PASS.
+[Receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Cleanup completed with access limits:
+[receipt](docs/reviews/LOCAL_FILE_CLEANUP_2026-10-15.md),105targets/41748files/5.033GBlogical removed;
+17old cache targets denied even outside sandbox and retained,no ACL/owner change. Source/tests/
+runtime/keys/ledger/game saves/unique review ZIPs retained;preservation hashes/metadata checked.
+At next existing V3review,assess original-ZIP retirement/exact recovery,legacy Python copy,
+GOV02/GOV03native evidence and restricted cache ownership. No automatic provider call/checkpoint.
+V3feedback/current-source supplement and broader D2/D3/D4/D6/D7still open;no automatic next feature.
+Current qualified changes publish to codex/open-work-closure-20261014/PR8. Old0f53820packet stays
+historical;fresh current ZIP binds its committed head. Latest-head CI pending until observed.
+
+## Historical Pause — 2026-10-14
+
+Director stops for usage budget and requests backlog/Git save. No automatic resume,next task,
+agent,schedule or CI polling. D5source repair/new11tests retained;55client/Tk/static/import PASS,
+fresh full stopped before completion. [Interim/resume](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md).
+Next on explicit resume:inspect PR8latest-head checks and qualify current full before D5DONE;
+then obtain actual V3Claude feedback/current-repair supplement. Old0f53820packet397files+diff+
+CI verified locally,feedback absent;it excludes D5. Other D2/D3/D4/D6/D7remain open.
+
+## Accepted Earlier Closure — Actual Director Approval 2026-10-14
 
 Director requests all audited remainder except images/modeling/camera completed sequentially.
 [Order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md)/[ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md)
@@ -16,7 +41,13 @@ Pin a8ec2de96a23b0c0a7824e874bac96279194e550581a610308846d742c2fd74d.
 A2DONE:15actual native approved-line checks and inspected capture;A3DONE:worker/bridge/Tk/memory
 default Unity route,51affected/94native/build/hook/readback PASS. V1fresh1664PASS490.10s/static
 and imports PASS. Scene regenerated IDs were restored to verified entry bytes;no art/camera edits.
-V2IN_PROGRESS:permitted GitHub authentication/public repo/remote main verified;no re-login needed.
+V2DONE_FOR_0f53820:138files published to codex/open-work-closure-20261014/[draft PR8](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8);
+push+PR checks success,remote1664PASS672.53s. Explicit conditional publication permission followed
+actual protected main/strict checks/admin/PR necessity. No main merge/release/settings change.
+D5PAUSED_BY_DIRECTOR:[order](docs/work_orders/RS-STRUCT-001_RECONCILIATION_2026-10-14.md);injected projection/
+load-close/native-close failures reproduced,4source repairs/new tests being qualified. V3packet
+ready/feedback absent. Director excludes other PC this run and confirms Gemini free/display
+name Default Gemini Project for3keys;remaining provider quota/account identity not measured.
 Other audited authorized groups remain;no overall completion. No approval
 question needs repeating for these exact texts. Do not claim other groups/other hosts/CI/review done.
 

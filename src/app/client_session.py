@@ -248,8 +248,13 @@ class ClientSession:
         )
 
     def load(self, slot_id: str) -> ClientUpdate:
-        receipt = self._owner.load(slot_id)
-        self._previous = None  # A prior request must never silently migrate to the new attachment.
+        previous_token = self._owner.attachment_id
+        try:
+            receipt = self._owner.load(slot_id)
+        finally:
+            # A cleanup failure after the swap cannot preserve an old-attachment retry.
+            if self._owner.attachment_id != previous_token:
+                self._previous = None
         return self.update(
             "LOADED",
             (receipt.slot_id,),

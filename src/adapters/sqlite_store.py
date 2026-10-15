@@ -500,12 +500,11 @@ class SqliteCommitStore:
         validate_save(target, io=self._io)
 
     def close(self) -> None:
-        if not self._closed:
-            self._closed = True
-            try:
-                self._con.close()
-            finally:
-                self._lock.close()
+        self._closed = True  # Prevent writes even if closing IO fails;close itself can retry.
+        try:
+            self._con.close()
+        finally:
+            self._lock.close()
 
 
 def backup_file(source: Path, destination: Path, *, io: StateIO) -> None:

@@ -88,6 +88,19 @@ class ClientWorker:
         return self._last
 
     def _error_update(self, code: str, error: Exception) -> ClientUpdate:
+        if self._owner is not None:
+            try:
+                current = self._owner.update(code, (str(error),), messages=(status_text(code),))
+                return replace(
+                    current,
+                    reset_log=bool(
+                        self._last.attachment_id
+                        and current.attachment_id != self._last.attachment_id
+                    ),
+                )
+            except Exception:
+                # Projection can fail independently;the cache remains an explicit error.
+                self._logger.exception("client error reconciliation failed")
         return replace(
             self._last,
             status=code,

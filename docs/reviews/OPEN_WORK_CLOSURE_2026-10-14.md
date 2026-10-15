@@ -1,6 +1,6 @@
 # Open Work Closure — Execution Evidence
 
-Date:2026-10-14 | Parent:IN_PROGRESS | Executor/self-review;independent review not yet received.
+Date:2026-10-14 | Resumed:2026-10-15 | Parent:IN_PROGRESS | Executor/self-review;independent review not yet received.
 Order:[closure](../work_orders/OPEN_WORK_CLOSURE_2026-10-14.md);register:[audit](OPEN_WORK_AUDIT_2026-10-14.md).
 Director requests all audited remaining groups except image/modeling/camera,accept each before next.
 Primary7;participants2/3/4/5/6. This is a closure ledger,not a whole-game completion claim.
@@ -10,16 +10,16 @@ Primary7;participants2/3/4/5/6. This is a closure ledger,not a whole-game comple
 | A1 real prose review/director decision |DONE | Four intents manually reviewed/corrected;exact human approval reply call_854f99f76ffc41ff84622fb66e846a31;candidate/hash/brief/lineage/catalog verified;source bytes preserved/API0 |
 | A2 approved catalog/ordinary graphical gameplay |DONE |15actual native checks/approved exact four lines/stages/reward/retry/save/load/reconnect/capture PASS;real rendered screenshot inspected |
 | A3 memory mode through worker/Unity |DONE |51affected Python/94native checks,build/hook absence,actual memory/slot/loaded readback and preview PASS;full1664PASS |
-| V1 current full suite |DONE_FOR_A3_SOURCE | Fresh full1664PASS490.10s plus static/import checks. Later code changes require corresponding requalification |
-| V2 latest publication/remote CI |IN_PROGRESS | Current authenticated owner/public repo/remote main verified;138eligible session paths inventoried/scanned before branch/PR/checks |
-| V3 independent review |NOT_STARTED | Actual independent tool/reviewer evidence required;never label self-review independent |
-| V4 other computer |ACCESS_UNVERIFIED | Named host/access and per-device evidence needed |
-| V5 project tier/quota |ACCESS_UNVERIFIED | Read actual project account information,never infer from successful call |
+| V1 current full suite |DONE_FOR_CURRENT_D5_SOURCE | A3full1664PASS490.10s;after retained D5repair,fresh1675PASS549.13s2026-10-15;unchanged-source focused/static/import evidence reused |
+| V2 latest publication/remote CI |DONE_FOR_0f53820 |138qualified paths committed/pushed to codex/open-work-closure-20261014;draft PR8;push+PR checks success;PR full1664PASS672.53s. Later D5working changes not yet published |
+| V3 independent review |WAITING_FOR_FEEDBACK | [Actual review request/qualified packet](OPEN_WORK_INDEPENDENT_REVIEW_REQUEST_2026-10-14.md);397exact committed files+diff+actual CI receipt,ZIP verified;feedback not received |
+| V4 other computer |EXCLUDED_FROM_CURRENT_RUN | Director reply2026-10-14:no second PC now,current PC only. Other-device qualification remains unverified historical/future scope |
+| V5 project tier/quota |DIRECTOR_TIER_CONFIRMED_QUOTA_UNVERIFIED | Director states all3keys display Default Gemini Project/free. Account metrics/remaining quota not read;display name alone does not establish unique project identity |
 | D1 images/modeling/camera |EXCLUDED_BY_DIRECTOR | Explicit latest clarification;no production of these assets |
 | D2 extended world/NPC/memory/retrieval |AUTHORIZED_NOT_STARTED | Requires concrete staged contracts/order/qualification,not merely a DONE label |
 | D3 narrative320records |AUTHORIZED_NOT_STARTED |319queued+1rewrite;actual adaptation/qualification/import bounds needed |
 | D4 GOV-03/automation |AUTHORIZED_NOT_STARTED | Existing READY order/input refresh/checks before activation |
-| D5 structural risks |AUTHORIZED_NOT_STARTED | Reproduce/assess explicit post-COMMIT/load/codec cases under bounded contract |
+| D5 structural risks |DONE_LOCAL | [Execution](RS-STRUCT-001_EXECUTION_2026-10-14.md);fresh full1675PASS549.13s/unchanged source;55client/Tk+static/import PASS reused. Current-source remote/independent qualification not claimed |
 | D6 architecture/readiness |AUTHORIZED_NOT_STARTED | Resolve B09later-order readiness and actual review evidence |
 | D7 release/standalone/UX/device/crash/CP06 |AUTHORIZED_NOT_STARTED | Required actual evidence/checkpoint;no policy bypass or fabricated human UX |
 
@@ -109,3 +109,43 @@ All accumulated source/test/doc/client/content changes selected explicitly;138el
 initial inventory,possible-key/private-key pattern scan passed (targeted,not exhaustive). Private
 .env/keys/saves/builds/ZIPs/tmp excluded. Candidate branch/PR remains separate from protected main;
 remote CI required before publication closure. No merge/release/administration action inferred.
+
+## V2 — Actual publication and remote acceptance
+
+Director initially asked why a solo project needs branch/commit/PR and authorized them if needed.
+Actual main API confirms protected=true,strict checks=[checks],admins enforced and PR required.
+This supplies concrete necessity;prior automatic-review rejection predates this new human reply.
+138selected files committed0f53820e2ba7996de0490115de2b9c9b97d1ff41 and pushed to separate branch;
+[draft PR8](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8) created and attached to this chat.
+Main still original1ad22446;no merge/release/security modification or reviewer messaging.
+
+Initial staged-byte comparison detected Git CRLF normalization,but commit incorrectly proceeded
+before classification;push was held until every working input hash and committed blob was checked.
+Exactly35of138files have only CRLF→LF differences;all semantic bytes match. Witness:
+tmp/open-work-closure/publication/{planned-inputs,committed-inputs,remote-ci}.json.
+No private .env/keys/saves/generated builds/frozen ZIPs published.
+
+Push run38534185866 and PR run38534216115/checks success at this exact head. PR log:
+shared/selective lint PASS,mypy156PASS,boundary31PASS11.76s,full1664PASS672.53s;all steps succeed.
+Code Review CI connector used;live job-log reads returned transient502 until completion,then actual
+log was available. One setup-python Node runtime deprecation warning,not a test failure.
+This accepts V2for published0f53820 only;later D5repair needs its own checks/publication.
+V3feedback still absent. V4current-host-only scope and V5director free-tier testimony are recorded
+above without fabricating second-PC/account-metric evidence.
+
+## Director pause
+
+Director:"나중에 할거니까 여기서 작업 중단하고, 백로그에 메모하고 깃에 올려줘. 사용량 부족해."
+Stop development/tests;preserve current code/evidence on existing PR8. No main merge/release,
+next task,agent,schedule or automatic CI polling/resume. Owned full-test processes stopped;
+no current full success invented. V3awaits actual Claude feedback;its0f53820packet excludes D5.
+Resume only on instruction,beginning with D5interim qualification before wider remaining work.
+
+## Resumed local completion — 2026-10-15
+
+Director resumes interrupted D5before file cleanup,explicitly forbids commit/push. Local full
+1675PASS549.13s and unchanged complete source/test set close D5local acceptance;old interruption
+remains historical. Existing55client/Tk/static/import acceptance reused. File maintenance follows
+its separate bounded order,without changing game rules or new review/checkpoint obligations.
+V3independent feedback/current repair supplement and broader D2/D3/D4/D6/D7remain open. No
+current-source remote qualification,publication,provider call,agent or automatic feature expansion.

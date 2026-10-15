@@ -18,7 +18,8 @@ QT-F07 director initially deferred live calls2026-10-13;on2026-10-14 supplied ke
 testing now/any time. [Actual qualification](reviews/QT-F07_LIVE_GEMINI_2026-10-14.md):1call/7diagnostic checks PASS. API adapter/CLI uses existing stdlib runtime,
 no SDK/dependency install. Director2026-10-14 requested a local .env with three blank Gemini key entries.
 Current ignored file:C:/ReverieSaga/.env;GEMINI_API_KEY primary,GEMINI_API_KEY_2/_3 manual spares.
-The previous tmp/gemini-api-key.txt is retained as a historical local alternative.
+The obsolete empty tmp/gemini-api-key.txt placeholder was removed2026-10-15 during
+[local cleanup](reviews/LOCAL_FILE_CLEANUP_2026-10-15.md);use the existing local .env.
 The CLI reads only the primary process variable;no auto-load or key rotation was added.
 The director can enter the keys there later,then load the primary into GEMINI_API_KEY using the
 [README preparation command](../README.md#first-quest--prepared-gemini-dialogue).

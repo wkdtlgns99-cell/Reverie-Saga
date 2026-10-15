@@ -1,11 +1,38 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-14 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
+Updated:2026-10-15 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SESSION_HANDOFF.md) before execution.
 Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
 Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
 
-## Active Closure — Director Execution 2026-10-14
+## Current Resume — Director Request 2026-10-15
+
+Director first prohibited publication during local cleanup,then explicitly requested GitHub
+publication for Claude review2026-10-15. The latter authorization now controls;existing PR8branch
+only,no main merge/release. [Review entry/file list](docs/reviews/OPEN_WORK_REVIEW_START_HERE_2026-10-15.md).
+D5LOCAL_ACCEPTED:retained source/test inputs unchanged,fresh full1675PASS549.13s;earlier55client/
+Tk/static/import checks reused unchanged. [Receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md).
+Local cleanup COMPLETED_WITH_ACCESS_LIMITS:[receipt](docs/reviews/LOCAL_FILE_CLEANUP_2026-10-15.md),
+105targets/41748files/5,033,172,862logical bytes removed.17old cache targets remain access-denied
+after permitted-host retry;exact list/errors in receipt JSON,no ACL/owner takeover. Source/tests/
+review originals/usage ledger/credential metadata unchanged. Installed tools,actual saves and
+unreviewed V3packet retained;obsolete extraction/install download/test outputs/helpers removed.
+Next existing V3review:assess unique closed review ZIP retirement after exact recovery proof,
+legacy Python cache copy,GOV02/GOV03original evidence and17restricted leftovers. No automatic
+review call,new checkpoint or deletion of ambiguous provenance. This maintenance changes no gameplay.
+V3real feedback/current-repair supplement remains open;old packet is retained. D2/D3/D4/D6/D7
+remain open;no automatic next feature or provider/reviewer call. Current source publication is
+authorized;latest remote CI remains unverified until observed,not required to wait this delivery.
+
+## Historical Pause — Director Request 2026-10-14
+
+PAUSED_BY_DIRECTOR for usage budget. Director requests stop,backlog note and current Git save.
+Current D5repair has55client/Tk/static/import PASS;full test was interrupted on instruction,
+so D5NOT_DONE. [Resume evidence](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md).
+V3qualified397file/CI/diff packet ready but actual Claude feedback absent. Its0f53820snapshot
+excludes D5;obtain current full/CI qualification and exact supplement before accepting repair.
+Publish current partial state on existing PR8;no main merge/release/automatic resume or CI polling.
+Remaining D2/D3/D4/D6/D7open;V4current PC only,V5free tier director-confirmed/quota unmeasured.
 
 Director requests audited remainder completed sequentially;latest clarification excludes images/
 modeling/camera only,other groups authorized for staged contracts/implementation/qualification.
@@ -14,8 +41,14 @@ A1DONE:actual human approved explained four corrected NPC lines;tracked candidat
 catalog compiled and decoded,original provider/source bytes preserved/API0. A2DONE:15actual native
 approved-prose checks/capture PASS;A3DONE:ordinary memory client integration,51affected/94native/
 build/hook/readback PASS. V1fresh1664full PASS490.10s/static/import PASS for this source state.
-V2IN_PROGRESS:actual GitHub owner/public repo/remote main verified;eligible source package being
-reviewed for branch/PR/remote checks. Other authorized groups remain open;no overall15-group completion claim.
+V2DONE_FOR_0f53820:138qualified files on codex/open-work-closure-20261014/[draft PR8](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8);
+push+PR checks success,remote full1664PASS672.53s. Main protected/PR+strict checks/admin enforcement
+confirmed;director authorized publication if needed. No main merge/release/settings change.
+D5PAUSED_BY_DIRECTOR:[reconciliation order](docs/work_orders/RS-STRUCT-001_RECONCILIATION_2026-10-14.md),
+injected postcommit/load-close/native-close failures reproduced,source repairs under qualification.
+V3independent packet ready/feedback absent. V4director now requests current PC only;
+V5director confirms free/Default Gemini Project for3keys,actual remaining quota still unknown.
+Other authorized groups remain open;no overall15-group completion claim.
 Current catalog pin a8ec2de96a23b0c0a7824e874bac96279194e550581a610308846d742c2fd74d.
 
 ## Open Work Audit — Director Request 2026-10-14
