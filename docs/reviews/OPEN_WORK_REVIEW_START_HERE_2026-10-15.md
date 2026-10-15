@@ -1,6 +1,14 @@
 # Start Here — Current Independent Review
 
 Read this file first. Review the actual sources listed below;the request alone is not the code.
+Latest complete continuation request:[all remaining inspection](OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
+Director explicitly requests publishing the conditional F1repair and review records on the existing
+PR8branch. Resolve its current exact head;the3159c92ZIP/CI below remains historical qualification.
+Partial feedback on3159c92has been received;[dispositions](OPEN_WORK_V3_DISPOSITIONS_2026-10-15.md)
+record actual inspection limits and independently checked CI. Full V3review remains incomplete.
+Latest [continuation](OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md) inspects more engines/
+Gemini/Unity but still omits listed code. One Linux-only test-fixture defect repaired conditionally;
+this later patch is not in the3159c92ZIP/remote evidence and needs separate Linux/patch recheck.
 
 - Repository:https://github.com/wkdtlgns99-cell/Reverie-Saga
 - Branch:codex/open-work-closure-20261014
@@ -42,12 +50,15 @@ necessary surrounding code. Report inspected files,unavailable inputs and actual
 
 D5local full1675PASS549.13s;55client/Tk tests and Ruff/format/mypy157/imports3+1 qualify identical
 inputs. Source/test hashes remain unchanged after cleanup. Older native94/build qualification
-covers unchanged C#;old remote1664PASS covers0f53820only. Latest publication CI is separate/pending
-until actually observed;do not infer a new remote success. No live model call in ordinary turns.
+covers unchanged C#;old remote1664PASS covers0f53820only. Current3159c92remote PR checks SUCCESS,
+full1675PASS673.81s;see dispositions for actual run/head. Later local document corrections are
+outside that published evidence. No live model call in ordinary turns.
 
 Cleanup removed105targets/41748files/5,033,172,862logical bytes;17restricted targets retained.
 Review unique archive-retirement/ownership questions at this existing V3review,without a new
 checkpoint. Keys/private saves/builds/original ignored ZIPs are absent from Git/public packet;
 their local preservation receipts are evidence limits,not remotely reproduced filesystem checks.
 CP06release held;other world/NPC/content/governance/release items remain open. Independent
-feedback NOT_RECEIVED. Return findings in the linked request format;never invent review or approval.
+feedback PARTIALLY_RECEIVED;some engines/Gemini/Unity/repair code inspected in continuation,
+but substantial sources/assertions still unreviewed. Return
+further findings in the linked request format;never invent full review or approval.

@@ -1,6 +1,6 @@
 # Open Work Closure — Execution Evidence
 
-Date:2026-10-14 | Resumed:2026-10-15 | Parent:IN_PROGRESS | Executor/self-review;independent review not yet received.
+Date:2026-10-14 | Resumed:2026-10-15 | Parent:IN_PROGRESS | Independent feedback PARTIALLY_RECEIVED;full inspection incomplete.
 Order:[closure](../work_orders/OPEN_WORK_CLOSURE_2026-10-14.md);register:[audit](OPEN_WORK_AUDIT_2026-10-14.md).
 Director requests all audited remaining groups except image/modeling/camera,accept each before next.
 Primary7;participants2/3/4/5/6. This is a closure ledger,not a whole-game completion claim.
@@ -11,8 +11,8 @@ Primary7;participants2/3/4/5/6. This is a closure ledger,not a whole-game comple
 | A2 approved catalog/ordinary graphical gameplay |DONE |15actual native checks/approved exact four lines/stages/reward/retry/save/load/reconnect/capture PASS;real rendered screenshot inspected |
 | A3 memory mode through worker/Unity |DONE |51affected Python/94native checks,build/hook absence,actual memory/slot/loaded readback and preview PASS;full1664PASS |
 | V1 current full suite |DONE_FOR_CURRENT_D5_SOURCE | A3full1664PASS490.10s;after retained D5repair,fresh1675PASS549.13s2026-10-15;unchanged-source focused/static/import evidence reused |
-| V2 latest publication/remote CI |DONE_FOR_0f53820 |138qualified paths committed/pushed to codex/open-work-closure-20261014;draft PR8;push+PR checks success;PR full1664PASS672.53s. Later D5working changes not yet published |
-| V3 independent review |WAITING_FOR_FEEDBACK | [Actual review request/qualified packet](OPEN_WORK_INDEPENDENT_REVIEW_REQUEST_2026-10-14.md);397exact committed files+diff+actual CI receipt,ZIP verified;feedback not received |
+| V2 latest publication/remote CI |DONE_FOR_3159c92 | Latest published D5/cleanup/request head push+PR checks SUCCESS;remote full1675PASS673.81s. Subsequent local document corrections are outside that CI |
+| V3 independent review |CONTINUATION_RECEIVED_NOT_FULL_ACCEPTANCE | [Latest dispositions](OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md);more source inspected,substantial omissions remain. F1test-fixture repair29native PASS;F3offline availability limitation reproduced/nonblocking. No full review/nativeLinux repair acceptance |
 | V4 other computer |EXCLUDED_FROM_CURRENT_RUN | Director reply2026-10-14:no second PC now,current PC only. Other-device qualification remains unverified historical/future scope |
 | V5 project tier/quota |DIRECTOR_TIER_CONFIRMED_QUOTA_UNVERIFIED | Director states all3keys display Default Gemini Project/free. Account metrics/remaining quota not read;display name alone does not establish unique project identity |
 | D1 images/modeling/camera |EXCLUDED_BY_DIRECTOR | Explicit latest clarification;no production of these assets |

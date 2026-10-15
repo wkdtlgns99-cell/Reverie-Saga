@@ -1,11 +1,36 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-15 | Stage:D5_LOCAL_ACCEPTED_REVIEW_PUBLICATION
+Date:2026-10-15 | Stage:V3_REPAIR_PUBLICATION_COMPLETE_REVIEW_HANDOFF
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
 
 ## Current Resume — 2026-10-15
+
+Director explicitly requests Git publication of current repaired test/review records and an English
+request to finish ALL remaining inspection:[A–Ehandoff](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
+Use existing codex/open-work-closure-20261014/PR8;verify remote exact head and distinguish new CI
+from3159c92evidence. No new ZIP required,old frozen packets unchanged. Publication instruction
+supersedes local-only feedback handling below;no automatic reviewer call/agent/feature/merge/release.
+Independent review and native Linux repair recheck remain open. Commit identity is in PR8history.
+
+Latest director supplies V3continuation:[dispositions](docs/reviews/OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md).
+External Linux3.13/Tk9suite1674PASS/1test-double failure reported;F1repaired only in test_save_slots
+conditional stat extras,Windows guard/resume preserved. Native29PASS14.19s/final target1PASS0.57s,
+both Ruff/mypy157PASS;runtime unchanged. Native repaired Linux NOT_RUN. F3offline actual-lock
+probe confirms explicit reconcile failure after stub response/API0/conservative reservation;
+nonblocking follow-up semantics,not an automatic retry/policy change. F2/F4–6/CP03/fsync notes
+classified. Full V3still incomplete;read exact omission list before next reviewer request.
+Prior review docs were already dirty and preserved;follow-up/raw reply/test fix now authorized
+for publication above. No automatic provider/agent/feature.3159c92CI does not qualify this later patch.
+
+Earlier partial feedback for3159c92:[dispositions](docs/reviews/OPEN_WORK_V3_DISPOSITIONS_2026-10-15.md)
+and verbatim source recorded. No confirmed inspected defect;typed client error follow-up
+nonblocking,projection coverage confirmed3PASS1.29s;docs clarify existing historical pointer and
+cleanup-time no-push vs later publication. Full V3incomplete:engines/Gemini/Unity/CP03–05not read,
+Tk absent/Python3.12.3 and1626vs1620reviewer count conflict retained. No runtime/test changes.
+Actual3159c92push+PR checks SUCCESS,PR full1675PASS673.81s. At that stage doc corrections were local;
+latest explicit publication supersedes it. Next review inspect all named unreviewed code.
 
 Latest director2026-10-15explicitly requests GitHub publication for Claude review,superseding the
 earlier local-only instruction. Use existing PR8branch,no main merge/release/reviewer call.
@@ -17,9 +42,9 @@ D5LOCAL_ACCEPTED:unchanged retained inputs,full1675PASS549.13s;reuse55focused/st
 runtime/keys/ledger/game saves/unique review ZIPs retained;preservation hashes/metadata checked.
 At next existing V3review,assess original-ZIP retirement/exact recovery,legacy Python copy,
 GOV02/GOV03native evidence and restricted cache ownership. No automatic provider call/checkpoint.
-V3feedback/current-source supplement and broader D2/D3/D4/D6/D7still open;no automatic next feature.
+V3full inspection and broader D2/D3/D4/D6/D7still open;partial feedback does not close them.
 Current qualified changes publish to codex/open-work-closure-20261014/PR8. Old0f53820packet stays
-historical;fresh current ZIP binds its committed head. Latest-head CI pending until observed.
+historical;fresh3159c92ZIP binds its committed head. Actual3159c92CI success recorded above.
 
 ## Historical Pause — 2026-10-14
 

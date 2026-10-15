@@ -7,6 +7,38 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
 
 ## Current Resume — Director Request 2026-10-15
 
+Director explicitly requests publishing current F1test repair/review records to existing PR8branch
+and a complete English Claude handoff:[A–Erequest](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
+This supersedes the earlier local-only feedback handling below. Scope7verification support,
+related2/3/4/5/6;no new gameplay/API/agent/archive mutation/merge/release. Native29/static evidence
+reused for identical test inputs;Linux repair execution and independent all-source inspection
+remain open. Publication must verify remote head;new-head CI is separate from3159c92success.
+No automatic Claude message or next feature. Exact delivered commit is available from PR8history.
+
+V3continuation RECEIVED:[verbatim/dispositions](docs/reviews/OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md).
+Reviewer reports LinuxPython3.13.12/Tk9/Xvfb1674PASS/1test-fixture failure;pin versions without
+wheel-hash enforcement,not native Windows qualification. Earlier count inconsistency reconciled
+by reviewer. F1conditional stat metadata repair preserves Windowsattrs/hardlink rejection;
+29save-slot PASS14.19s/final target1PASS0.57s/Ruff both/mypy157PASS;runtime unchanged,Linux repair
+retest NOT_RUN here. Unconditional suggested omission fails Windows in scratch,so not applied.
+F2duplicate nonblocking typed-error note;F3real-lock/ledger offline probe reproduces explicit
+post-response failure with conservative accounting/API0—follow-up budget/publication semantics
+needed before bounded retry. F4catalog growth bounded64KiBcurrently,F5cold-start measurement,
+F6dev pin intentional,CP03role/directory-fsync hypotheses recorded without fabricated fixes.
+V3still incomplete:remaining engines/turn/scheduler/views,pipelines for approval,save/client code,
+original CP03/05feedback/orders/manifests/test assertions and authority docs not fully read.
+Next independent focus:complete engines/authoritative execution first,then approval/save paths.
+At feedback handling these test/docs changes were local;the later explicit publication request
+above supersedes that limit. No publication or feature was inferred from reviewer prose alone.
+
+Earlier V3partial feedback:[verbatim/dispositions](docs/reviews/OPEN_WORK_V3_DISPOSITIONS_2026-10-15.md).
+No confirmed defects within inspected subset. Text-based client errors are a nonblocking typed-
+exception follow-up;postcommit projection concern already covered,3targeted tests PASS1.29s.
+Historical-state pointer already existed;clarified cleanup-before-publication timeline. Runtime/
+tests unchanged. Reviewer counts1626vs1620 conflict,Python3.12.3/Tk absent and large uninspected
+scope retained;do not mark full V3DONE. Actual3159c92push+PR checks SUCCESS,full1675PASS673.81s.
+Next independent focus:quest/memory engines and registered callers,then Unity/Gemini/CP03–05.
+
 Director first prohibited publication during local cleanup,then explicitly requested GitHub
 publication for Claude review2026-10-15. The latter authorization now controls;existing PR8branch
 only,no main merge/release. [Review entry/file list](docs/reviews/OPEN_WORK_REVIEW_START_HERE_2026-10-15.md).
@@ -20,9 +52,10 @@ unreviewed V3packet retained;obsolete extraction/install download/test outputs/h
 Next existing V3review:assess unique closed review ZIP retirement after exact recovery proof,
 legacy Python cache copy,GOV02/GOV03original evidence and17restricted leftovers. No automatic
 review call,new checkpoint or deletion of ambiguous provenance. This maintenance changes no gameplay.
-V3real feedback/current-repair supplement remains open;old packet is retained. D2/D3/D4/D6/D7
+V3full inspection remains open;actual partial feedback recorded and old packet retained. D2/D3/D4/D6/D7
 remain open;no automatic next feature or provider/reviewer call. Current source publication is
-authorized;latest remote CI remains unverified until observed,not required to wait this delivery.
+authorized explicitly above;3159c92remote CI verified as above. Earlier feedback disposition was
+local only;the separate latest director instruction authorizes current test/docs publication.
 
 ## Historical Pause — Director Request 2026-10-14
 

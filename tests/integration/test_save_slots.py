@@ -171,7 +171,10 @@ def test_link_count_metadata_rejects_alias(tmp_path: Path, monkeypatch: pytest.M
         if target == path:
             fields = list(actual)
             fields[3] = 2
-            return os.stat_result(fields, {"st_file_attributes": getattr(actual, "st_file_attributes", 0)})
+            extras: dict[str, int] = {}
+            if hasattr(actual, "st_file_attributes"):
+                extras["st_file_attributes"] = actual.st_file_attributes
+            return os.stat_result(fields, extras)
         return actual
 
     try:
@@ -179,7 +182,9 @@ def test_link_count_metadata_rejects_alias(tmp_path: Path, monkeypatch: pytest.M
         # Exercise the external filesystem metadata guard, without mocking any gameplay.
         with monkeypatch.context() as patched:
             patched.setattr(Path, "stat", linked_metadata)
-            with pytest.raises(SaveError, match="INVALID_PATH"):
+            with pytest.raises(
+                SaveError, match="^INVALID_PATH: hardlinked save breaks attachment identity$"
+            ):
                 SqliteCommitStore.open(path, io=io())
         with resume_durable(tmp_path / "work.sqlite", bundles=(watch_bundle(),)) as reopened:
             assert reopened.snapshot().tick == 0

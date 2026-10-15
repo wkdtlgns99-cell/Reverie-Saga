@@ -1,0 +1,107 @@
+I'll continue with the four omitted areas. First I'm trying to get the qualified Python 3.13.12, which may also bring Tk, so I can run the 55 Tk tests I skipped.Python 3.13.12 has Tk 9.0 here (the project validated on 8.6), and Xvfb is available. I'm building a venv from the hash-pinned lock and running the full suite.Now I'm running the README's static gates and the full suite in the background under Xvfb.mypy's 4 errors are Windows-only `subprocess.CREATE_NO_WINDOW` references. With `--platform win32` it reports no issues in 157 files. While the suite runs, I'm reading the engines and orchestration.Status: I've covered the Unity C# files. Next I'm checking the CP03/CP05 findings against the code and tests, then I'll collect the test results.Status: I've read the client session and worker. Next I'm checking the CP05-integration repairs and the reconciliation tests, then I'll collect the final test counts.Status: the background test run died (the sandbox appears to have restarted). I'm restarting it detached, with output going straight to disk.The full run finished: 1,674 passed and 1 failed. I'm looking at the failure.The one failure comes from the test's fake `stat` object, not from the production guard. I'm checking that my proposed fix works, using a scratch copy so the packet stays untouched.# Continuation review of Reverie Saga (commit 3159c92)
+
+**Verdict: PASS_WITH_CORRECTIONS for the scope I actually covered.** I found no confirmed defect in the production code I read. The only confirmed defect is a test-portability bug on Linux with Python 3.13. This review is **not complete**: I read a large part of the engines and the Gemini and Unity code, but not all of it. Section D lists exactly what I did not read.
+
+## Test accounting
+
+My earlier counts of 1,626 and 1,620 were inconsistent; this replaces them. I ran everything against the extracted `OPEN_WORK_V3_3159c92_2026-10-15.zip`.
+
+| Run | Environment | Collected | Passed | Failed | Skipped | Notes |
+|---|---|---|---|---|---|---|
+| A (earlier) | CPython 3.12.3, Linux, no Tk | 1,620 | 1,620 | 0 | 0 | The 3 Tk test files were excluded (55 tests). 87 tests first failed only because import-linter and ruff were missing from my venv; with the pinned tools installed, those 93 governance and rules tests pass. |
+| **B (this review)** | **CPython 3.13.12, Linux, Tk 9.0 under Xvfb** | **1,675** | **1,674** | **1** | 0 | 534.2 s. JUnit shows `errors=0, skipped=0`. By folder: integration 1,207, unit 275, governance 83, replay 58, adapters 52. |
+
+The 1,620 from run A plus the 55 Tk tests equals the 1,675 you report.
+
+Run B command: `xvfb-run -a python -m pytest -p no:cacheprovider -v --basetemp /tmp/pt/run --junitxml=/tmp/junit.xml tests`, with `PYTHONPATH=src`. The three reconciliation and memory-route tests you mentioned pass (18 of 18 in `test_client_reconciliation.py` and `test_memory_client_route.py`).
+
+Static gates on 3.13.12:
+- **Ruff:** both configs pass, and the 12 files in the README's format-check list are formatted.
+- **Import-linter:** 3 contracts kept and 1 kept.
+- **mypy:** 4 errors on Linux, all references to the Windows-only `subprocess.CREATE_NO_WINDOW` in tests (`test_sqlite_recovery.py` lines 247, 304 and 310; `test_save_slots.py` line 298). With `--platform win32` it reports no issues in 157 files.
+
+Limits of this qualification:
+- **Not native:** This is Linux with Tk 9.0, while you validated on Windows with Tk 8.6, so it is not equivalent native verification.
+- **Hashes not enforced:** The lock's hashes didn't match Linux wheels. I installed the same pinned versions without hash enforcement.
+- **No Windows or Unity:** I ran no Windows or Unity checks.
+
+## A. Coverage
+
+| Area | Inspected | Executed |
+|---|---|---|
+| Engines and execution | `engines/quest.py`, `engines/npc_memory.py`, `engines/watch.py` (first 60 lines), `domain/quest.py`, `domain/npc_memory.py`, `domain/scenario.py`; `orchestration/quest.py` (complete), `orchestration/npc_memory.py` (complete), `orchestration/serialization.py` lines 120–260, `orchestration/turn.py` lines 1–140 only; `app/quest_registry.py`, `scenarios.py`, `quest.py`, `quest_definition.py`; scenario wiring in `orchestration/trial.py` (grep) | Full suite (run B), including the quest, memory, scenario, CP03 and replay tests |
+| Gemini | `gemini_transport.py`, `gemini_dialogue.py`, `generation_budget.py` (complete); API-key sourcing (grep); all `content/dialogue/harbor-memory-v1.*` hash bindings | `test_gemini_dialogue.py`, `test_generation_budget.py` and the other adapter tests (in run B) |
+| Unity and client | `BrainConnection.cs` (complete), `PlayRoom.cs` (startup, `Update`, hooks), `PlaytestBuild.cs` (complete); `#if` guards across all C# files; `engine_bridge.py`, `client_session.py`, `client_worker.py` (error path) | Client, bridge and Tk tests under Xvfb (in run B). No Unity or native run. |
+| CP03/CP05 | Dispositions for CP03, CP05-contract and CP05-integration; the repair code each one names | Related regression tests (in run B). Test bodies mostly not read. |
+
+## B. Findings
+
+No confirmed production defects.
+
+**F1: confirmed test-portability defect (P3).**
+- **Where:** `tests/integration/test_save_slots.py:174`, in `test_link_count_metadata_rejects_alias`.
+- **Trigger:** CPython 3.13.12 on Linux.
+- **Expected vs actual:** The test double calls `os.stat_result(fields, {"st_file_attributes": …})`, which raises `TypeError: duplicate or unexpected field name(s)` on POSIX. The test fails before reaching production code. It passed on 3.12.3/Linux in run A, so the cause is the interaction of the Python version and the OS.
+- **Production guard:** The guard it targets (`sqlite_store.py:51`, `st_nlink > 1`) is not exercised on this platform. The guard itself reads correctly.
+- **Contract basis:** The README gate runs the whole suite, so the suite should pass on any supported host.
+- **Repair:** Build the fake with `os.stat_result(fields)` and leave out the Windows-only extras. I applied this to a scratch copy and the test passes. The packet itself is unchanged.
+
+**F2: maintainability (P3).** `client_worker.py` (about lines 77–82) classifies player-visible errors by exact message text (`"NO_RETRY"`, `"QUEST_UNAVAILABLE"`). A typed exception would be safer. It is correct today.
+
+**F3: unverified design note (P3).**
+- **What happens:** `GenerationBudget.reconcile` takes a non-blocking lock. If it fails after a successful provider response, `GeminiDialogue.generate` raises `GENERATION_BUDGET_UNAVAILABLE` and the response is lost.
+- **Accounting is safe:** The 20,000-token reservation stays on the ledger, so spend is never under-counted. It only wastes a call, and the budget behavior is documented as intentional.
+- **Not covered:** The CP05 disposition justifies the non-blocking lock only for failures *before* a reservation is published.
+- **Status:** Static reading only; I did not reproduce it.
+- **Possible repair:** A bounded retry on reconcile.
+
+**F4: scalability hypothesis (P4).** `engine_bridge.response()` sends the whole narrative catalog on every update, while the frame limit is 1 MiB. `write_frame` raises `ValueError` outside the per-request try block, which would end the process. The catalog is about 1.6 KB today, so this is unreachable now.
+
+**F5: unverified (P4).** The C# `BrainConnection` starts its 10-second response timer at construction, and that must cover the Python cold start, the durable open and the first attach. A slow start could time out and kill the child process. I ran no native timings. (The deadline covers whatever the Brain does, so any single slow step counts.)
+
+**F6: intentional behavior, noted only (P4).**
+- **What happens:** The approved-preset path in `PlayRoom.Start()` reads the pin from `harbor-memory-v1.sha256`, a file stored next to the content it pins.
+- **Verified:** The pin matches `a8ec2de9…` (the SHA-256 of `harbor-memory-v1.json`), and the candidate bytes hash to the approval's `output_sha256` (`bcf4719f…`).
+- **Status:** Your CP05 disposition already calls the preset a local development harness, not production authentication.
+
+**Confirmed against the contracts:**
+- **Memory:** Memory entries are strictly derived from the quest stage (`MemoryCheckpointPolicy`): 0 entries at stage 0, 1 at stages 1–2, 2 at stage 3. An unreported defeat (stage 2) therefore cannot appear as eyewitness knowledge.
+- **Quest steps:** Quest steps are single-step with endpoint checks. The 0→2 net step is deliberate, for an enemy that is already dead when the quest is accepted.
+- **Reward:** The reward fact is emitted only on 2→3, so it can fire only once.
+- **Transport:** The Gemini transport uses a fixed HTTPS origin, no proxy and no redirects.
+- **Key handling:** The key goes to the child process over stdin, never on argv or in the URL.
+- **Child process:** The child is killed and reaped on any exception. Network responses are capped at 256 KiB.
+- **API key source:** Only `GEMINI_API_KEY` is read, so there is no spare-key rotation.
+- **Release hooks:** The dev verification hooks in the Unity scripts sit inside `#if UNITY_EDITOR || DEVELOPMENT_BUILD`. `PlaytestBuild.Build()` fails the build if `LiveVerification` is present in the release assembly.
+
+## C. CP03/CP05 repair verification
+
+"Tests run" means the named regression tests passed in run B. "Bodies read" means I read their assertions, and in most rows I did not.
+
+| Finding | Current code (inspected) | Regression tests | Remaining gap |
+|---|---|---|---|
+| CP03 F1: scenario binding | `serialization.py:169` raises `INVALID_SCENARIO_BINDING`. Engines inherit `ScenarioBound`. | `test_cp03_repairs.py` runs; bodies not read | A consumer that never implements `scenario_layout` is skipped. Unlike quest, there is no required-role set. Unverified hypothesis, no demonstrated wrong-world commit. |
+| CP03 F2: initial cell | `app/watch.py:59-60` | Run; bodies not read | None found |
+| CP03 F3: wait name | I saw the per-scenario names map in `client_session.py`; I did not read where the wait name is applied | Not read | Not verified |
+| CP03 F4: exact-type layout | `SCENARIO_TYPE` at `engines/encounter.py:111,217` | Run | None found |
+| CP03 F5: display fallback | `scenarios.py:scenario_name` | Run | Intentional |
+| CP05 H2 / P2-1: quest roles fail-open | `_validate_quest_binding` collects roles before the early return and requires the declaration to match what is registered | `test_quest.py:184` runs; body not read | None found |
+| CP05 M1–M3: reducer, compose, net | `QuestReducer.stage`, `compose` and `validate_net` in `orchestration/quest.py` | Run; vectors not read | None found |
+| CP05 M6: thinking budget | `generation_request` sets `MINIMAL` | `test_gemini_dialogue.py` runs | Live endpoint behavior is your own deferred item |
+| CP05 M7: transport | `ProxyHandler({})`, `NoRedirect`, kill-and-reap | Runs | None found |
+| CP05 P2-2: stale `budget.pending` | `_write` removes only its own pending sibling under the exclusive lock | Budget tests (lines 70, 104, 133) run | There is no directory fsync after the replace (P4 note) |
+
+## D. Not reviewed or unavailable
+
+- **Engines:** All of `engines/skeleton.py`, `trial.py`, `encounter.py` and `watch.py` (only 60 lines read). I read only the first 140 lines of `orchestration/turn.py` and none of `scheduler.py`, `read_views.py`, `persistence.py`, `replay.py`, `events.py` or `rng.py`. I did not read the golden vectors, the fixtures, or `app/feature_registry.py`, `app/npc_memory.py` and `app/headless.py`.
+- **Gemini and dialogue:** The dialogue-preparation modules and their contracts (the `npc_prepare`/`dialogue_prepare`/`npc_memory_*`/`npc_dialogue_*` modules in `src/app/`, `adapters/quest_dialogue.py`, `contracts/dialogue.py` and `contracts/npc_context.py`). I confirmed the hash bindings of the approved content but did not trace its compile and approval path.
+- **Unity and client:** `LiveVerification.cs`, `Wire.Generated.cs`, the rendering half of `PlayRoom.cs`, the Unity README and `ProjectVersion.txt`. In Python: `durable.py`, `save_slots.py`, the rest of `sqlite_store.py`, and `contracts/client.py`.
+- **CP03/CP05:** I did not read the original feedback files, the repair work orders or the input manifests. I read the three disposition documents and checked their claims against code. Most regression-test bodies were not read.
+- **Docs:** `MASTER_GAME_ARCHITECTURE.md` and the v2.6 prompt.
+- **Not run:** Windows, Unity, native builds, Tk 8.6 and live Gemini. The latest remote CI is as stated in your own notes, which I did not check.
+
+## E. Verdict
+
+For the inspected portion of the four areas, PASS_WITH_CORRECTIONS. The one required correction is the F1 test-double fix. F2–F5 are optional. Treat the uninspected files in section D as unreviewed, not as passed. This review approves no content, rights, billing, release or merge.
+
+I can continue with one block next: the remaining engines and `turn.py`, the dialogue approval and compile path, or `durable.py` and the save slots. Which one first?

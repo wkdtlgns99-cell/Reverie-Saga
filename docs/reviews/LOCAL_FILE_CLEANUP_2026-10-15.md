@@ -4,6 +4,9 @@ Date:2026-10-15 | State:COMPLETED_WITH_ACCESS_LIMITS | Primary7support;no gamepl
 Order:[scope](../work_orders/LOCAL_FILE_CLEANUP_2026-10-15.md).
 [Exact compact receipt](LOCAL_FILE_CLEANUP_2026-10-15.json) owns every target/result/error.
 Director requested D5completion first,then cleanup/backlog only;no commit/push performed.
+This describes the cleanup-time action only. A later explicit director publication request
+produced3159c92251afc61cd3d30e5156020adac4937c5d. The JSON's unchanged-Git observation remains
+historical evidence from cleanup,not a claim that the final review packet was never published.
 
 ## Actual result
 

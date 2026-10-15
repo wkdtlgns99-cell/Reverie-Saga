@@ -1,6 +1,12 @@
 # Open Work V3 — Independent Review Request
 
-State:READY_FOR_INDEPENDENT_REVIEW;feedback NOT_RECEIVED. Date:2026-10-14.
+State:PARTIAL_FEEDBACK_RECEIVED;full inspection incomplete. Updated:2026-10-15.
+Director now requests publication and completion of all omitted inspection:
+[current English request](OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md). Use current PR8head,
+including conditional F1test repair;the old ZIPs and earlier CI apply only to their pinned revisions.
+Current feedback/dispositions:[partial review](OPEN_WORK_V3_DISPOSITIONS_2026-10-15.md).
+Latest:[continuation](OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md);Linux3.13/Tk9full run
+reported1674PASS/1test-fixture failure;local compatible F1repair checked,full inspection still incomplete.
 Current review entry/file list/Git URLs:[START HERE](OPEN_WORK_REVIEW_START_HERE_2026-10-15.md).
 That entry includes the later qualified D5repair and cleanup;the0f53820snapshot below is historical.
 Authority:[closure](../work_orders/OPEN_WORK_CLOSURE_2026-10-14.md),
@@ -8,7 +14,7 @@ Authority:[closure](../work_orders/OPEN_WORK_CLOSURE_2026-10-14.md),
 This is a consolidated patch/memory rereview,not a new checkpoint or reopening CP01–05.
 CP06 release remains held. Self-review and CI are not independent review.
 
-## Exact reviewed state
+## Historical original snapshot — 0f53820
 
 Commit:0f53820e2ba7996de0490115de2b9c9b97d1ff41.
 Base:1ad22446d48c50b8b72a6d3af8de3c9d775134ea.
@@ -18,7 +24,7 @@ in Git with no semantic edit. The packet contains that exact committed tree,base
 per-file SHA256 manifest,this request and concise actual acceptance. No private saves,keys,
 builds,ignored runtime state or previous frozen ZIPs. Later working edits are outside this review.
 
-## Actual acceptance and limits
+## Historical original acceptance and limits
 
 [Closure evidence](OPEN_WORK_CLOSURE_2026-10-14.md) owns detailed A1–3/V1 acceptance.
 Local1664PASS490.10s;affected51PASS23.97s;Ruff/shared+selective,format,mypy156/imports3+1 PASS.

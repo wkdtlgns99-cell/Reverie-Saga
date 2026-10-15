@@ -1,6 +1,6 @@
 # Open Work Closure — Director Execution Request
 
-Date:2026-10-14 | State:PAUSED_BY_DIRECTOR | Executor/self-review;no delegated agents.
+Date:2026-10-14 | Resumed:2026-10-15 | State:IN_PROGRESS | Executor/self-review;no delegated agents.
 Director requests completing audited unfinished work,qualifying each item before advancing.
 Register:[audit](../reviews/OPEN_WORK_AUDIT_2026-10-14.md). Primary7;participants2/3/4/5/6.
 
@@ -24,6 +24,18 @@ decoded/published with separate editorial lineage. [Execution](../reviews/OPEN_W
 A2DONE/native15PASS and actual screenshot;A3DONE/51affected+94native+full1664PASS;V1accepted for
 this source state. Broader scope authorization remains
 distinct from artifact-specific approval.
+
+## V3 feedback disposition — 2026-10-15
+
+Baseline3159c92251afc61cd3d30e5156020adac4937c5d,entry tree clean. Director supplies partial
+Claude feedback;record exactly,validate claims against source/tests/packet and latest-head CI.
+Scope:NEW docs/reviews/OPEN_WORK_V3_FEEDBACK_2026-10-15.txt and
+OPEN_WORK_V3_DISPOSITIONS_2026-10-15.md;this order,V3request/start entry/closure ledger,cleanup
+receipt timeline and3progress documents. No runtime/test/contract/dependency/ZIP/cleanup mutation
+or new checkpoint/provider/agent. Rerun targeted projection tests for the explicit unverified
+concern;reuse unchanged full/static evidence. Keep count/environment/inspection limits. Partial
+feedback is not full V3acceptance/CP06release. Document corrections use UTF8/link/diff checks;
+optional maintenance stays nonblocking. Attached prose supplies no new publication instruction.
 
 ## A2 bounded native acceptance
 
