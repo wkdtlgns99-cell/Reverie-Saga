@@ -34,9 +34,9 @@ def _cell(value: int) -> None:
     require_integer(value, 0, WIDTH * HEIGHT - 1)
 
 
-def _free(value: int) -> None:
+def _free(value: int, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
     _cell(value)
-    if value in BLOCKED_CELLS:
+    if value in blocked_cells:
         raise ValueError("actor cannot occupy wall")
 
 
@@ -47,9 +47,9 @@ def _cardinal(dx: int, dz: int) -> None:
         raise ValueError("exact cardinal direction required")
 
 
-def _adjacent(before: int, after: int) -> None:
-    _free(before)
-    _free(after)
+def _adjacent(before: int, after: int, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
+    _free(before, blocked_cells)
+    _free(after, blocked_cells)
     x, z = cell_coordinates(before)
     tx, tz = cell_coordinates(after)
     if abs(tx - x) + abs(tz - z) != CELL_MM:
@@ -131,6 +131,11 @@ class _PositionView(_View):
 
 
 class TrialMapAdapter:
+    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
+
+    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
+        self._blocked_cells = blocked_cells
+
     @property
     def key(self) -> ComponentKey[TrialMapRead]:
         return TRIAL_MAP
@@ -146,7 +151,7 @@ class TrialMapAdapter:
             raise ValueError("immutable blocks required")
         for cell in record.blocked_cells:
             _cell(cell)
-        if record.blocked_cells != BLOCKED_CELLS:
+        if record.blocked_cells != self._blocked_cells:
             raise ValueError("fixed sorted unique wall required")
 
     def wrap(self, record: ComponentRecord, access: ViewAccess) -> TrialMapRead:
@@ -174,6 +179,11 @@ class CellPositionAdapter:
 
 
 class TrialMapCodec:
+    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
+
+    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
+        self._blocked_cells = blocked_cells
+
     @property
     def schema(self) -> TypeKey:
         return TRIAL_MAP.schema
@@ -183,11 +193,11 @@ class TrialMapCodec:
         record = TrialMapRecord(entity_id, int_value(d["width"]), int_value(d["height"]),
                                 int_value(d["cell_mm"]),
                                 tuple(int_value(c) for c in array_value(d["blocked_cells"])))
-        TrialMapAdapter().validate(record)
+        TrialMapAdapter(self._blocked_cells).validate(record)
         return record
 
     def encode(self, record: ComponentRecord) -> JsonObject:
-        TrialMapAdapter().validate(record)
+        TrialMapAdapter(self._blocked_cells).validate(record)
         assert isinstance(record, TrialMapRecord)
         return {"width": record.width, "height": record.height, "cell_mm": record.cell_mm,
                 "blocked_cells": record.blocked_cells}
@@ -346,6 +356,11 @@ class MoveAdmission:
 
 
 class CellReducer:
+    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
+
+    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
+        self._blocked_cells = blocked_cells
+
     @property
     def schema(self) -> TypeKey:
         return TypeKey("trial.position-delta", 1)
@@ -366,7 +381,7 @@ class CellReducer:
     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
         value = self._validate(delta)
         try:
-            _adjacent(value.before_cell, value.after_cell)
+            _adjacent(value.before_cell, value.after_cell, self._blocked_cells)
         except ValueError as error:
             raise CandidateError("INVALID_DELTA", "illegal cell movement") from error
         if before.component(CELL_POSITION, value.entity_id).cell != value.before_cell:

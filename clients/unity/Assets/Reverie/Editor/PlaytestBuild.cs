@@ -74,6 +74,23 @@ namespace ReverieSaga
             File.WriteAllBytes(working,new byte[]{1,2,3,4});
         }
 
+        public static void VerifyCourtyard()
+        {
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO")!=WireScenarios.Courtyard)
+                throw new IOException("Courtyard verification requires the selected scenario");
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_CASE","courtyard");
+            Verify();
+        }
+
+        public static void VerifyInvalidScenario()
+        {
+            string selected=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
+            if(String.IsNullOrEmpty(selected)||selected==WireScenarios.Legacy||selected==WireScenarios.Courtyard)
+                throw new IOException("Invalid-scenario verification requires an unknown ID");
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_CASE","invalid-scenario");
+            Verify();
+        }
+
         [InitializeOnLoadMethod]
         static void Initialize() { EditorApplication.playModeStateChanged+=Changed; }
 

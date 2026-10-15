@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
+
 from pathlib import Path
 
 from app.client_text import status_text, turn_messages
@@ -17,16 +19,14 @@ from contracts.turn import GameCommand, TurnCommitted, TurnPublication
 from contracts.watch import BellCommand, WaitCommand
 from domain.encounter import (
     ATTACK_PROFILE_ID,
-    ENEMY_ID,
-    GATE_ID,
     GateRecord,
     HitPointsRecord,
     StaminaRecord,
 )
 from domain.primitives import CommandId, EntityId
 from domain.state_types import ComponentRecord, CoreSnapshot
-from domain.trial import ACTOR_ID, SPACE_ID, CellPositionRecord, TrialMapRecord
-from domain.watch import LANTERN_ID, NPC_ID, LanternRecord, ReplyRecord, WatchNpcRecord
+from domain.trial import CellPositionRecord, TrialMapRecord
+from domain.watch import LanternRecord, ReplyRecord, WatchNpcRecord
 
 
 def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: EntityId) -> T:
@@ -36,7 +36,9 @@ def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: Entit
     return records[0]
 
 
-def _payload(action: ClientAction, seconds: int) -> CommandPayload:
+def _payload(
+    action: ClientAction, seconds: int, scenario: Scenario = LEGACY_SCENARIO
+) -> CommandPayload:
     match action:
         case "up":
             return MoveCommand(0, -1)
@@ -47,15 +49,15 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
         case "right":
             return MoveCommand(1, 0)
         case "open" | "close":
-            return InteractCommand(GATE_ID, action)
+            return InteractCommand(scenario.gate_id, action)
         case "attack":
-            return AttackCommand(ENEMY_ID, ATTACK_PROFILE_ID)
+            return AttackCommand(scenario.enemy_id, ATTACK_PROFILE_ID)
         case "rest":
             return RestCommand()
         case "wait":
             return WaitCommand(seconds)
         case "bell":
-            return BellCommand(NPC_ID)
+            return BellCommand(scenario.npc_id)
         case _:
             raise ValueError("UNKNOWN_CLIENT_ACTION")
 
@@ -63,12 +65,19 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
 class ClientSession:
     """All calls, including construction and close, belong to one owner thread."""
 
-    def __init__(self, path: Path) -> None:
-        bundles = (watch_bundle(),)
+    def __init__(self, path: Path, *, scenario: Scenario = LEGACY_SCENARIO) -> None:
+        require_scenario(scenario)
+        self._scenario = scenario
+        bundles = (watch_bundle(scenario),)
         if path.exists():
             self._owner = resume_durable(path, bundles=bundles)
         else:
-            initial = bootstrap_watch(WatchBootstrapSpec("0" * 64, "0" * 32, "1" * 32))
+            initial = bootstrap_watch(
+                WatchBootstrapSpec(
+                    "0" * 64, "0" * 32, "1" * 32, initial_cell=scenario.initial_cell
+                ),
+                scenario=scenario,
+            )
             self._owner = create_durable(
                 path, DurableCheckpoint(initial.snapshot(), initial.protocol()), bundles=bundles
             )
@@ -88,24 +97,24 @@ class ClientSession:
         reset_log: bool = False,
     ) -> ClientUpdate:
         core = self._owner.snapshot()
-        board = _record(core, TrialMapRecord, SPACE_ID)
-        gate = _record(core, GateRecord, GATE_ID)
-        npc = _record(core, WatchNpcRecord, NPC_ID)
+        board = _record(core, TrialMapRecord, self._scenario.space_id)
+        gate = _record(core, GateRecord, self._scenario.gate_id)
+        npc = _record(core, WatchNpcRecord, self._scenario.npc_id)
         view = ClientView(
             board.width,
             board.height,
             board.blocked_cells,
-            _record(core, CellPositionRecord, ACTOR_ID).cell,
+            _record(core, CellPositionRecord, self._scenario.actor_id).cell,
             gate.cell,
             bool(gate.is_open),
-            _record(core, CellPositionRecord, ENEMY_ID).cell,
-            _record(core, HitPointsRecord, ACTOR_ID).hp,
-            _record(core, HitPointsRecord, ENEMY_ID).hp,
-            _record(core, StaminaRecord, ACTOR_ID).value,
+            _record(core, CellPositionRecord, self._scenario.enemy_id).cell,
+            _record(core, HitPointsRecord, self._scenario.actor_id).hp,
+            _record(core, HitPointsRecord, self._scenario.enemy_id).hp,
+            _record(core, StaminaRecord, self._scenario.actor_id).value,
             npc.cell,
             npc.bells,
-            _record(core, ReplyRecord, NPC_ID).count,
-            _record(core, LanternRecord, LANTERN_ID).charge,
+            _record(core, ReplyRecord, self._scenario.npc_id).count,
+            _record(core, LanternRecord, self._scenario.lantern_id).charge,
             core.tick,
             self._owner.protocol().revision,
         )
@@ -131,13 +140,17 @@ class ClientSession:
             diagnostic.code for diagnostic in publication.diagnostics
         )
         return self.update(
-            status, notices, messages=turn_messages(publication, wait_seconds=wait_seconds)
+            status,
+            notices,
+            messages=turn_messages(publication, wait_seconds=wait_seconds, scenario=self._scenario),
         )
 
     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
         protocol = self._owner.protocol()
         streams = tuple(
-            s for s in protocol.streams if s.status == "active" and s.actor_id == ACTOR_ID
+            s
+            for s in protocol.streams
+            if s.status == "active" and s.actor_id == self._scenario.actor_id
         )
         if len(streams) != 1:
             raise ValueError("CLIENT_ACTIVE_STREAM")
@@ -145,7 +158,12 @@ class ClientSession:
         identifier = CommandId(
             f"c1:{protocol.branch_id}:{stream.stream_id}:{stream.highest_committed_sequence + 1}"
         )
-        command = GameCommand(identifier, ACTOR_ID, protocol.revision, _payload(action, seconds))
+        command = GameCommand(
+            identifier,
+            self._scenario.actor_id,
+            protocol.revision,
+            _payload(action, seconds, self._scenario),
+        )
         token = self._owner.attachment_id
         self._previous = command, token
         before_tick = self._owner.snapshot().tick

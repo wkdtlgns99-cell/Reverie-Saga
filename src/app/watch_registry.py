@@ -1,26 +1,28 @@
 from __future__ import annotations
 
+from domain.scenario import LEGACY_SCENARIO, Scenario
+
 from dataclasses import replace
-from app.encounter_registry import encounter_bundle
+from app.encounter_registry import encounter_bundle, scenario_schema
 from contracts.messages import EventPolicy
 from contracts.read_views import AdapterBinding
 from contracts.skeleton import FeatureBundle, PresenterBinding
 from contracts.turn import Engine, EngineBinding, NodeActivation, NodeKey
-from domain.canonical import decode_json, object_value
+from domain.canonical import decode_json, object_value, seal
 from domain.primitives import FieldFamily, FieldSpec, MAX_INT, Phase, TypeKey
 from engines.watch import WatchNpc, WatchBell, WatchRespond, WatchEchoEngine, WatchPassive
 from orchestration.watch import (WatchNpcAdapter, LanternAdapter, ReplyAdapter, WatchNpcCodec, LanternCodec, ReplyCodec, WatchPayloadCodec, WatchAdmission, ChargeReducer, BellsReducer, ReplyReducer, ChargePatchRoute, BellsPatchRoute, ReplyPatchRoute, WatchCheckpointPolicy, WatchPresenter)
 
 
-def watch_bundle() -> FeatureBundle:
-    base = encounter_bundle()
-    engines: tuple[Engine, ...] = (WatchNpc(), WatchBell(), WatchRespond(), WatchEchoEngine(), WatchPassive())
+def watch_bundle(scenario: Scenario = LEGACY_SCENARIO) -> FeatureBundle:
+    base = encounter_bundle(scenario)
+    engines: tuple[Engine, ...] = (WatchNpc(scenario), WatchBell(scenario), WatchRespond(scenario), WatchEchoEngine(scenario), WatchPassive(scenario))
     bindings = tuple(EngineBinding(e, "engines.watch", (NodeActivation(NodeKey(e.manifest.phases[0], e.manifest.engine_id), (TypeKey("watch.bell", 1),) if e.manifest.engine_id == "watch.bell" else (), bool(e.manifest.consumes), e.manifest.engine_id == "watch.passive", "A"),)) for e in engines)
     specs = tuple(replace(s, consumers=(*s.consumers, "watch.bell")) if s.family in (FieldFamily("encounter.hp", "hp"), FieldFamily("trial.position", "space_id")) else s for s in base.field_specs)
     npc_consumers = ("watch.npc", "watch.bell", "watch.presenter", "system.admission")
     specs += (
         FieldSpec(FieldFamily("watch.npc", "space_id"), "CORE", "A", "system.bootstrap", npc_consumers, "string", "entity_id", 1, None, None, None),
-        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, 6, 6, None),
+        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, scenario.npc_cell, scenario.npc_cell, None),
         FieldSpec(FieldFamily("watch.npc", "bells"), "CORE", "A", "watch.npc", npc_consumers, "integer", "count", 1, 0, MAX_INT, None),
         FieldSpec(FieldFamily("watch.lantern", "charge"), "CORE", "A", "watch.passive", ("watch.passive", "watch.presenter"), "integer", "charge", 1, 0, 3, None),
         FieldSpec(FieldFamily("watch.reply", "count"), "CORE", "A", "watch.echo", ("watch.echo", "watch.presenter"), "integer", "count", 1, 0, MAX_INT, None),
@@ -33,7 +35,12 @@ def watch_bundle() -> FeatureBundle:
         EventPolicy(TypeKey("watch.bell-rung", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.bell",), (), ()),
         EventPolicy(TypeKey("watch.replied", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.echo",), (), ()),
     )
-    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter()), AdapterBinding(LanternAdapter()), AdapterBinding(ReplyAdapter())), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1)), WatchAdmission(TypeKey("watch.bell", 1))), delta_routes=(*base.delta_routes, ChargeReducer(), BellsReducer(), ReplyReducer()), patch_routes=(*base.patch_routes, ChargePatchRoute(), BellsPatchRoute(), ReplyPatchRoute()), component_codecs=(*base.component_codecs, WatchNpcCodec(), LanternCodec(), ReplyCodec()), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1)) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter())), schema_document=object_value(decode_json(SCHEMA_DOCUMENT)), rules_document=object_value(decode_json(RULES_DOCUMENT)), checkpoint_policy=WatchCheckpointPolicy())
+    rules = object_value(decode_json(RULES_DOCUMENT))
+    if scenario != LEGACY_SCENARIO:
+        rules = object_value(seal({**rules, "encounter": base.rules_document,
+            "npc_id": scenario.npc_id, "npc_cell": scenario.npc_cell,
+            "lantern_id": scenario.lantern_id}))
+    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter(scenario)), AdapterBinding(LanternAdapter()), AdapterBinding(ReplyAdapter())), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1), scenario), WatchAdmission(TypeKey("watch.bell", 1), scenario)), delta_routes=(*base.delta_routes, ChargeReducer(scenario), BellsReducer(scenario), ReplyReducer(scenario)), patch_routes=(*base.patch_routes, ChargePatchRoute(scenario), BellsPatchRoute(scenario), ReplyPatchRoute(scenario)), component_codecs=(*base.component_codecs, WatchNpcCodec(scenario), LanternCodec(), ReplyCodec()), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1), scenario) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter(scenario))), schema_document=scenario_schema(object_value(decode_json(SCHEMA_DOCUMENT)), scenario), rules_document=rules, checkpoint_policy=WatchCheckpointPolicy(scenario))
 
 
 WATCH_KINDS = ('bell', 'bell-cue', 'bell-rung', 'bells-delta', 'bells-patch', 'charge-delta', 'charge-patch', 'echo', 'npc-acted', 'npc-cue', 'replied', 'reply-cue', 'reply-delta', 'reply-patch', 'requested', 'wait', 'wake')

@@ -16,6 +16,7 @@ from tkinter import ttk
 from app.client_worker import ClientWorker
 from app.client_text import status_text
 from contracts.client import ClientRequest, ClientUpdate, ClientView
+from domain.scenario import LEGACY_SCENARIO, Scenario, scenario_by_id
 from domain.encounter import ACTOR_HP_MAX, ENEMY_HP_MAX, STAMINA_MAX
 from domain.watch import CHARGE_MAX, WAIT_MAX
 
@@ -53,9 +54,11 @@ KEYS: dict[str, ClientRequest] = {
 
 
 class PlayWindow:
-    def __init__(self, root: tk.Tk | tk.Toplevel, path: Path) -> None:
+    def __init__(
+        self, root: tk.Tk | tk.Toplevel, path: Path, *, scenario: Scenario = LEGACY_SCENARIO
+    ) -> None:
         self.root = root
-        self.worker = ClientWorker(path)
+        self.worker = ClientWorker(path, scenario=scenario)
         self.view: ClientView | None = None
         self.last_update: ClientUpdate | None = None
         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
@@ -348,9 +351,11 @@ class PlayWindow:
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Provisional Reverie Saga playable harness")
     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
+    parser.add_argument("--scenario", default=LEGACY_SCENARIO.scenario_id)
     args = parser.parse_args(argv)
+    scenario = scenario_by_id(args.scenario)
     root = tk.Tk()
-    window = PlayWindow(root, args.working)
+    window = PlayWindow(root, args.working, scenario=scenario)
     try:
         root.mainloop()
     finally:

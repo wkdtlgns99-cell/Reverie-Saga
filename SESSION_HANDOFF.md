@@ -1,11 +1,45 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-12 | Stage:CP04_FEEDBACK_REPAIR_ACCEPTED/UNITY_PROTOTYPE_DONE/QT_F06_SAMPLE_IMPORTED
+Date:2026-10-15 | Stage:QT_F02_UNITY_NATIVE_ACCEPTED/CP03_DEFERRED
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
 
 ## Resume Reads
+
+Latest director request:record bounded-unit completion and publish this session's task-related
+changes;no further independent review now. [Publication receipt](docs/reviews/SESSION_2026-10-15.md)
+owns scope/prepublication evidence;actual GitHub checks/PR and final delivery own remote result.
+Protected-main branch/PR/check/ordinary-merge flow;no settings bypass or next feature.
+
+Latest director instruction2026-10-15:defer Claude CP03 because quota is exhausted and proceed
+with the next bounded [Unity selection unit](docs/work_orders/QT-F02_UNITY_SELECTION.md).
+CP03 DEFERRED,feedback NOT_RECEIVED;this continuation is not checkpoint acceptance or blanket
+permission for world/quest/bulk imports or CP05/06 waiver. Unity selection DONE/self+native:
+75focusedPASS28.12s,Ruff/format5/mypy108/imports3+1 PASS;after Hub setup,actual pinned editor
+courtyard17/default24/invalid3/corrupt1=45PASS,all exit0. Windows release build/hook exclusion
+PASS;standalone startup/save/shutdown smoke PASS(this host,not full release input suite).
+Earlier exit198 resolved;rendered screenshots inspected. Small642x500 Game view UI overlap
+retained as existing human-UX_NOT_ACCEPTED limit. Scene restored to pre-run bytes;39non-code
+inputs match. Parent QT-F02 IN_PROGRESS;no automatic next feature. [Receipt](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md).
+[New review request](docs/reviews/RS-REVIEW-CP03_RESUME_REQUEST.md) includes current limits.
+Fresh review ZIPs now get root START_REVIEW.md with opening prompt,
+specific request/read order and findings format;old delivered review snapshots stay immutable.
+
+Latest director request2026-10-15 authorizes next implementation under Sol's judgment.
+[QT-F02 first runtime unit](docs/work_orders/QT-F02_ROOM_BINDINGS.md) implements immutable3x3
+room bindings through shared Brain/durable/Python/Tk paths;legacy and courtyard have different
+IDs/placements. First unit DONE,parent IN_PROGRESS. [Receipt](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md):
+38focusedPASS,Ruff/format15/mypy106/imports3+1 PASS. Initial full1321PASS/6FAIL/3ERROR;
+1new legacy subclass issue fixed,8baseline dossier-EOL failures fixed by restoring exactly
+the existing approved bytes;affected84PASS,fresh full1330PASS362.34s,one clean complete run. No qualification hash or
+narrative fields changed. Larger maps/multiple targets/quests remain later;
+[CP03 packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md) PREPARED,feedback NOT_RECEIVED;obtain
+actual independent feedback and verify/repair/retest before broader expansion,except the
+explicit bounded Unity continuation above. No publication;frozen
+review archives preserved. Current host20pins/pip check PASS;source-mode mypy required here.
+Actual checkout C:/Reverie Saga;pre-update local work preserved in stash
+`pre-update-local-work-20261015`,not applied or counted as current-source acceptance.
 
 Before task-required runtime work on either computer,read [workstation setup](docs/WORKSTATION_SETUP.md).
 Director2026-10-12 authorizes discover/reuse/install of missing approved prerequisites for the
@@ -141,4 +175,4 @@ Director returned independent source review with partial Python execution. [Disp
 
 ## Current acceptance / next dependency
 
-CP04 feedback RECEIVED/13findings dispositioned/repair DONE;RS-CLIENT-003 first reviewed prototype DONE. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):local1292PASS308.53s/extracted1292PASS317.59s,focused22PASS,native24+corrupt1PASS,release hook absent,types/lint/format/imports/source preservation PASS. Earlier pending/READY/historical NEXT text is superseded. Original CP04/CP02 witnesses/ZIPs immutable;repaired witness/archive separate. No new blanket rights/final engine/standalone/release/human UX acceptance. QT-F02 bounded content-generalization order and CP03 precede broad320entry adaptation/import;no automatic next task. Native kill is while client awaiting attack;exact SQLite commit instruction/all crash timings are unobserved and belong to RS-RELEASE.
+CP04 feedback RECEIVED/13findings dispositioned/repair DONE;RS-CLIENT-003 first reviewed prototype DONE. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):local1292PASS308.53s/extracted1292PASS317.59s,focused22PASS,native24+corrupt1PASS,release hook absent,types/lint/format/imports/source preservation PASS. Earlier pending/READY/historical NEXT text is superseded. Original CP04/CP02 witnesses/ZIPs immutable;repaired witness/archive separate. No new blanket rights/final engine/standalone/release/human UX acceptance. QT-F02 first bounded runtime unit now implemented2026-10-15;CP03 before further scenario/world/broad320entry adaptation/import;no automatic next task. Native kill is while client awaiting attack;exact SQLite commit instruction/all crash timings are unobserved and belong to RS-RELEASE.

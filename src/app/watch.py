@@ -1,7 +1,9 @@
 from __future__ import annotations
 
+from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
+
 from collections.abc import Sequence
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 import hashlib
 import re
 import sys
@@ -11,16 +13,16 @@ from app.watch_registry import watch_bundle
 from contracts.events import QueuedEvent
 from contracts.messages import EventHeader, WorldEvent
 from contracts.watch import WatchWake
-from domain.watch import NPC_ID, LANTERN_ID, NPC_CELL, WatchNpcRecord, LanternRecord, ReplyRecord
+from domain.watch import WatchNpcRecord, LanternRecord, ReplyRecord
 from contracts.errors import BootstrapError
-from domain.encounter import ENEMY_ID, GATE_ID, GateRecord, HitPointsRecord, StaminaRecord
+from domain.encounter import GateRecord, HitPointsRecord, StaminaRecord
 from contracts.state_io import StateIO
 from contracts.turn import ProtocolSnapshot, RngService, StreamCursor
 from domain.canonical import canonical_json, pack
 from domain.primitives import EventId, Phase, Tick, WorldRevision, require_integer
 from domain.state_types import CoreSnapshot
 from domain.trial import (
-    ACTOR_ID, BLOCKED_CELLS, CELL_MM, HEIGHT, SPACE_ID, WIDTH,
+    CELL_MM, HEIGHT, WIDTH,
     CellPositionRecord, TrialMapRecord,
 )
 from orchestration.rng import CounterRngService
@@ -38,7 +40,8 @@ class WatchBootstrapSpec:
     stamina: int = 2
 
 
-def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None) -> tuple[HeadlessSession, StateIO]:
+def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None, scenario: Scenario = LEGACY_SCENARIO) -> tuple[HeadlessSession, StateIO]:
+    require_scenario(scenario)
     try:
         if (type(spec) is not WatchBootstrapSpec or
             type(spec.seed_hex) is not str or type(spec.branch_id) is not str or
@@ -52,43 +55,46 @@ def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None) -> tuple[Headle
         require_integer(spec.actor_hp, 0, 3)
         require_integer(spec.enemy_hp, 0, 5)
         require_integer(spec.stamina, 0, 2)
-        if (spec.initial_cell == 4 and spec.gate_open == 0 or
-            spec.initial_cell == 8 and spec.enemy_hp > 0):
+        if (spec.initial_cell == scenario.gate_cell and spec.gate_open == 0 or
+            spec.initial_cell == scenario.enemy_cell and spec.enemy_hp > 0):
             raise ValueError("occupied initial actor cell")
-        if spec.initial_cell in BLOCKED_CELLS:
+        if spec.initial_cell in scenario.blocked_cells:
             raise ValueError("initial actor occupies wall")
     except (ValueError, TypeError) as error:
         raise BootstrapError("INVALID_INITIAL_STATE", str(error)) from error
-    bundles = (watch_bundle(),)
+    bundles = (watch_bundle(scenario),)
     io = state_io(bundles)
     world_id = "w1-" + hashlib.sha256(pack(("world-id/v1", spec.seed_hex,
                                           io.pins.rules_fingerprint,
                                           io.pins.gameplay_catalog_hash))).hexdigest()
     identifier = EventId("e1-" + hashlib.sha256(pack(("event-id/v1", world_id, "0", "PRE_TICK", "0", "watch.npc", "0"))).hexdigest())
-    genesis = WorldEvent(EventHeader(identifier, WatchWake(NPC_ID).schema, "watch.npc", Tick(0), Phase.PRE_TICK, 0, 0, 0, (), ()), Tick(2), WatchWake(NPC_ID))
+    genesis = WorldEvent(EventHeader(identifier, WatchWake(scenario.npc_id).schema, "watch.npc", Tick(0), Phase.PRE_TICK, 0, 0, 0, (), ()), Tick(2), WatchWake(scenario.npc_id))
     pending = io.encode_pending(QueuedEvent(genesis, Phase.PRE_TICK, 10))
     core = CoreSnapshot(world_id, spec.seed_hex, Tick(0), (
-        GateRecord(GATE_ID, SPACE_ID, 4, spec.gate_open),
-        HitPointsRecord(ENEMY_ID, spec.enemy_hp),
-        HitPointsRecord(ACTOR_ID, spec.actor_hp),
-        StaminaRecord(ACTOR_ID, spec.stamina),
-        TrialMapRecord(SPACE_ID, WIDTH, HEIGHT, CELL_MM, BLOCKED_CELLS),
-        CellPositionRecord(ENEMY_ID, SPACE_ID, 8),
-        CellPositionRecord(ACTOR_ID, SPACE_ID, spec.initial_cell),
-        LanternRecord(LANTERN_ID, 0),
-        WatchNpcRecord(NPC_ID, SPACE_ID, NPC_CELL, 0),
-        ReplyRecord(NPC_ID, 0),
+        GateRecord(scenario.gate_id, scenario.space_id, scenario.gate_cell, spec.gate_open),
+        HitPointsRecord(scenario.enemy_id, spec.enemy_hp),
+        HitPointsRecord(scenario.actor_id, spec.actor_hp),
+        StaminaRecord(scenario.actor_id, spec.stamina),
+        TrialMapRecord(scenario.space_id, WIDTH, HEIGHT, CELL_MM, scenario.blocked_cells),
+        CellPositionRecord(scenario.enemy_id, scenario.space_id, scenario.enemy_cell),
+        CellPositionRecord(scenario.actor_id, scenario.space_id, spec.initial_cell),
+        LanternRecord(scenario.lantern_id, 0),
+        WatchNpcRecord(scenario.npc_id, scenario.space_id, scenario.npc_cell, 0),
+        ReplyRecord(scenario.npc_id, 0),
     ), (pending,), io.pins)
     protocol = ProtocolSnapshot(spec.branch_id, WorldRevision(0),
-                                (StreamCursor(spec.stream_id, ACTOR_ID, 0, "active"),), ())
+                                (StreamCursor(spec.stream_id, scenario.actor_id, 0, "active"),), ())
+    core = replace(core, components=tuple(sorted(
+        core.components, key=lambda record: (record.schema.kind, record.schema.version, record.entity_id)
+    )))
     session = _restore(core, protocol, bundles,
                        rng if rng is not None else CounterRngService(spec.seed_hex, world_id, ()),
                        io=io)
     return session, io
 
 
-def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None) -> HeadlessSession:
-    return _bootstrap(spec, rng)[0]
+def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None, scenario: Scenario = LEGACY_SCENARIO) -> HeadlessSession:
+    return _bootstrap(spec, rng, scenario)[0]
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -54,6 +54,21 @@ The original working file remains a separate branch. Closing drains accepted wor
 and closes SQLite on its single owner thread;game/save work never runs on the Tk thread.
 This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC or release QA.
 
+The first QT-F02 unit also supplies a courtyard with different wall,door,enemy,NPC and role
+identities through the same rules. Start it with its own working path:
+
+```powershell
+$env:PYTHONPATH = "$PWD/src"
+.\.venv\Scripts\python.exe -m app.client --scenario scenario:courtyard --working tmp/client-courtyard/game.sqlite
+```
+
+Courtyard example:Up → Attack → Attack → Rest → Attack. To reach its door from the starting
+cell:Up → Right → Up → Open → Right. Resuming this save requires the same --scenario;
+loading a different scenario's slot rejects the mismatch and preserves current progress.
+The default is scenario:legacy and retains the existing saves/replays. Both rooms remain3x3
+with one door/enemy/NPC;larger worlds and multi-target selection are later work. This selection
+is available in the Tk/Python client and Unity through the startup selection below.
+
 ## Unity graphical prototype
 
 Unity6000.3.25f1 is installed on the observed host and connected to the same Python Brain.
@@ -61,6 +76,15 @@ Unity6000.3.25f1 is installed on the observed host and connected to the same Pyt
 from content/narratives.json. CP04 feedback/repair accepted:24play/failure checks plus1corrupt-save check PASS;
 release verification hook absent. Standalone launch is blocked by current-host Windows application control.
 Other-device setup/native verification and final-engine/HD-2D release acceptance remain pending.
+The2026-10-15 courtyard selection unit has75focused Python/tool checks and editor/release C#
+compile PASS. After Hub setup,the pinned Program Files editor recognized Personal and opened
+this project with successful initial import/script compilation;earlier exit198 is resolved.
+Latest courtyard17/default24/invalid3/corrupt1=45native checks PASS;Windows release build and
+verification-hook exclusion PASS. Actual standalone startup/save/shutdown smoke also PASS
+on this host. This supersedes earlier blocked launch evidence for this run;small-viewport UI
+overlap/human UX,portable packaging and full standalone fault/input acceptance remain pending.
+[Current receipt](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md);older CP04 results above
+are historical and do not qualify this host's courtyard.
 
 ## Verification
 

@@ -12,6 +12,7 @@ from adapters.narrative_catalog import compile_catalog, decode_catalog
 from app.engine_bridge import REQUEST_FIELDS, RESPONSE_FIELDS, SCHEMA_HASH
 from contracts.client import ClientUpdate, ClientView
 from contracts.narratives import Narrative, NarrativeCategory
+from domain.scenario import COURTYARD_SCENARIO, LEGACY_SCENARIO
 from domain.canonical import (
     JsonObject,
     array_value,
@@ -64,6 +65,10 @@ def generate_wire() -> str:
         + _class("WireResponse", tuple((name, wire_csharp_type(t)) for name, t in RESPONSE_FIELDS))
         + _class("WireRequest", tuple((f, "string") for f in REQUEST_FIELDS))
         + f'public static class WireSchema {{ public const string Hash = "{SCHEMA_HASH}"; }}\n'
+        + "public static class WireScenarios {\n"
+        + f'    public const string Legacy = "{LEGACY_SCENARIO.scenario_id}";\n'
+        + f'    public const string Courtyard = "{COURTYARD_SCENARIO.scenario_id}";\n'
+        + "}\n"
         + "}\n"
     )
 

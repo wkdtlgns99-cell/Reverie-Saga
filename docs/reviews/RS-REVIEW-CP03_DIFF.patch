@@ -1,0 +1,2500 @@
+diff --git a/BACKLOG.md b/BACKLOG.md
+index 17cbe99..e5a230f 100644
+--- a/BACKLOG.md
++++ b/BACKLOG.md
+@@ -1,10 +1,27 @@
+ # Reverie Saga — Backlog
+ 
+-Updated:2026-10-12 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
++Updated:2026-10-15 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
+ Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SESSION_HANDOFF.md) before execution.
+ Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
+ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
+ 
++## Current Next — QT-F02 First Runtime Unit 2026-10-15
++
++- Director now authorizes proceeding under Sol's judgment. [First runtime unit](docs/work_orders/QT-F02_ROOM_BINDINGS.md)
++  defines and implements immutable3x3 room bindings through existing Brain/durability/Python
++  client/Tk paths. Legacy room and courtyard differ in all role IDs and placements;default
++  pins/goldens/save envelope retained. First unit DONE;parent IN_PROGRESS.
++- [Receipt](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md):38focusedPASS including real Tk,
++  worker,save/load/retry/recovery and fresh-process replay;Ruff/format15/mypy106/imports3+1 PASS.
++  Initial full1321PASS/6FAIL/3ERROR;1new subclass issue repaired and8baseline dossier-EOL
++  failures repaired by restoring the exact existing qualification hash,without field/hash edits.
++  Entire affected84case selection PASS;fresh full1330PASS362.34s,one clean complete run.
++- Next gate is [CP03 independent review](docs/reviews/RS-REVIEW-CP03_REQUEST.md),packet PREPARED/
++  feedback NOT_RECEIVED,before further scenario/world/bulk expansion.
++  Larger geometry,multiple targets,quests and Unity courtyard integration remain later scopes.
++  Historical CP04 acceptance/frozen archives and pre-update stash preserved;no publication.
++  Actual workspace C:/Reverie Saga;20local pins qualified,not the other host's native readiness.
++
+ ## Workstation Prerequisites — Director Request 2026-10-12
+ 
+ - RS-ENV-001 DONE for [setup routing/documentation](docs/work_orders/RS-ENV-001_WORKSTATION_HANDOFF.md);
+@@ -41,8 +58,8 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
+   six existing narrative selections:[terms/decisions](docs/work_orders/QT-F04_GENERATION_TERMS.md).
+   ChatGPT free web/Gemini paid web,approximately late August/early September2026,declared by director;
+   official consumer terms and selected text checked. Broader corpus/assets remain unqualified.
+-- After the first-priority engine prototype:author the bounded QT-F02 scenario/content-
+-  generalization order;implementation remains DEFERRED until separately authorized.
++- After the first-priority engine prototype:bounded QT-F02 scenario/content-generalization
++  order authored2026-10-15;first bounded runtime unit DONE,CP03 review packet prepared.
+   CP02 is already DONE;QT-F06 now imports the qualified6descriptive samples only.
+ - Director explicitly requires later RS-V1-MIGRATION to screen and reuse suitable narrative
+   material across the Quilltale template pool,beyond the initial6samples. Include settlement/
+@@ -100,7 +117,7 @@ Scheduling was authorized2026-10-07;recording alone executed no review. CP01's s
+ |---|---|---|---|
+ | RS-REVIEW-CP01 | DONE | After QUALITY-05 + CLIENT-002;before next gameplay/core/client expansion | [Feedback/dispositions](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md) RECEIVED/[repair accepted](docs/work_orders/RS-REVIEW-CP01_REPAIR.md):F1/F2 SQLite/Future failures and F3 clone-count repaired;10FAIL→10PASS,focused87PASS/replays45PASS/full1252PASS313.32s,native lint/format/types/imports/docs/scope PASS. F4 nonblocking risks routed with rationale to RS-STRUCT-001;patch self-review/native acceptance,not external patch rereview. Original packet historical;CP02/rights/graphics/GOV-03 unchanged |
+ | RS-REVIEW-CP02 | DONE | Actual full-input document-consistency feedback2026-10-12;closure before reuse,rights independently held | [Full feedback/verified dispositions](docs/reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md)/[repair acceptance](docs/work_orders/RS-REVIEW-CP02_FULL_REPAIR.md)/[final witness](docs/reviews/RS-REVIEW-CP02_INPUTS.json):D-1/W1/G1-G3 repaired,self-accepted;4local original-byte transforms verified. Claude did not fetch upstream/run originals/runtime;patch external rereview NOT_RECEIVED. QT-F04 six-candidate qualification subsequently accepted;QT-F06 later imports6descriptions,no blanket corpus clearance |
+-| RS-REVIEW-CP03 | DEFERRED | After QT-F02 content generalization + first small playable content segment,when authorized;before more engines/bulk content | Multiple independent scenarios,no fixed-target leakage,live consumers/quest consequences/bounds,integrated save-load/replay;hold scenario/world expansion until valid findings repaired |
++| RS-REVIEW-CP03 | READY_FOR_REVIEW / first room unit | QT-F02 first bounded Python/Tk unit DONE2026-10-15;before further scenario/world/bulk expansion | [Packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md) PREPARED;38focused/full1330PASS;two room identities/placements,live input/projection/save-load/recovery/replay. Feedback NOT_RECEIVED;quests/larger worlds/Unity courtyard remain unimplemented;hold expansion until feedback/verified repairs |
+ | RS-REVIEW-CP04 | DONE / feedback +bounded repair | First Unity room/6description import implemented and natively verified;before final engine commitment/bulk assets | [Packet](docs/reviews/RS-REVIEW-CP04_REQUEST.md); CORE ownership,coordinate/identity mapping,input/retry/resync,load/UI history,asset provenance/scale/pivot and measured render performance;not final art approval |
+ | RS-REVIEW-CP05 | DEFERRED | At first major NPC memory/quest/save-contract change:before implementation for contracts,then after first integrated implementation | Determinism,causal events,memory bounds,persistence/migration/compatibility/failure cases;hold implementation until contract pass and larger integration until repair/retest pass. Track both review passes separately |
+ | RS-REVIEW-CP06 | DEFERRED | After integrated feature/content freeze;before RS-RELEASE acceptance/public distribution | Native full regression/replays/crash/offline/device/build/license evidence and unresolved findings;hold release. Review is not release QA or permission to publish |
+@@ -112,7 +129,7 @@ RS-REVIEW-QT-001 DONE for [Quilltale feedback storage/triage](docs/reviews/CLAUD
+ | ID | State | Follow-up / entry and acceptance |
+ |---|---|---|
+ | QT-F01 | DONE / feedback and next order | [Playtest record](docs/reviews/QT-F01_PLAYTEST_2026-10-07.md):human feedback recorded;bounded RS-CLIENT-002 order authored and accepted. Original UX_NOT_ACCEPTED retained;graphics deferred by director,not final HD-2D or human acceptance of the updated panel |
+-| QT-F02 | DEFERRED | Generalize fixed scenario targets/content only when needed;content contract plus multiple independent scenarios before reusable-content claims;no v1 engine/formula/schema port;then CP03 review/repair before further expansion |
++| QT-F02 | IN_PROGRESS / first unit DONE | [Room bindings](docs/work_orders/QT-F02_ROOM_BINDINGS.md):legacy/courtyard through shared Brain/durable/Python/Tk paths,38focused/full1330PASS. [Parent order](docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md) retains broader scope;CP03 packet PREPARED/feedback pending before expansion;no v1 engine/formula/schema port |
+ | QT-F03 | DONE | [Document compaction acceptance](docs/work_orders/QT-F03_DOCUMENT_COMPACTION.md);complete linked snapshots recover exactly after presentation normalization,42task rows retained,UTF8/links/fragments/hash/scope checks PASS;no gameplay change |
+ | QT-F04 | DONE / six-candidate qualification | [Investigation](docs/work_orders/QT-F04_PROVENANCE.md)/[generation and use acceptance](docs/work_orders/QT-F04_GENERATION_TERMS.md):director-declared ChatGPT free web/Gemini paid web,late Aug/early Sep2026;official consumer terms checked;6original/adapted selections individually screened and qualified for future narrative adaptation. Exact prompts/models/per-tool split unrecorded;no legal guarantee,whole-corpus/template/assets/license/import/release clearance |
+ | QT-F06 | DONE / compiler +6sample +326ledger | [Actual import](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md):new narrative definitions/hash-pinned accepted compiler,15focused tests and live Unity display;326per-entry dispositions/source preserved. Bulk/runtime templates remain held |
+diff --git a/GAME_SYSTEM_SUMMARY_KO.md b/GAME_SYSTEM_SUMMARY_KO.md
+index 1701769..507ea84 100644
+--- a/GAME_SYSTEM_SUMMARY_KO.md
++++ b/GAME_SYSTEM_SUMMARY_KO.md
+@@ -1,11 +1,15 @@
+ # Reverie Saga — 게임 시스템 진행 요약
+ 
+-마지막 갱신: 2026-10-12
++마지막 갱신: 2026-10-15
+ 
+ 이 파일은 지금까지 무엇을 만들었는지 사용자가 쉽게 확인하는 한국어 요약이다. 정확한 작업 상태와 검증 근거는 [백로그](BACKLOG.md), [인수인계](SESSION_HANDOFF.md), 각 작업지시서에 기록한다. 설계·작업지시서 작성과 실제 기능 구현은 구분한다.
+ 
+ ## 최근 완료와 남은 작업
+ 
++**2026-10-15 QT-F02 첫 게임 코드 구현 완료:** 기존 방과 ID·벽·문·적·NPC 배치가 다른 안뜰을 같은 게임 코드로 실행하도록 구현했다. 실제 Tk 버튼,전투·NPC·저장/불러오기·중복 명령·복구·리플레이 집중 검사 38개와 최종 전체 검사 **1,330개(362.34초)**가 모두 통과했으며,초기 상속 호환 문제와 기존 콘텐츠의 승인 원본 줄바꿈 차이는 수정·재검증했다. 아래 작업지시서 작성 당시의 DRAFT를 이 작은 구현 범위에 한해 갱신했으며,두 방은 3×3을 유지하고 Unity 안뜰 적용·큰 월드·퀘스트·대량 이식은 아직이다. 현재는 **QT-F02 첫 구현·검증 완료 → CP03(3차 독립 검토)** 과정이며,[검토 자료](docs/reviews/RS-REVIEW-CP03_REQUEST.md)를 준비했고 실제 피드백은 아직 받지 않았다.
++
++**2026-10-15 QT-F02 다음 작업 실행:** 최신 인수인계가 지정한 [시나리오 일반화 작업지시서 작성](docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md)을 완료했다. 문·적·NPC의 고정 연결이 엔진·명령 검사·저장·화면에 걸쳐 있는 것을 확인하고,계약 확정 → 두 시나리오 구현 → 화면 연결 → CP03 검토 순서와 검증 조건을 정리했다. 문서 검사 5개와 링크·형식·변경 범위 검사를 통과했으며 게임 기능은 바꾸지 않았고,실제 구현은 정확한 콘텐츠·저장·통신 계약을 먼저 확정해야 하는 DRAFT 상태다. 현재는 첫 Unity 프로토타입·CP04 완료 후,콘텐츠 확장과 **CP03(세 번째 검토 지점)**에 앞선 준비 과정이며,전체 로드맵의 게임플레이 확장에 해당한다.
++
+ **2026-10-12 두 컴퓨터 작업 준비 기록:** [기기별 설치·검증 안내](docs/WORKSTATION_SETUP.md)를 만들고 AGENTS·백로그·인수인계·실행 안내에 연결했다. 새 세션에서는 현재 컴퓨터에 필요한 도구가 있는지 먼저 찾아 재사용하고,없으면 승인된 버전을 설치·검증한 뒤 해당 작업을 진행하도록 기록했다. Git으로 소스·프로젝트·버전 정보는 옮겨지지만,Unity 편집기·Python 가상환경·로그인·라이선스·캐시·개인 저장은 따로 준비해야 한다. 지금 확인된 설치 결과를 두 컴퓨터 모두 완료한 것으로 표시하지 않았고,다른 기기의 설치·실행 확인은 그 기기에서 작업할 때 해야 한다. 이번에는 문서만 변경했고 다른 컴퓨터에 접속하거나 게임 기능을 추가하지 않았다.
+ 
+ **2026-10-12 CP04 클로드 검토 후 수정:** 답변을 받아 오류 메시지가 가려지는 문제,후보별 승인 검사·통신 해시 부족,종료 대기·재연결·검증 조건을 수정했다. Unity에서 손상 저장 진단 1개와 실제 플레이·실패 경로 24개가 통과했고,공격 응답 대기 중 강제 종료 후에도 상태가 변경 전 또는 한 번 적용된 결과로 복구되는 것을 확인했다. 출시 빌드에서는 검증용 훅을 제거했다. Python 전체 1,292개(308.53초),집중 22개 테스트가 통과했으며,누락된 검토 ZIP 자료도 보완했고,새로 풀어 전체 테스트 1,292개(317.59초)가 통과했다. 클로드의 실제 지적 13개를 대조·수정·재검증해 첫 Unity 연결 범위의 CP04를 완료 처리했다. 수정본을 클로드가 다시 검토한 것은 아니다. 나머지 320개 콘텐츠는 미승인으로 명확히 표시했고 기존 원본·검토 자료는 보존했다.
+diff --git a/README.md b/README.md
+index b44e68f..93b0eac 100644
+--- a/README.md
++++ b/README.md
+@@ -54,6 +54,21 @@ The original working file remains a separate branch. Closing drains accepted wor
+ and closes SQLite on its single owner thread;game/save work never runs on the Tk thread.
+ This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC or release QA.
+ 
++The first QT-F02 unit also supplies a courtyard with different wall,door,enemy,NPC and role
++identities through the same rules. Start it with its own working path:
++
++```powershell
++$env:PYTHONPATH = "$PWD/src"
++.\.venv\Scripts\python.exe -m app.client --scenario scenario:courtyard --working tmp/client-courtyard/game.sqlite
++```
++
++Courtyard example:Up → Attack → Attack → Rest → Attack. To reach its door from the starting
++cell:Up → Right → Up → Open → Right. Resuming this save requires the same --scenario;
++loading a different scenario's slot rejects the mismatch and preserves current progress.
++The default is scenario:legacy and retains the existing saves/replays. Both rooms remain3x3
++with one door/enemy/NPC;larger worlds and multi-target selection are later work. This selection
++is available in the Tk/Python client;Unity continues to launch the original prototype.
++
+ ## Unity graphical prototype
+ 
+ Unity6000.3.25f1 is installed on the observed host and connected to the same Python Brain.
+diff --git a/SESSION_HANDOFF.md b/SESSION_HANDOFF.md
+index e159614..d07185a 100644
+--- a/SESSION_HANDOFF.md
++++ b/SESSION_HANDOFF.md
+@@ -1,12 +1,26 @@
+ # Reverie Saga — Session Handoff
+ 
+-Date:2026-10-12 | Stage:CP04_FEEDBACK_REPAIR_ACCEPTED/UNITY_PROTOTYPE_DONE/QT_F06_SAMPLE_IMPORTED
++Date:2026-10-15 | Stage:QT_F02_ROOM_BINDINGS_ACCEPTED/CP03_PACKET_PREPARED
+ Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
+ Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
+ Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
+ 
+ ## Resume Reads
+ 
++Latest director request2026-10-15 authorizes next implementation under Sol's judgment.
++[QT-F02 first runtime unit](docs/work_orders/QT-F02_ROOM_BINDINGS.md) implements immutable3x3
++room bindings through shared Brain/durable/Python/Tk paths;legacy and courtyard have different
++IDs/placements. First unit DONE,parent IN_PROGRESS. [Receipt](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md):
++38focusedPASS,Ruff/format15/mypy106/imports3+1 PASS. Initial full1321PASS/6FAIL/3ERROR;
++1new legacy subclass issue fixed,8baseline dossier-EOL failures fixed by restoring exactly
++the existing approved bytes;affected84PASS,fresh full1330PASS362.34s,one clean complete run. No qualification hash or
++narrative fields changed. Larger maps/multiple targets/quests/Unity courtyard remain later;
++[CP03 packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md) PREPARED,feedback NOT_RECEIVED;obtain
++actual independent feedback and verify/repair/retest before expansion. No publication;frozen
++review archives preserved. Current host20pins/pip check PASS;source-mode mypy required here.
++Actual checkout C:/Reverie Saga;pre-update local work preserved in stash
++`pre-update-local-work-20261015`,not applied or counted as current-source acceptance.
++
+ Before task-required runtime work on either computer,read [workstation setup](docs/WORKSTATION_SETUP.md).
+ Director2026-10-12 authorizes discover/reuse/install of missing approved prerequisites for the
+ active task;verify locally before proceeding. Git does not transfer Unity/Python installations,
+@@ -141,4 +155,4 @@ Director returned independent source review with partial Python execution. [Disp
+ 
+ ## Current acceptance / next dependency
+ 
+-CP04 feedback RECEIVED/13findings dispositioned/repair DONE;RS-CLIENT-003 first reviewed prototype DONE. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):local1292PASS308.53s/extracted1292PASS317.59s,focused22PASS,native24+corrupt1PASS,release hook absent,types/lint/format/imports/source preservation PASS. Earlier pending/READY/historical NEXT text is superseded. Original CP04/CP02 witnesses/ZIPs immutable;repaired witness/archive separate. No new blanket rights/final engine/standalone/release/human UX acceptance. QT-F02 bounded content-generalization order and CP03 precede broad320entry adaptation/import;no automatic next task. Native kill is while client awaiting attack;exact SQLite commit instruction/all crash timings are unobserved and belong to RS-RELEASE.
++CP04 feedback RECEIVED/13findings dispositioned/repair DONE;RS-CLIENT-003 first reviewed prototype DONE. [Dispositions](docs/reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md):local1292PASS308.53s/extracted1292PASS317.59s,focused22PASS,native24+corrupt1PASS,release hook absent,types/lint/format/imports/source preservation PASS. Earlier pending/READY/historical NEXT text is superseded. Original CP04/CP02 witnesses/ZIPs immutable;repaired witness/archive separate. No new blanket rights/final engine/standalone/release/human UX acceptance. QT-F02 first bounded runtime unit now implemented2026-10-15;CP03 before further scenario/world/broad320entry adaptation/import;no automatic next task. Native kill is while client awaiting attack;exact SQLite commit instruction/all crash timings are unobserved and belong to RS-RELEASE.
+diff --git a/docs/WORKSTATION_SETUP.md b/docs/WORKSTATION_SETUP.md
+index 2b6591e..7973f5c 100644
+--- a/docs/WORKSTATION_SETUP.md
++++ b/docs/WORKSTATION_SETUP.md
+@@ -1,6 +1,6 @@
+ # Workstation Setup — Laptop and Other PC
+ 
+-Updated:2026-10-12. Installation/discovery SSOT for the two director-owned computers.
++Updated:2026-10-15. Installation/discovery SSOT for the two director-owned computers.
+ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification),
+ [Unity run/build](../clients/unity/README.md). Source baseline:63670be2.
+ 
+@@ -99,3 +99,39 @@ credentials were copied and no reinstallation/login was needed on the current ho
+ 
+ Instruction-discovery reference:[OpenAI Docs AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
+ AGENTS is the entry route;BACKLOG is an explicit linked read,not an installer trigger itself.
++
++## QT-F02 current-workspace qualification — 2026-10-15
++
++Actual checkout:C:/Reverie Saga;local .venv probes CPython3.13.12 AMD64/Tk8.6. Device mapping
++to the two named computers remains unconfirmed. Reused this environment;no Unity work or
++editor installation required for this Python/Tk unit. No second-device qualification inferred.
++
++Initial13locked packages lacked click/coverage/grimp/import-linter/markdown-it-py/mdurl/rich.
++Sandboxed pip could not resolve its index;permitted
++`.venv/Scripts/python.exe -m pip install --require-hashes -r requirements-dev.lock --retries 0`
++installed those7exact locked packages. The lock was unchanged;pip check PASS. No upgrades.
++The base-location shim warning persists while actual Python/Tk/tests run successfully.
++
++Installed mypy2.4.0's fscache native module is blocked by OS application control,including a
++permitted retry. Strict checking succeeds using the *same installed package's Python source*
++and data copied to ignored tmp/qtf02/typecheck/mypy with .pyd/.pyc/__pycache__ excluded:
++
++```powershell
++$env:PYTHONPATH = "$PWD/tmp/qtf02/typecheck;$PWD/src"
++.\.venv\Scripts\python.exe -m mypy --no-native-parser
++```
++
++Original installed sources/binaries remain unchanged. This is source execution of the pinned
++checker,not native-module qualification or a security-policy change. Shared/selective Ruff,
++strict mypy106files and both Import Linter configs PASS;actual gameplay/full results belong
++to the linked [unit receipt](reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md). Another computer must
++discover/reuse/install and qualify its own environment;do not copy this .venv or infer Unity
++license/build/native readiness from Python results.
++
++This clone initially had LF dossier bytes SHA7923b65e… while the unchanged QT-F04 receipt pins
++its original CRLF bytes SHAb10e8dca…. Exact LF→CRLF reconstruction matched the full approved
++hash before restoration;original LF bytes retained in ignored tmp/qtf02. No narrative fields,
++Git-normalized blob,qualification or frozen witness changed. Before running the narrative
++sample compiler on another clone,verify its raw dossier SHA against candidate_dossier_sha256;
++restore a newline representation only if the exact result matches that existing approval.
++Do not regenerate approvals or accept mismatches. The execution receipt retains both full hashes.
+diff --git a/src/app/client.py b/src/app/client.py
+index 4909433..10a4a66 100644
+--- a/src/app/client.py
++++ b/src/app/client.py
+@@ -16,6 +16,7 @@ from tkinter import ttk
+ from app.client_worker import ClientWorker
+ from app.client_text import status_text
+ from contracts.client import ClientRequest, ClientUpdate, ClientView
++from domain.scenario import LEGACY_SCENARIO, Scenario, scenario_by_id
+ from domain.encounter import ACTOR_HP_MAX, ENEMY_HP_MAX, STAMINA_MAX
+ from domain.watch import CHARGE_MAX, WAIT_MAX
+ 
+@@ -53,9 +54,11 @@ KEYS: dict[str, ClientRequest] = {
+ 
+ 
+ class PlayWindow:
+-    def __init__(self, root: tk.Tk | tk.Toplevel, path: Path) -> None:
++    def __init__(
++        self, root: tk.Tk | tk.Toplevel, path: Path, *, scenario: Scenario = LEGACY_SCENARIO
++    ) -> None:
+         self.root = root
+-        self.worker = ClientWorker(path)
++        self.worker = ClientWorker(path, scenario=scenario)
+         self.view: ClientView | None = None
+         self.last_update: ClientUpdate | None = None
+         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
+@@ -348,9 +351,11 @@ class PlayWindow:
+ def main(argv: Sequence[str] | None = None) -> int:
+     parser = argparse.ArgumentParser(description="Provisional Reverie Saga playable harness")
+     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
++    parser.add_argument("--scenario", default=LEGACY_SCENARIO.scenario_id)
+     args = parser.parse_args(argv)
++    scenario = scenario_by_id(args.scenario)
+     root = tk.Tk()
+-    window = PlayWindow(root, args.working)
++    window = PlayWindow(root, args.working, scenario=scenario)
+     try:
+         root.mainloop()
+     finally:
+diff --git a/src/app/client_session.py b/src/app/client_session.py
+index 1345e5d..8a82061 100644
+--- a/src/app/client_session.py
++++ b/src/app/client_session.py
+@@ -2,6 +2,8 @@
+ 
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
++
+ from pathlib import Path
+ 
+ from app.client_text import status_text, turn_messages
+@@ -17,16 +19,14 @@ from contracts.turn import GameCommand, TurnCommitted, TurnPublication
+ from contracts.watch import BellCommand, WaitCommand
+ from domain.encounter import (
+     ATTACK_PROFILE_ID,
+-    ENEMY_ID,
+-    GATE_ID,
+     GateRecord,
+     HitPointsRecord,
+     StaminaRecord,
+ )
+ from domain.primitives import CommandId, EntityId
+ from domain.state_types import ComponentRecord, CoreSnapshot
+-from domain.trial import ACTOR_ID, SPACE_ID, CellPositionRecord, TrialMapRecord
+-from domain.watch import LANTERN_ID, NPC_ID, LanternRecord, ReplyRecord, WatchNpcRecord
++from domain.trial import CellPositionRecord, TrialMapRecord
++from domain.watch import LanternRecord, ReplyRecord, WatchNpcRecord
+ 
+ 
+ def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: EntityId) -> T:
+@@ -36,7 +36,9 @@ def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: Entit
+     return records[0]
+ 
+ 
+-def _payload(action: ClientAction, seconds: int) -> CommandPayload:
++def _payload(
++    action: ClientAction, seconds: int, scenario: Scenario = LEGACY_SCENARIO
++) -> CommandPayload:
+     match action:
+         case "up":
+             return MoveCommand(0, -1)
+@@ -47,15 +49,15 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
+         case "right":
+             return MoveCommand(1, 0)
+         case "open" | "close":
+-            return InteractCommand(GATE_ID, action)
++            return InteractCommand(scenario.gate_id, action)
+         case "attack":
+-            return AttackCommand(ENEMY_ID, ATTACK_PROFILE_ID)
++            return AttackCommand(scenario.enemy_id, ATTACK_PROFILE_ID)
+         case "rest":
+             return RestCommand()
+         case "wait":
+             return WaitCommand(seconds)
+         case "bell":
+-            return BellCommand(NPC_ID)
++            return BellCommand(scenario.npc_id)
+         case _:
+             raise ValueError("UNKNOWN_CLIENT_ACTION")
+ 
+@@ -63,12 +65,19 @@ def _payload(action: ClientAction, seconds: int) -> CommandPayload:
+ class ClientSession:
+     """All calls, including construction and close, belong to one owner thread."""
+ 
+-    def __init__(self, path: Path) -> None:
+-        bundles = (watch_bundle(),)
++    def __init__(self, path: Path, *, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        require_scenario(scenario)
++        self._scenario = scenario
++        bundles = (watch_bundle(scenario),)
+         if path.exists():
+             self._owner = resume_durable(path, bundles=bundles)
+         else:
+-            initial = bootstrap_watch(WatchBootstrapSpec("0" * 64, "0" * 32, "1" * 32))
++            initial = bootstrap_watch(
++                WatchBootstrapSpec(
++                    "0" * 64, "0" * 32, "1" * 32, initial_cell=scenario.initial_cell
++                ),
++                scenario=scenario,
++            )
+             self._owner = create_durable(
+                 path, DurableCheckpoint(initial.snapshot(), initial.protocol()), bundles=bundles
+             )
+@@ -88,24 +97,24 @@ class ClientSession:
+         reset_log: bool = False,
+     ) -> ClientUpdate:
+         core = self._owner.snapshot()
+-        board = _record(core, TrialMapRecord, SPACE_ID)
+-        gate = _record(core, GateRecord, GATE_ID)
+-        npc = _record(core, WatchNpcRecord, NPC_ID)
++        board = _record(core, TrialMapRecord, self._scenario.space_id)
++        gate = _record(core, GateRecord, self._scenario.gate_id)
++        npc = _record(core, WatchNpcRecord, self._scenario.npc_id)
+         view = ClientView(
+             board.width,
+             board.height,
+             board.blocked_cells,
+-            _record(core, CellPositionRecord, ACTOR_ID).cell,
++            _record(core, CellPositionRecord, self._scenario.actor_id).cell,
+             gate.cell,
+             bool(gate.is_open),
+-            _record(core, CellPositionRecord, ENEMY_ID).cell,
+-            _record(core, HitPointsRecord, ACTOR_ID).hp,
+-            _record(core, HitPointsRecord, ENEMY_ID).hp,
+-            _record(core, StaminaRecord, ACTOR_ID).value,
++            _record(core, CellPositionRecord, self._scenario.enemy_id).cell,
++            _record(core, HitPointsRecord, self._scenario.actor_id).hp,
++            _record(core, HitPointsRecord, self._scenario.enemy_id).hp,
++            _record(core, StaminaRecord, self._scenario.actor_id).value,
+             npc.cell,
+             npc.bells,
+-            _record(core, ReplyRecord, NPC_ID).count,
+-            _record(core, LanternRecord, LANTERN_ID).charge,
++            _record(core, ReplyRecord, self._scenario.npc_id).count,
++            _record(core, LanternRecord, self._scenario.lantern_id).charge,
+             core.tick,
+             self._owner.protocol().revision,
+         )
+@@ -131,13 +140,17 @@ class ClientSession:
+             diagnostic.code for diagnostic in publication.diagnostics
+         )
+         return self.update(
+-            status, notices, messages=turn_messages(publication, wait_seconds=wait_seconds)
++            status,
++            notices,
++            messages=turn_messages(publication, wait_seconds=wait_seconds, scenario=self._scenario),
+         )
+ 
+     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
+         protocol = self._owner.protocol()
+         streams = tuple(
+-            s for s in protocol.streams if s.status == "active" and s.actor_id == ACTOR_ID
++            s
++            for s in protocol.streams
++            if s.status == "active" and s.actor_id == self._scenario.actor_id
+         )
+         if len(streams) != 1:
+             raise ValueError("CLIENT_ACTIVE_STREAM")
+@@ -145,7 +158,12 @@ class ClientSession:
+         identifier = CommandId(
+             f"c1:{protocol.branch_id}:{stream.stream_id}:{stream.highest_committed_sequence + 1}"
+         )
+-        command = GameCommand(identifier, ACTOR_ID, protocol.revision, _payload(action, seconds))
++        command = GameCommand(
++            identifier,
++            self._scenario.actor_id,
++            protocol.revision,
++            _payload(action, seconds, self._scenario),
++        )
+         token = self._owner.attachment_id
+         self._previous = command, token
+         before_tick = self._owner.snapshot().tick
+diff --git a/src/app/client_text.py b/src/app/client_text.py
+index 50ecfa7..a60707d 100644
+--- a/src/app/client_text.py
++++ b/src/app/client_text.py
+@@ -2,6 +2,8 @@
+ 
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from contracts.encounter import (
+     AttackResolved,
+     Defeated,
+@@ -20,12 +22,9 @@ from contracts.watch import (
+     WatchRequested,
+     WatchWake,
+ )
+-from domain.encounter import ENEMY_ID, GATE_ID
+ from domain.primitives import EntityId
+-from domain.trial import ACTOR_ID
+-from domain.watch import NPC_ID, WAIT_MAX
++from domain.watch import WAIT_MAX
+ 
+-NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문"}
+ STATUS_TEXT = {
+     "ATTACHED": "게임에 연결했습니다. 행동 결과는 아래 기록창에 표시됩니다.",
+     "CONNECTING": "게임에 연결하는 중입니다.",
+@@ -86,12 +85,18 @@ def status_text(code: str) -> str:
+     return f"{message} ({code})"
+ 
+ 
+-def _name(entity: EntityId) -> str:
+-    return NAMES.get(entity, str(entity))
++def _name(entity: EntityId, scenario: Scenario = LEGACY_SCENARIO) -> str:
++    names = {
++        scenario.actor_id: "플레이어",
++        scenario.enemy_id: "적",
++        scenario.npc_id: "NPC",
++        scenario.gate_id: "문",
++    }
++    return names.get(entity, str(entity))
+ 
+ 
+-def _attack_text(payload: AttackResolved) -> tuple[str, ...]:
+-    actor, target = _name(payload.actor_id), _name(payload.target_id)
++def _attack_text(payload: AttackResolved, scenario: Scenario = LEGACY_SCENARIO) -> tuple[str, ...]:
++    actor, target = _name(payload.actor_id, scenario), _name(payload.target_id, scenario)
+     damage = payload.target_hp_before - payload.target_hp_after
+     lines = [
+         f"{actor} → {target}: 공격, 피해 {damage} "
+@@ -107,13 +112,16 @@ def _attack_text(payload: AttackResolved) -> tuple[str, ...]:
+     return tuple(lines)
+ 
+ 
+-def fact_messages(payload: FactPayload) -> tuple[str, ...]:
++def fact_messages(payload: FactPayload, scenario: Scenario = LEGACY_SCENARIO) -> tuple[str, ...]:
++    def name(entity: EntityId) -> str:
++        return _name(entity, scenario)
++
+     match payload:
+         case AttackResolved():
+-            return _attack_text(payload)
++            return _attack_text(payload, scenario)
+         case EncounterMoved():
+             return (
+-                f"{_name(payload.actor_id)}가 {payload.from_cell}번 칸에서 "
++                f"{name(payload.actor_id)}가 {payload.from_cell}번 칸에서 "
+                 f"{payload.to_cell}번 칸으로 이동했습니다.",
+             )
+         case EncounterMoveBlocked():
+@@ -121,28 +129,28 @@ def fact_messages(payload: FactPayload) -> tuple[str, ...]:
+         case GateChanged():
+             state = "열려" if payload.after_open else "닫혀"
+             if payload.before_open == payload.after_open:
+-                return (f"{_name(payload.target_id)}은 이미 {state} 있습니다. 시간을 보냈습니다.",)
++                return (f"{name(payload.target_id)}은 이미 {state} 있습니다. 시간을 보냈습니다.",)
+             verb = "열었습니다" if payload.after_open else "닫았습니다"
+-            return (f"{_name(payload.actor_id)}가 {_name(payload.target_id)}을 {verb}.",)
++            return (f"{name(payload.actor_id)}가 {name(payload.target_id)}을 {verb}.",)
+         case Rested():
+             if payload.before_stamina == payload.after_stamina:
+-                return (f"{_name(payload.actor_id)}가 휴식했지만 스태미나는 변하지 않았습니다.",)
++                return (f"{name(payload.actor_id)}가 휴식했지만 스태미나는 변하지 않았습니다.",)
+             return (
+-                f"{_name(payload.actor_id)}가 휴식했습니다. "
++                f"{name(payload.actor_id)}가 휴식했습니다. "
+                 f"스태미나 {payload.before_stamina} → {payload.after_stamina}.",
+             )
+         case Defeated():
+             return (
+-                f"{_name(payload.entity_id)}이 쓰러졌습니다. "
+-                f"처치한 대상: {_name(payload.killer_id)}.",
++                f"{name(payload.entity_id)}이 쓰러졌습니다. "
++                f"처치한 대상: {name(payload.killer_id)}.",
+             )
+         case NpcActed():
+-            return (f"{_name(payload.npc_id)}가 종을 울렸습니다. (누적 {payload.after_bells}회)",)
++            return (f"{name(payload.npc_id)}가 종을 울렸습니다. (누적 {payload.after_bells}회)",)
+         case BellRung():
+-            return (f"{_name(payload.actor_id)}가 {_name(payload.npc_id)}를 호출했습니다.",)
++            return (f"{name(payload.actor_id)}가 {name(payload.npc_id)}를 호출했습니다.",)
+         case WatchReplied():
+             return (
+-                f"{_name(payload.npc_id)}가 호출에 응답했습니다. (누적 {payload.after_count}회)",
++                f"{name(payload.npc_id)}가 호출에 응답했습니다. (누적 {payload.after_count}회)",
+             )
+         case WatchWake() | WatchRequested() | WatchEcho():
+             return ()  # Internal scheduling is not an additional spoken line or player action.
+@@ -154,6 +162,7 @@ def turn_messages(
+     publication: TurnPublication,
+     *,
+     wait_seconds: int | None = None,
++    scenario: Scenario = LEGACY_SCENARIO,
+ ) -> tuple[str, ...]:
+     outcome = publication.outcome
+     diagnostics = tuple(status_text(d.code) for d in publication.diagnostics)
+@@ -168,5 +177,7 @@ def turn_messages(
+     messages: tuple[str, ...] = (
+         () if wait_seconds is None else (f"플레이어가 {wait_seconds}초 동안 기다렸습니다.",)
+     )
+-    messages += tuple(line for event in publication.facts for line in fact_messages(event.payload))
++    messages += tuple(
++        line for event in publication.facts for line in fact_messages(event.payload, scenario)
++    )
+     return (*messages, *diagnostics) or (status_text("COMMITTED"),)
+diff --git a/src/app/client_worker.py b/src/app/client_worker.py
+index 55c8d0f..70b07e2 100644
+--- a/src/app/client_worker.py
++++ b/src/app/client_worker.py
+@@ -2,6 +2,8 @@
+ 
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
++
+ from concurrent.futures import Future, ThreadPoolExecutor
+ from dataclasses import replace
+ import logging
+@@ -14,7 +16,9 @@ from contracts.persistence import SaveError, WorldUnavailable
+ 
+ 
+ class ClientWorker:
+-    def __init__(self, path: Path) -> None:
++    def __init__(self, path: Path, *, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        require_scenario(scenario)
++        self._scenario = scenario
+         self._path = path
+         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
+         self._owner: ClientSession | None = None
+@@ -33,7 +37,7 @@ class ClientWorker:
+     def _run(self, request: ClientRequest, seconds: int, slot_id: str) -> ClientUpdate:
+         try:
+             if self._owner is None:
+-                self._owner = ClientSession(self._path)
++                self._owner = ClientSession(self._path, scenario=self._scenario)
+             owner = self._owner
+             match request:
+                 case "attach":
+diff --git a/src/app/encounter_registry.py b/src/app/encounter_registry.py
+index 70899a4..4cc8c76 100644
+--- a/src/app/encounter_registry.py
++++ b/src/app/encounter_registry.py
+@@ -1,10 +1,13 @@
+ from __future__ import annotations
+ 
++from dataclasses import asdict
++from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
++
+ from contracts.messages import EventPolicy
+ from contracts.read_views import AdapterBinding
+ from contracts.skeleton import FeatureBundle, PresenterBinding
+ from contracts.turn import EngineBinding, NodeActivation, NodeKey
+-from domain.canonical import decode_json, object_value
++from domain.canonical import JsonObject, array_value, decode_json, object_value, seal, text_value
+ from domain.primitives import FieldFamily, FieldSpec, Phase, TypeKey
+ from engines.encounter import EncounterActions, EncounterMovement
+ from orchestration.encounter import (
+@@ -19,8 +22,9 @@ from orchestration.trial import (
+ )
+ 
+ 
+-def encounter_bundle() -> FeatureBundle:
+-    actions, movement = EncounterActions(), EncounterMovement()
++def encounter_bundle(scenario: Scenario = LEGACY_SCENARIO) -> FeatureBundle:
++    require_scenario(scenario)
++    actions, movement = EncounterActions(scenario), EncounterMovement(scenario)
+     action_kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack", "interact", "rest"))
+     bindings = (
+         EngineBinding(actions, "engines.encounter", (NodeActivation(NodeKey(Phase.RESOLVE, "encounter.actions"), action_kinds, False, False, "A"),)),
+@@ -35,7 +39,7 @@ def encounter_bundle() -> FeatureBundle:
+         FieldSpec(FieldFamily("trial.position", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
+         FieldSpec(FieldFamily("trial.position", "cell"), "CORE", "A", "trial.movement", consumers, "integer", "cell", 1, 0, 8, None),
+         FieldSpec(FieldFamily("encounter.gate", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
+-        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, 4, 4, None),
++        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, scenario.gate_cell, scenario.gate_cell, None),
+         FieldSpec(FieldFamily("encounter.gate", "is_open"), "CORE", "A", "encounter.actions", consumers, "integer", "boolean_integer", 1, 0, 1, None),
+         FieldSpec(FieldFamily("encounter.hp", "hp"), "CORE", "A", "encounter.actions", consumers, "integer", "hp", 1, 0, 5, None),
+         FieldSpec(FieldFamily("encounter.stamina", "value"), "CORE", "A", "encounter.actions", ("encounter.actions", "encounter.presenter", "system.admission"), "integer", "stamina", 1, 0, 2, None),
+@@ -43,22 +47,52 @@ def encounter_bundle() -> FeatureBundle:
+     kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack-resolved", "defeated", "gate-changed", "move-blocked", "moved", "rested"))
+     return FeatureBundle(
+         "encounter.local", bindings,
+-        (AdapterBinding(GateAdapter()), AdapterBinding(HitPointsAdapter()), AdapterBinding(StaminaAdapter()), AdapterBinding(TrialMapAdapter()), AdapterBinding(CellPositionAdapter())),
++        (AdapterBinding(GateAdapter(scenario)), AdapterBinding(HitPointsAdapter()), AdapterBinding(StaminaAdapter()), AdapterBinding(TrialMapAdapter(scenario.blocked_cells)), AdapterBinding(CellPositionAdapter())),
+         specs,
+         tuple(EventPolicy(k, "record_only", Phase.PRESENT, 0, "reject", ("trial.movement" if k.kind in ("encounter.move-blocked", "encounter.moved") else "encounter.actions",), (), ()) for k in kinds),
+-        tuple(EncounterAdmission(k) for k in (*action_kinds, TypeKey("trial.move", 1))),
+-        (EncounterCellReducer(), GateReducer(), HitPointsReducer(), StaminaReducer()),
+-        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter()),),
+-        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1)) for k in (
++        tuple(EncounterAdmission(k, scenario) for k in (*action_kinds, TypeKey("trial.move", 1))),
++        (EncounterCellReducer(scenario), GateReducer(scenario), HitPointsReducer(scenario), StaminaReducer(scenario)),
++        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter(scenario)),),
++        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1), scenario) for k in (
+             "attack", "attack-cue", "attack-resolved", "defeat-cue", "defeated", "gate-changed", "gate-cue", "gate-delta", "gate-patch", "hp-delta", "hp-patch", "interact", "move-blocked", "move-cue", "moved", "rest", "rest-cue", "rested", "stamina-delta", "stamina-patch",
+         )) + tuple(TrialPayloadCodec(TypeKey("trial." + k, 1)) for k in ("move", "position-delta", "position-patch")),
+-        object_value(decode_json(SCHEMA_DOCUMENT)), object_value(decode_json(RULES_DOCUMENT)),
+-        (GateCodec(), HitPointsCodec(), StaminaCodec(), TrialMapCodec(), CellPositionCodec()),
+-        (GatePatchRoute(), HitPointsPatchRoute(), StaminaPatchRoute(), CellPatchRoute()),
+-        EncounterCheckpointPolicy(),
++        scenario_schema(object_value(decode_json(SCHEMA_DOCUMENT)), scenario), encounter_rules(object_value(decode_json(RULES_DOCUMENT)), scenario),
++        (GateCodec(scenario), HitPointsCodec(), StaminaCodec(), TrialMapCodec(scenario.blocked_cells), CellPositionCodec()),
++        (GatePatchRoute(scenario), HitPointsPatchRoute(scenario), StaminaPatchRoute(scenario), CellPatchRoute()),
++        EncounterCheckpointPolicy(scenario),
+     )
+ 
+ 
++
++def scenario_schema(document: JsonObject, scenario: Scenario) -> JsonObject:
++    if scenario == LEGACY_SCENARIO:
++        return document
++    components = []
++    for value in array_value(document["components"]):
++        component = object_value(value)
++        kind = text_value(object_value(component["schema"])["kind"])
++        cell = {"encounter.gate": scenario.gate_cell, "watch.npc": scenario.npc_cell}.get(kind)
++        if cell is not None:
++            fields = object_value(component["fields"])
++            component = object_value(seal({**component, "fields": {
++                **fields, "cell": {**object_value(fields["cell"]), "minimum": cell, "maximum": cell},
++            }}))
++        components.append(component)
++    return object_value(seal({**document, "components": tuple(components)}))
++
++
++def encounter_rules(document: JsonObject, scenario: Scenario) -> JsonObject:
++    if scenario == LEGACY_SCENARIO:
++        return document
++    return object_value(seal({**document,
++        "actor_id": scenario.actor_id, "space_id": scenario.space_id,
++        "gate_id": scenario.gate_id, "enemy_id": scenario.enemy_id,
++        "gate_cell": scenario.gate_cell, "enemy_cell": scenario.enemy_cell,
++        "initial_cell": scenario.initial_cell, "blocked_cells": scenario.blocked_cells,
++        "scenario": {"version": 1, **asdict(scenario)},
++    }))
++
++
+ # Literal descriptors fixed independently before implementation in CORE-03.
+ SCHEMA_DOCUMENT = b'{"bool_as_integer":"reject","components":[{"fields":{"cell":{"maximum":4,"minimum":4,"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"cell"},"is_open":{"maximum":1,"minimum":0,"owner":"encounter.actions","scale":1,"storage":"CORE","tier":"A","unit":"boolean_integer"},"space_id":{"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"entity_id"}},"schema":{"kind":"encounter.gate","version":1}},{"fields":{"hp":{"maximum":5,"minimum":0,"owner":"encounter.actions","scale":1,"storage":"CORE","tier":"A","unit":"hp"}},"schema":{"kind":"encounter.hp","version":1}},{"fields":{"value":{"maximum":2,"minimum":0,"owner":"encounter.actions","scale":1,"storage":"CORE","tier":"A","unit":"stamina"}},"schema":{"kind":"encounter.stamina","version":1}},{"fields":{"blocked_cells":{"collection_cap":1,"maximum":8,"minimum":0,"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"cell"},"cell_mm":{"maximum":1000,"minimum":1000,"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"mm"},"height":{"maximum":3,"minimum":3,"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"cell_count"},"width":{"maximum":3,"minimum":3,"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"cell_count"}},"schema":{"kind":"trial.map","version":1}},{"fields":{"cell":{"maximum":8,"minimum":0,"owner":"trial.movement","scale":1,"storage":"CORE","tier":"A","unit":"cell"},"space_id":{"owner":"system.bootstrap","scale":1,"storage":"CORE","tier":"A","unit":"entity_id"}},"schema":{"kind":"trial.position","version":1}}],"payloads":[{"fields":["target_id","profile_id"],"schema":{"kind":"encounter.attack","version":1}},{"fields":["actor_id","target_id","actor_cell","target_cell","actor_hp_before","actor_hp_after","target_hp_before","target_hp_after","stamina_before","stamina_after","result"],"schema":{"kind":"encounter.attack-cue","version":1}},{"fields":["actor_id","target_id","profile_id","actor_hp_before","actor_hp_after","target_hp_before","target_hp_after","stamina_before","stamina_after"],"schema":{"kind":"encounter.attack-resolved","version":1}},{"fields":["entity_id","killer_id","cell","x_mm","z_mm"],"schema":{"kind":"encounter.defeat-cue","version":1}},{"fields":["entity_id","killer_id"],"schema":{"kind":"encounter.defeated","version":1}},{"fields":["actor_id","target_id","before_open","after_open"],"schema":{"kind":"encounter.gate-changed","version":1}},{"fields":["actor_id","target_id","cell","x_mm","z_mm","before_open","after_open"],"schema":{"kind":"encounter.gate-cue","version":1}},{"fields":["entity_id","before_open","after_open"],"schema":{"kind":"encounter.gate-delta","version":1}},{"fields":["is_open"],"schema":{"kind":"encounter.gate-patch","version":1}},{"fields":["entity_id","before_hp","after_hp"],"schema":{"kind":"encounter.hp-delta","version":1}},{"fields":["hp"],"schema":{"kind":"encounter.hp-patch","version":1}},{"fields":["target_id","option"],"schema":{"kind":"encounter.interact","version":1}},{"fields":["actor_id","space_id","from_cell","dx","dz","reason"],"schema":{"kind":"encounter.move-blocked","version":1}},{"fields":["actor_id","space_id","from_cell","to_cell","from_x_mm","from_z_mm","to_x_mm","to_z_mm","result"],"schema":{"kind":"encounter.move-cue","version":1}},{"fields":["actor_id","space_id","from_cell","to_cell"],"schema":{"kind":"encounter.moved","version":1}},{"fields":[],"schema":{"kind":"encounter.rest","version":1}},{"fields":["actor_id","before_stamina","after_stamina"],"schema":{"kind":"encounter.rest-cue","version":1}},{"fields":["actor_id","before_stamina","after_stamina"],"schema":{"kind":"encounter.rested","version":1}},{"fields":["entity_id","before_stamina","after_stamina"],"schema":{"kind":"encounter.stamina-delta","version":1}},{"fields":["value"],"schema":{"kind":"encounter.stamina-patch","version":1}},{"fields":["dx","dz"],"schema":{"kind":"trial.move","version":1}},{"fields":["entity_id","before_cell","after_cell"],"schema":{"kind":"trial.position-delta","version":1}},{"fields":["cell"],"schema":{"kind":"trial.position-patch","version":1}}],"unknown_fields":"reject","version":1}'
+ 
+diff --git a/src/app/watch.py b/src/app/watch.py
+index aec0d9e..981d2eb 100644
+--- a/src/app/watch.py
++++ b/src/app/watch.py
+@@ -1,7 +1,9 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
++
+ from collections.abc import Sequence
+-from dataclasses import dataclass
++from dataclasses import dataclass, replace
+ import hashlib
+ import re
+ import sys
+@@ -11,16 +13,16 @@ from app.watch_registry import watch_bundle
+ from contracts.events import QueuedEvent
+ from contracts.messages import EventHeader, WorldEvent
+ from contracts.watch import WatchWake
+-from domain.watch import NPC_ID, LANTERN_ID, NPC_CELL, WatchNpcRecord, LanternRecord, ReplyRecord
++from domain.watch import WatchNpcRecord, LanternRecord, ReplyRecord
+ from contracts.errors import BootstrapError
+-from domain.encounter import ENEMY_ID, GATE_ID, GateRecord, HitPointsRecord, StaminaRecord
++from domain.encounter import GateRecord, HitPointsRecord, StaminaRecord
+ from contracts.state_io import StateIO
+ from contracts.turn import ProtocolSnapshot, RngService, StreamCursor
+ from domain.canonical import canonical_json, pack
+ from domain.primitives import EventId, Phase, Tick, WorldRevision, require_integer
+ from domain.state_types import CoreSnapshot
+ from domain.trial import (
+-    ACTOR_ID, BLOCKED_CELLS, CELL_MM, HEIGHT, SPACE_ID, WIDTH,
++    CELL_MM, HEIGHT, WIDTH,
+     CellPositionRecord, TrialMapRecord,
+ )
+ from orchestration.rng import CounterRngService
+@@ -38,7 +40,8 @@ class WatchBootstrapSpec:
+     stamina: int = 2
+ 
+ 
+-def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None) -> tuple[HeadlessSession, StateIO]:
++def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None, scenario: Scenario = LEGACY_SCENARIO) -> tuple[HeadlessSession, StateIO]:
++    require_scenario(scenario)
+     try:
+         if (type(spec) is not WatchBootstrapSpec or
+             type(spec.seed_hex) is not str or type(spec.branch_id) is not str or
+@@ -52,43 +55,46 @@ def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None) -> tuple[Headle
+         require_integer(spec.actor_hp, 0, 3)
+         require_integer(spec.enemy_hp, 0, 5)
+         require_integer(spec.stamina, 0, 2)
+-        if (spec.initial_cell == 4 and spec.gate_open == 0 or
+-            spec.initial_cell == 8 and spec.enemy_hp > 0):
++        if (spec.initial_cell == scenario.gate_cell and spec.gate_open == 0 or
++            spec.initial_cell == scenario.enemy_cell and spec.enemy_hp > 0):
+             raise ValueError("occupied initial actor cell")
+-        if spec.initial_cell in BLOCKED_CELLS:
++        if spec.initial_cell in scenario.blocked_cells:
+             raise ValueError("initial actor occupies wall")
+     except (ValueError, TypeError) as error:
+         raise BootstrapError("INVALID_INITIAL_STATE", str(error)) from error
+-    bundles = (watch_bundle(),)
++    bundles = (watch_bundle(scenario),)
+     io = state_io(bundles)
+     world_id = "w1-" + hashlib.sha256(pack(("world-id/v1", spec.seed_hex,
+                                           io.pins.rules_fingerprint,
+                                           io.pins.gameplay_catalog_hash))).hexdigest()
+     identifier = EventId("e1-" + hashlib.sha256(pack(("event-id/v1", world_id, "0", "PRE_TICK", "0", "watch.npc", "0"))).hexdigest())
+-    genesis = WorldEvent(EventHeader(identifier, WatchWake(NPC_ID).schema, "watch.npc", Tick(0), Phase.PRE_TICK, 0, 0, 0, (), ()), Tick(2), WatchWake(NPC_ID))
++    genesis = WorldEvent(EventHeader(identifier, WatchWake(scenario.npc_id).schema, "watch.npc", Tick(0), Phase.PRE_TICK, 0, 0, 0, (), ()), Tick(2), WatchWake(scenario.npc_id))
+     pending = io.encode_pending(QueuedEvent(genesis, Phase.PRE_TICK, 10))
+     core = CoreSnapshot(world_id, spec.seed_hex, Tick(0), (
+-        GateRecord(GATE_ID, SPACE_ID, 4, spec.gate_open),
+-        HitPointsRecord(ENEMY_ID, spec.enemy_hp),
+-        HitPointsRecord(ACTOR_ID, spec.actor_hp),
+-        StaminaRecord(ACTOR_ID, spec.stamina),
+-        TrialMapRecord(SPACE_ID, WIDTH, HEIGHT, CELL_MM, BLOCKED_CELLS),
+-        CellPositionRecord(ENEMY_ID, SPACE_ID, 8),
+-        CellPositionRecord(ACTOR_ID, SPACE_ID, spec.initial_cell),
+-        LanternRecord(LANTERN_ID, 0),
+-        WatchNpcRecord(NPC_ID, SPACE_ID, NPC_CELL, 0),
+-        ReplyRecord(NPC_ID, 0),
++        GateRecord(scenario.gate_id, scenario.space_id, scenario.gate_cell, spec.gate_open),
++        HitPointsRecord(scenario.enemy_id, spec.enemy_hp),
++        HitPointsRecord(scenario.actor_id, spec.actor_hp),
++        StaminaRecord(scenario.actor_id, spec.stamina),
++        TrialMapRecord(scenario.space_id, WIDTH, HEIGHT, CELL_MM, scenario.blocked_cells),
++        CellPositionRecord(scenario.enemy_id, scenario.space_id, scenario.enemy_cell),
++        CellPositionRecord(scenario.actor_id, scenario.space_id, spec.initial_cell),
++        LanternRecord(scenario.lantern_id, 0),
++        WatchNpcRecord(scenario.npc_id, scenario.space_id, scenario.npc_cell, 0),
++        ReplyRecord(scenario.npc_id, 0),
+     ), (pending,), io.pins)
+     protocol = ProtocolSnapshot(spec.branch_id, WorldRevision(0),
+-                                (StreamCursor(spec.stream_id, ACTOR_ID, 0, "active"),), ())
++                                (StreamCursor(spec.stream_id, scenario.actor_id, 0, "active"),), ())
++    core = replace(core, components=tuple(sorted(
++        core.components, key=lambda record: (record.schema.kind, record.schema.version, record.entity_id)
++    )))
+     session = _restore(core, protocol, bundles,
+                        rng if rng is not None else CounterRngService(spec.seed_hex, world_id, ()),
+                        io=io)
+     return session, io
+ 
+ 
+-def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None) -> HeadlessSession:
+-    return _bootstrap(spec, rng)[0]
++def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None, scenario: Scenario = LEGACY_SCENARIO) -> HeadlessSession:
++    return _bootstrap(spec, rng, scenario)[0]
+ 
+ 
+ def main(argv: Sequence[str] | None = None) -> int:
+diff --git a/src/app/watch_registry.py b/src/app/watch_registry.py
+index 5e4d3f1..c479703 100644
+--- a/src/app/watch_registry.py
++++ b/src/app/watch_registry.py
+@@ -1,26 +1,28 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from dataclasses import replace
+-from app.encounter_registry import encounter_bundle
++from app.encounter_registry import encounter_bundle, scenario_schema
+ from contracts.messages import EventPolicy
+ from contracts.read_views import AdapterBinding
+ from contracts.skeleton import FeatureBundle, PresenterBinding
+ from contracts.turn import Engine, EngineBinding, NodeActivation, NodeKey
+-from domain.canonical import decode_json, object_value
++from domain.canonical import decode_json, object_value, seal
+ from domain.primitives import FieldFamily, FieldSpec, MAX_INT, Phase, TypeKey
+ from engines.watch import WatchNpc, WatchBell, WatchRespond, WatchEchoEngine, WatchPassive
+ from orchestration.watch import (WatchNpcAdapter, LanternAdapter, ReplyAdapter, WatchNpcCodec, LanternCodec, ReplyCodec, WatchPayloadCodec, WatchAdmission, ChargeReducer, BellsReducer, ReplyReducer, ChargePatchRoute, BellsPatchRoute, ReplyPatchRoute, WatchCheckpointPolicy, WatchPresenter)
+ 
+ 
+-def watch_bundle() -> FeatureBundle:
+-    base = encounter_bundle()
+-    engines: tuple[Engine, ...] = (WatchNpc(), WatchBell(), WatchRespond(), WatchEchoEngine(), WatchPassive())
++def watch_bundle(scenario: Scenario = LEGACY_SCENARIO) -> FeatureBundle:
++    base = encounter_bundle(scenario)
++    engines: tuple[Engine, ...] = (WatchNpc(scenario), WatchBell(scenario), WatchRespond(scenario), WatchEchoEngine(scenario), WatchPassive(scenario))
+     bindings = tuple(EngineBinding(e, "engines.watch", (NodeActivation(NodeKey(e.manifest.phases[0], e.manifest.engine_id), (TypeKey("watch.bell", 1),) if e.manifest.engine_id == "watch.bell" else (), bool(e.manifest.consumes), e.manifest.engine_id == "watch.passive", "A"),)) for e in engines)
+     specs = tuple(replace(s, consumers=(*s.consumers, "watch.bell")) if s.family in (FieldFamily("encounter.hp", "hp"), FieldFamily("trial.position", "space_id")) else s for s in base.field_specs)
+     npc_consumers = ("watch.npc", "watch.bell", "watch.presenter", "system.admission")
+     specs += (
+         FieldSpec(FieldFamily("watch.npc", "space_id"), "CORE", "A", "system.bootstrap", npc_consumers, "string", "entity_id", 1, None, None, None),
+-        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, 6, 6, None),
++        FieldSpec(FieldFamily("watch.npc", "cell"), "CORE", "A", "system.bootstrap", npc_consumers, "integer", "cell", 1, scenario.npc_cell, scenario.npc_cell, None),
+         FieldSpec(FieldFamily("watch.npc", "bells"), "CORE", "A", "watch.npc", npc_consumers, "integer", "count", 1, 0, MAX_INT, None),
+         FieldSpec(FieldFamily("watch.lantern", "charge"), "CORE", "A", "watch.passive", ("watch.passive", "watch.presenter"), "integer", "charge", 1, 0, 3, None),
+         FieldSpec(FieldFamily("watch.reply", "count"), "CORE", "A", "watch.echo", ("watch.echo", "watch.presenter"), "integer", "count", 1, 0, MAX_INT, None),
+@@ -33,7 +35,12 @@ def watch_bundle() -> FeatureBundle:
+         EventPolicy(TypeKey("watch.bell-rung", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.bell",), (), ()),
+         EventPolicy(TypeKey("watch.replied", 1), "record_only", Phase.PRESENT, 0, "reject", ("watch.echo",), (), ()),
+     )
+-    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter()), AdapterBinding(LanternAdapter()), AdapterBinding(ReplyAdapter())), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1)), WatchAdmission(TypeKey("watch.bell", 1))), delta_routes=(*base.delta_routes, ChargeReducer(), BellsReducer(), ReplyReducer()), patch_routes=(*base.patch_routes, ChargePatchRoute(), BellsPatchRoute(), ReplyPatchRoute()), component_codecs=(*base.component_codecs, WatchNpcCodec(), LanternCodec(), ReplyCodec()), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1)) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter())), schema_document=object_value(decode_json(SCHEMA_DOCUMENT)), rules_document=object_value(decode_json(RULES_DOCUMENT)), checkpoint_policy=WatchCheckpointPolicy())
++    rules = object_value(decode_json(RULES_DOCUMENT))
++    if scenario != LEGACY_SCENARIO:
++        rules = object_value(seal({**rules, "encounter": base.rules_document,
++            "npc_id": scenario.npc_id, "npc_cell": scenario.npc_cell,
++            "lantern_id": scenario.lantern_id}))
++    return replace(base, feature_id="watch.local", bindings=(*base.bindings, *bindings), read_adapters=(*base.read_adapters, AdapterBinding(WatchNpcAdapter(scenario)), AdapterBinding(LanternAdapter()), AdapterBinding(ReplyAdapter())), field_specs=specs, events=(*base.events, *events), command_routes=(*base.command_routes, WatchAdmission(TypeKey("watch.wait", 1), scenario), WatchAdmission(TypeKey("watch.bell", 1), scenario)), delta_routes=(*base.delta_routes, ChargeReducer(scenario), BellsReducer(scenario), ReplyReducer(scenario)), patch_routes=(*base.patch_routes, ChargePatchRoute(scenario), BellsPatchRoute(scenario), ReplyPatchRoute(scenario)), component_codecs=(*base.component_codecs, WatchNpcCodec(scenario), LanternCodec(), ReplyCodec()), codecs=(*base.codecs, *tuple(WatchPayloadCodec(TypeKey("watch." + k, 1), scenario) for k in WATCH_KINDS)), presenters=(*base.presenters, PresenterBinding("watch.presenter", tuple(TypeKey("watch." + k, 1) for k in ("npc-acted", "bell-rung", "replied")), WatchPresenter(scenario))), schema_document=scenario_schema(object_value(decode_json(SCHEMA_DOCUMENT)), scenario), rules_document=rules, checkpoint_policy=WatchCheckpointPolicy(scenario))
+ 
+ 
+ WATCH_KINDS = ('bell', 'bell-cue', 'bell-rung', 'bells-delta', 'bells-patch', 'charge-delta', 'charge-patch', 'echo', 'npc-acted', 'npc-cue', 'replied', 'reply-cue', 'reply-delta', 'reply-patch', 'requested', 'wait', 'wake')
+diff --git a/src/engines/encounter.py b/src/engines/encounter.py
+index e3fb79b..7cafd23 100644
+--- a/src/engines/encounter.py
++++ b/src/engines/encounter.py
+@@ -1,5 +1,7 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from dataclasses import dataclass
+ from typing import Literal
+ 
+@@ -26,17 +28,12 @@ from contracts.trial import CELL_POSITION, TRIAL_MAP, CellDelta, MoveCommand
+ from contracts.turn import CapabilityManifest, EngineInvocation, EngineResult, PhaseAccess
+ from domain.encounter import (
+     ATTACK_PROFILE_ID,
+-    ENEMY_CELL,
+-    ENEMY_ID,
+-    GATE_CELL,
+-    GATE_ID,
+     REST_RECOVERY,
+     STAMINA_MAX,
+     adjacent_cells,
+     resolve_basic_attack,
+ )
+ from domain.primitives import EntityId, FieldFamily, Phase
+-from domain.trial import ACTOR_ID, SPACE_ID
+ 
+ 
+ _ACTIONS_MANIFEST = CapabilityManifest(
+@@ -97,26 +94,30 @@ def _result(
+     )
+ 
+ 
+-def _location(invocation: EngineInvocation) -> tuple[int, EntityId]:
+-    position = invocation.state.component(CELL_POSITION, ACTOR_ID)
++def _location(
++    invocation: EngineInvocation, scenario: Scenario = LEGACY_SCENARIO
++) -> tuple[int, EntityId]:
++    position = invocation.state.component(CELL_POSITION, scenario.actor_id)
+     cell, space = position.cell, position.space_id
+-    if space != SPACE_ID:
++    if space != scenario.space_id:
+         raise CandidateError("INVALID_ACTION", "actor space")
+     return cell, space
+ 
+ 
+ @dataclass(frozen=True, slots=True)
+ class EncounterActions:
++    _scenario: Scenario = LEGACY_SCENARIO
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _ACTIONS_MANIFEST
+ 
+     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
+         action = invocation.action
+-        if action is None or action.actor_id != ACTOR_ID:
++        if action is None or action.actor_id != self._scenario.actor_id:
+             raise CandidateError("INVALID_ACTION", "encounter actor")
+         payload = action.payload
+-        actor_hp = invocation.state.component(HIT_POINTS, ACTOR_ID).hp
++        actor_hp = invocation.state.component(HIT_POINTS, self._scenario.actor_id).hp
+         if actor_hp == 0:
+             raise CandidateError("INVALID_ACTION", "admitted actor defeated")
+         # Exact classes are intentional: codec dispatch rejects subclasses too.
+@@ -129,60 +130,66 @@ class EncounterActions:
+         raise CandidateError("INVALID_ACTION", "encounter action payload")
+ 
+     def _rest(self, invocation: EngineInvocation) -> EngineResult:
+-        old = invocation.state.component(STAMINA, ACTOR_ID).value
++        old = invocation.state.component(STAMINA, self._scenario.actor_id).value
+         new = min(STAMINA_MAX, old + REST_RECOVERY)
+-        deltas = (StaminaDelta(ACTOR_ID, old, new),) if new != old else ()
++        deltas = (StaminaDelta(self._scenario.actor_id, old, new),) if new != old else ()
+         # A consuming no-op still records the accepted action, as required by CORE-03.
+-        return _result(invocation, deltas, (Rested(ACTOR_ID, old, new),))
++        return _result(invocation, deltas, (Rested(self._scenario.actor_id, old, new),))
+ 
+     def _interact(self, invocation: EngineInvocation, payload: InteractCommand) -> EngineResult:
+-        cell, space = _location(invocation)
+-        gate = invocation.state.component(GATE, GATE_ID)
++        cell, space = _location(invocation, self._scenario)
++        gate = invocation.state.component(GATE, self._scenario.gate_id)
+         gate_cell, gate_space, old = gate.cell, gate.space_id, gate.is_open
+-        if payload.target_id != GATE_ID:
++        if payload.target_id != self._scenario.gate_id:
+             raise CandidateError("INVALID_ACTION", "admitted gate target")
+         if payload.option not in ("open", "close"):
+             raise CandidateError("INVALID_ACTION", "admitted gate option")
+-        if gate_cell != GATE_CELL or gate_space != space:
++        if gate_cell != self._scenario.gate_cell or gate_space != space:
+             raise CandidateError("INVALID_ACTION", "admitted gate reference")
+         if payload.option == "close" and cell == gate_cell:
+             raise CandidateError("INVALID_ACTION", "admitted gate occupied")
+         if not adjacent_cells(cell, gate_cell):
+             raise CandidateError("INVALID_ACTION", "admitted gate range")
+         new = 1 if payload.option == "open" else 0
+-        deltas = (GateDelta(GATE_ID, old, new),) if new != old else ()
+-        return _result(invocation, deltas, (GateChanged(ACTOR_ID, GATE_ID, old, new),))
++        deltas = (GateDelta(self._scenario.gate_id, old, new),) if new != old else ()
++        return _result(
++            invocation,
++            deltas,
++            (GateChanged(self._scenario.actor_id, self._scenario.gate_id, old, new),),
++        )
+ 
+     def _attack(
+         self, invocation: EngineInvocation, payload: AttackCommand, actor_hp: int
+     ) -> EngineResult:
+-        cell, space = _location(invocation)
+-        enemy = invocation.state.component(CELL_POSITION, ENEMY_ID)
+-        target_hp = invocation.state.component(HIT_POINTS, ENEMY_ID).hp
+-        stamina = invocation.state.component(STAMINA, ACTOR_ID).value
+-        if payload.target_id != ENEMY_ID:
++        cell, space = _location(invocation, self._scenario)
++        enemy = invocation.state.component(CELL_POSITION, self._scenario.enemy_id)
++        target_hp = invocation.state.component(HIT_POINTS, self._scenario.enemy_id).hp
++        stamina = invocation.state.component(STAMINA, self._scenario.actor_id).value
++        if payload.target_id != self._scenario.enemy_id:
+             raise CandidateError("INVALID_ACTION", "admitted attack target")
+         if payload.profile_id != ATTACK_PROFILE_ID:
+             raise CandidateError("INVALID_ACTION", "admitted attack profile")
+-        if enemy.cell != ENEMY_CELL or enemy.space_id != space:
++        if enemy.cell != self._scenario.enemy_cell or enemy.space_id != space:
+             raise CandidateError("INVALID_ACTION", "admitted attack reference")
+         if target_hp == 0:
+             raise CandidateError("INVALID_ACTION", "admitted attack defeated target")
+         if stamina == 0:
+             raise CandidateError("INVALID_ACTION", "admitted attack stamina")
+-        if not adjacent_cells(cell, ENEMY_CELL):
++        if not adjacent_cells(cell, self._scenario.enemy_cell):
+             raise CandidateError("INVALID_ACTION", "admitted attack range")
+         actor_after, target_after, stamina_after = resolve_basic_attack(
+             actor_hp, target_hp, stamina
+         )
+-        deltas: list[StateDelta] = [HitPointsDelta(ENEMY_ID, target_hp, target_after)]
++        deltas: list[StateDelta] = [
++            HitPointsDelta(self._scenario.enemy_id, target_hp, target_after)
++        ]
+         if actor_after != actor_hp:
+-            deltas.append(HitPointsDelta(ACTOR_ID, actor_hp, actor_after))
+-        deltas.append(StaminaDelta(ACTOR_ID, stamina, stamina_after))
++            deltas.append(HitPointsDelta(self._scenario.actor_id, actor_hp, actor_after))
++        deltas.append(StaminaDelta(self._scenario.actor_id, stamina, stamina_after))
+         facts: list[FactPayload] = [
+             AttackResolved(
+-                ACTOR_ID,
+-                ENEMY_ID,
++                self._scenario.actor_id,
++                self._scenario.enemy_id,
+                 ATTACK_PROFILE_ID,
+                 actor_hp,
+                 actor_after,
+@@ -193,38 +200,44 @@ class EncounterActions:
+             )
+         ]
+         if target_after == 0:
+-            facts.append(Defeated(ENEMY_ID, ACTOR_ID))
++            facts.append(Defeated(self._scenario.enemy_id, self._scenario.actor_id))
+         elif actor_after == 0:
+-            facts.append(Defeated(ACTOR_ID, ENEMY_ID))
++            facts.append(Defeated(self._scenario.actor_id, self._scenario.enemy_id))
+         return _result(invocation, tuple(deltas), tuple(facts))
+ 
+ 
+ @dataclass(frozen=True, slots=True)
+ class EncounterMovement:
++    _scenario: Scenario = LEGACY_SCENARIO
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _MOVEMENT_MANIFEST
+ 
+     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
+         action = invocation.action
+-        if action is None or action.actor_id != ACTOR_ID or type(action.payload) is not MoveCommand:
++        if (
++            action is None
++            or action.actor_id != self._scenario.actor_id
++            or type(action.payload) is not MoveCommand
++        ):
+             raise CandidateError("INVALID_ACTION", "encounter move payload")
+         state = invocation.state
+-        if state.component(HIT_POINTS, ACTOR_ID).hp == 0:
++        if state.component(HIT_POINTS, self._scenario.actor_id).hp == 0:
+             raise CandidateError("INVALID_ACTION", "admitted actor defeated")
+-        position = state.component(CELL_POSITION, ACTOR_ID)
++        position = state.component(CELL_POSITION, self._scenario.actor_id)
+         old, space = position.cell, position.space_id
+-        gate = state.component(GATE, GATE_ID)
++        gate = state.component(GATE, self._scenario.gate_id)
+         gate_cell, gate_open, gate_space = gate.cell, gate.is_open, gate.space_id
+-        enemy = state.component(CELL_POSITION, ENEMY_ID)
++        enemy = state.component(CELL_POSITION, self._scenario.enemy_id)
+         enemy_cell, enemy_space = enemy.cell, enemy.space_id
+-        enemy_hp = state.component(HIT_POINTS, ENEMY_ID).hp
++        enemy_hp = state.component(HIT_POINTS, self._scenario.enemy_id).hp
+         if (
+-            space != SPACE_ID
++            space != self._scenario.space_id
+             or gate_space != space
+-            or gate_cell != GATE_CELL
++            or gate_cell != self._scenario.gate_cell
+             or enemy_space != space
+-            or enemy_cell != ENEMY_CELL
++            or enemy_cell != self._scenario.enemy_cell
+         ):
+             raise CandidateError("INVALID_ACTION", "movement references")
+         grid = state.component(TRIAL_MAP, space)
+@@ -244,11 +257,11 @@ class EncounterMovement:
+             elif target == enemy_cell and enemy_hp > 0:
+                 reason = "occupied"
+             if reason is None:
+-                deltas = (CellDelta(ACTOR_ID, old, target),)
++                deltas = (CellDelta(self._scenario.actor_id, old, target),)
+         if reason is not None:
+             fact = EncounterMoveBlocked(
+-                ACTOR_ID, space, old, action.payload.dx, action.payload.dz, reason
++                self._scenario.actor_id, space, old, action.payload.dx, action.payload.dz, reason
+             )
+         else:
+-            fact = EncounterMoved(ACTOR_ID, space, old, z * width + x)
++            fact = EncounterMoved(self._scenario.actor_id, space, old, z * width + x)
+         return EngineResult(deltas, (EmittedFact(fact, invocation.logical_tick, ()),), ())
+diff --git a/src/engines/watch.py b/src/engines/watch.py
+index f075041..01cca98 100644
+--- a/src/engines/watch.py
++++ b/src/engines/watch.py
+@@ -1,5 +1,7 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from contracts.watch import (WATCH_NPC, LANTERN, REPLY, BellCommand, WatchWake, WatchRequested, WatchEcho, NpcActed, BellRung, WatchReplied, ChargeDelta, BellsDelta, ReplyDelta)
+ from contracts.encounter import HIT_POINTS
+ from contracts.trial import CELL_POSITION
+@@ -7,8 +9,7 @@ from contracts.errors import CandidateError
+ from contracts.messages import EmittedFact, StateDelta
+ from contracts.turn import CapabilityManifest, EngineInvocation, EngineResult, PhaseAccess
+ from domain.primitives import FieldFamily, Phase, TypeKey, require_integer
+-from domain.trial import ACTOR_ID, SPACE_ID
+-from domain.watch import NPC_ID, NPC_CELL, LANTERN_ID, ECHO_DEPTH, increment_count, next_wake, recover_charge
++from domain.watch import ECHO_DEPTH, increment_count, next_wake, recover_charge
+ 
+ 
+ def _manifest(engine: str, phase: Phase, reads: tuple[str, ...], writes: tuple[str, ...], emits: tuple[str, ...], consumes: tuple[str, ...]) -> CapabilityManifest:
+@@ -24,6 +25,11 @@ def _context(invocation: EngineInvocation, phase: Phase) -> None:
+ 
+ 
+ class WatchNpc:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _manifest("watch.npc", Phase.PRE_TICK, ("watch.npc.bells", "watch.npc.cell", "watch.npc.space_id"), ("watch.npc.bells",), ("npc-acted", "wake"), ("wake",))
+@@ -33,21 +39,26 @@ class WatchNpc:
+         if invocation.action is not None or len(invocation.incoming) != 1 or invocation.logical_tick % 2:
+             raise CandidateError("INVALID_FACT", "watch wake scope")
+         wake = invocation.incoming[0]
+-        if type(wake.payload) is not WatchWake or wake.payload.npc_id != NPC_ID:
++        if type(wake.payload) is not WatchWake or wake.payload.npc_id != self._scenario.npc_id:
+             raise CandidateError("INVALID_FACT", "watch wake subject")
+-        npc = invocation.state.component(WATCH_NPC, NPC_ID)
++        npc = invocation.state.component(WATCH_NPC, self._scenario.npc_id)
+         old, cell, space = npc.bells, npc.cell, npc.space_id
+-        if cell != NPC_CELL or space != SPACE_ID or old != invocation.logical_tick // 2 - 1:
++        if cell != self._scenario.npc_cell or space != self._scenario.space_id or old != invocation.logical_tick // 2 - 1:
+             raise CandidateError("INVALID_FACT", "watch station/count")
+         try:
+             new, due = increment_count(old), next_wake(invocation.logical_tick)
+         except ValueError as error:
+             raise CandidateError("INTEGER_OVERFLOW", "watch recurrence") from error
+         cause = (wake.header.event_id,)
+-        return EngineResult((BellsDelta(NPC_ID, old, new),), (EmittedFact(NpcActed(NPC_ID, old, new), invocation.logical_tick, cause), EmittedFact(WatchWake(NPC_ID), due, cause)), ())
++        return EngineResult((BellsDelta(self._scenario.npc_id, old, new),), (EmittedFact(NpcActed(self._scenario.npc_id, old, new), invocation.logical_tick, cause), EmittedFact(WatchWake(self._scenario.npc_id), due, cause)), ())
+ 
+ 
+ class WatchBell:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _manifest("watch.bell", Phase.RESOLVE, ("encounter.hp.hp", "trial.position.space_id", "watch.npc.cell", "watch.npc.space_id"), (), ("bell-rung", "requested"), ())
+@@ -55,15 +66,20 @@ class WatchBell:
+     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
+         _context(invocation, Phase.RESOLVE)
+         action = invocation.action
+-        if action is None or action.actor_id != ACTOR_ID or type(action.payload) is not BellCommand or action.payload.npc_id != NPC_ID or invocation.incoming:
++        if action is None or action.actor_id != self._scenario.actor_id or type(action.payload) is not BellCommand or action.payload.npc_id != self._scenario.npc_id or invocation.incoming:
+             raise CandidateError("INVALID_ACTION", "watch bell action")
+-        npc = invocation.state.component(WATCH_NPC, NPC_ID)
+-        if invocation.state.component(HIT_POINTS, ACTOR_ID).hp == 0 or npc.cell != NPC_CELL or npc.space_id != SPACE_ID or invocation.state.component(CELL_POSITION, ACTOR_ID).space_id != SPACE_ID:
++        npc = invocation.state.component(WATCH_NPC, self._scenario.npc_id)
++        if invocation.state.component(HIT_POINTS, self._scenario.actor_id).hp == 0 or npc.cell != self._scenario.npc_cell or npc.space_id != self._scenario.space_id or invocation.state.component(CELL_POSITION, self._scenario.actor_id).space_id != self._scenario.space_id:
+             raise CandidateError("INVALID_ACTION", "watch bell references")
+-        return EngineResult((), (EmittedFact(WatchRequested(ACTOR_ID, NPC_ID), invocation.logical_tick, ()), EmittedFact(BellRung(ACTOR_ID, NPC_ID), invocation.logical_tick, ())), ())
++        return EngineResult((), (EmittedFact(WatchRequested(self._scenario.actor_id, self._scenario.npc_id), invocation.logical_tick, ()), EmittedFact(BellRung(self._scenario.actor_id, self._scenario.npc_id), invocation.logical_tick, ())), ())
+ 
+ 
+ class WatchRespond:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _manifest("watch.respond", Phase.REACT, (), (), ("echo",), ("requested",))
+@@ -74,13 +90,18 @@ class WatchRespond:
+         if invocation.action is not None:
+             raise CandidateError("INVALID_ACTION", "watch response action")
+         for event in invocation.incoming:
+-            if type(event.payload) is not WatchRequested or event.payload.npc_id != NPC_ID or event.payload.actor_id != ACTOR_ID:
++            if type(event.payload) is not WatchRequested or event.payload.npc_id != self._scenario.npc_id or event.payload.actor_id != self._scenario.actor_id:
+                 raise CandidateError("INVALID_FACT", "watch request subject")
+-            facts.append(EmittedFact(WatchEcho(NPC_ID, ECHO_DEPTH), invocation.logical_tick, (event.header.event_id,)))
++            facts.append(EmittedFact(WatchEcho(self._scenario.npc_id, ECHO_DEPTH), invocation.logical_tick, (event.header.event_id,)))
+         return EngineResult((), tuple(facts), ())
+ 
+ 
+ class WatchEchoEngine:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _manifest("watch.echo", Phase.CASCADE, ("watch.reply.count",), ("watch.reply.count",), ("echo", "replied"), ("echo",))
+@@ -89,35 +110,40 @@ class WatchEchoEngine:
+         _context(invocation, Phase.CASCADE)
+         if invocation.action is not None:
+             raise CandidateError("INVALID_ACTION", "watch echo action")
+-        old = invocation.state.component(REPLY, NPC_ID).count
++        old = invocation.state.component(REPLY, self._scenario.npc_id).count
+         count = old
+         facts: list[EmittedFact] = []
+         for event in invocation.incoming:
+             payload = event.payload
+-            if type(payload) is not WatchEcho or payload.npc_id != NPC_ID:
++            if type(payload) is not WatchEcho or payload.npc_id != self._scenario.npc_id:
+                 raise CandidateError("INVALID_FACT", "watch echo subject")
+             require_integer(payload.remaining, 0, 7)
+             if payload.remaining:
+-                facts.append(EmittedFact(WatchEcho(NPC_ID, payload.remaining - 1), invocation.logical_tick, (event.header.event_id,)))
++                facts.append(EmittedFact(WatchEcho(self._scenario.npc_id, payload.remaining - 1), invocation.logical_tick, (event.header.event_id,)))
+             else:
+                 try:
+                     new = increment_count(count)
+                 except ValueError as error:
+                     raise CandidateError("INTEGER_OVERFLOW", "watch replies") from error
+-                facts.append(EmittedFact(WatchReplied(NPC_ID, count, new), invocation.logical_tick, (event.header.event_id,)))
++                facts.append(EmittedFact(WatchReplied(self._scenario.npc_id, count, new), invocation.logical_tick, (event.header.event_id,)))
+                 count = new
+-        deltas: tuple[StateDelta, ...] = (ReplyDelta(NPC_ID, old, count),) if old != count else ()
++        deltas: tuple[StateDelta, ...] = (ReplyDelta(self._scenario.npc_id, old, count),) if old != count else ()
+         return EngineResult(deltas, tuple(facts), ())
+ 
+ 
+ class WatchPassive:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def manifest(self) -> CapabilityManifest:
+         return _manifest("watch.passive", Phase.POST_TICK, ("watch.lantern.charge",), ("watch.lantern.charge",), (), ())
+ 
+     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
+         _context(invocation, Phase.POST_TICK)
+-        old = invocation.state.component(LANTERN, LANTERN_ID).charge
++        old = invocation.state.component(LANTERN, self._scenario.lantern_id).charge
+         new = recover_charge(old)
+-        deltas: tuple[StateDelta, ...] = (ChargeDelta(LANTERN_ID, old, new),) if old != new else ()
++        deltas: tuple[StateDelta, ...] = (ChargeDelta(self._scenario.lantern_id, old, new),) if old != new else ()
+         return EngineResult(deltas, (), ())
+diff --git a/src/orchestration/encounter.py b/src/orchestration/encounter.py
+index e7d7f42..b5daef9 100644
+--- a/src/orchestration/encounter.py
++++ b/src/orchestration/encounter.py
+@@ -1,5 +1,7 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from dataclasses import replace
+ import hashlib
+ from typing import Literal, cast
+@@ -21,43 +23,42 @@ from contracts.turn import (
+ )
+ from domain.canonical import JsonObject, exact_fields, hash_document, int_value, pack, text_value
+ from domain.encounter import (
+-    ENEMY_ID, GATE_ID, ATTACK_PROFILE_ID, GATE_CELL, ENEMY_CELL,
+-    GateRecord, HitPointsRecord, StaminaRecord, adjacent_cells, resolve_basic_attack,
++    ATTACK_PROFILE_ID, GateRecord, HitPointsRecord, StaminaRecord, adjacent_cells, resolve_basic_attack,
+ )
+ from domain.primitives import (
+     ComponentAddress, EntityId, EventId, FieldAddress, FieldFamily, FrozenPayload,
+     Phase, Tick, TypeKey, require_integer, require_namespace,
+ )
+ from domain.state_types import ComponentRecord, CoreSnapshot
+-from domain.trial import ACTOR_ID, SPACE_ID, BLOCKED_CELLS, CellPositionRecord, TrialMapRecord, cell_coordinates
++from domain.trial import CellPositionRecord, TrialMapRecord, cell_coordinates
+ from orchestration.serialization import key_document
+ from orchestration.trial import CellReducer, CellPositionAdapter, TrialMapAdapter, TrialPayloadCodec
+ 
+ 
+-def _free(cell: int) -> None:
++def _free(cell: int, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     cell_coordinates(cell)
+-    if cell in BLOCKED_CELLS:
++    if cell in scenario.blocked_cells:
+         raise ValueError("wall cell")
+ 
+ 
+-def _subjects(actor: EntityId, space: EntityId) -> None:
++def _subjects(actor: EntityId, space: EntityId, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     require_namespace(actor)
+     require_namespace(space)
+-    if actor != ACTOR_ID or space != SPACE_ID:
++    if actor != scenario.actor_id or space != scenario.space_id:
+         raise ValueError("invalid encounter subjects")
+ 
+ 
+-def _pair(actor: EntityId, target: EntityId, expected: EntityId) -> None:
++def _pair(actor: EntityId, target: EntityId, expected: EntityId, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     require_namespace(actor)
+     require_namespace(target)
+-    if actor != ACTOR_ID or target != expected:
++    if actor != scenario.actor_id or target != expected:
+         raise ValueError("invalid encounter pair")
+ 
+ 
+-def _defeat(entity: EntityId, killer: EntityId) -> None:
++def _defeat(entity: EntityId, killer: EntityId, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     require_namespace(entity)
+     require_namespace(killer)
+-    if (entity, killer) not in ((ENEMY_ID, ACTOR_ID), (ACTOR_ID, ENEMY_ID)):
++    if (entity, killer) not in ((scenario.enemy_id, scenario.actor_id), (scenario.actor_id, scenario.enemy_id)):
+         raise ValueError("invalid defeat pair")
+ 
+ 
+@@ -108,6 +109,11 @@ class _GateView(_View):
+ 
+ 
+ class GateAdapter:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def key(self) -> ComponentKey[GateRead]:
+         return GATE
+@@ -117,7 +123,7 @@ class GateAdapter:
+             raise ValueError("invalid Gate class/schema")
+         require_namespace(record.entity_id)
+         require_namespace(record.space_id)
+-        require_integer(record.cell, 4, 4)
++        require_integer(record.cell, self._scenario.gate_cell, self._scenario.gate_cell)
+         require_integer(record.is_open, 0, 1)
+ 
+     def wrap(self, record: ComponentRecord, access: ViewAccess) -> GateRead:
+@@ -127,6 +133,11 @@ class GateAdapter:
+ 
+ 
+ class GateCodec:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return GATE.schema
+@@ -134,11 +145,11 @@ class GateCodec:
+     def decode(self, entity_id: EntityId, fields: JsonObject) -> ComponentRecord:
+         d = exact_fields(fields, ('space_id', 'cell', 'is_open'))
+         record = GateRecord(entity_id, EntityId(text_value(d["space_id"])), int_value(d["cell"]), int_value(d["is_open"]))
+-        GateAdapter().validate(record)
++        GateAdapter(self._scenario).validate(record)
+         return record
+ 
+     def encode(self, record: ComponentRecord) -> JsonObject:
+-        GateAdapter().validate(record)
++        GateAdapter(self._scenario).validate(record)
+         assert isinstance(record, GateRecord)
+         return {"space_id": record.space_id, "cell": record.cell, "is_open": record.is_open}
+ 
+@@ -231,7 +242,7 @@ class StaminaCodec:
+         return {"value": record.value}
+ 
+ 
+-def _validate_payload(payload: FrozenPayload) -> None:
++def _validate_payload(payload: FrozenPayload, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     if isinstance(payload, InteractCommand):
+         require_namespace(payload.target_id)
+         if type(payload.option) is not str or payload.option not in ("open", "close"):
+@@ -241,20 +252,20 @@ def _validate_payload(payload: FrozenPayload) -> None:
+         require_namespace(payload.profile_id)
+     elif isinstance(payload, GateDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id != GATE_ID:
++        if payload.entity_id != scenario.gate_id:
+             raise ValueError("invalid gate delta subject")
+         require_integer(payload.before_open, 0, 1)
+         require_integer(payload.after_open, 0, 1)
+     elif isinstance(payload, HitPointsDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id not in (ACTOR_ID, ENEMY_ID):
++        if payload.entity_id not in (scenario.actor_id, scenario.enemy_id):
+             raise ValueError("invalid HP delta subject")
+-        maximum = 3 if payload.entity_id == ACTOR_ID else 5
++        maximum = 3 if payload.entity_id == scenario.actor_id else 5
+         require_integer(payload.before_hp, 0, maximum)
+         require_integer(payload.after_hp, 0, maximum)
+     elif isinstance(payload, StaminaDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id != ACTOR_ID:
++        if payload.entity_id != scenario.actor_id:
+             raise ValueError("invalid stamina delta subject")
+         require_integer(payload.before_stamina, 0, 2)
+         require_integer(payload.after_stamina, 0, 2)
+@@ -265,18 +276,18 @@ def _validate_payload(payload: FrozenPayload) -> None:
+     elif isinstance(payload, StaminaPatch):
+         require_integer(payload.value, 0, 2)
+     elif isinstance(payload, (EncounterMoved, EncounterMoveBlocked, EncounterMoveCue)):
+-        _subjects(payload.actor_id, payload.space_id)
+-        _free(payload.from_cell)
++        _subjects(payload.actor_id, payload.space_id, scenario)
++        _free(payload.from_cell, scenario)
+         if isinstance(payload, EncounterMoveBlocked):
+             TrialPayloadCodec(TypeKey("trial.move", 1)).encode(MoveCommand(payload.dx, payload.dz))
+             x, z = payload.from_cell % 3 + payload.dx, payload.from_cell // 3 + payload.dz
+             bounded = 0 <= x < 3 and 0 <= z < 3
+-            targets = {"wall": 1, "door": 4, "occupied": 8}
++            targets = {"wall": scenario.wall_cell, "door": scenario.gate_cell, "occupied": scenario.enemy_cell}
+             if type(payload.reason) is not str or (payload.reason == "boundary" and bounded or
+                 payload.reason != "boundary" and (not bounded or targets.get(payload.reason) != z * 3 + x)):
+                 raise ValueError("inconsistent movement blockage")
+         else:
+-            _free(payload.to_cell)
++            _free(payload.to_cell, scenario)
+             if isinstance(payload, EncounterMoved) or payload.result == "moved":
+                 if not adjacent_cells(payload.from_cell, payload.to_cell):
+                     raise ValueError("nonadjacent movement")
+@@ -289,15 +300,16 @@ def _validate_payload(payload: FrozenPayload) -> None:
+                     (payload.to_x_mm, payload.to_z_mm) != cell_coordinates(payload.to_cell)):
+                     raise ValueError("movement cue geometry")
+     elif isinstance(payload, (GateChanged, GateCue)):
+-        _pair(payload.actor_id, payload.target_id, GATE_ID)
++        _pair(payload.actor_id, payload.target_id, scenario.gate_id, scenario)
+         require_integer(payload.before_open, 0, 1)
+         require_integer(payload.after_open, 0, 1)
+         if isinstance(payload, GateCue):
+-            require_integer(payload.cell, 4, 4)
+-            require_integer(payload.x_mm, 1000, 1000)
+-            require_integer(payload.z_mm, 1000, 1000)
++            require_integer(payload.cell, scenario.gate_cell, scenario.gate_cell)
++            x, z = cell_coordinates(scenario.gate_cell)
++            require_integer(payload.x_mm, x, x)
++            require_integer(payload.z_mm, z, z)
+     elif isinstance(payload, (AttackResolved, AttackCue)):
+-        _pair(payload.actor_id, payload.target_id, ENEMY_ID)
++        _pair(payload.actor_id, payload.target_id, scenario.enemy_id, scenario)
+         expected = resolve_basic_attack(payload.actor_hp_before, payload.target_hp_before, payload.stamina_before)
+         require_integer(payload.actor_hp_after, 0, 3)
+         require_integer(payload.target_hp_after, 0, 5)
+@@ -309,23 +321,23 @@ def _validate_payload(payload: FrozenPayload) -> None:
+             if payload.profile_id != ATTACK_PROFILE_ID:
+                 raise ValueError("attack profile")
+         else:
+-            _free(payload.actor_cell)
+-            require_integer(payload.target_cell, 8, 8)
++            _free(payload.actor_cell, scenario)
++            require_integer(payload.target_cell, scenario.enemy_cell, scenario.enemy_cell)
+             if not adjacent_cells(payload.actor_cell, payload.target_cell) or payload.result != _attack_result(expected[0], expected[1]):
+                 raise ValueError("attack cue geometry/result")
+     elif isinstance(payload, (Rested, RestCue)):
+         require_namespace(payload.actor_id)
+-        if payload.actor_id != ACTOR_ID:
++        if payload.actor_id != scenario.actor_id:
+             raise ValueError("invalid resting actor")
+         require_integer(payload.before_stamina, 0, 2)
+         require_integer(payload.after_stamina, 0, 2)
+         if payload.after_stamina != min(2, payload.before_stamina + 1):
+             raise ValueError("rest arithmetic")
+     elif isinstance(payload, (Defeated, DefeatCue)):
+-        _defeat(payload.entity_id, payload.killer_id)
++        _defeat(payload.entity_id, payload.killer_id, scenario)
+         if isinstance(payload, DefeatCue):
+-            _free(payload.cell)
+-            if payload.entity_id == ENEMY_ID and payload.cell != ENEMY_CELL:
++            _free(payload.cell, scenario)
++            if payload.entity_id == scenario.enemy_id and payload.cell != scenario.enemy_cell:
+                 raise ValueError("enemy defeat cell")
+             require_integer(payload.x_mm)
+             require_integer(payload.z_mm)
+@@ -334,7 +346,10 @@ def _validate_payload(payload: FrozenPayload) -> None:
+ 
+ 
+ class EncounterPayloadCodec:
+-    def __init__(self, schema: TypeKey) -> None:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, schema: TypeKey, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
+         if schema.version != 1 or schema.kind not in (
+             'encounter.interact',
+             'encounter.attack',
+@@ -368,64 +383,64 @@ class EncounterPayloadCodec:
+         if payload.schema != self.schema:
+             raise SchemaError("UNSUPPORTED_SCHEMA", "payload.schema")
+         if type(payload) is InteractCommand:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"target_id": payload.target_id, "option": payload.option}
+         if type(payload) is AttackCommand:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"target_id": payload.target_id, "profile_id": payload.profile_id}
+         if type(payload) is RestCommand:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {}
+         if type(payload) is GateDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_open": payload.before_open, "after_open": payload.after_open}
+         if type(payload) is HitPointsDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_hp": payload.before_hp, "after_hp": payload.after_hp}
+         if type(payload) is StaminaDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_stamina": payload.before_stamina, "after_stamina": payload.after_stamina}
+         if type(payload) is GatePatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"is_open": payload.is_open}
+         if type(payload) is HitPointsPatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"hp": payload.hp}
+         if type(payload) is StaminaPatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"value": payload.value}
+         if type(payload) is EncounterMoved:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "space_id": payload.space_id, "from_cell": payload.from_cell, "to_cell": payload.to_cell}
+         if type(payload) is EncounterMoveBlocked:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "space_id": payload.space_id, "from_cell": payload.from_cell, "dx": payload.dx, "dz": payload.dz, "reason": payload.reason}
+         if type(payload) is GateChanged:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "target_id": payload.target_id, "before_open": payload.before_open, "after_open": payload.after_open}
+         if type(payload) is AttackResolved:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "target_id": payload.target_id, "profile_id": payload.profile_id, "actor_hp_before": payload.actor_hp_before, "actor_hp_after": payload.actor_hp_after, "target_hp_before": payload.target_hp_before, "target_hp_after": payload.target_hp_after, "stamina_before": payload.stamina_before, "stamina_after": payload.stamina_after}
+         if type(payload) is Rested:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "before_stamina": payload.before_stamina, "after_stamina": payload.after_stamina}
+         if type(payload) is Defeated:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "killer_id": payload.killer_id}
+         if type(payload) is EncounterMoveCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "space_id": payload.space_id, "from_cell": payload.from_cell, "to_cell": payload.to_cell, "from_x_mm": payload.from_x_mm, "from_z_mm": payload.from_z_mm, "to_x_mm": payload.to_x_mm, "to_z_mm": payload.to_z_mm, "result": payload.result}
+         if type(payload) is GateCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "target_id": payload.target_id, "cell": payload.cell, "x_mm": payload.x_mm, "z_mm": payload.z_mm, "before_open": payload.before_open, "after_open": payload.after_open}
+         if type(payload) is AttackCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "target_id": payload.target_id, "actor_cell": payload.actor_cell, "target_cell": payload.target_cell, "actor_hp_before": payload.actor_hp_before, "actor_hp_after": payload.actor_hp_after, "target_hp_before": payload.target_hp_before, "target_hp_after": payload.target_hp_after, "stamina_before": payload.stamina_before, "stamina_after": payload.stamina_after, "result": payload.result}
+         if type(payload) is RestCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "before_stamina": payload.before_stamina, "after_stamina": payload.after_stamina}
+         if type(payload) is DefeatCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "killer_id": payload.killer_id, "cell": payload.cell, "x_mm": payload.x_mm, "z_mm": payload.z_mm}
+         raise SchemaError("UNSUPPORTED_SCHEMA", "encounter payload class")
+ 
+@@ -498,7 +513,10 @@ class EncounterPayloadCodec:
+ 
+ 
+ class EncounterAdmission:
+-    def __init__(self, schema: TypeKey) -> None:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, schema: TypeKey, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
+         if schema not in tuple(TypeKey(kind, 1) for kind in ("trial.move", "encounter.attack", "encounter.interact", "encounter.rest")):
+             raise SchemaError("UNSUPPORTED_SCHEMA", "encounter admission")
+         self._schema = schema
+@@ -519,47 +537,47 @@ class EncounterAdmission:
+         return tuple(FieldFamily(k, f) for k, f in pairs)
+ 
+     def admit(self, command: GameCommand, state: ReadPort, *, start_tick: Tick, world_id: str) -> AdmissionOutcome:
+-        if command.actor_id != ACTOR_ID:
++        if command.actor_id != self._scenario.actor_id:
+             return TurnRejected(failure("UNAUTHORIZED_ACTOR"), command.expected_revision)
+-        body = (TrialPayloadCodec(self.schema) if self.schema.kind == "trial.move" else EncounterPayloadCodec(self.schema)).encode(command.payload)
+-        if state.component(HIT_POINTS, ACTOR_ID).hp == 0:
++        body = (TrialPayloadCodec(self.schema) if self.schema.kind == "trial.move" else EncounterPayloadCodec(self.schema, self._scenario)).encode(command.payload)
++        if state.component(HIT_POINTS, self._scenario.actor_id).hp == 0:
+             return TurnRejected(failure("ACTOR_DEFEATED"), command.expected_revision)
+         payload = command.payload
+         code: str | None = None
+         if isinstance(payload, (MoveCommand, InteractCommand, AttackCommand)):
+-            position = state.component(CELL_POSITION, ACTOR_ID)
++            position = state.component(CELL_POSITION, self._scenario.actor_id)
+             space, cell = position.space_id, position.cell
+-            if space != SPACE_ID:
++            if space != self._scenario.space_id:
+                 raise CandidateError("INVALID_ACTION", "actor space")
+-            _free(cell)
++            _free(cell, self._scenario)
+             if isinstance(payload, InteractCommand):
+-                gate = state.component(GATE, GATE_ID)
++                gate = state.component(GATE, self._scenario.gate_id)
+                 gate_cell, gate_space = gate.cell, gate.space_id
+                 gate.is_open
+-                if gate_cell != GATE_CELL or gate_space != space:
++                if gate_cell != self._scenario.gate_cell or gate_space != space:
+                     raise CandidateError("INVALID_ACTION", "gate reference")
+-                if payload.target_id != GATE_ID:
++                if payload.target_id != self._scenario.gate_id:
+                     code = "INVALID_TARGET"
+                 elif payload.option == "close" and cell == gate_cell:
+                     code = "TARGET_OCCUPIED"
+                 elif not adjacent_cells(cell, gate_cell):
+                     code = "OUT_OF_RANGE"
+             elif isinstance(payload, AttackCommand):
+-                enemy = state.component(CELL_POSITION, ENEMY_ID)
+-                if enemy.cell != ENEMY_CELL or enemy.space_id != space:
++                enemy = state.component(CELL_POSITION, self._scenario.enemy_id)
++                if enemy.cell != self._scenario.enemy_cell or enemy.space_id != space:
+                     raise CandidateError("INVALID_ACTION", "enemy reference")
+-                if payload.target_id != ENEMY_ID:
++                if payload.target_id != self._scenario.enemy_id:
+                     code = "INVALID_TARGET"
+                 elif payload.profile_id != ATTACK_PROFILE_ID:
+                     code = "INVALID_ATTACK_PROFILE"
+-                elif state.component(HIT_POINTS, ENEMY_ID).hp == 0:
++                elif state.component(HIT_POINTS, self._scenario.enemy_id).hp == 0:
+                     code = "TARGET_DEFEATED"
+-                elif not adjacent_cells(cell, ENEMY_CELL):
++                elif not adjacent_cells(cell, self._scenario.enemy_cell):
+                     code = "OUT_OF_RANGE"
+-                elif state.component(STAMINA, ACTOR_ID).value == 0:
++                elif state.component(STAMINA, self._scenario.actor_id).value == 0:
+                     code = "INSUFFICIENT_STAMINA"
+         elif isinstance(payload, RestCommand):
+-            state.component(STAMINA, ACTOR_ID).value
++            state.component(STAMINA, self._scenario.actor_id).value
+         else:
+             raise CandidateError("INVALID_ACTION", "unsupported admitted payload")
+         if code is not None:
+@@ -571,8 +589,14 @@ class EncounterAdmission:
+ 
+ 
+ class EncounterCellReducer(CellReducer):
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++        super().__init__(scenario.blocked_cells)
++
+     def _subject(self, delta: StateDelta) -> None:
+-        if type(delta) is not CellDelta or delta.entity_id != ACTOR_ID:
++        if type(delta) is not CellDelta or delta.entity_id != self._scenario.actor_id:
+             raise CandidateError("INVALID_DELTA", "encounter movement subject")
+ 
+     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
+@@ -594,6 +618,11 @@ class EncounterCellReducer(CellReducer):
+ 
+ 
+ class GateReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.gate-delta", 1)
+@@ -606,7 +635,7 @@ class GateReducer:
+         if type(delta) is not GateDelta:
+             raise CandidateError("INVALID_DELTA", "wrong Gate delta class")
+         try:
+-            EncounterPayloadCodec(self.schema).encode(delta)
++            EncounterPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "invalid Gate delta") from error
+         return delta
+@@ -639,6 +668,11 @@ class GateReducer:
+ 
+ 
+ class GatePatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.gate-patch", 1)
+@@ -652,13 +686,18 @@ class GatePatchRoute:
+         return FieldFamily("encounter.gate", "is_open")
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+-        GateAdapter().validate(before)
+-        EncounterPayloadCodec(self.schema).encode(patch)
++        GateAdapter(self._scenario).validate(before)
++        EncounterPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, GateRecord) and isinstance(patch, GatePatch)
+         return replace(before, is_open=patch.is_open)
+ 
+ 
+ class HitPointsReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.hp-delta", 1)
+@@ -671,14 +710,14 @@ class HitPointsReducer:
+         if type(delta) is not HitPointsDelta:
+             raise CandidateError("INVALID_DELTA", "wrong HitPoints delta class")
+         try:
+-            EncounterPayloadCodec(self.schema).encode(delta)
++            EncounterPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "invalid HitPoints delta") from error
+         return delta
+ 
+     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
+         value = self._validate(delta)
+-        if value.before_hp - value.after_hp not in ((1,) if value.entity_id == ACTOR_ID else (1, 2)):
++        if value.before_hp - value.after_hp not in ((1,) if value.entity_id == self._scenario.actor_id else (1, 2)):
+             raise CandidateError("INVALID_DELTA", "illegal HitPoints step")
+         if before.component(HIT_POINTS, value.entity_id).hp != value.before_hp:
+             raise CandidateError("INVALID_DELTA", "HitPoints old value")
+@@ -704,6 +743,11 @@ class HitPointsReducer:
+ 
+ 
+ class HitPointsPatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.hp-patch", 1)
+@@ -718,12 +762,17 @@ class HitPointsPatchRoute:
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+         HitPointsAdapter().validate(before)
+-        EncounterPayloadCodec(self.schema).encode(patch)
++        EncounterPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, HitPointsRecord) and isinstance(patch, HitPointsPatch)
+         return replace(before, hp=patch.hp)
+ 
+ 
+ class StaminaReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.stamina-delta", 1)
+@@ -736,7 +785,7 @@ class StaminaReducer:
+         if type(delta) is not StaminaDelta:
+             raise CandidateError("INVALID_DELTA", "wrong Stamina delta class")
+         try:
+-            EncounterPayloadCodec(self.schema).encode(delta)
++            EncounterPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "invalid Stamina delta") from error
+         return delta
+@@ -769,6 +818,11 @@ class StaminaReducer:
+ 
+ 
+ class StaminaPatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("encounter.stamina-patch", 1)
+@@ -783,60 +837,82 @@ class StaminaPatchRoute:
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+         StaminaAdapter().validate(before)
+-        EncounterPayloadCodec(self.schema).encode(patch)
++        EncounterPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, StaminaRecord) and isinstance(patch, StaminaPatch)
+         return replace(before, value=patch.value)
+ 
+ 
+ class EncounterCheckpointPolicy:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
+         if len(core.components) != 7:
+             raise ValueError("exact seven encounter records required")
+-        gate, enemy_hp, actor_hp, stamina, grid, enemy, actor = core.components
+-        GateAdapter().validate(gate)
++        records = {(r.schema.kind, r.entity_id): r for r in core.components}
++        expected = (
++            ("encounter.gate", self._scenario.gate_id),
++            ("encounter.hp", self._scenario.enemy_id),
++            ("encounter.hp", self._scenario.actor_id),
++            ("encounter.stamina", self._scenario.actor_id),
++            ("trial.map", self._scenario.space_id),
++            ("trial.position", self._scenario.enemy_id),
++            ("trial.position", self._scenario.actor_id),
++        )
++        if set(records) != set(expected):
++            raise ValueError("invalid encounter identities/order")
++        gate, enemy_hp, actor_hp, stamina, grid, enemy, actor = (records[key] for key in expected)
++        GateAdapter(self._scenario).validate(gate)
+         HitPointsAdapter().validate(enemy_hp)
+         HitPointsAdapter().validate(actor_hp)
+         StaminaAdapter().validate(stamina)
+-        TrialMapAdapter().validate(grid)
++        TrialMapAdapter(self._scenario.blocked_cells).validate(grid)
+         CellPositionAdapter().validate(enemy)
+         CellPositionAdapter().validate(actor)
+         assert isinstance(gate, GateRecord)
+         assert isinstance(enemy_hp, HitPointsRecord) and isinstance(actor_hp, HitPointsRecord)
+         assert isinstance(stamina, StaminaRecord) and isinstance(grid, TrialMapRecord)
+         assert isinstance(enemy, CellPositionRecord) and isinstance(actor, CellPositionRecord)
+-        if (gate.entity_id != GATE_ID or enemy_hp.entity_id != ENEMY_ID or actor_hp.entity_id != ACTOR_ID or
+-            stamina.entity_id != ACTOR_ID or grid.entity_id != SPACE_ID or enemy.entity_id != ENEMY_ID or actor.entity_id != ACTOR_ID):
++        if (gate.entity_id != self._scenario.gate_id or enemy_hp.entity_id != self._scenario.enemy_id or actor_hp.entity_id != self._scenario.actor_id or
++            stamina.entity_id != self._scenario.actor_id or grid.entity_id != self._scenario.space_id or enemy.entity_id != self._scenario.enemy_id or actor.entity_id != self._scenario.actor_id):
+             raise ValueError("invalid encounter identities/order")
+         require_integer(actor_hp.hp, 0, 3)
+-        _subjects(actor.entity_id, actor.space_id)
+-        _free(actor.cell)
+-        if gate.space_id != SPACE_ID or enemy.space_id != SPACE_ID or enemy.cell != ENEMY_CELL:
++        _subjects(actor.entity_id, actor.space_id, self._scenario)
++        _free(actor.cell, self._scenario)
++        if gate.space_id != self._scenario.space_id or enemy.space_id != self._scenario.space_id or enemy.cell != self._scenario.enemy_cell:
+             raise ValueError("invalid encounter references")
+-        if actor.cell == GATE_CELL and gate.is_open == 0 or actor.cell == ENEMY_CELL and enemy_hp.hp > 0:
++        if actor.cell == self._scenario.gate_cell and gate.is_open == 0 or actor.cell == self._scenario.enemy_cell and enemy_hp.hp > 0:
+             raise ValueError("occupied actor placement")
+-        if any(s.actor_id != ACTOR_ID for s in protocol.streams) or core.pending or core.pins.gameplay_packages:
++        if any(s.actor_id != self._scenario.actor_id for s in protocol.streams) or core.pending or core.pins.gameplay_packages:
+             raise ValueError("invalid encounter streams/pending/packages")
+ 
+ 
+ class EncounterPresenter:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     def map(self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt,
+             committed: ReadPort) -> tuple[PresentationEvent, ...]:
+         cues: list[PresentationEvent] = []
+         for event in facts:
+             fact = event.payload
+-            EncounterPayloadCodec(fact.schema).encode(fact)
+-            actor = committed.component(CELL_POSITION, ACTOR_ID)
+-            enemy = committed.component(CELL_POSITION, ENEMY_ID)
+-            gate = committed.component(GATE, GATE_ID)
+-            grid = committed.component(TRIAL_MAP, SPACE_ID)
++            EncounterPayloadCodec(fact.schema, self._scenario).encode(fact)
++            actor = committed.component(CELL_POSITION, self._scenario.actor_id)
++            enemy = committed.component(CELL_POSITION, self._scenario.enemy_id)
++            gate = committed.component(GATE, self._scenario.gate_id)
++            grid = committed.component(TRIAL_MAP, self._scenario.space_id)
+             cell, space = actor.cell, actor.space_id
+             gate_cell, gate_open, gate_space = gate.cell, gate.is_open, gate.space_id
+             enemy_cell, enemy_space = enemy.cell, enemy.space_id
+-            actor_hp = committed.component(HIT_POINTS, ACTOR_ID).hp
+-            enemy_hp = committed.component(HIT_POINTS, ENEMY_ID).hp
+-            stamina = committed.component(STAMINA, ACTOR_ID).value
+-            if (space != SPACE_ID or enemy_space != space or gate_space != space or
+-                enemy_cell != ENEMY_CELL or gate_cell != GATE_CELL or
++            actor_hp = committed.component(HIT_POINTS, self._scenario.actor_id).hp
++            enemy_hp = committed.component(HIT_POINTS, self._scenario.enemy_id).hp
++            stamina = committed.component(STAMINA, self._scenario.actor_id).value
++            if (space != self._scenario.space_id or enemy_space != space or gate_space != space or
++                enemy_cell != self._scenario.enemy_cell or gate_cell != self._scenario.gate_cell or
+                 grid.width != 3 or grid.height != 3 or grid.cell_mm != 1000 or
+                 grid.is_blocked(cell) or cell == gate_cell and gate_open == 0 or
+                 cell == enemy_cell and enemy_hp > 0):
+@@ -856,20 +932,20 @@ class EncounterPresenter:
+                         raise ValueError("presenter dynamic blockage")
+                 fx, fz = cell_coordinates(fact.from_cell)
+                 tx, tz = cell_coordinates(target)
+-                payload = EncounterMoveCue(ACTOR_ID, space, fact.from_cell, target,
++                payload = EncounterMoveCue(self._scenario.actor_id, space, fact.from_cell, target,
+                                            fx, fz, tx, tz, result)
+             elif isinstance(fact, GateChanged):
+                 if gate_open != fact.after_open or not adjacent_cells(cell, gate_cell) or actor_hp == 0:
+                     raise ValueError("presenter gate state")
+                 x, z = cell_coordinates(gate_cell)
+-                payload = GateCue(ACTOR_ID, GATE_ID, gate_cell, x, z,
++                payload = GateCue(self._scenario.actor_id, self._scenario.gate_id, gate_cell, x, z,
+                                   fact.before_open, fact.after_open)
+             elif isinstance(fact, AttackResolved):
+                 if ((actor_hp, enemy_hp, stamina) !=
+                     (fact.actor_hp_after, fact.target_hp_after, fact.stamina_after) or
+                     not adjacent_cells(cell, enemy_cell)):
+                     raise ValueError("presenter attack state")
+-                payload = AttackCue(ACTOR_ID, ENEMY_ID, cell, enemy_cell,
++                payload = AttackCue(self._scenario.actor_id, self._scenario.enemy_id, cell, enemy_cell,
+                                     fact.actor_hp_before, fact.actor_hp_after,
+                                     fact.target_hp_before, fact.target_hp_after,
+                                     fact.stamina_before, fact.stamina_after,
+@@ -877,18 +953,18 @@ class EncounterPresenter:
+             elif isinstance(fact, Rested):
+                 if stamina != fact.after_stamina or actor_hp == 0:
+                     raise ValueError("presenter rest state")
+-                payload = RestCue(ACTOR_ID, fact.before_stamina, fact.after_stamina)
++                payload = RestCue(self._scenario.actor_id, fact.before_stamina, fact.after_stamina)
+             elif isinstance(fact, Defeated):
+-                defeated_hp = enemy_hp if fact.entity_id == ENEMY_ID else actor_hp
+-                killer_hp = actor_hp if fact.killer_id == ACTOR_ID else enemy_hp
++                defeated_hp = enemy_hp if fact.entity_id == self._scenario.enemy_id else actor_hp
++                killer_hp = actor_hp if fact.killer_id == self._scenario.actor_id else enemy_hp
+                 if defeated_hp != 0 or killer_hp == 0 or not adjacent_cells(cell, enemy_cell):
+                     raise ValueError("presenter defeat state")
+-                defeat_cell = enemy_cell if fact.entity_id == ENEMY_ID else cell
++                defeat_cell = enemy_cell if fact.entity_id == self._scenario.enemy_id else cell
+                 x, z = cell_coordinates(defeat_cell)
+                 payload = DefeatCue(fact.entity_id, fact.killer_id, defeat_cell, x, z)
+             else:
+                 raise SchemaError("UNSUPPORTED_SCHEMA", "encounter presenter fact")
+-            EncounterPayloadCodec(payload.schema).encode(payload)
++            EncounterPayloadCodec(payload.schema, self._scenario).encode(payload)
+             identifier = "p1-" + hashlib.sha256(pack(("cue-id/v1", event.header.event_id,
+                                                      "encounter.presenter", str(len(cues))))).hexdigest()
+             header = EventHeader(EventId(identifier), payload.schema, "encounter.presenter",
+diff --git a/src/orchestration/trial.py b/src/orchestration/trial.py
+index 5a79251..44d65a4 100644
+--- a/src/orchestration/trial.py
++++ b/src/orchestration/trial.py
+@@ -34,9 +34,9 @@ def _cell(value: int) -> None:
+     require_integer(value, 0, WIDTH * HEIGHT - 1)
+ 
+ 
+-def _free(value: int) -> None:
++def _free(value: int, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
+     _cell(value)
+-    if value in BLOCKED_CELLS:
++    if value in blocked_cells:
+         raise ValueError("actor cannot occupy wall")
+ 
+ 
+@@ -47,9 +47,9 @@ def _cardinal(dx: int, dz: int) -> None:
+         raise ValueError("exact cardinal direction required")
+ 
+ 
+-def _adjacent(before: int, after: int) -> None:
+-    _free(before)
+-    _free(after)
++def _adjacent(before: int, after: int, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
++    _free(before, blocked_cells)
++    _free(after, blocked_cells)
+     x, z = cell_coordinates(before)
+     tx, tz = cell_coordinates(after)
+     if abs(tx - x) + abs(tz - z) != CELL_MM:
+@@ -131,6 +131,11 @@ class _PositionView(_View):
+ 
+ 
+ class TrialMapAdapter:
++    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
++
++    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
++        self._blocked_cells = blocked_cells
++
+     @property
+     def key(self) -> ComponentKey[TrialMapRead]:
+         return TRIAL_MAP
+@@ -146,7 +151,7 @@ class TrialMapAdapter:
+             raise ValueError("immutable blocks required")
+         for cell in record.blocked_cells:
+             _cell(cell)
+-        if record.blocked_cells != BLOCKED_CELLS:
++        if record.blocked_cells != self._blocked_cells:
+             raise ValueError("fixed sorted unique wall required")
+ 
+     def wrap(self, record: ComponentRecord, access: ViewAccess) -> TrialMapRead:
+@@ -174,6 +179,11 @@ class CellPositionAdapter:
+ 
+ 
+ class TrialMapCodec:
++    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
++
++    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
++        self._blocked_cells = blocked_cells
++
+     @property
+     def schema(self) -> TypeKey:
+         return TRIAL_MAP.schema
+@@ -183,11 +193,11 @@ class TrialMapCodec:
+         record = TrialMapRecord(entity_id, int_value(d["width"]), int_value(d["height"]),
+                                 int_value(d["cell_mm"]),
+                                 tuple(int_value(c) for c in array_value(d["blocked_cells"])))
+-        TrialMapAdapter().validate(record)
++        TrialMapAdapter(self._blocked_cells).validate(record)
+         return record
+ 
+     def encode(self, record: ComponentRecord) -> JsonObject:
+-        TrialMapAdapter().validate(record)
++        TrialMapAdapter(self._blocked_cells).validate(record)
+         assert isinstance(record, TrialMapRecord)
+         return {"width": record.width, "height": record.height, "cell_mm": record.cell_mm,
+                 "blocked_cells": record.blocked_cells}
+@@ -346,6 +356,11 @@ class MoveAdmission:
+ 
+ 
+ class CellReducer:
++    _blocked_cells: tuple[int, ...] = BLOCKED_CELLS
++
++    def __init__(self, blocked_cells: tuple[int, ...] = BLOCKED_CELLS) -> None:
++        self._blocked_cells = blocked_cells
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("trial.position-delta", 1)
+@@ -366,7 +381,7 @@ class CellReducer:
+     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
+         value = self._validate(delta)
+         try:
+-            _adjacent(value.before_cell, value.after_cell)
++            _adjacent(value.before_cell, value.after_cell, self._blocked_cells)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "illegal cell movement") from error
+         if before.component(CELL_POSITION, value.entity_id).cell != value.before_cell:
+diff --git a/src/orchestration/watch.py b/src/orchestration/watch.py
+index e0c31a3..51da9d0 100644
+--- a/src/orchestration/watch.py
++++ b/src/orchestration/watch.py
+@@ -1,5 +1,7 @@
+ from __future__ import annotations
+ 
++from domain.scenario import LEGACY_SCENARIO, Scenario
++
+ from dataclasses import replace
+ import hashlib
+ from contracts.errors import CandidateError, ReadOnlyViolation, SchemaError
+@@ -13,8 +15,8 @@ from contracts.turn import AdmittedAction, AdmittedCommand, AdmissionOutcome, Co
+ from domain.canonical import JsonObject, decode_json, exact_fields, hash_document, int_value, object_value, pack, text_value
+ from domain.primitives import ComponentAddress, EntityId, EventId, FieldAddress, FieldFamily, FrozenPayload, MAX_INT, Phase, Tick, TypeKey, require_integer, require_namespace
+ from domain.state_types import ComponentRecord, CoreSnapshot
+-from domain.trial import ACTOR_ID, SPACE_ID
+-from domain.watch import NPC_ID, LANTERN_ID, NPC_CELL, WatchNpcRecord, LanternRecord, ReplyRecord, next_wake
++from domain.trial import cell_coordinates
++from domain.watch import WatchNpcRecord, LanternRecord, ReplyRecord, next_wake
+ from orchestration.encounter import EncounterCheckpointPolicy
+ from orchestration.serialization import key_document
+ 
+@@ -62,6 +64,11 @@ class _WatchNpcView(_View):
+ 
+ 
+ class WatchNpcAdapter:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def key(self) -> ComponentKey[WatchNpcRead]:
+         return WATCH_NPC
+@@ -71,7 +78,7 @@ class WatchNpcAdapter:
+             raise ValueError("invalid WatchNpc record")
+         require_namespace(record.entity_id)
+         require_namespace(record.space_id)
+-        require_integer(record.cell, 6, 6)
++        require_integer(record.cell, self._scenario.npc_cell, self._scenario.npc_cell)
+         require_integer(record.bells, 0, MAX_INT)
+ 
+     def wrap(self, record: ComponentRecord, access: ViewAccess) -> WatchNpcRead:
+@@ -81,6 +88,11 @@ class WatchNpcAdapter:
+ 
+ 
+ class WatchNpcCodec:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return WATCH_NPC.schema
+@@ -88,11 +100,11 @@ class WatchNpcCodec:
+     def decode(self, entity_id: EntityId, fields: JsonObject) -> ComponentRecord:
+         d = exact_fields(fields, ('space_id', 'cell', 'bells'))
+         record = WatchNpcRecord(entity_id, EntityId(text_value(d["space_id"])), int_value(d["cell"]), int_value(d["bells"]))
+-        WatchNpcAdapter().validate(record)
++        WatchNpcAdapter(self._scenario).validate(record)
+         return record
+ 
+     def encode(self, record: ComponentRecord) -> JsonObject:
+-        WatchNpcAdapter().validate(record)
++        WatchNpcAdapter(self._scenario).validate(record)
+         assert isinstance(record, WatchNpcRecord)
+         return {"space_id": record.space_id, "cell": record.cell, "bells": record.bells}
+ 
+@@ -185,30 +197,30 @@ class ReplyCodec:
+         return {"count": record.count}
+ 
+ 
+-def _validate_payload(payload: FrozenPayload) -> None:
++def _validate_payload(payload: FrozenPayload, scenario: Scenario = LEGACY_SCENARIO) -> None:
+     if isinstance(payload, WaitCommand):
+         require_integer(payload.seconds, 1, 16)
+     elif isinstance(payload, BellCommand):
+         require_namespace(payload.npc_id)
+     elif isinstance(payload, WatchWake):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid wake subject")
+     elif isinstance(payload, WatchRequested):
+         require_namespace(payload.actor_id)
+-        if payload.actor_id != ACTOR_ID:
++        if payload.actor_id != scenario.actor_id:
+             raise ValueError("invalid requested subject")
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid requested subject")
+     elif isinstance(payload, WatchEcho):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid echo subject")
+         require_integer(payload.remaining, 0, 7)
+     elif isinstance(payload, NpcActed):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid npc-acted subject")
+         require_integer(payload.before_bells, 0, MAX_INT)
+         require_integer(payload.after_bells, 0, MAX_INT)
+@@ -216,14 +228,14 @@ def _validate_payload(payload: FrozenPayload) -> None:
+             raise ValueError("invalid count step")
+     elif isinstance(payload, BellRung):
+         require_namespace(payload.actor_id)
+-        if payload.actor_id != ACTOR_ID:
++        if payload.actor_id != scenario.actor_id:
+             raise ValueError("invalid bell-rung subject")
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid bell-rung subject")
+     elif isinstance(payload, WatchReplied):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid replied subject")
+         require_integer(payload.before_count, 0, MAX_INT)
+         require_integer(payload.after_count, 0, MAX_INT)
+@@ -231,29 +243,30 @@ def _validate_payload(payload: FrozenPayload) -> None:
+             raise ValueError("invalid count step")
+     elif isinstance(payload, NpcCue):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid npc-cue subject")
+         require_integer(payload.logical_tick, 1, MAX_INT)
+         require_integer(payload.before_bells, 0, MAX_INT)
+         require_integer(payload.after_bells, 0, MAX_INT)
+-        require_integer(payload.cell, 6, 6)
+-        require_integer(payload.x_mm, 0, 0)
+-        require_integer(payload.z_mm, 2000, 2000)
++        require_integer(payload.cell, scenario.npc_cell, scenario.npc_cell)
++        x, z = cell_coordinates(scenario.npc_cell)
++        require_integer(payload.x_mm, x, x)
++        require_integer(payload.z_mm, z, z)
+         if payload.after_bells != payload.before_bells + 1:
+             raise ValueError("invalid count step")
+         if payload.logical_tick % 2 or payload.after_bells != payload.logical_tick // 2:
+             raise ValueError("invalid NPC cue time")
+     elif isinstance(payload, BellCue):
+         require_namespace(payload.actor_id)
+-        if payload.actor_id != ACTOR_ID:
++        if payload.actor_id != scenario.actor_id:
+             raise ValueError("invalid bell-cue subject")
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid bell-cue subject")
+         require_integer(payload.logical_tick, 1, MAX_INT)
+     elif isinstance(payload, ReplyCue):
+         require_namespace(payload.npc_id)
+-        if payload.npc_id != NPC_ID:
++        if payload.npc_id != scenario.npc_id:
+             raise ValueError("invalid reply-cue subject")
+         require_integer(payload.logical_tick, 1, MAX_INT)
+         require_integer(payload.before_count, 0, MAX_INT)
+@@ -262,7 +275,7 @@ def _validate_payload(payload: FrozenPayload) -> None:
+             raise ValueError("invalid count step")
+     elif isinstance(payload, ChargeDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id != LANTERN_ID:
++        if payload.entity_id != scenario.lantern_id:
+             raise ValueError("invalid charge-delta subject")
+         require_integer(payload.before_charge, 0, 3)
+         require_integer(payload.after_charge, 0, 3)
+@@ -270,7 +283,7 @@ def _validate_payload(payload: FrozenPayload) -> None:
+         require_integer(payload.charge, 0, 3)
+     elif isinstance(payload, BellsDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id != NPC_ID:
++        if payload.entity_id != scenario.npc_id:
+             raise ValueError("invalid bells-delta subject")
+         require_integer(payload.before_bells, 0, MAX_INT)
+         require_integer(payload.after_bells, 0, MAX_INT)
+@@ -278,7 +291,7 @@ def _validate_payload(payload: FrozenPayload) -> None:
+         require_integer(payload.bells, 0, MAX_INT)
+     elif isinstance(payload, ReplyDelta):
+         require_namespace(payload.entity_id)
+-        if payload.entity_id != NPC_ID:
++        if payload.entity_id != scenario.npc_id:
+             raise ValueError("invalid reply-delta subject")
+         require_integer(payload.before_count, 0, MAX_INT)
+         require_integer(payload.after_count, 0, MAX_INT)
+@@ -289,7 +302,10 @@ def _validate_payload(payload: FrozenPayload) -> None:
+ 
+ 
+ class WatchPayloadCodec:
+-    def __init__(self, schema: TypeKey) -> None:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, schema: TypeKey, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
+         if schema not in tuple(TypeKey("watch." + k, 1) for k in ('wait', 'bell', 'wake', 'requested', 'echo', 'npc-acted', 'bell-rung', 'replied', 'npc-cue', 'bell-cue', 'reply-cue', 'charge-delta', 'charge-patch', 'bells-delta', 'bells-patch', 'reply-delta', 'reply-patch')):
+             raise SchemaError("UNSUPPORTED_SCHEMA", "watch codec")
+         self._schema = schema
+@@ -302,55 +318,55 @@ class WatchPayloadCodec:
+         if payload.schema != self.schema:
+             raise SchemaError("UNSUPPORTED_SCHEMA", "watch payload schema")
+         if type(payload) is WaitCommand:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"seconds": payload.seconds}
+         if type(payload) is BellCommand:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id}
+         if type(payload) is WatchWake:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id}
+         if type(payload) is WatchRequested:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id}
+         if type(payload) is WatchEcho:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id, "remaining": payload.remaining}
+         if type(payload) is NpcActed:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id, "before_bells": payload.before_bells, "after_bells": payload.after_bells}
+         if type(payload) is BellRung:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id}
+         if type(payload) is WatchReplied:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id, "before_count": payload.before_count, "after_count": payload.after_count}
+         if type(payload) is NpcCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id, "logical_tick": payload.logical_tick, "before_bells": payload.before_bells, "after_bells": payload.after_bells, "cell": payload.cell, "x_mm": payload.x_mm, "z_mm": payload.z_mm}
+         if type(payload) is BellCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id, "logical_tick": payload.logical_tick}
+         if type(payload) is ReplyCue:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"npc_id": payload.npc_id, "logical_tick": payload.logical_tick, "before_count": payload.before_count, "after_count": payload.after_count}
+         if type(payload) is ChargeDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_charge": payload.before_charge, "after_charge": payload.after_charge}
+         if type(payload) is ChargePatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"charge": payload.charge}
+         if type(payload) is BellsDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_bells": payload.before_bells, "after_bells": payload.after_bells}
+         if type(payload) is BellsPatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"bells": payload.bells}
+         if type(payload) is ReplyDelta:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"entity_id": payload.entity_id, "before_count": payload.before_count, "after_count": payload.after_count}
+         if type(payload) is ReplyPatch:
+-            _validate_payload(payload)
++            _validate_payload(payload, self._scenario)
+             return {"count": payload.count}
+         raise SchemaError("UNSUPPORTED_SCHEMA", "watch payload class")
+ 
+@@ -414,6 +430,11 @@ class WatchPayloadCodec:
+ 
+ 
+ class ChargeReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.charge-delta", 1)
+@@ -426,7 +447,7 @@ class ChargeReducer:
+         if type(delta) is not ChargeDelta:
+             raise CandidateError("INVALID_DELTA", "watch delta class")
+         try:
+-            WatchPayloadCodec(self.schema).encode(delta)
++            WatchPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "watch delta payload") from error
+         return delta
+@@ -459,6 +480,11 @@ class ChargeReducer:
+ 
+ 
+ class ChargePatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.charge-patch", 1)
+@@ -473,12 +499,17 @@ class ChargePatchRoute:
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+         LanternAdapter().validate(before)
+-        WatchPayloadCodec(self.schema).encode(patch)
++        WatchPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, LanternRecord) and isinstance(patch, ChargePatch)
+         return replace(before, charge=patch.charge)
+ 
+ 
+ class BellsReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.bells-delta", 1)
+@@ -491,7 +522,7 @@ class BellsReducer:
+         if type(delta) is not BellsDelta:
+             raise CandidateError("INVALID_DELTA", "watch delta class")
+         try:
+-            WatchPayloadCodec(self.schema).encode(delta)
++            WatchPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "watch delta payload") from error
+         return delta
+@@ -524,6 +555,11 @@ class BellsReducer:
+ 
+ 
+ class BellsPatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.bells-patch", 1)
+@@ -537,13 +573,18 @@ class BellsPatchRoute:
+         return FieldFamily("watch.npc", "bells")
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+-        WatchNpcAdapter().validate(before)
+-        WatchPayloadCodec(self.schema).encode(patch)
++        WatchNpcAdapter(self._scenario).validate(before)
++        WatchPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, WatchNpcRecord) and isinstance(patch, BellsPatch)
+         return replace(before, bells=patch.bells)
+ 
+ 
+ class ReplyReducer:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.reply-delta", 1)
+@@ -556,7 +597,7 @@ class ReplyReducer:
+         if type(delta) is not ReplyDelta:
+             raise CandidateError("INVALID_DELTA", "watch delta class")
+         try:
+-            WatchPayloadCodec(self.schema).encode(delta)
++            WatchPayloadCodec(self.schema, self._scenario).encode(delta)
+         except ValueError as error:
+             raise CandidateError("INVALID_DELTA", "watch delta payload") from error
+         return delta
+@@ -589,6 +630,11 @@ class ReplyReducer:
+ 
+ 
+ class ReplyPatchRoute:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     @property
+     def schema(self) -> TypeKey:
+         return TypeKey("watch.reply-patch", 1)
+@@ -603,13 +649,16 @@ class ReplyPatchRoute:
+ 
+     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+         ReplyAdapter().validate(before)
+-        WatchPayloadCodec(self.schema).encode(patch)
++        WatchPayloadCodec(self.schema, self._scenario).encode(patch)
+         assert isinstance(before, ReplyRecord) and isinstance(patch, ReplyPatch)
+         return replace(before, count=patch.count)
+ 
+ 
+ class WatchAdmission:
+-    def __init__(self, schema: TypeKey) -> None:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, schema: TypeKey, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
+         if schema not in (TypeKey("watch.wait", 1), TypeKey("watch.bell", 1)):
+             raise SchemaError("UNSUPPORTED_SCHEMA", "watch admission")
+         self._schema = schema
+@@ -626,17 +675,17 @@ class WatchAdmission:
+         return tuple(FieldFamily(k, f) for k, f in fields)
+ 
+     def admit(self, command: GameCommand, state: ReadPort, *, start_tick: Tick, world_id: str) -> AdmissionOutcome:
+-        if command.actor_id != ACTOR_ID:
++        if command.actor_id != self._scenario.actor_id:
+             return TurnRejected(failure("UNAUTHORIZED_ACTOR"), command.expected_revision)
+-        body = WatchPayloadCodec(self.schema).encode(command.payload)
+-        if state.component(HIT_POINTS, ACTOR_ID).hp == 0:
++        body = WatchPayloadCodec(self.schema, self._scenario).encode(command.payload)
++        if state.component(HIT_POINTS, self._scenario.actor_id).hp == 0:
+             return TurnRejected(failure("ACTOR_DEFEATED"), command.expected_revision)
+         payload = command.payload
+         if type(payload) is BellCommand:
+-            npc = state.component(WATCH_NPC, NPC_ID)
+-            if npc.cell != NPC_CELL or npc.space_id != SPACE_ID or state.component(CELL_POSITION, ACTOR_ID).space_id != SPACE_ID:
++            npc = state.component(WATCH_NPC, self._scenario.npc_id)
++            if npc.cell != self._scenario.npc_cell or npc.space_id != self._scenario.space_id or state.component(CELL_POSITION, self._scenario.actor_id).space_id != self._scenario.space_id:
+                 raise CandidateError("INVALID_ACTION", "watch references")
+-            if payload.npc_id != NPC_ID:
++            if payload.npc_id != self._scenario.npc_id:
+                 return TurnRejected(failure("INVALID_TARGET"), command.expected_revision)
+             duration = 1
+         elif type(payload) is WaitCommand:
+@@ -652,23 +701,28 @@ class WatchAdmission:
+ 
+ 
+ class WatchCheckpointPolicy:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
+         if len(core.components) != 10:
+             raise ValueError("exact ten watch records required")
+-        EncounterCheckpointPolicy().validate(replace(core, components=core.components[:7], pending=()), protocol)
++        EncounterCheckpointPolicy(self._scenario).validate(replace(core, components=core.components[:7], pending=()), protocol)
+         lantern, npc, reply = core.components[7:]
+         LanternAdapter().validate(lantern)
+-        WatchNpcAdapter().validate(npc)
++        WatchNpcAdapter(self._scenario).validate(npc)
+         ReplyAdapter().validate(reply)
+         assert isinstance(lantern, LanternRecord) and isinstance(npc, WatchNpcRecord) and isinstance(reply, ReplyRecord)
+-        if lantern.entity_id != LANTERN_ID or npc.entity_id != NPC_ID or reply.entity_id != NPC_ID or npc.space_id != SPACE_ID or npc.cell != NPC_CELL:
++        if lantern.entity_id != self._scenario.lantern_id or npc.entity_id != self._scenario.npc_id or reply.entity_id != self._scenario.npc_id or npc.space_id != self._scenario.space_id or npc.cell != self._scenario.npc_cell:
+             raise ValueError("watch identities/references")
+         if npc.bells != core.tick // 2 or lantern.charge != min(3, core.tick) or len(core.pending) != 1:
+             raise ValueError("watch clock/count/queue invariants")
+         q = exact_fields(decode_json(core.pending[0].canonical_event_json), ("event", "delivery_phase", "priority"))
+         e = exact_fields(q["event"], ("header", "due_tick", "payload"))
+         h = exact_fields(e["header"], ("event_id", "type_key", "producer_id", "occurred_at", "phase", "wave", "producer_rank", "sequence", "caused_by", "degraded"))
+-        if q["delivery_phase"] != "PRE_TICK" or q["priority"] != 10 or e["due_tick"] != next_wake(core.tick) or object_value(e["payload"]) != {"npc_id": NPC_ID} or object_value(h["type_key"]) != {"kind": "watch.wake", "version": 1}:
++        if q["delivery_phase"] != "PRE_TICK" or q["priority"] != 10 or e["due_tick"] != next_wake(core.tick) or object_value(e["payload"]) != {"npc_id": self._scenario.npc_id} or object_value(h["type_key"]) != {"kind": "watch.wake", "version": 1}:
+             raise ValueError("watch wake routing")
+         previous = core.tick // 2 * 2
+         if h["occurred_at"] != previous or h["sequence"] != (1 if previous else 0) or h["producer_id"] != "watch.npc" or h["phase"] != "PRE_TICK" or h["wave"] != 0 or h["producer_rank"] != 0 or h["degraded"] != ():
+@@ -679,14 +733,19 @@ class WatchCheckpointPolicy:
+ 
+ 
+ class WatchPresenter:
++    _scenario: Scenario = LEGACY_SCENARIO
++
++    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
++        self._scenario = scenario
++
+     def map(self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt, committed: ReadPort) -> tuple[PresentationEvent, ...]:
+         if not facts:
+             return ()
+-        npc = committed.component(WATCH_NPC, NPC_ID)
++        npc = committed.component(WATCH_NPC, self._scenario.npc_id)
+         cell, space, bells = npc.cell, npc.space_id, npc.bells
+-        charge = committed.component(LANTERN, LANTERN_ID).charge
+-        replies = committed.component(REPLY, NPC_ID).count
+-        if cell != NPC_CELL or space != SPACE_ID or charge != min(3, receipt.tick):
++        charge = committed.component(LANTERN, self._scenario.lantern_id).charge
++        replies = committed.component(REPLY, self._scenario.npc_id).count
++        if cell != self._scenario.npc_cell or space != self._scenario.space_id or charge != min(3, receipt.tick):
+             raise ValueError("watch presentation references")
+         last_bells: int | None = None
+         last_reply: int | None = None
+@@ -694,7 +753,7 @@ class WatchPresenter:
+         cues: list[PresentationEvent] = []
+         for event in facts:
+             fact = event.payload
+-            WatchPayloadCodec(fact.schema).encode(fact)
++            WatchPayloadCodec(fact.schema, self._scenario).encode(fact)
+             tick = event.header.occurred_at
+             if not 1 <= tick <= receipt.tick or tick < last_tick or event.due_tick != tick:
+                 raise ValueError("watch source timing/order")
+@@ -704,14 +763,15 @@ class WatchPresenter:
+                 if tick % 2 or fact.after_bells != tick // 2 or last_bells is not None and fact.before_bells != last_bells:
+                     raise ValueError("watch bell history")
+                 last_bells = fact.after_bells
+-                payload = NpcCue(NPC_ID, tick, fact.before_bells, fact.after_bells, cell, 0, 2000)
++                x, z = cell_coordinates(cell)
++                payload = NpcCue(self._scenario.npc_id, tick, fact.before_bells, fact.after_bells, cell, x, z)
+             elif type(fact) is BellRung:
+-                payload = BellCue(ACTOR_ID, NPC_ID, tick)
++                payload = BellCue(self._scenario.actor_id, self._scenario.npc_id, tick)
+             elif type(fact) is WatchReplied:
+                 if last_reply is not None and fact.before_count != last_reply:
+                     raise ValueError("watch reply history")
+                 last_reply = fact.after_count
+-                payload = ReplyCue(NPC_ID, tick, fact.before_count, fact.after_count)
++                payload = ReplyCue(self._scenario.npc_id, tick, fact.before_count, fact.after_count)
+             else:
+                 raise ValueError("watch presenter fact kind")
+             index = len(cues)

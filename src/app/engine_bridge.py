@@ -16,6 +16,7 @@ from app.client_worker import ClientWorker
 from contracts.client import ClientRequest, ClientUpdate, ClientView
 from contracts.narratives import NARRATIVE_CATEGORIES, Narrative
 from domain.canonical import JsonObject, JsonValue, canonical_json, decode_json, exact_fields, seal
+from domain.scenario import LEGACY_SCENARIO, Scenario, scenario_by_id
 
 MAX_FRAME = 1024 * 1024
 MAX_REQUEST = 16 * 1024
@@ -130,8 +131,10 @@ def wire(value: object) -> JsonValue:
 
 
 class EngineBridge:
-    def __init__(self, path: Path, narratives: tuple[Narrative, ...]) -> None:
-        self.worker = ClientWorker(path)
+    def __init__(
+        self, path: Path, narratives: tuple[Narrative, ...], *, scenario: Scenario = LEGACY_SCENARIO
+    ) -> None:
+        self.worker = ClientWorker(path, scenario=scenario)
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
         self.highest_request = 0
@@ -184,9 +187,14 @@ class EngineBridge:
 
 
 def serve(
-    source: IO[bytes], target: IO[bytes], path: Path, narratives: tuple[Narrative, ...]
+    source: IO[bytes],
+    target: IO[bytes],
+    path: Path,
+    narratives: tuple[Narrative, ...],
+    *,
+    scenario: Scenario = LEGACY_SCENARIO,
 ) -> int:
-    bridge = EngineBridge(path, narratives)
+    bridge = EngineBridge(path, narratives, scenario=scenario)
     try:
         write_frame(target, bridge.response("0"))
         while (body := read_frame(source)) is not None:
@@ -208,11 +216,15 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--working", type=Path, required=True)
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--catalog-sha256", required=True)
+    parser.add_argument("--scenario", default=LEGACY_SCENARIO.scenario_id)
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
+        scenario = scenario_by_id(args.scenario)
         narratives = load_catalog(args.catalog, args.catalog_sha256)
-        return serve(sys.stdin.buffer, sys.stdout.buffer, args.working, narratives)
+        return serve(
+            sys.stdin.buffer, sys.stdout.buffer, args.working, narratives, scenario=scenario
+        )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)
         return 1

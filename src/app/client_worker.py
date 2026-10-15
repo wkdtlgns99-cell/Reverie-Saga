@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
+
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import replace
 import logging
@@ -14,7 +16,9 @@ from contracts.persistence import SaveError, WorldUnavailable
 
 
 class ClientWorker:
-    def __init__(self, path: Path) -> None:
+    def __init__(self, path: Path, *, scenario: Scenario = LEGACY_SCENARIO) -> None:
+        require_scenario(scenario)
+        self._scenario = scenario
         self._path = path
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
@@ -33,7 +37,7 @@ class ClientWorker:
     def _run(self, request: ClientRequest, seconds: int, slot_id: str) -> ClientUpdate:
         try:
             if self._owner is None:
-                self._owner = ClientSession(self._path)
+                self._owner = ClientSession(self._path, scenario=self._scenario)
             owner = self._owner
             match request:
                 case "attach":
