@@ -1,0 +1,5 @@
+# Preserve qualified raw evidence bytes;the recorded hashes use CRLF.
+docs/reference/QUILLTALE_CONTENT_CANDIDATES.json text eol=crlf
+docs/reviews/QT-F04_GENERATION_EVIDENCE_2026-10-12.json text eol=crlf
+# Keep the newly published raw reviewer attachment byte-identical to its recorded digest.
+docs/reviews/OPEN_WORK_V3_THIRD_FEEDBACK_2026-10-15.txt -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol

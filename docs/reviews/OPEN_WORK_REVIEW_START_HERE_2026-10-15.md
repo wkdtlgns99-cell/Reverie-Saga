@@ -1,6 +1,12 @@
 # Start Here — Current Independent Review
 
 Read this file first. Review the actual sources listed below;the request alone is not the code.
+Latest actual review targets e32cf3e:[third dispositions](OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md).
+It explicitly declines full PASS;remaining A–Ecoverage is preserved. Director now requests PR8
+publication of N1checkout/N3test repairs AND QT-F16/17Tk/Unity memory inspection. The commit
+containing this updated entry is the resubmission;delivery supplies its SHA. Pin the actual PRhead,
+review ALL remaining A–Eplus these new files,and do not reuse old review/CI for new inputs.
+Use an actual Git checkout honoring .gitattributes;source archives do not apply EOL filters.
 Latest complete continuation request:[all remaining inspection](OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
 Director explicitly requests publishing the conditional F1repair and review records on the existing
 PR8branch. Resolve its current exact head;the3159c92ZIP/CI below remains historical qualification.

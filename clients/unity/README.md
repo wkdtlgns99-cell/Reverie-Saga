@@ -53,11 +53,28 @@ Load/reconnect retain the current branch and catalog pins. Gameplay does not nee
 or a network call. Unset both quest variables to return to the earlier quest-less rooms.
 
 For native qualification,set those same selectors with a fresh REVERIE_UNITY_WORKING directory,
-then call ReverieSaga.PlaytestBuild.Verify. QuestFlow exercises14checks and captures public state,
+then call ReverieSaga.PlaytestBuild.Verify. QuestFlow exercises mode-specific checks and captures public state,
 screenshot and120frames. Local [QT-F07 acceptance](../../docs/reviews/QT-F07_EXECUTION_2026-10-13.md):
 quest14+legacy24+harbor11+grove11+corrupt1=61PASS,Windows build/release-hook absence PASS.
 That run used an offline automated-test-only receipt/catalog,not production content approval
 or an actual Gemini response. Director deferred live preparation;setup instructions are in the root README.
+
+## NPC Conversation Memories
+
+QT-F17 adds **NPC 대화 기억** to the ordinary approved memory preset and explicit memory mode.
+The button is available after attach and disabled during a pending request or connection failure.
+It appends the NPC's recorded conversations with this player to the existing Korean history:
+directly heard quest acceptance and a received completion report,with their game times. A received
+report is explicitly distinguished from witnessing the enemy's death. No turn/reward/last-command
+change or API call occurs. Empty memories are explicit;non-memory modes hide the button.
+
+Load restores the selected slot's memories and clears later history;reconnect reads that loaded
+branch. These remain the same two scoped records,not broader cognition or private NPC knowledge.
+The pipe adds only `memory`;existing attachment/request identities and limits apply. Regenerate
+the C#wire pin with engine_project when updating the protocol;older wire pins reject the mismatch.
+No save migration is needed. Native Verify now checks inspection/busy/state/file preservation
+at empty,accepted,unreported,reported,loaded,reconnected and branch-reported states and captures
+the real screen. [Current acceptance](../../docs/reviews/QT-F17_EXECUTION_2026-10-15.md).
 
 ## Generate / verify / build
 

@@ -69,6 +69,8 @@ class PlayWindow:
         self.root = root
         self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
         self._quest_content = quest_content
+        self._npc_memory = npc_memory
+        self.memory_button: ttk.Button | None = None
         self.view: ClientView | None = None
         self.last_update: ClientUpdate | None = None
         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
@@ -133,6 +135,13 @@ class PlayWindow:
             button = ttk.Button(controls, text=label, command=partial(self._send, request))
             button.grid(row=1 + index // 2, column=index % 2, sticky="ew", padx=3, pady=3)
             self.buttons[request] = button
+        if self._npc_memory:
+            self.memory_button = ttk.Button(
+                controls, text="NPC 대화 기억", command=self._inspect_memory
+            )
+            self.memory_button.grid(
+                row=1 + len(labels) // 2, column=len(labels) % 2, sticky="ew", padx=3, pady=3
+            )
         ttk.Label(controls, text="대기 시간(게임 초)").grid(row=9, column=0, sticky="w")
         self.wait_input = ttk.Spinbox(
             controls, from_=1, to=WAIT_MAX, textvariable=self.wait_seconds, width=10
@@ -210,6 +219,8 @@ class PlayWindow:
     def _enable(self, enabled: bool) -> None:
         for button in self.buttons.values():
             button.configure(state="normal" if enabled else "disabled")
+        if self.memory_button is not None:
+            self.memory_button.configure(state="normal" if enabled else "disabled")
         self.wait_input.configure(state="normal" if enabled else "disabled")
         self.slot_input.configure(state="readonly" if enabled else "disabled")
 
@@ -223,7 +234,14 @@ class PlayWindow:
             self.status_text.set(status_text("INVALID_INPUT"))
             self._append_messages((status_text("INVALID_INPUT"),))
             return
-        self._pending = self.worker.request(request, seconds=seconds, slot_id=self.slot.get())
+        self._begin_request(self.worker.request(request, seconds=seconds, slot_id=self.slot.get()))
+
+    def _inspect_memory(self) -> None:
+        if not self.busy:
+            self._begin_request(self.worker.inspect_memory())
+
+    def _begin_request(self, pending: Future[ClientUpdate]) -> None:
+        self._pending = pending
         self.status.set("처리 중…")
         self.status_text.set("처리 중…")
         self._enable(False)

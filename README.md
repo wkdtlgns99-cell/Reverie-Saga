@@ -259,6 +259,16 @@ $taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha
 
 Source catalog/approval/editorial lineage are tracked;raw original Gemini bytes remain retained.
 Ordinary turns select saved approved lines and commit memory locally,with no network/API calls.
+QT-F16 adds an **NPC 대화 기억** button to this memory-enabled Tk window. It displays only the
+NPC's recorded acceptance conversation and completion report with this player,including game
+times and the distinction between a received report and witnessed events. Inspection takes no
+turn and preserves the previous command for retry;loading a slot makes subsequent inspection
+use that loaded branch. The button is absent in non-memory modes.
+QT-F17 connects the same inspection to the ordinary Unity memory preset through a bounded
+`memory` pipe request and regenerated schema pin. Unity's button is disabled while busy and
+uses its existing history/load/reconnect path. No turn,provider call or save conversion occurs.
+[Tk acceptance](docs/reviews/QT-F16_EXECUTION_2026-10-15.md),
+[Unity acceptance](docs/reviews/QT-F17_EXECUTION_2026-10-15.md).
 Use the actual current working path after load for offline npc_memory_prepare --preview;source
 catalog+SHA must match the save. Old saves reject unsupported memory pins without conversion.
 

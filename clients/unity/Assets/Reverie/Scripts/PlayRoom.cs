@@ -28,6 +28,7 @@ namespace ReverieSaga
         bool npcMemory;
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
+        public bool CanInspectMemory { get { return npcMemory&&latest!=null&&!Busy&&failure==""; } }
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
@@ -180,6 +181,8 @@ namespace ReverieSaga
             try { brain.Send(intent); } catch(Exception e) { Fail(e); }
         }
 
+        public void InspectMemory() { if(CanInspectMemory)Send("memory"); }
+
         void Connect()
         {
             if(connecting||destroyed)return;
@@ -207,6 +210,7 @@ namespace ReverieSaga
         public int BrainProcessId { get { return brain.ProcessId; } }
         public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
         public void ApplyForVerification(WireView view) {Apply(view);}
+        public string HistoryForVerification { get { return String.Join("\n",messages); } }
 #endif
         void Fail(Exception error) { failure=error.Message;Debug.LogException(error); }
 
@@ -254,6 +258,11 @@ namespace ReverieSaga
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();
             if(!String.IsNullOrEmpty(questCatalog)&&GUILayout.Button(Label("talk"))) Send("talk");
+            if(npcMemory) {
+                GUI.enabled=CanInspectMemory;
+                if(GUILayout.Button("NPC 대화 기억")) InspectMemory();
+                GUI.enabled=!Busy&&failure=="";
+            }
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"open","close","attack","rest","wait","bell"})
                 if(GUILayout.Button(Label(intent))) Send(intent);

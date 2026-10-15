@@ -1,0 +1,123 @@
+The push run #30 failed and the PR run #31 passed at the same head. I'm looking at run #30's page for the actual error.Status: three bridge tests error in the clone with `NARRATIVE_DOSSIER_UNQUALIFIED`. I'm checking whether it's a line-ending difference between the git checkout and the Windows-made zip.The zip's dossier is 114 bytes larger, which matches one CR per line: the Windows working tree has CRLF, while the Git blob is LF. I'm checking which other pinned files are affected.Status: I've mapped the CP03 and CP05-contract repairs against code and tests. I'm now reading the CP05-integration feedback and checking on the full run.The CRLF form restores the pinned hash and all 7 bridge tests pass. Now the cleanup receipt (block E).Block E needs a concrete test: can the historical input manifests be reproduced from Git alone? I'm hashing each manifest entry against the checkout, both as-is and with LF converted to CRLF.Status: the Wire schema hash matches the Python DTOs. I'm skimming `save_slots.py` and `durable.py` while the suite finishes.Status: the full run on the LF checkout finished with 6 failures and 3 errors. I'm classifying each.I'll rerun the static gates on this revision before writing up.# Review of Reverie Saga at e32cf3e08a44d327b7ed091650bec7f74716676f
+
+**This is not a complete review, so I am not declaring a PASS.** I cloned the repository and checked out the exact SHA `e32cf3e` (the parent is `3159c92`). I did not read the full base-to-head history from `1ad2244`. The only code change since `3159c92` is the F1 test fixture, and I verified it. I read a large share of the authoritative-execution code but not all of it, and I read only parts of the Gemini approval path, storage and Unity code. Section 6 lists what I did not read.
+
+**Verdict on what I inspected:**
+- **Production code:** I found no confirmed defect.
+- **Repository:** I confirmed one portability defect in how the repository stores two pinned evidence files (N1). It breaks the test suite on any Linux or macOS checkout.
+- **Coverage:** The remaining unread source blocks a claim of complete source review. It does not block later platform qualification, apart from N1.
+
+## 1. Test and environment results
+
+All runs used CPython 3.13.12 on Linux with Tk 9.0 under Xvfb, and the lock's pinned versions installed without hash enforcement because the lock's hashes are for Windows wheels. This is exploratory evidence, not the qualified Windows platform.
+
+| Run | Result |
+|---|---|
+| Full suite on a plain clone of `e32cf3e` | 1,675 collected, **1,666 passed, 6 failed, 3 errors**, 0 skipped, 597 s. JUnit totals agree. |
+| F1 test `test_link_count_metadata_rejects_alias` | **Passes** in that run and in a focused run. |
+| Scratch copy with CRLF restored on two files (see N1) | `test_engine_bridge.py` and `test_narrative_catalog.py`: 22 passed. The `test_quest.py` real-pipe test also passes. **This was not a full-suite rerun.** |
+| Static gates | Both Ruff configs and both import-linter configs pass. mypy passes only with `--platform win32` (157 files). On Linux it reports 5 errors, four being the Windows-only `CREATE_NO_WINDOW` and one new (N3). |
+
+My earlier count claims (1,626 and 1,620) are superseded by this table.
+
+## 2. Findings
+
+**N1: confirmed defect, repository portability (P2).**
+- **Files:** `docs/reference/QUILLTALE_CONTENT_CANDIDATES.json` and `docs/reviews/QT-F04_GENERATION_EVIDENCE_2026-10-12.json`, consumed by `src/app/engine_project.py:79` (`build_sample`).
+- **Cause:** Git stores these files with LF line endings, and the repo has no `.gitattributes`. The pinned hashes (dossier `b10e8dca…`, evidence `64acbcd2…`) are the hashes of the CRLF bytes from the Windows working tree. The Git blobs hash to `7923b65e…` and `2a87dae6…`.
+- **Effect:** Any checkout with LF line endings (Linux, macOS, Windows with `autocrlf=false`) raises `NARRATIVE_DOSSIER_UNQUALIFIED`. That produces the 3 errors in `test_engine_bridge.py`, 1 failure in `test_quest.py` and 5 failures in `test_narrative_catalog.py`. It fails closed, so gameplay is not affected.
+- **Windows CI:** It passes, which fits the runner's checkout writing CRLF files. I could not see the runner's configuration, so that part is inference.
+- **Reproducer:** Clone and run `tests/integration/test_engine_bridge.py` and `tests/unit/test_narrative_catalog.py`. To fix it in a scratch copy, convert only those two files to CRLF.
+- **Bounded repair:** Add `.gitattributes` entries (`-text` or `eol=crlf`) for those files, and have the director decide before any requalification or re-pinning. I made no changes to the repository.
+
+**N2: the CI discrepancy (classified, not proven).**
+- **Runs at the same head:** Run #30 (push) failed, and run #31 (the PR run for this SHA) passed.
+- **Log access:** I could not open run #30's log.
+- **What the evidence shows:** The `tk_host` fixture is module-scoped and imported into three test modules. A Tk init failure gives exactly one error in `test_memory_client_route.py` or `test_client_reconciliation.py`, because each has one Tk test. I reproduced that shape with `TCL_LIBRARY=/nonexistent`, which produced one `init.tcl` error per module. It would give many errors in `test_client.py`, so that module is ruled out.
+- **Classification:** Consistent with a transient runner-side Tcl/Tk failure. This is a hypothesis. I see no production defect, since production calls `tk.Tk()` only in `client.main`.
+- **To close it:** Obtain the failing test ID, the traceback and the runner image version, and rerun #30. Do not report all checks as passed.
+
+**N3: new mypy error on non-Windows (P4).** `tests/integration/test_save_slots.py:176` reads `actual.st_file_attributes`, which Linux mypy flags. Using `getattr(...)` would avoid it. Windows CI is unaffected.
+
+**N4: editorial approval is not machine-verified (P3, process).**
+- **Verified:** The approved candidate hashes to `approval.output_sha256` (`bcf4719f…`), and the catalog matches its pin (`a8ec2de9…`).
+- **Gap:** The lineage file records that Codex edited the provider's output (provider hash `bd944eda…`). No source or test code reads the lineage or the "editorial" label.
+- **Why the standard path can't produce it:** `compile_preparation` binds the approval to the provider's candidate bytes. The shipped approval binds to the edited bytes, so the standard compile path would reject it.
+- **Unverifiable here:** The lineage's `source_input_hashes` point to local `tmp\qt-f13\…` files that are not in Git.
+- **Not a runtime defect:** The loader checks only the catalog pin and structure. `compile_dialogue` accepts any non-empty `approved_by` string, which your CP05 records already describe. I cannot confirm from here that a human director gave the approval.
+
+**Carried-over items from the earlier V3 rounds:**
+
+| Item | Status |
+|---|---|
+| F1 | Repaired conditionally. On Linux 3.13, a stat result with a Windows-only field raises `TypeError` (3.12 accepts it). The conditional form passes. I withdraw my unconditional suggestion. I could not run Windows to confirm your attrs=None failure, but it is consistent with that Windows field existing. |
+| F2 | Typed errors: maintenance note only. |
+| F3 | Availability limitation, which you reproduced offline. I read the code path and it is consistent. Severity P3, with no policy change recommended. |
+| F4 | Unverified. I did not read `narrative_catalog.py`, so I cannot check the 64 KiB cap. |
+| F5 | Unmeasured. I ran no native timings. |
+| F6 | Intentional. |
+| CP03 missing-role hypothesis | The constructor-skipping consumer test passes. A scenario consumer with no `scenario_layout` at all would still be skipped. Every engine I read exposes it, but `engines/trial.py` and `engines/skeleton.py` are unread, so this stays a hypothesis. |
+| Directory-fsync hypothesis | `_write` fsyncs the file but not the directory. Hypothesis only. |
+
+## 3. What I verified in the authoritative code
+
+- **Determinism:**
+  - The RNG derives from sha256 with a counter and uses rejection sampling.
+  - Scheduler ties break by (phase, engine_id).
+  - Event IDs are sha256 over (world, tick, phase, wave, producer, sequence).
+  - Memory's `source_identity` uses the same formula.
+- **Execution in `turn.py` (read in full):**
+  - Each barrier reads pre-barrier state and publishes after all nodes run.
+  - Receipt fingerprints make exact retries safe.
+  - Only a persisted commit publishes the new head.
+  - Presentation failure after commit is logged and diagnosed, never rolled back.
+  - An uncertain commit blocks the driver until recovery proves the outcome.
+- **Quest and memory:**
+  - The quest stage moves in single steps, with 0→2 allowed as a net transition.
+  - The reward event is emitted only on 2→3.
+  - Memory entries are tied to the quest stage (0, 1 or 2 entries), so an unreported defeat cannot appear as eyewitness knowledge.
+- **Client and wire:** The Wire schema hash `b7b08208…` matches the Python DTOs, and the C# field order matches.
+
+## 4. CP03/CP05 repair matrix
+
+I read the original feedback for CP03 and CP05-contract in full and CP05-integration through its answer 6.
+
+| Finding | Current implementation | Regression assertion read |
+|---|---|---|
+| CP03 F1 | `serialization.py:169` raises `INVALID_SCENARIO_BINDING` | Yes: a constructor-skipping engine is rejected for harbor and grove; legacy still registers |
+| CP03 F2 | `app/watch.py:59-60` | Yes (`SCENARIO_INITIAL_CELL`) |
+| CP03 F3 | Traced: `client_text.py:215` uses the selected actor name, and `ClientSession` passes the map and `actor_id` | The test calls `turn_messages` directly, not `ClientSession.act("wait")` (test-strength note) |
+| CP03 F4 | `SCENARIO_TYPE` in `engines/encounter.py:111,217` | Yes |
+| CP03 F5 | `scenario_name` fallback, intentional | Names only |
+| CP03's five test gaps | A matching test exists for each | Names listed; bodies not read, except the lexical-role test, which I read |
+| CP05-C H1 | Layering holds (import-linter passes); content-load code is in adapters | n/a |
+| CP05-C H2 and integration P2-1 | `_validate_quest_binding` collects roles before its early return | Test body read: nine roles, each unbound in turn |
+| CP05-C M1–M3 | Checkpoint policy, reducer/compose/net sets, admission order all present in code | Names only |
+| CP05-C M4–M7, Low | MINIMAL thinking, proxy-free no-redirect transport, int sentinel `-1`; no live-API claim | Names only |
+| Integration P2-2 | `_write` removes only its own pending file under the lock | Test names only |
+| Integration P3 items | Intent order, approval label, lock contention, HTTP mapping, selectors are all intentional and documented | n/a |
+
+## 5. Block E: cleanup and retirement
+
+I cannot see your local disk. I tested only what Git can show: for each historical `*INPUTS*.json` manifest, I hashed the checked-out file as stored and again with CRLF restored.
+
+- **Result:** Only some entries match at HEAD under either form (for example CP04-repaired: 69 as stored, 179 after CRLF, of 280 entries; CP05-integration-repair: 109 and 203 of 364).
+- **Mismatches:** The rest either changed since or are not in Git (28 entries of the last manifest are absent from HEAD).
+- **Parser limits:** My parser was heuristic. `RS-REVIEW-CP03_REPAIR_INPUTS.json` parsed to 0 entries, and I did not read its structure.
+- **Conclusion:** Git alone does not reproduce the frozen packets. The reproduction needs the right historical commit and the CRLF form (N1).
+- **No retirement approved:** I do not approve retiring any unique checkpoint ZIP, CP02 rights original, GOV02/GOV03 evidence, the legacy Python copy or the 17 restricted caches. Retirement needs byte-exact recovery proof for each, and I found none here. Retaining everything was the right call.
+- **Not read:** The cleanup work order and the closure ledger.
+
+## 6. Coverage ledger and exact remainder
+
+| Block | Read | Remainder |
+|---|---|---|
+| A | `turn.py`, `scheduler.py`, `rng.py`, `events.py`, `orchestration/quest.py`, `orchestration/npc_memory.py`, `engines/quest.py`, `engines/npc_memory.py`, `domain/quest.py`, `domain/npc_memory.py`, `domain/scenario.py`, `app/quest*.py`, `app/scenarios.py`; `engines/encounter.py` lines 1–200 of 277; `serialization.py` lines 120–260; `engines/watch.py` lines 1–60 | `engines/skeleton.py`, `engines/trial.py`, rest of `engines/encounter.py` and `engines/watch.py`; `orchestration/encounter.py`, `trial.py`, `watch.py`, `skeleton.py`, `read_views.py`, `persistence.py`, `replay.py`; the rest of `serialization.py`; `domain/` and `contracts/` mostly; `app/feature_registry.py`, `headless.py`, `npc_memory.py`; replay fixtures and `tests/replay/` |
+| B | `npc_dialogue_compile.py`, `quest_dialogue.py`, `gemini_transport.py`, `gemini_dialogue.py`, `generation_budget.py`, all `harbor-memory-v1.*`, `narratives.json` pin | `npc_prepare.py`, `dialogue_prepare.py`, `npc_memory_*.py`, `npc_dialogue_plan.py`, `npc_dialogue_review.py`, `narrative_catalog.py`, the contracts and all B tests |
+| C | `durable.py` lines 95–235, `client_session.py`, `engine_bridge.py`, `BrainConnection.cs`, `PlaytestBuild.cs`, `Wire.Generated.cs`, `CatalogPin.Generated.cs`, `PlayRoom.cs` (startup, `Update`, hooks) | rest of `durable.py`; `client_worker.py` (error path only), `client.py`, `client_text.py`, `engine_project.py`; `sqlite_store.py` (`safe_path` only); `save_slots.py` (`stage_load` only); `LiveVerification.cs` (guards only), rest of `PlayRoom.cs`; Unity README, `ProjectVersion.txt`, `Packages/*` |
+| D | Original CP03 and CP05-contract feedback in full, CP05-integration through answer 6, all three disposition documents | Input manifests (hash-matched by script only), repair orders, most regression bodies |
+| E | Cleanup receipt, JSON retention fields, manifest recoverability test | Cleanup work order, closure ledger |
+
+I did not run native Unity or Windows, make a live Gemini call, or re-derive the CRLF/LF question for any file beyond the two named.
+
+**Suggested next step:** Settle N1 first, since it breaks the suite on any LF checkout. After that, the highest-value remaining reading is the unread `orchestration/` modules (encounter, trial, watch, persistence, read views), then `sqlite_store.py` and `save_slots.py`, then the preparation modules in `src/app/` (the `npc_*` files and `dialogue_prepare.py`).

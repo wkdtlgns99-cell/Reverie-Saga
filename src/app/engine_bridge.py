@@ -37,6 +37,7 @@ REQUEST_NAMES = (
     "wait",
     "bell",
     "talk",
+    "memory",
     "save",
     "load",
     "retry",
@@ -187,8 +188,12 @@ class EngineBridge:
         self.highest_request = sequence
         if d["request"] == "quit":
             return self.response(request_id), True
-        self.last = self.worker.request(
-            cast(ClientRequest, d["request"]), seconds=seconds, slot_id=d["slot_id"]
+        self.last = (
+            self.worker.inspect_memory()
+            if d["request"] == "memory"
+            else self.worker.request(
+                cast(ClientRequest, d["request"]), seconds=seconds, slot_id=d["slot_id"]
+            )
         ).result()
         return self.response(request_id), False
 

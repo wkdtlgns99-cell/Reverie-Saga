@@ -31,6 +31,8 @@ from domain.watch import NPC_ID, WAIT_MAX
 
 NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문"}
 STATUS_TEXT = {
+    "MEMORY_INSPECTED": "NPC가 기억하는 의뢰 대화를 확인했습니다. 게임 시간은 흐르지 않습니다.",
+    "NPC_MEMORY_UNAVAILABLE": "현재 게임에서는 NPC 대화 기억을 확인할 수 없습니다.",
     "QUEST_UNAVAILABLE": "현재 구간에는 대화할 임무가 준비되어 있지 않습니다.",
     "QUEST_CONTENT_UNAVAILABLE": "이 임무에 필요한 승인 대사를 불러올 수 없습니다.",
     "ATTACHED": "게임에 연결했습니다. 행동 결과는 아래 기록창에 표시됩니다.",
@@ -87,7 +89,7 @@ def status_text(code: str) -> str:
     message = STATUS_TEXT.get(code)
     if message is None:
         return f"설명이 준비되지 않은 처리 상태입니다. ({code})"
-    if code in {"ATTACHED", "CONNECTING", "COMMITTED", "SAVED", "LOADED"}:
+    if code in {"ATTACHED", "CONNECTING", "COMMITTED", "SAVED", "LOADED", "MEMORY_INSPECTED"}:
         return message
     return f"{message} ({code})"
 

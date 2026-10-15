@@ -5,7 +5,93 @@ Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SE
 Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
 Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
 
-## Current Resume — Director Request 2026-10-15
+## Director Publication — PR8 Complete Review Resubmission
+
+Director2026-10-15explicitly authorizes publishing N1/N3repairs,QT-F16/17memory inspection and
+their accumulated local notes on existing codex/open-work-closure-20261014/PR8. This supersedes
+the previous local-only status below for those exact files. [Complete English request](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md)
+now requires all remaining A–E/full history/assertion bodies plus the new Tk/Unity/pipe/checkout
+work,with all3partial coverage reports reconciled. Primary7support,related5/6/3.
+Submission source is the commit containing this entry;final delivery reports exact SHA,remote/PR
+equality and observed new-head CI. Reuse unchanged95affected/144client-regression/159native/build/
+static acceptance;no combined full-suite claim. Earlier e32cf3epushFAIL/PRPASS remains historical.
+V3independent full inspection still incomplete,CP06held;no actual reviewer call/new ZIP/merge/
+release/provider/agent or automatic next implementation. All prior local work retained in scope.
+
+## Current Review — V3 Third Feedback / Portability Repairs
+
+Director supplies actual [third Claude review/dispositions](docs/reviews/OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md)
+of e32cf3e. Explicitly NOT complete/no full PASS;no confirmed production defect in inspected code.
+Primary7verification support,related3/6/5. [Repair order](docs/work_orders/OPEN_WORK_V3_PORTABILITY_REPAIR_2026-10-15.md).
+N1reproduced:LFcheckout breaks two CRLF-hash-pinned evidence inputs. Exactly2eol=crlf attributes
+restore approved checkout bytes across false/true/input;no repinning/requalification/content edit.
+N3test-only getattr preserves conditional Windows metadata/hardlink diagnostic/reopen. Before new
+checkout tests2FAIL/2PASS;final95affected PASS31.99s/Ruff both/format16/mypy160/imports3+1/pip PASS.
+Linux-target new type error removed;4preexisting Windows-only test diagnostics remain. NativeLinux
+execution NOT_RUN here;external reviewer reports F1pass and full1666PASS/6FAIL/3ERROR597s at e32cf3e.
+N2actual failing test/trace/runner image obtained;Tcl init read failure confirmed,root cause unknown;
+pushFAIL/PRPASS retained,no CIrerun. N4manual editorial source4hashes and exact catalog compile
+reproduced locally;human approval not machine-authenticated,no automated lineage enforcement claim.
+V3A–E/history/test-body inspection incomplete,no archive retirement. Prior QT-F16/17and all local
+work preserved/outside reviewed e32cf3e;runtime unchanged,prior159native/build evidence reused.
+Current repairs local/no commit/push/new API/agent/reviewer call. CP06held;broader groups remain open.
+
+## Current Completion — QT-F17 Unity Conversation Memory Inspection
+
+Director explicitly requests Unity wiring/tests and keeps Claude V3 pending. LOCAL_ACCEPTED,
+self-review;primary5,related2/6,7integration. [Order](docs/work_orders/QT-F17_UNITY_MEMORY_INSPECTION.md)/
+[receipt](docs/reviews/QT-F17_EXECUTION_2026-10-15.md). Ordinary/explicit memory Unity now shows
+the NPC conversation-memory button;new bounded memory pipe request reuses QT-F16owner-thread
+inspection and existing message/history/load/reconnect. Generated C#wire pin updated;DTO/CORE/
+save/content unchanged. Busy click suppressed,unavailable mode explicit;no turn/reward/retry change.
+Final144affected Python tests PASS46.17s,including3new pipe/binding cases;Ruff both/format15/
+mypy159/pip/imports3+1 PASS. Seven real editor cases159PASS,Windows build/release-hook exclusion
+PASS;actual screenshot inspected and two native-memory runs' original/slot/loaded bytes/evidence
+read back unchanged/API0. Initial native test-only Windows sharing error repaired/requalified;
+retained diagnostics and owned recovery evidence. Generated-only scene IDs restored to entry.
+Prior QT-F16/pause work preserved;all additions remain local/no commit/push. Claude V3pending at
+published e32cf3e;QT-F16/17outside that review/CI. CP06held;standalone/other-device/full cognition
+remain unqualified,broader D2/D3/D4/D6/D7open. No automatic further work.
+
+## Current Completion — QT-F16 NPC Conversation Memory Inspection
+
+Director explicitly leaves Claude V3 pending and resumes the next implementation;this supersedes
+the prior pause only for this bounded local task. [Order](docs/work_orders/QT-F16_NPC_MEMORY_INSPECTION.md)/
+[receipt](docs/reviews/QT-F16_EXECUTION_2026-10-15.md). LOCAL_ACCEPTED,self-review;primary5,related2/6.
+Memory-enabled Tk now displays its NPC's committed conversations with this player on demand;
+acceptance is directly heard,completion is a received report,not witnessed death. No new cognition.
+Owner-thread read keeps turns/rewards/source bytes/retry identity;load/resume queries the actual
+branch. Pre-attach inspection never opens/creates a game;unavailable/failure remain explicit and
+input/poll/close continue. Existing local pause notes preserved as history below.
+Final126affected tests PASS44.24s,including15new cases/3real Tk cases;both Ruff/scoped13format,
+strict mypy158,pip and imports3+1 PASS. Full/Unity/Linux/live/remote NOT_RUN for this local patch;
+no CORE/save/wire/catalog change. V3still awaits full actual Claude feedback at published e32cf3e;
+new QT-F16work is local and outside that review/CI. CP06held;D2/D3/D4/D6/D7remain open.
+No commit/push/agent/provider or automatic further work authorized by this completion.
+
+## Paused for Next Session — Director Request 2026-10-15
+
+Director has exhausted Claude usage and will obtain the remaining review later. Stop here;
+no automatic review call,CI rerun,provider call,next feature,commit/push or release. This turn
+only updates local backlog/handoff/Korean progress;these pause notes are not yet published.
+
+- Published and remote-head verified:e32cf3e08a44d327b7ed091650bec7f74716676f on
+  codex/open-work-closure-20261014,[draft PR8](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8).
+  Includes conditional save-test metadata repair,both raw reviews/dispositions and full English
+  [A–Erequest/file list](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
+- Current-head PR CI run38667114900 SUCCESS:31boundary tests,1675full tests PASS456.98s;
+  static/import checks PASS. Separate push run38667111530 FAILED:1674PASS/1Tk setup ERROR669.49s,
+  init.tcl unreadable in test_real_tk_load_error_resets_history_to_actual_loaded_state.
+  Preserve both outcomes;cause remains unverified,not an all-green CI claim or proved runtime bug.
+- Native local repair evidence:29save-slot tests PASS14.19s,final target1PASS0.57s,
+  Ruff both/mypy157PASS. Production code unchanged;repaired Linux execution NOT_RUN.
+- On explicit resume:use pinned e32cf3e and the existing English request to obtain actual Claude
+  review;then verify/dispose findings. Require ALL remaining A–E:authoritative execution,
+  dialogue approval/Gemini,storage/client/Unity,original CP03/CP05repairs,and cleanup evidence.
+  Include the mixed CI result in the reviewer handoff. No new feedback has arrived since the
+  two partial reviews;V3is incomplete,CP06release held. Broader D2/D3/D4/D6/D7remain open.
+
+## Previous Publication Request — 2026-10-15
 
 Director explicitly requests publishing current F1test repair/review records to existing PR8branch
 and a complete English Claude handoff:[A–Erequest](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).

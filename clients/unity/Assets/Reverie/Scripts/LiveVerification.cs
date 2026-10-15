@@ -68,6 +68,40 @@ namespace ReverieSaga
             else Debug.Log("VERIFY_PASS "+label);
         }
 
+        static string FileHash(string path)
+        {
+            using(var hash=System.Security.Cryptography.SHA256.Create())
+            using(var stream=new FileStream(path,FileMode.Open,FileAccess.Read,
+                                           FileShare.ReadWrite|FileShare.Delete))
+                return Convert.ToBase64String(hash.ComputeHash(stream));
+        }
+
+        IEnumerator InspectMemory(string label,int count)
+        {
+            if(failed||!room.NpcMemoryEnabled)yield break;
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),bytes=FileHash(before.working_path);
+            Check(room.CanInspectMemory,label+"_enabled");
+            room.InspectMemory();
+            Check(room.Busy&&!room.CanInspectMemory,label+"_busy_gate");
+            room.InspectMemory(); // A second click while busy must not issue another request.
+            yield return Ready();if(failed)yield break;
+            var after=room.Latest.update;
+            Check(after.status=="MEMORY_INSPECTED"&&JsonUtility.ToJson(after.view)==view&&
+                  after.quest_stage==before.quest_stage&&after.quest_reward==before.quest_reward&&
+                  after.attachment_id==before.attachment_id&&after.working_path==before.working_path&&
+                  !after.reset_log&&FileHash(after.working_path)==bytes,label+"_read_only");
+            string text=String.Join("\n",after.messages);
+            bool expected=count==0?after.messages.Length==1&&text.Contains("아직 기록된"):
+                after.messages.Length==count&&after.messages[0].Contains("2초:")&&
+                after.messages[0].Contains("직접 들었습니다")&&
+                (count==1||after.messages[1].Contains("12초:")&&
+                 after.messages[1].Contains("완료 보고를 받았습니다")&&
+                 after.messages[1].Contains("직접 본 기억은 아닙니다"));
+            Check(expected&&room.HistoryForVerification.Contains(after.messages[0])&&
+                  room.CanInspectMemory,label+"_display");
+        }
+
         IEnumerator ScenarioFlow(string scenario)
         {
             yield return Ready();if(failed){Exit(1);yield break;}
@@ -127,12 +161,20 @@ namespace ReverieSaga
         {
             yield return Ready();if(failed){Exit(1);yield break;}
             Check(room.Latest.update.quest_stage=="0"&&room.Latest.update.quest_reward=="0","quest_initial");
+            if(room.NpcMemoryEnabled)yield return InspectMemory("memory_empty",0);
+            else {
+                string initial=JsonUtility.ToJson(room.Latest.update.view);
+                yield return Intent("memory");
+                Check(room.Latest.update.status=="NPC_MEMORY_UNAVAILABLE"&&
+                      JsonUtility.ToJson(room.Latest.update.view)==initial,"memory_disabled_explicit");
+            }
             yield return Intent("talk");
             Check(room.Latest.update.status=="OUT_OF_RANGE"&&room.Latest.update.view.tick=="0",
                   "quest_out_of_range_preserves");
             yield return Intent("down");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="2","quest_accepted");
             Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("offer")),"quest_offer_text");
+            yield return InspectMemory("memory_accepted",1);
             yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="3"&&
                   String.Join("\n",room.Latest.update.messages).Contains(QuestText("reminder")),"quest_reminder_text");
@@ -140,10 +182,12 @@ namespace ReverieSaga
                 yield return Intent(action);
             Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
                   room.Latest.update.view.tick=="10"&&room.Latest.update.view.enemy_hp=="0", "quest_goal_met");
+            yield return InspectMemory("memory_unreported",1);
             yield return Intent("save");yield return Intent("left");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1"&&
                   room.Latest.update.view.tick=="12","quest_report_grants_once");
             Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("completion")),"quest_completion_text");
+            yield return InspectMemory("memory_reported",2);
             string committed=JsonUtility.ToJson(room.Latest.update.view);
             yield return Intent("retry");
             Check(JsonUtility.ToJson(room.Latest.update.view)==committed&&room.Latest.update.quest_reward=="1",
@@ -155,11 +199,15 @@ namespace ReverieSaga
             yield return Intent("load");
             Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
                   room.Latest.update.reset_log&&room.Latest.update.view.tick=="10","quest_load_progress");
+            yield return InspectMemory("memory_loaded",1);
+            if(room.NpcMemoryEnabled)Check(!room.HistoryForVerification.Contains("12초:"),"memory_load_clears_report");
             int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
             Check(room.BrainProcessId!=pid&&room.Latest.update.quest_stage=="2"&&
                   room.Latest.update.view.tick=="10","quest_loaded_branch_reconnect");
+            yield return InspectMemory("memory_reconnected",1);
             yield return Intent("left");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1","quest_branch_report_once");
+            yield return InspectMemory("memory_branch_report",2);
             string output=Path.Combine(Path.GetDirectoryName(Environment.GetEnvironmentVariable(
                 "REVERIE_UNITY_WORKING")),"evidence");Directory.CreateDirectory(output);
             if(!Application.isBatchMode) {
@@ -183,6 +231,7 @@ namespace ReverieSaga
             room=FindFirstObjectByType<PlayRoom>();
             if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")!="corrupt") {
                 yield return Ready();if(failed){Exit(1);yield break;}
+                Check(room.CanInspectMemory==room.NpcMemoryEnabled,"memory_control_mode");
             }
             if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
                 if(Environment.GetEnvironmentVariable("REVERIE_UNITY_EXPECT_MEMORY")=="1")

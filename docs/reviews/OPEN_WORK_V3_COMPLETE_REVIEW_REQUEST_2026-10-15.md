@@ -1,6 +1,12 @@
-# Claude Request — Finish All Remaining V3 Inspection
+# Claude Request — Finish ALL Unread V3 Work Including NPC Memory Inspection
 
-Please continue your two partial reviews and finish ALL remaining blocks below in this review.
+Latest third review of e32cf3e:[findings/coverage](OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md).
+It remains incomplete. The director explicitly requests publishing the N1checkout/N3fixture
+repairs and QT-F16/17Tk/Unity inspection on existing PR8. This resubmission contains those changes;
+the delivery message supplies its exact committed SHA. Verify the remote head and pin it before
+inspection. Three partial reviews do not amount to complete review acceptance.
+
+Please continue your three partial reviews and finish ALL remaining blocks below in this review.
 Do not stop after one block or ask me to choose the next block. If access, time or context prevents
 completion, preserve a file/range coverage ledger and identify the exact remainder;do not declare
 the whole review passed. This is independent review,not implementation or a new checkpoint.
@@ -12,15 +18,19 @@ the whole review passed. This is independent review,not implementation or a new 
 - Source:https://github.com/wkdtlgns99-cell/Reverie-Saga/tree/codex/open-work-closure-20261014
 - Draft PR:https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8
 - Full comparison base:1ad22446d48c50b8b72a6d3af8de3c9d775134ea.
-- Previous reviewed snapshot:3159c92251afc61cd3d30e5156020adac4937c5d.
+- Latest reviewed snapshot:e32cf3e08a44d327b7ed091650bec7f74716676f.
+- Earlier snapshot:3159c92251afc61cd3d30e5156020adac4937c5d.
 
 Fetch the branch/PR head and record its full SHA before reading. Pin that revision for all files,
-diffs and tests. Review both base-to-head history and the incremental patch since3159c92.
+diffs and tests. Review full base-to-head history and the entire incremental patch since e32cf3e,
+including surrounding callers/contracts/assertions. Earlier3159c92feedback remains history.
 The delivery message supplies the newly published SHA;verify equality. If GitHub access fails,
 report the exact inaccessible paths and request the current source archive. Do not substitute
 the old OPEN_WORK_V3_3159c92_2026-10-15.zip:it excludes the F1repair and both review dispositions.
-No new ZIP is supplied by this request. A GitHub source archive of the pinned head is sufficient
-for current tracked inputs;ignored local evidence is a separate availability limit.
+No new ZIP is supplied by this request. Use an actual Git checkout honoring .gitattributes for
+tests/builds:GitHub source archives retain LF blob bytes and do not apply checkout EOL filters
+to the two CRLF-hash-pinned evidence inputs. Archives permit source reading,but are not thereby
+qualified executable checkouts;ignored local evidence is a separate availability limit.
 
 Read first:
 
@@ -33,6 +43,64 @@ Read first:
 - `docs/reviews/OPEN_WORK_V3_CONTINUATION_FEEDBACK_2026-10-15.txt` and
   `OPEN_WORK_V3_CONTINUATION_DISPOSITIONS_2026-10-15.md`.
 - `docs/work_orders/OPEN_WORK_V3_FOLLOWUP_2026-10-15.md`.
+- `docs/reviews/OPEN_WORK_V3_THIRD_FEEDBACK_2026-10-15.txt` and
+  `docs/reviews/OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md`,especially the exact §6coverage ledger
+  in your raw third review;read the missing files/ranges,not another subset of the same code.
+- `docs/work_orders/OPEN_WORK_V3_PORTABILITY_REPAIR_2026-10-15.md`.
+- `docs/work_orders/QT-F16_NPC_MEMORY_INSPECTION.md`, `QT-F17_UNITY_MEMORY_INSPECTION.md`;
+  `docs/reviews/QT-F16_EXECUTION_2026-10-15.md`, `QT-F17_EXECUTION_2026-10-15.md`.
+
+## Newly Included Work — Review in Full Alongside A–E
+
+1. N1:read `.gitattributes`,both pinned evidence files,`src/app/engine_project.py`,
+   `content/narratives.manifest.json` and `tests/integration/test_pinned_evidence_checkout.py`.
+   Verify actual Git checkouts with core.autocrlf=false/true/input and core.eol=lf preserve
+   existing CRLF raw hashes and exact catalog/manifest. Strict LFnegative must still reject;
+   no hashes/qualifications were repinned. Checkout filters do not qualify raw GitHub archives.
+   A separate -text entry preserves the newly tracked third raw feedback's recorded byte digest;
+   it changes no qualification hash. Compare that attachment blob to its recorded digest too.
+2. N3:read the final getattr inside the unchanged hasattr-conditional save-slot stat fixture.
+   Keep real Windows metadata,linkcount2,exact hardlink INVALID_PATH and real reopen at tick0.
+   Your third review reported F1passing Linux;do not repeat the withdrawn unconditional omission.
+   New lookup removes the Linux attr-defined diagnostic;four preexisting Windows CREATE_NO_WINDOW
+   test diagnostics still exist on a Linux mypy target.
+3. QT-F16:read complete `src/app/client.py`, `client_session.py`, `client_worker.py`,
+   `client_text.py` and `tests/integration/test_client_memory_inspection.py`. Tk uses owner-thread
+   committed memory,not a gameplay command. Check pre-attach refusal/no game creation,empty/
+   accepted/unreported/reported states,privacy,source/protocol/retry preservation,older load/new
+   worker resume,ordinary error recovery,process-control and busy/close polling.
+4. QT-F17:read complete `src/app/engine_bridge.py`, `engine_project.py`,
+   `clients/unity/Assets/Reverie/Scripts/PlayRoom.cs`, `BrainConnection.cs`, `LiveVerification.cs`,
+   `Wire.Generated.cs`, `clients/unity/Assets/Reverie/Editor/PlaytestBuild.cs`,
+   `tests/integration/test_engine_memory_inspection.py` and existing memory/pipe/Tk tests.
+   `memory` is a bounded wire request dispatched after normal envelope/sequence/attachment checks
+   to ClientWorker.inspect_memory. DTO/save/CORE unchanged;canonical wire pin intentionally changes
+   from b7b08208... to188504954814f58c87dba6dad0f63e996a4267c3fa8de15b2f35d7e86c5c1416.
+   Inspect Unity button visibility/readiness/busy suppression,rendered history,load reset,
+   reconnect/current branch,unavailable mode and old-pin rejection. Verify read-only state/file/
+   reward/last-command behavior and seven phase assertions in native verification.
+
+Reported local evidence:QT-F16 126affected tests;QT-F17 144affected tests,159native checks across
+seven editor cases plus Windows build/release-hook exclusion;N1/N3 95affected tests and final
+Ruff both/format16/mypy160/imports3+1/pip PASS. These overlap;do not add them into a test total or
+call them a new full-suite run. Screenshots/readback/JUnit/logs under ignored tmp/qt-f16,tmp/qt-f17,
+tmp/v3-third are not supplied by Git;tracked receipts report what ran. Do not claim personally
+inspecting unavailable native evidence. Current-head CI must be read independently;old e32cf3e
+CI is not acceptance of this new commit.
+
+N2:executor retrieved failed push job116201476239/run38667111530at e32cf3e. Error:
+test_client_reconciliation.py::test_real_tk_load_error_resets_history_to_actual_loaded_state,
+tk_host test_client.py:194,cannot read hosted Python3.13.12/tcl/tcl8.6/init.tcl with No error.
+Runner windows-2025-vs2026/image20260925.250.1,Server2025build26100. PR run38667114900passed.
+Root cause remains unproved;do not claim all-green CI or a proven production bug. Inspect new-head
+results separately;this request does not ask you to rerun jobs.
+
+N4:assess the explicitly authorized A1manual editorial path in closure order/ledger,not only
+compile_preparation for raw provider output. Direct compile_dialogue from tracked edited candidate
+and approval reproduces the catalog;all4ignored local lineage inputs hash-match locally. Neither
+lineage nor approved_by authenticates human identity by machine. Preserve this process/remote
+evidence limit;do not invent approval,require redundant approval of the same four texts,or label
+edited prose raw Gemini output. Report a contract violation only with evidence.
 
 ## Current corrections and qualifications
 
@@ -40,10 +108,10 @@ F1is repaired ONLY in `tests/integration/test_save_slots.py::test_link_count_met
 provide st_file_attributes to os.stat_result only when the real stat exposes it. Preserve Windows
 metadata,force only link count2,and require the exact hardlink INVALID_PATH diagnostic plus real
 save reopen at tick0. Simply omitting extras fails Windows3.13with attrs=None before the guard.
-Verify the actual conditional repair on Linux3.13;do not reapply your unconditional suggestion.
-Native Windows affected module29PASS/final target1PASS,both Ruff and strict mypy157PASS recorded.
-No production source changed in this follow-up. Prior full1675PASS applies to3159c92,not automatically
-to this later test patch. Your prior Linux run1674PASS/1FAIL also applies to the old snapshot.
+Recheck final conditional lookup on Linux3.13if available;your third review already reports the
+e32cf3eF1fixture passes. Native save module29PASS is included in the latest95case run. Earlier
+mypy157/full1675counts belong to their recorded revisions,not the new combined patch. N1/N3change
+no production source;QT-F16/17do change client/wire presentation as listed above.
 
 F3was reproduced offline using the actual budget lock and an isolated ledger:successful stub
 response followed by reconcile-lock failure returns GENERATION_BUDGET_UNAVAILABLE and retains
@@ -108,6 +176,8 @@ Normal gameplay/replay must not call the LLM. Use offline provider doubles;no li
   `Packages/packages-lock.json`;follow relevant scene/source/config references.
 - `tests/integration/test_client_reconciliation.py`, `test_client.py`, `test_memory_client_route.py`,
   `test_engine_bridge.py`, `test_durable_turn.py`, `test_sqlite_recovery.py`, `test_save_slots.py`;
+  `tests/integration/test_client_memory_inspection.py`, `test_engine_memory_inspection.py`,
+  `test_pinned_evidence_checkout.py`;
   `tests/unit/test_client_text.py` and durable/replay/codec fixtures.
 - `docs/work_orders/RS-STRUCT-001_RECONCILIATION_2026-10-14.md` and
   `docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md`.
@@ -146,6 +216,10 @@ Python copy and17restricted caches. Approve retirement only with exact recoverab
 for necessary inputs/findings/provenance/acceptance. Git cannot reproduce ignored local archives,
 ACLs,provider originals or private saves by itself. Mark unavailable evidence explicitly;no
 blanket deletion/ownership takeover recommendation and no claim of inspecting my local disk.
+Read the cleanup order AND closure ledger,not just the receipt. Parse each manifest's actual
+structure;zero parsed entries is unavailable inspection,not an empty manifest. Recoverability
+requires the correct historical revision,checkout bytes and non-Git inputs;current HEAD hash
+mismatches alone do not prove loss of historical data. No unique-evidence retirement is authorized.
 
 ## Execution and final report
 
@@ -162,10 +236,12 @@ Return:
 
 1. Exact reviewed SHA/base and verdict,separating defect severity from coverage/environment gaps.
 2. A coverage ledger for A–E:files/ranges read,tests whose assertions were read,tests actually run,
-   unavailable inputs and exact remainder. Reconcile BOTH prior review coverage reports.
+   unavailable inputs and exact remainder. Reconcile ALL THREE prior coverage reports and include
+   every new QT-F16/17/N1/N3file above;test execution and reading names do not replace assertion review.
 3. Each finding:ID/priority,path:line,contract,trigger,expected/actual,reproducer and bounded repair.
    Separate confirmed defects,intentional behavior,maintenance and unverified hypotheses.
-4. A finding-by-finding CP03/CP05repair matrix and current V3F1–F6dispositions.
+4. A finding-by-finding CP03/CP05repair matrix,current V3F1–F6/N1–N4dispositions and a verdict on
+   QT-F16/17client/memory/wire/native-test contracts.
 5. Actual test/static results and honest native/live/platform/hash-closure limits.
 6. Remaining blockers or an explicit statement that all requested source inspection is complete.
 

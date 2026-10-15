@@ -173,7 +173,7 @@ def test_link_count_metadata_rejects_alias(tmp_path: Path, monkeypatch: pytest.M
             fields[3] = 2
             extras: dict[str, int] = {}
             if hasattr(actual, "st_file_attributes"):
-                extras["st_file_attributes"] = actual.st_file_attributes
+                extras["st_file_attributes"] = getattr(actual, "st_file_attributes")
             return os.stat_result(fields, extras)
         return actual
 

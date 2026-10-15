@@ -6,6 +6,14 @@ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification
 
 ## Task Entry and Authorization
 
+QT-F17current-host2026-10-15:[receipt](reviews/QT-F17_EXECUTION_2026-10-15.md). Reused actual
+Python3.13.12 AMD64/Tk8.6/SQLite3.50.4/editor6000.3.25f1(e1dba0a9aba4). Restricted license probe
+could not connect;permitted public CLI confirmed active Personal/signed-in without settings changes.
+Unity memory inspection:seven native cases159PASS/Windows build/release-hook absence PASS;actual
+capture and original/slot/loaded memory readback/API0/source hashes checked. Python144affected/
+static/imports PASS. Initial verification file-sharing fault repaired and requalified. No install/
+upgrade/security change;other-device/standalone/release acceptance remain open.
+
 Current-host closure2026-10-14:[ledger](reviews/OPEN_WORK_CLOSURE_2026-10-14.md). Existing pinned
 Python/editor reused;director-approved editorial dialogue and ordinary Unity memory route qualified:
 51affected/1664full Python and94native checks/Windows build/release-hook absence PASS. Original

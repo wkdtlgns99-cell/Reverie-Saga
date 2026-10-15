@@ -35,6 +35,7 @@ from domain.state_types import ComponentRecord, CoreSnapshot
 from domain.trial import CellPositionRecord, TrialMapRecord
 from domain.watch import LanternRecord, ReplyRecord, WatchNpcRecord
 from domain.quest import QuestRecord, reward_for
+from domain.npc_memory import NpcQuestMemoryRecord
 
 
 def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: EntityId) -> T:
@@ -93,6 +94,7 @@ class ClientSession:
         self._quest_content = quest_content
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
+        self._npc_memory = npc_memory
         self._names = MappingProxyType(
             {
                 layout.actor_id: "플레이어",
@@ -180,6 +182,27 @@ class ClientSession:
             quest_stage,
             0 if quest_stage == -1 else reward_for(quest_stage),
             "" if self._quest_content is None else self._quest_content.catalog_sha256,
+        )
+
+    def inspect_memory(self) -> ClientUpdate:
+        """Display only this player's committed conversations;do not submit a command."""
+        if not self._npc_memory:
+            raise ValueError("NPC_MEMORY_UNAVAILABLE")
+        memory = _record(self._owner.snapshot(), NpcQuestMemoryRecord, self._layout.npc_id)
+        messages = tuple(
+            f"NPC 대화 기억 · {entry.observed_at}초: "
+            + (
+                "플레이어가 의뢰를 맡겠다는 말을 직접 들었습니다."
+                if entry.kind == "accepted"
+                else (
+                    "플레이어에게 의뢰 완료 보고를 받았습니다. 적의 처치를 직접 본 기억은 아닙니다."
+                )
+            )
+            for entry in memory.entries
+        )
+        return self.update(
+            "MEMORY_INSPECTED",
+            messages=messages or ("NPC에게 아직 기록된 플레이어와의 의뢰 대화가 없습니다.",),
         )
 
     def _publication(

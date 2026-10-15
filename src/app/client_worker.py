@@ -6,6 +6,7 @@ from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import replace
 import logging
 from pathlib import Path
+from typing import Literal
 
 from app.client_session import ClientSession
 from app.client_text import status_text
@@ -44,8 +45,19 @@ class ClientWorker:
             raise ValueError("CLIENT_CLOSING")
         return self._executor.submit(self._run, request, seconds, slot_id)
 
-    def _run(self, request: ClientRequest, seconds: int, slot_id: str) -> ClientUpdate:
+    def inspect_memory(self) -> Future[ClientUpdate]:
+        """Local read-only UI operation;not part of the engine pipe protocol."""
+        if self._closing:
+            raise ValueError("CLIENT_CLOSING")
+        return self._executor.submit(self._run, "memory", 1, "slot01")
+
+    def _run(
+        self, request: ClientRequest | Literal["memory"], seconds: int, slot_id: str
+    ) -> ClientUpdate:
         try:
+            # Inspection must never create a game or open an unattached save.
+            if request == "memory" and self._owner is None:
+                raise ValueError("NPC_MEMORY_UNAVAILABLE")
             if self._owner is None:
                 self._owner = (
                     ClientSession(self._path, self._layout)
@@ -69,6 +81,8 @@ class ClientWorker:
                     update = owner.retry()
                 case "recover":
                     update = owner.recover()
+                case "memory":
+                    update = owner.inspect_memory()
                 case _:
                     update = owner.act(request, seconds=seconds)
             self._last = update
@@ -76,7 +90,11 @@ class ClientWorker:
             self._last = self._error_update(error.code, error)
         except ValueError as error:
             # Unexpected adapter bugs remain visible,not classified as valid player rejection.
-            code = str(error) if str(error) in ("NO_RETRY", "QUEST_UNAVAILABLE") else "CLIENT_ERROR"
+            code = (
+                str(error)
+                if str(error) in ("NO_RETRY", "QUEST_UNAVAILABLE", "NPC_MEMORY_UNAVAILABLE")
+                else "CLIENT_ERROR"
+            )
             if code == "CLIENT_ERROR":
                 self._logger.exception("client boundary operation failed")
             self._last = self._error_update(code, error)

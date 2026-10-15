@@ -1,11 +1,93 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-15 | Stage:V3_REPAIR_PUBLICATION_COMPLETE_REVIEW_HANDOFF
+Date:2026-10-15 | Stage:V3_PR8_COMPLETE_REVIEW_RESUBMISSION
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
 
-## Current Resume — 2026-10-15
+## Current Entry — PR8 Complete Review Resubmission 2026-10-15
+
+Director explicitly requests Git publication of repairs AND Tk/Unity memory inspection to existing
+PR8,superseding previous local-only status below. Branch codex/open-work-closure-20261014;
+submission is the commit containing this entry,parent e32cf3e. Final delivery supplies exact SHA,
+verified remote/PRhead and observed current-head CI;do not confuse earlier e32cf3epushFAIL/PRPASS.
+[English complete request](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md) now
+includes all3partial reviews' unread A–E/history/assertion bodies,N1/N3and full QT-F16/17read-only
+inspection/owner-thread/wire/schema/Tk/Unity tests. Reviewer must pin head/use actual Git checkout;
+source archives alone do not reconstruct CRLF-pinned evidence. No new ZIP or ignored private inputs.
+Qualified unchanged local95affected/144client-regression/159native/build/static evidence reused;
+new full/CI/independent claims require actual execution at the delivered revision. Source/approval/
+save semantics unchanged by publication. V3still incomplete/CP06held,no auto Claude/provider/
+agent/next task/main merge/release/settings. Current review authority remains third dispositions.
+
+## Current Entry — V3 Third Feedback / Local Repairs 2026-10-15
+
+Director supplies actual third review at e32cf3e:[dispositions](docs/reviews/OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md)/
+[order](docs/work_orders/OPEN_WORK_V3_PORTABILITY_REPAIR_2026-10-15.md). Explicit incomplete/no
+full PASS;production inspected subset has no confirmed defect. Primary7support,related3/6/5.
+N1fixed using exactly2text eol=crlf attributes,no qualified byte/hash/content changes;actual Git
+false/true/input checkout and exact existing catalog reproduction qualified. Bare GitHub archives
+do not apply EOL filters. N3fixture getattr preserves Windows guard/hardlink rejection/reopen.
+Final95affected PASS31.99s,Ruff both/format16/mypy160/imports3+1/pip PASS. Linux-target N3removed;
+4preexisting CREATE_NO_WINDOW diagnostics remain,not native Linuxqualification. External review
+reports F1Linuxpass/full1666PASS6FAIL3ERROR597s;do not relabel as local/current full acceptance.
+N2actual old push traceback/test/runner image retrieved;init.tcl unreadable/root cause unproved,
+both fail/pass retained,no rerun. N4manual A1edited-candidate+receipt reproduces catalog;all4local
+lineage inputs hash-match,not Git-available or machine-authenticated human proof. No new approval.
+V3A–E/full history/assertion bodies still unread;all unique archives/native evidence retained.
+QT-F16/17and previous local work preserved;all current fixes local,HEAD still e32cf3e,no publication.
+Runtime/Unity unchanged,159native/build evidence reused. CP06held;no automatic next work/provider/
+reviewer/agent. Later review must pin actual delivered updated source and include local QT-F16/17.
+
+## Current Entry — QT-F17 Unity Completion 2026-10-15
+
+Director requests Unity memory inspection/tests;Claude V3still pending. [Order](docs/work_orders/QT-F17_UNITY_MEMORY_INSPECTION.md)/
+[receipt](docs/reviews/QT-F17_EXECUTION_2026-10-15.md). Primary5,related2/6;7integration verification.
+Ordinary/explicit memory Unity button uses existing QT-F16inspection via new bounded memory pipe
+request;canonical Wire.Generated pin18850495updated,DTO/save/CORE/content unchanged. Query retains
+turn/reward/retry/source;busy control/no-memory error/load/reconnect verified. Actual screen inspected.
+Final144Python PASS46.17s,Ruff both/format15/mypy159/pip/imports3+1 PASS. Native default46+memory46+
+quest17+legacy25+harbor12+grove12+corrupt1=159PASS,Windows build/hook absence PASS. Both actual
+native-memory runs' original/slot/loaded readback and offline preview preserve all source bytes/API0.
+Initial native verification sharing exception repaired with shared read handle;failure receipt,
+logs and owned recovery scene retained under tmp/qt-f17. Scene regenerated IDs/name whitespace
+proved equivalent then exact entry bytes restored. No asset/camera/editor/license-policy changes.
+Existing QT-F16/local pause work retained;all QT-F17changes local,HEAD still e32cf3e,no publication.
+V3A–Epinned review remains pending and excludes these local additions;CP06held. Standalone/other
+device/full cognition unqualified;D2/D3/D4/D6/D7open. No automatic next work/provider/agent.
+
+## Current Entry — QT-F16 Local Completion 2026-10-15
+
+Director leaves Claude review pending and explicitly requests next implementation. Completed
+[QT-F16](docs/work_orders/QT-F16_NPC_MEMORY_INSPECTION.md):memory-enabled Tk button displays only
+the NPC's existing player conversations through its owner-thread worker/current committed snapshot.
+Primary5,related2/6;no expanded cognition/CORE/save/wire/Unity/content change. Query preserves
+turn/reward/retry/source;older load and resumed worker show their actual saved memories. No game
+creation/open before attach;explicit unavailable/error,continued input/poll/close.
+[Receipt](docs/reviews/QT-F16_EXECUTION_2026-10-15.md):126affected PASS44.24s,15new/3native Tk cases;
+Ruff both/format13/mypy158/imports3+1/pip PASS. Full/native Unity/Linux/live/new CI NOT_RUN.
+Published HEAD remains e32cf3e;three preexisting pause notes preserved and additional QT-F16
+source/tests/order/receipt/README/progress changes remain local. No Git publication this task.
+V3A–EClaude inspection remains pending at e32cf3e;do not treat new patch as independently reviewed
+or covered by that commit's CI. CP06held;broader D2/D3/D4/D6/D7remain open. No automatic next task.
+
+## Next Session Entry — Paused 2026-10-15
+
+Director will continue Claude review later because its usage limit is exhausted. Current task
+is stopped after local session notes;no automatic reviewer/provider/CI/feature/publication work.
+Read the latest [backlog pause](BACKLOG.md#paused-for-next-session--director-request-2026-10-15).
+Published head:e32cf3e08a44d327b7ed091650bec7f74716676f,existing codex/open-work-closure-20261014/PR8;
+remote equality verified. Worktree was clean before these local-only pause notes.
+PR CI38667114900:31boundary+1675full PASS456.98s/static/imports PASS. Push CI38667111530:
+1674PASS/1Tk setup ERROR669.49s,init.tcl unreadable;root cause UNVERIFIED,do not hide this result.
+Native local29save tests/static accepted;Linux repaired test NOT_RUN. No production code change.
+Next explicit resume:hand off [full English A–Erequest](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md)
+at pinned e32cf3e,including mixed CI outcomes;receive actual feedback,then verify each finding.
+All five remaining inspection blocks are required,not another selective pass. V3still incomplete;
+CP06release held and broader D2/D3/D4/D6/D7remain open. No new ZIP/content approval/merge required.
+Pause notes in BACKLOG/this file/Korean summary are local changes,not part of published e32cf3e.
+
+## Previous Publication Handoff — 2026-10-15
 
 Director explicitly requests Git publication of current repaired test/review records and an English
 request to finish ALL remaining inspection:[A–Ehandoff](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
