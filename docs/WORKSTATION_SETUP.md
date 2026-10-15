@@ -6,6 +6,19 @@ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification
 
 ## Task Entry and Authorization
 
+QT-F20current-host2026-10-15:[receipt](reviews/QT-F20_EXECUTION_2026-10-15.md). Reused Python3.13.12/
+Tk8.6/SQLite3.50.4/editor6000.3.25f1(file6000.3.25.14801824);host CLI active/signedIn,settings
+unchanged. Restricted hardlink creation failed;actual host slot guard and full1741tests PASS.
+Native7cases273PASS,Windows build/release-hook exclusion PASS;screen and9source-preserving save
+readbacks verified. No install/upgrade;other-device/standalone/release qualification remains open.
+
+QT-F19current-host2026-10-15:[receipt](reviews/QT-F19_EXECUTION_2026-10-15.md). Reused same
+Python3.13.12 AMD64/Tk8.6/SQLite3.50.4/editor6000.3.25f1(file6000.3.25.14801824). Restricted
+license query failed;host CLI confirmed success/active/signedIn,no settings changes. Recent-memory
+Tk/Unity integration:161affected Python+2current Tk cases/static PASS;native7cases216PASS,
+Windows build/release-hook exclusion PASS;actual capture and6source-preserving memory readbacks.
+No installation/upgrade;other-device/standalone/release acceptance remains open.
+
 QT-F17current-host2026-10-15:[receipt](reviews/QT-F17_EXECUTION_2026-10-15.md). Reused actual
 Python3.13.12 AMD64/Tk8.6/SQLite3.50.4/editor6000.3.25f1(e1dba0a9aba4). Restricted license probe
 could not connect;permitted public CLI confirmed active Personal/signed-in without settings changes.

@@ -8,13 +8,14 @@ from types import MappingProxyType
 
 from pathlib import Path
 
-from app.client_text import status_text, turn_messages
+from app.client_text import QUEST_STAGE_NAMES, status_text, turn_messages
 from app.durable import DurableSession, create_durable, resume_durable
 from app.watch import WatchBootstrapSpec, bootstrap_watch
 from app.watch_registry import watch_bundle
 from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
+from app.npc_memory_query import recent_evidence
 from contracts.dialogue import QuestContent
 from contracts.quest import QuestTalkCommand
 from contracts.client import ClientAction, ClientUpdate, ClientView
@@ -186,11 +187,19 @@ class ClientSession:
 
     def inspect_memory(self) -> ClientUpdate:
         """Display only this player's committed conversations;do not submit a command."""
+        return self._inspect_memory(recent=False)
+
+    def inspect_recent_memory(self) -> ClientUpdate:
+        return self._inspect_memory(recent=True)
+
+    def _inspect_memory(self, *, recent: bool) -> ClientUpdate:
         if not self._npc_memory:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
         memory = _record(self._owner.snapshot(), NpcQuestMemoryRecord, self._layout.npc_id)
+        entries = recent_evidence(memory) if recent else memory.entries
+        prefix = "최근 NPC 대화 기억" if recent else "NPC 대화 기억"
         messages = tuple(
-            f"NPC 대화 기억 · {entry.observed_at}초: "
+            f"{prefix} · {entry.observed_at}초: "
             + (
                 "플레이어가 의뢰를 맡겠다는 말을 직접 들었습니다."
                 if entry.kind == "accepted"
@@ -198,7 +207,7 @@ class ClientSession:
                     "플레이어에게 의뢰 완료 보고를 받았습니다. 적의 처치를 직접 본 기억은 아닙니다."
                 )
             )
-            for entry in memory.entries
+            for entry in entries
         )
         return self.update(
             "MEMORY_INSPECTED",
@@ -269,6 +278,30 @@ class ClientSession:
             (receipt.slot_id,),
             messages=(f"{receipt.slot_id}에 진행 상황을 저장했습니다.",),
         )
+
+    def inspect_slot(self, slot_id: str) -> ClientUpdate:
+        checkpoint = self._owner.inspect_slot(slot_id)
+        messages: tuple[str, ...] = (
+            f"{slot_id} 저장 정보 · {checkpoint.core.tick}초 · 진행 {checkpoint.protocol.revision}",
+        )
+        if self._quest_content is not None:
+            quest = _record(
+                checkpoint.core, QuestRecord, EntityId(self._quest_content.definition.quest_id)
+            )
+            messages += (
+                f"저장된 임무: {QUEST_STAGE_NAMES[quest.stage]} · "
+                f"포구의 호의 {reward_for(quest.stage)}",
+            )
+        if self._npc_memory:
+            memory = _record(checkpoint.core, NpcQuestMemoryRecord, self._layout.npc_id)
+            reported = any(entry.kind == "completion_reported" for entry in memory.entries)
+            report_text = (
+                "플레이어의 완료 보고를 받은 기억이 있습니다."
+                if reported
+                else "완료 보고를 받은 기억은 없습니다."
+            )
+            messages += (f"저장된 NPC 대화 기억: {len(memory.entries)}개 · {report_text}",)
+        return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str) -> ClientUpdate:
         previous_token = self._owner.attachment_id

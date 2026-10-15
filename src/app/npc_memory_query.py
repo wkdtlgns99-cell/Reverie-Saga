@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from collections.abc import Iterable
 
 from contracts.dialogue import GenerationError
 from contracts.npc_memory import NpcMemoryContext
-from domain.npc_memory import MEMORY_CAPACITY, EvidenceKind, QuestEvidence
+from domain.npc_memory import MEMORY_CAPACITY, EvidenceKind, NpcQuestMemoryRecord, QuestEvidence
 from domain.primitives import require_integer, require_namespace
 
 
@@ -48,12 +49,22 @@ def select_evidence(context: NpcMemoryContext, query: EvidenceQuery) -> tuple[Qu
         for entry in context.entries
         if entry.observed_at >= query.since and (query.kind is None or entry.kind == query.kind)
     )
+    return _ranked(matches, context.source.npc_id)[: query.limit]
+
+
+def recent_evidence(record: NpcQuestMemoryRecord) -> tuple[QuestEvidence, ...]:
+    if type(record) is not NpcQuestMemoryRecord:
+        raise GenerationError("NPC_CONTEXT_INPUT")
+    return _ranked(record.entries, record.entity_id)[:1]
+
+
+def _ranked(entries: Iterable[QuestEvidence], npc_id: str) -> tuple[QuestEvidence, ...]:
     return tuple(
         sorted(
-            matches,
+            entries,
             key=lambda entry: (
                 -entry.observed_at,
-                entry.memory_id(context.source.npc_id),
+                entry.memory_id(npc_id),
             ),
         )
-    )[: query.limit]
+    )

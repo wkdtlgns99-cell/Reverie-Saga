@@ -14,7 +14,7 @@ import tkinter as tk
 from tkinter import ttk
 
 from app.client_worker import ClientWorker
-from app.client_text import status_text
+from app.client_text import QUEST_STAGE_NAMES, status_text
 from app.scenarios import select_scenario
 from app.quest import client_quest
 from contracts.dialogue import QuestContent
@@ -71,6 +71,7 @@ class PlayWindow:
         self._quest_content = quest_content
         self._npc_memory = npc_memory
         self.memory_button: ttk.Button | None = None
+        self.recent_memory_button: ttk.Button | None = None
         self.view: ClientView | None = None
         self.last_update: ClientUpdate | None = None
         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
@@ -142,12 +143,19 @@ class PlayWindow:
             self.memory_button.grid(
                 row=1 + len(labels) // 2, column=len(labels) % 2, sticky="ew", padx=3, pady=3
             )
-        ttk.Label(controls, text="대기 시간(게임 초)").grid(row=9, column=0, sticky="w")
+            self.recent_memory_button = ttk.Button(
+                controls, text="최근 대화 기억", command=self._inspect_recent_memory
+            )
+            self.recent_memory_button.grid(
+                row=9, column=0, columnspan=2, sticky="ew", padx=3, pady=3
+            )
+        wait_row = 10 if self._npc_memory else 9
+        ttk.Label(controls, text="대기 시간(게임 초)").grid(row=wait_row, column=0, sticky="w")
         self.wait_input = ttk.Spinbox(
             controls, from_=1, to=WAIT_MAX, textvariable=self.wait_seconds, width=10
         )
-        self.wait_input.grid(row=9, column=1, sticky="ew", pady=6)
-        ttk.Label(controls, text="저장 슬롯").grid(row=10, column=0, sticky="w")
+        self.wait_input.grid(row=wait_row, column=1, sticky="ew", pady=6)
+        ttk.Label(controls, text="저장 슬롯").grid(row=wait_row + 1, column=0, sticky="w")
         self.slot_input = ttk.Combobox(
             controls,
             values=tuple(f"slot0{index}" for index in range(1, 9)),
@@ -155,7 +163,13 @@ class PlayWindow:
             state="readonly",
             width=10,
         )
-        self.slot_input.grid(row=10, column=1, sticky="ew")
+        self.slot_input.grid(row=wait_row + 1, column=1, sticky="ew")
+        self.slot_preview_button = ttk.Button(
+            controls, text="선택 슬롯 정보", command=self._inspect_slot
+        )
+        self.slot_preview_button.grid(
+            row=wait_row + 2, column=0, columnspan=2, sticky="ew", padx=3, pady=3
+        )
         ttk.Label(panel, text="파랑: 플레이어   빨강: 적   금색: 문   초록: NPC   회색: 벽").grid(
             row=3, column=0, columnspan=2, sticky="w", pady=(12, 0)
         )
@@ -221,6 +235,9 @@ class PlayWindow:
             button.configure(state="normal" if enabled else "disabled")
         if self.memory_button is not None:
             self.memory_button.configure(state="normal" if enabled else "disabled")
+        if self.recent_memory_button is not None:
+            self.recent_memory_button.configure(state="normal" if enabled else "disabled")
+        self.slot_preview_button.configure(state="normal" if enabled else "disabled")
         self.wait_input.configure(state="normal" if enabled else "disabled")
         self.slot_input.configure(state="readonly" if enabled else "disabled")
 
@@ -239,6 +256,14 @@ class PlayWindow:
     def _inspect_memory(self) -> None:
         if not self.busy:
             self._begin_request(self.worker.inspect_memory())
+
+    def _inspect_recent_memory(self) -> None:
+        if not self.busy:
+            self._begin_request(self.worker.inspect_recent_memory())
+
+    def _inspect_slot(self) -> None:
+        if not self.busy:
+            self._begin_request(self.worker.inspect_slot(self.slot.get()))
 
     def _begin_request(self, pending: Future[ClientUpdate]) -> None:
         self._pending = pending
@@ -335,7 +360,7 @@ class PlayWindow:
             f"NPC 종 {view.npc_bells}  응답 {view.npc_replies}"
         )
         if update.quest_stage >= 0:
-            stage = ("미수락", "진행 중", "보고 가능", "완료")[update.quest_stage]
+            stage = QUEST_STAGE_NAMES[update.quest_stage]
             self.stats.set(self.stats.get() + f"\n임무 {stage} · 포구의 호의 {update.quest_reward}")
         self._draw_map(view)
 

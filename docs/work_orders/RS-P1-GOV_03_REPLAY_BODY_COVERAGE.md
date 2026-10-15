@@ -1,5 +1,15 @@
 # RS-P1-GOV / GOV-03 — Native Golden Replay Body Coverage
 
+Current2026-10-15:ENTRY_STOP_STALE_SCOPE,not executable READY at2f591f7. Actual public-method
+enumeration of the same four factories finds27methods versus the historical20below:two concrete
+encounter scenario_layout properties and five inherited watch scenario_layout properties,whose
+implementation lives in src/domain/scenario.py. Trial Movement.manifest also contains a generator
+code object,contradicting the old no-nested-code assumption. Actual source/range/coverage scope
+requires a bounded re-reviewed order before implementation;do not omit new properties or weaken
+the guard to preserve20. tmp/gov03/current-registry.json records the native inspection. Historical
+inventory/qualification below is preserved;G07remains NOT_ACTIVE. Selected eligible independent
+task is [QT-F18](QT-F18_MEMORY_COMPARISON.md);Claude V3/CP06holds remain.
+
 Date:2026-10-07 | Executor/reviewer:Sol | Order:READY,self-reviewed | Implementation:NOT_STARTED | G07:NOT_ACTIVE | Parent:IN_PROGRESS
 
 Director request "다음꺼 ㄱㄱ" completes the recorded NEXT **authoring** item. This document is an executable proposal, not execution authorization inferred from its text. NEXT:execute this bounded order when directed. No gameplay completion, independent review, CI deployment or eleven-gate activation.

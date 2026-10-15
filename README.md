@@ -186,6 +186,19 @@ Check a stored snapshot against the current save offline:
 MEMORY_QUERY_CURRENT means consistency at check time;changed source returns NPC_CONTEXT_STALE.
 Modified/malformed contents reject;the checker never rewrites either file or grants approval.
 
+QT-F18 also compares two saved NPC-memory snapshots offline:
+
+```powershell
+.\.venv\Scripts\python.exe -m app.npc_memory_compare --before tmp/memory-play/slots/slot01.sqlite --after tmp/memory-play/game.sqlite --quest-catalog tmp/dialogue/harbor-v1.json --quest-sha256 <catalog-sha256> --output tmp/npc/memory-comparison.json
+```
+
+The fresh SNAPSHOT_COMPARISON artifact includes both source/context fingerprints and stable memory
+IDs added,removed or retained between the two snapshots. Before/after share the same world,NPC,
+player,quest and catalog;different saved branches or reversed times are allowed. A missing report
+in an older save is a snapshot difference,not proof of forgetting. Both saves are rechecked before
+publication;neither save is modified. This is an explicit developer CLI,not a Unity control or
+automatic generation input. [Acceptance](docs/reviews/QT-F18_EXECUTION_2026-10-15.md).
+
 ## Previewed memory dialogue generation
 
 QT-F13 connects an offline input preview to optional generation. Use a fresh output for each step:
@@ -269,6 +282,17 @@ QT-F17 connects the same inspection to the ordinary Unity memory preset through 
 uses its existing history/load/reconnect path. No turn,provider call or save conversion occurs.
 [Tk acceptance](docs/reviews/QT-F16_EXECUTION_2026-10-15.md),
 [Unity acceptance](docs/reviews/QT-F17_EXECUTION_2026-10-15.md).
+QT-F19 adds **최근 대화 기억** in both memory-enabled clients. It shows only the newest saved
+conversation:acceptance before any completion report,the report after it is received. The full
+NPC 대화 기억 button keeps its chronological list. Loading an older save or reconnecting uses
+that saved branch's actual memories;both actions preserve turn,reward and the previous retry.
+[Recent-memory acceptance](docs/reviews/QT-F19_EXECUTION_2026-10-15.md).
+QT-F20 adds **선택 슬롯 정보** in Tk and **slot01 저장 정보** in the Unity prototype. Inspect
+the saved time/progress and,when present,quest stage/favor and NPC conversation-memory count before
+loading. Saved values appear as explicitly labeled messages;current player stats remain current.
+Inspection validates the selected slot without creating a loaded branch or changing retry. Empty,
+corrupt or incompatible slots report their normal errors and remain untouched.
+[Slot-preview acceptance](docs/reviews/QT-F20_EXECUTION_2026-10-15.md).
 Use the actual current working path after load for offline npc_memory_prepare --preview;source
 catalog+SHA must match the save. Old saves reject unsupported memory pins without conversion.
 

@@ -114,6 +114,10 @@ class DurableSession:
         with self._operation():
             return self._attachment.slots.export(slot_id)
 
+    def inspect_slot(self, slot_id: str) -> DurableCheckpoint:
+        with self._operation():
+            return self._attachment.slots.inspect(slot_id)
+
     def load(self, slot_id: str) -> SaveLoadReceipt:
         with self._operation():
             previous = self._attachment

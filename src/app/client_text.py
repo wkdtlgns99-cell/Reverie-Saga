@@ -30,7 +30,11 @@ from domain.trial import ACTOR_ID
 from domain.watch import NPC_ID, WAIT_MAX
 
 NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문"}
+QUEST_STAGE_NAMES = ("미수락", "진행 중", "보고 가능", "완료")
 STATUS_TEXT = {
+    "SLOT_INSPECTED": "저장 슬롯의 진행 정보를 확인했습니다. 현재 게임은 바뀌지 않습니다.",
+    "SLOT_INSPECTION_UNAVAILABLE": "게임에 연결한 뒤 저장 슬롯을 확인하세요.",
+    "SAVE_INSPECT_FAILED": "저장 슬롯 정보를 읽지 못했습니다. 현재 진행은 유지됩니다.",
     "MEMORY_INSPECTED": "NPC가 기억하는 의뢰 대화를 확인했습니다. 게임 시간은 흐르지 않습니다.",
     "NPC_MEMORY_UNAVAILABLE": "현재 게임에서는 NPC 대화 기억을 확인할 수 없습니다.",
     "QUEST_UNAVAILABLE": "현재 구간에는 대화할 임무가 준비되어 있지 않습니다.",
@@ -89,7 +93,15 @@ def status_text(code: str) -> str:
     message = STATUS_TEXT.get(code)
     if message is None:
         return f"설명이 준비되지 않은 처리 상태입니다. ({code})"
-    if code in {"ATTACHED", "CONNECTING", "COMMITTED", "SAVED", "LOADED", "MEMORY_INSPECTED"}:
+    if code in {
+        "ATTACHED",
+        "CONNECTING",
+        "COMMITTED",
+        "SAVED",
+        "LOADED",
+        "MEMORY_INSPECTED",
+        "SLOT_INSPECTED",
+    }:
         return message
     return f"{message} ({code})"
 

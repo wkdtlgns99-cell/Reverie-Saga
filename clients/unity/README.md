@@ -20,6 +20,15 @@ harbor-memory-v1.sha256. Save:tmp/unity-play/harbor-memory/<catalog-pin>/game.sq
 The catalog browser displays6adapted Quilltale descriptions;it does not instantiate six worlds,
 quest mechanics or old template stats. Loaded save branches retain their own working path.
 The reconnect button resumes the current branch;reconnection appends a new attachment notice to the session-local history.
+Memory modes also show **최근 대화 기억**(QT-F19). This read-only action shows one newest recorded
+conversation;the original full-memory button keeps all records in time order. A received completion
+report remains a report,not eyewitness evidence. Both buttons share busy/load/reconnect behavior
+and take no turn. [Acceptance](../../docs/reviews/QT-F19_EXECUTION_2026-10-15.md).
+**slot01 저장 정보**(QT-F20) previews the same slot01used by the prototype's save/load controls.
+Saved time,quest progress and registered NPC-memory count appear in the history,while current
+stats and attachment stay unchanged. The slot is validated without loading a new branch;an empty
+or unusable slot reports an error. Full/recent memory controls share one row to retain history
+space. [Acceptance](../../docs/reviews/QT-F20_EXECUTION_2026-10-15.md).
 
 QT-F02 selectors:`REVERIE_UNITY_SCENARIO=legacy|harbor|grove` before starting the editor.
 Explicit legacy retains tmp/unity-play/game.sqlite;harbor/grove get separate default subdirectories.

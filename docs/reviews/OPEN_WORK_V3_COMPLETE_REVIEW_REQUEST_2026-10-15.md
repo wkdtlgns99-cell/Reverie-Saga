@@ -1,10 +1,10 @@
-# Claude Request — Finish ALL Unread V3 Work Including NPC Memory Inspection
+# Final Claude Request — Complete ALL Remaining V3 Inspection at 2f591f7
 
 Latest third review of e32cf3e:[findings/coverage](OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md).
-It remains incomplete. The director explicitly requests publishing the N1checkout/N3fixture
-repairs and QT-F16/17Tk/Unity inspection on existing PR8. This resubmission contains those changes;
-the delivery message supplies its exact committed SHA. Verify the remote head and pin it before
-inspection. Three partial reviews do not amount to complete review acceptance.
+It remains incomplete. N1checkout/N3fixture repairs and QT-F16/17Tk/Unity memory inspection are
+now published on existing PR8 at **2f591f752ec332476daa1e64bbb4aa0a1521c1fa**. Both new CI runs
+completed successfully;exact results appear below. Three partial reviews and green CI do not
+amount to complete independent source review acceptance.
 
 Please continue your three partial reviews and finish ALL remaining blocks below in this review.
 Do not stop after one block or ask me to choose the next block. If access, time or context prevents
@@ -17,20 +17,75 @@ the whole review passed. This is independent review,not implementation or a new 
 - Branch:codex/open-work-closure-20261014
 - Source:https://github.com/wkdtlgns99-cell/Reverie-Saga/tree/codex/open-work-closure-20261014
 - Draft PR:https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8
+- Exact review target:2f591f752ec332476daa1e64bbb4aa0a1521c1fa.
+- Pinned source:https://github.com/wkdtlgns99-cell/Reverie-Saga/tree/2f591f752ec332476daa1e64bbb4aa0a1521c1fa
 - Full comparison base:1ad22446d48c50b8b72a6d3af8de3c9d775134ea.
 - Latest reviewed snapshot:e32cf3e08a44d327b7ed091650bec7f74716676f.
 - Earlier snapshot:3159c92251afc61cd3d30e5156020adac4937c5d.
 
-Fetch the branch/PR head and record its full SHA before reading. Pin that revision for all files,
-diffs and tests. Review full base-to-head history and the entire incremental patch since e32cf3e,
-including surrounding callers/contracts/assertions. Earlier3159c92feedback remains history.
-The delivery message supplies the newly published SHA;verify equality. If GitHub access fails,
+Fetch the branch/PR head and verify it against the exact target above before reading. Pin that
+target for all source,diffs and tests. If the remote has advanced,report the mismatch;do not
+silently attribute these CI results to another revision. Review full base-to-target history and
+the entire incremental patch since e32cf3e,including surrounding callers/contracts/assertions.
+Earlier3159c92feedback remains history. This final request is a local documentation update for
+the director to send;the version in the pinned Git tree predates the completed CI results.
+Use this supplied request for review instructions and the pinned Git tree for implementation.
+If GitHub access fails,
 report the exact inaccessible paths and request the current source archive. Do not substitute
 the old OPEN_WORK_V3_3159c92_2026-10-15.zip:it excludes the F1repair and both review dispositions.
 No new ZIP is supplied by this request. Use an actual Git checkout honoring .gitattributes for
 tests/builds:GitHub source archives retain LF blob bytes and do not apply checkout EOL filters
 to the two CRLF-hash-pinned evidence inputs. Archives permit source reading,but are not thereby
 qualified executable checkouts;ignored local evidence is a separate availability limit.
+
+## Confirmed CI Results — Current Target, Not the Earlier Mixed Result
+
+The executor inspected both complete job logs and confirmed both final conclusions through CI
+diagnostics on2026-10-15. These are two separate runs,not reruns of the earlier failing job:
+
+| Event / run | Checked-out revision | Boundary tests | Full suite | Conclusion |
+|---|---|---|---|---|
+| [push38690034871](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/38690034871),job116273570078 | 2f591f752ec332476daa1e64bbb4aa0a1521c1fa | 31passed,11.57s | 1697passed,681.93s | SUCCESS |
+| [PR38690039077](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/38690039077),job116273583006 | synthetic merge38339d24a47da2af03a69081cbe006c5cc4f6b1e for target2f591f7 | 31passed,11.54s | 1697passed,676.77s | SUCCESS |
+
+Both runs also passed both Ruff configurations,scoped format checking(12files),strict mypy
+(160source files) and import contracts(3+1kept,0broken),after installing the hash-locked development
+dependencies. Environment:Windows Server2025build26100,windows-2025-vs2026 image20260925.250.1,
+Python3.13.12x64. The31boundary tests overlap the full suite;do not sum these into1728unique tests,
+or add both CI runs or earlier affected suites together. CI did not run native Unity acceptance.
+
+No current CI failure required a code/workflow repair. The earlier e32cf3epush Tcl failure remains
+historical with an unproved root cause;new successes do not diagnose or retroactively fix it.
+Verify the linked results independently if accessible. Otherwise label these as executor-reported
+remote evidence,not personally verified execution. Do not spend the source review merely proving
+that CI is green;finish the unread implementation,contracts,history and assertion bodies below.
+
+## Close the Coverage Gaps Before Giving a Whole-Review Verdict
+
+Reconcile the file/range coverage ledgers in ALL THREE verbatim reviews. Build one remaining-work
+ledger from their union,then add every new N1/N3/QT-F16/QT-F17file. Prior partial ranges leave the
+rest of the file unread;prior test execution does not prove its assertion bodies were inspected.
+Recheck previously read code wherever the final patch changes it or changes its callers/contracts.
+
+Independently enumerate the full comparison,including additions,renames and deletions:
+
+```text
+git diff --name-status 1ad22446d48c50b8b72a6d3af8de3c9d775134ea 2f591f752ec332476daa1e64bbb4aa0a1521c1fa
+git diff --name-status e32cf3e08a44d327b7ed091650bec7f74716676f 2f591f752ec332476daa1e64bbb4aa0a1521c1fa
+git log --reverse --oneline 1ad22446d48c50b8b72a6d3af8de3c9d775134ea..2f591f752ec332476daa1e64bbb4aa0a1521c1fa
+```
+
+Map every changed path and every prior unread range to A–E or an explicit additional row. The
+lists below are minimum required coverage,not an allowlist for omissions. Include changed
+`pyproject.toml`,`tests/governance/test_dependency_contracts.py`,app/adapters and any other paths
+missed by the examples;inspect relevant workflow,lock and import-boundary configuration when
+assessing acceptance claims. Trace dependencies outside the diff as needed. For historical-only
+evidence,record its purpose and actual inspection;do not mark it reviewed solely because its
+hash matches. Account for deleted/renamed behavior through history and current consumers.
+
+Complete all available remaining A–Ereading and the new patch in this review. If a specific
+unavailable input blocks one item,record it and continue every independent available item.
+Do not stop after one block,offer only a plan,or replace source inspection with CI/test summaries.
 
 Read first:
 
@@ -85,15 +140,16 @@ seven editor cases plus Windows build/release-hook exclusion;N1/N3 95affected te
 Ruff both/format16/mypy160/imports3+1/pip PASS. These overlap;do not add them into a test total or
 call them a new full-suite run. Screenshots/readback/JUnit/logs under ignored tmp/qt-f16,tmp/qt-f17,
 tmp/v3-third are not supplied by Git;tracked receipts report what ran. Do not claim personally
-inspecting unavailable native evidence. Current-head CI must be read independently;old e32cf3e
-CI is not acceptance of this new commit.
+inspecting unavailable native evidence. The confirmed current-target CI table above now supplies
+separate full-suite evidence;old e32cf3eCI is not acceptance of this new commit.
 
 N2:executor retrieved failed push job116201476239/run38667111530at e32cf3e. Error:
 test_client_reconciliation.py::test_real_tk_load_error_resets_history_to_actual_loaded_state,
 tk_host test_client.py:194,cannot read hosted Python3.13.12/tcl/tcl8.6/init.tcl with No error.
 Runner windows-2025-vs2026/image20260925.250.1,Server2025build26100. PR run38667114900passed.
-Root cause remains unproved;do not claim all-green CI or a proven production bug. Inspect new-head
-results separately;this request does not ask you to rerun jobs.
+Root cause remains unproved;preserve that historical failure rather than claiming all historical
+CI passed or that a production bug was proved. The two new-target runs above both passed;
+this request does not ask you to rerun jobs.
 
 N4:assess the explicitly authorized A1manual editorial path in closure order/ledger,not only
 compile_preparation for raw provider output. Direct compile_dialogue from tracked edited candidate
@@ -235,14 +291,17 @@ Inspect current-head CI directly if available;otherwise label it unverified by y
 Return:
 
 1. Exact reviewed SHA/base and verdict,separating defect severity from coverage/environment gaps.
-2. A coverage ledger for A–E:files/ranges read,tests whose assertions were read,tests actually run,
+2. A coverage ledger for A–Eand additional changed paths:files/ranges read,tests whose assertions were read,tests actually run,
    unavailable inputs and exact remainder. Reconcile ALL THREE prior coverage reports and include
    every new QT-F16/17/N1/N3file above;test execution and reading names do not replace assertion review.
 3. Each finding:ID/priority,path:line,contract,trigger,expected/actual,reproducer and bounded repair.
    Separate confirmed defects,intentional behavior,maintenance and unverified hypotheses.
 4. A finding-by-finding CP03/CP05repair matrix,current V3F1–F6/N1–N4dispositions and a verdict on
    QT-F16/17client/memory/wire/native-test contracts.
-5. Actual test/static results and honest native/live/platform/hash-closure limits.
+5. Actual test/static results and honest native/live/platform/hash-closure limits. Include both
+   current CI runs with exact source/merge revisions,and distinguish CI you verified,executor-
+   reported evidence and tests you personally executed. Explain any discrepancy without erasing
+   earlier failures or treating exploratory Linux execution as qualified Windows/native evidence.
 6. Remaining blockers or an explicit statement that all requested source inspection is complete.
 
 Do not call a partial block review a full PASS. Explain whether any remaining limit blocks

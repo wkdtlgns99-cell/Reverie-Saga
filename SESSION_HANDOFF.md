@@ -1,9 +1,89 @@
 # Reverie Saga — Session Handoff
 
-Date:2026-10-15 | Stage:V3_PR8_COMPLETE_REVIEW_RESUBMISSION
+Date:2026-10-15 | Stage:QT_F18_20_GIT_SUBMISSION_CLAUDE_DEFERRED
 Current task/status SSOT:[BACKLOG](BACKLOG.md). Authority:[AGENTS](AGENTS.md) → [engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md)/[MASTER](docs/MASTER_GAME_ARCHITECTURE.md);this file routes,not a second rulebook.
 Full pre-compaction chronology/old resumes/publications/failures:[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md). Do not execute its historical NEXT instructions.
 Execution/repair/language/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);read it every assistant turn via AGENTS. Detailed controls:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md).
+
+## Current Entry — Director-Requested Git Submission
+
+Director requests recording all completed work and publishing it,then resumes the interrupted
+submission. Commit containing this entry,parent2f591f7,on codex/open-work-closure-20261014/PR8
+includes QT-F18/19/20source/tests/orders/receipts and accumulated notes. Historical local-only
+entries below describe their original acceptance;this authorization supersedes that restriction.
+Full1741PASS/static/native273PASS/Windows build/nine readbacks are reused for unchanged sources;
+new remote CI remains unqualified until actually observed. Final delivery verifies commit/remote.
+Primary7delivery support,related4/5/6. Claude stays deferred/incomplete,CP06held,GOV-03open.
+Existing English request remains historical2f591f7and requires refresh on review resume.
+No automatic next implementation,Claude message,merge or release.
+
+## Current Entry — QT-F20 Slot Preview Complete 2026-10-15
+
+Director keeps Claude deferred/requests next work. [Order](docs/work_orders/QT-F20_SAVE_SLOT_PREVIEW.md)/
+[receipt](docs/reviews/QT-F20_EXECUTION_2026-10-15.md):primary6,related5/7. Tk selected-slot/Unity
+slot01read-only preview shows saved checkpoint metadata while current view/reward/attachment/retry
+remain current. No clones,load,write or schema/CORE/content change. New bounded slot_inspect;
+wirea342a2f3regenerated. Full1741PASS513.95s(15new and retained QT-F18/19),current4display PASS7.56s;
+Ruff both/format14/mypy164/pip/imports3+1 PASS. Actual hardlink test refused in sandbox then passed
+on host;no skips. Native default84+memory84+quest28+legacy34+harbor21+grove21+corrupt1=273PASS,
+Windows build/release-hook absence PASS. Actual screen and9save readbacks separate saved10/favor0
+from current12/favor1,all hashes unchanged/API0. Native scene IDs proved equivalent,entry bytes
+restored. tmp/qt-f20contains raw evidence. Prior local QT-F18/19/request files preserved;all new
+work local,HEAD2f591f7unchanged. Remote CI/Linux/other-device/standalone/independent NOT_RUN.
+Claude V3deferred/incomplete/CP06held;future request must include QT-F18/19/20/current full evidence.
+Broader D2/D3/D4/D6/D7/GOV-03stale scope remain;no automatic next work/push/provider/agent.
+
+## Current Entry — QT-F19 Recent Memory Complete 2026-10-15
+
+Director keeps Claude deferred/requests next implementation. [Order](docs/work_orders/QT-F19_RECENT_MEMORY_CLIENTS.md)/
+[receipt](docs/reviews/QT-F19_EXECUTION_2026-10-15.md):primary5,related4/6/7. Tk/Unity recent-memory
+button uses current committed owner facts/shared ranking,not cached history;full list unchanged.
+New memory_recent request/schema58134983,DTO/save/CORE/content unchanged. All lifecycle/older load/
+reconnect/read-only/retry paths qualified. Affected161PASS76.02s,new12included;current2Tk rechecked
+after test-helper type correction. Ruff both/format15/mypy163/pip/imports3+1 PASS. Native default74+
+memory74+oldquest18+legacy25+harbor12+grove12+corrupt1=216PASS,build/release-hook absence PASS.
+Actual capture inspected;6real saves read back/source hashes unchanged/API0. Scene regenerated
+IDs/empty-name whitespace proved equivalent then entry bytes restored;tmp/qt-f19holds witnesses.
+Prior QT-F18/request edits retained;all changes local,HEAD2f591f7unchanged. No fresh combined full/
+remote CI/other-device/standalone/independent claims. Future Claude request must include QT-F18/19;
+V3deferred/incomplete,CP06held,GOV-03stale scope/broader groups open. No automatic next work/push.
+
+## Current Entry — QT-F18 Comparison Complete 2026-10-15
+
+Director defers Claude/requests next eligible work. [Order](docs/work_orders/QT-F18_MEMORY_COMPARISON.md)/
+[acceptance](docs/reviews/QT-F18_EXECUTION_2026-10-15.md):primary4retrieval support,related6/7.
+Explicit npc_memory_compare CLI compares two existing saved memory snapshots;source-bound IDs/
+certainty,foreign ownership rejection,older load/different branch/read-only/recheck/publication
+qualified. Final67affected PASS38.78s,17new;Ruff both/format2/mypy162/pip/imports3+1 PASS.
+Actual retained QT-F17Unity slot/original/loaded comparisons3PASS/API0/all hashes unchanged;
+no fresh editor run. Entry full1697PASS502.83s not combined new-feature full acceptance.
+GOV-03old READY scope is stale:27public methods in its four factories versus20reviewed;new
+inherited scenario getters and generator-code assumption need bounded re-review. Entry stopped,
+no tool/guard/config activation. tmp/gov03/current-registry.json preserves actual inspection.
+All228preexisting source/test/client/content/config inputs unchanged;prior six dirty docs retained.
+QT-F18source/tests/order/receipt/README and progress remain local;HEAD2f591f7unchanged. Existing
+English request still targets that head and excludes QT-F18;refresh only on future review resume.
+Broader D2/D4open,Claude V3deferred/incomplete/CP06held. No push/provider/agent/automatic next work.
+
+## Current Entry — Final English Request Ready 2026-10-15
+
+Director-requested [final English review request](docs/reviews/OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md)
+now pins published2f591f7and both successful CI runs,including distinct PRmerge revision.
+All3partial ledgers/full diff/history/unread A–Eassertions/new N1/N3/QT-F16/17must be reconciled;
+complete available inspection before verdict. Request preparation DONE,primary7support;
+review itself incomplete/CP06held. Request/start entry/order/three progress files updated locally.
+No commit/push,archive or actual Claude communication;director sends the local final request.
+
+## Current Entry — Two CI Results Verified 2026-10-15
+
+Director-requested verification DONE at source2f591f752ec332476daa1e64bbb4aa0a1521c1fa.
+Both runs SUCCESS:push38690034871/job116273570078,31boundary11.57s/full1697PASS681.93s;
+PR38690039077/job116273583006,31boundary11.54s/full1697PASS676.77s. PRtested synthetic merge
+38339d24a47da2af03a69081cbe006c5cc4f6b1e;push tested exact head. Both Ruff/format12/mypy160/
+imports3+1 PASS. Full job logs obtained after initial live-log502. No failed current check,so no
+code/workflow repair or rerun. Old e32cf3eTcl failure remains historical/root cause unproved.
+See linked runs in BACKLOG. Primary7verification support;V3full review incomplete/CP06held.
+Only BACKLOG/this handoff/Korean summary updated locally;no further publication or automatic work.
 
 ## Current Entry — PR8 Complete Review Resubmission 2026-10-15
 

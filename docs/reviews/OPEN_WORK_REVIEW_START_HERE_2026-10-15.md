@@ -1,6 +1,12 @@
 # Start Here — Current Independent Review
 
 Read this file first. Review the actual sources listed below;the request alone is not the code.
+Final director-send request:[complete remaining inspection with both CI results](OPEN_WORK_V3_COMPLETE_REVIEW_REQUEST_2026-10-15.md).
+Exact published source2f591f752ec332476daa1e64bbb4aa0a1521c1fa;push38690034871and PR38690039077
+both SUCCESS,each31boundary+1697full PASS. PRcheckout38339d24a47da2af03a69081cbe006c5cc4f6b1e
+is the synthetic merge. The final request/progress additions are local documents,not another source
+revision or published CI run. Its target/confirmed-results sections supersede pending-CI wording
+below. Finish all3partial reviews' missing ranges AND new patch;CI is not independent inspection.
 Latest actual review targets e32cf3e:[third dispositions](OPEN_WORK_V3_THIRD_DISPOSITIONS_2026-10-15.md).
 It explicitly declines full PASS;remaining A–Ecoverage is preserved. Director now requests PR8
 publication of N1checkout/N3test repairs AND QT-F16/17Tk/Unity memory inspection. The commit

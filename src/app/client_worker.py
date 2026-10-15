@@ -46,18 +46,34 @@ class ClientWorker:
         return self._executor.submit(self._run, request, seconds, slot_id)
 
     def inspect_memory(self) -> Future[ClientUpdate]:
-        """Local read-only UI operation;not part of the engine pipe protocol."""
+        """Serialize full read-only inspection on the Brain owner thread."""
+        return self._inspect("memory")
+
+    def inspect_recent_memory(self) -> Future[ClientUpdate]:
+        return self._inspect("memory_recent")
+
+    def inspect_slot(self, slot_id: str = "slot01") -> Future[ClientUpdate]:
+        return self._inspect("slot_inspect", slot_id)
+
+    def _inspect(
+        self, request: Literal["memory", "memory_recent", "slot_inspect"], slot_id: str = "slot01"
+    ) -> Future[ClientUpdate]:
         if self._closing:
             raise ValueError("CLIENT_CLOSING")
-        return self._executor.submit(self._run, "memory", 1, "slot01")
+        return self._executor.submit(self._run, request, 1, slot_id)
 
     def _run(
-        self, request: ClientRequest | Literal["memory"], seconds: int, slot_id: str
+        self,
+        request: ClientRequest | Literal["memory", "memory_recent", "slot_inspect"],
+        seconds: int,
+        slot_id: str,
     ) -> ClientUpdate:
         try:
             # Inspection must never create a game or open an unattached save.
-            if request == "memory" and self._owner is None:
+            if request in ("memory", "memory_recent") and self._owner is None:
                 raise ValueError("NPC_MEMORY_UNAVAILABLE")
+            if request == "slot_inspect" and self._owner is None:
+                raise ValueError("SLOT_INSPECTION_UNAVAILABLE")
             if self._owner is None:
                 self._owner = (
                     ClientSession(self._path, self._layout)
@@ -83,6 +99,10 @@ class ClientWorker:
                     update = owner.recover()
                 case "memory":
                     update = owner.inspect_memory()
+                case "memory_recent":
+                    update = owner.inspect_recent_memory()
+                case "slot_inspect":
+                    update = owner.inspect_slot(slot_id)
                 case _:
                     update = owner.act(request, seconds=seconds)
             self._last = update
@@ -92,7 +112,13 @@ class ClientWorker:
             # Unexpected adapter bugs remain visible,not classified as valid player rejection.
             code = (
                 str(error)
-                if str(error) in ("NO_RETRY", "QUEST_UNAVAILABLE", "NPC_MEMORY_UNAVAILABLE")
+                if str(error)
+                in (
+                    "NO_RETRY",
+                    "QUEST_UNAVAILABLE",
+                    "NPC_MEMORY_UNAVAILABLE",
+                    "SLOT_INSPECTION_UNAVAILABLE",
+                )
                 else "CLIENT_ERROR"
             )
             if code == "CLIENT_ERROR":

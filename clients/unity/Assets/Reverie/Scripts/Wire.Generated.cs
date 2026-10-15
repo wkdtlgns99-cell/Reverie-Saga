@@ -64,5 +64,5 @@ public sealed class WireRequest {
     public string seconds;
     public string slot_id;
 }
-public static class WireSchema { public const string Hash = "188504954814f58c87dba6dad0f63e996a4267c3fa8de15b2f35d7e86c5c1416"; }
+public static class WireSchema { public const string Hash = "a342a2f3bb5ca4123243cc52450cbf12c46661e4f18737095e222beb6e87212f"; }
 }

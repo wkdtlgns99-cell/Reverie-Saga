@@ -45,3 +45,15 @@ remote+PRhead equality. Observe new-head CI through code-review diagnostics;old 
 does not qualify it. Do not wait on/repeat an unchanged heavy CI run just to populate prose.
 Final delivery supplies actual SHA/PR/request link/observed CI state. Publication is not independent
 review acceptance;V3A–Eremains incomplete and CP06release held. Stop after this delivery.
+
+## Final English Request Refresh — Documentation Only
+
+Director2026-10-15requests both completed CI results in the final English request and ALL unread
+inspection. Baseline source2f591f752ec332476daa1e64bbb4aa0a1521c1fa;preserve the three existing
+local CIprogress edits. Scope:complete-review request,review start entry,this order and the three
+progress documents only. Record exact push/source and PR/synthetic-merge revisions,31boundary/
+1697full results and static gates;retain old Tcl root-cause uncertainty. Require all3coverage
+ledgers plus full diff/history reconciliation and complete assertions,including new client work.
+Acceptance:verify live conclusions,source/result consistency,local links/UTF8/diff/scope;no runtime
+tests needed for prose-only changes. No commit/push/Claude message/new ZIP/provider/agents,
+implementation/configuration/settings or checkpoint advancement. V3incomplete/CP06held.

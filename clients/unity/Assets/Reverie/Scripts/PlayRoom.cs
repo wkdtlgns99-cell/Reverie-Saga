@@ -29,6 +29,7 @@ namespace ReverieSaga
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
         public bool CanInspectMemory { get { return npcMemory&&latest!=null&&!Busy&&failure==""; } }
+        public bool CanInspectSlot { get { return latest!=null&&!Busy&&failure==""; } }
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
@@ -182,6 +183,8 @@ namespace ReverieSaga
         }
 
         public void InspectMemory() { if(CanInspectMemory)Send("memory"); }
+        public void InspectRecentMemory() { if(CanInspectMemory)Send("memory_recent"); }
+        public void InspectSlot() { if(CanInspectSlot)Send("slot_inspect"); }
 
         void Connect()
         {
@@ -259,14 +262,21 @@ namespace ReverieSaga
             GUILayout.EndHorizontal();
             if(!String.IsNullOrEmpty(questCatalog)&&GUILayout.Button(Label("talk"))) Send("talk");
             if(npcMemory) {
+                GUILayout.BeginHorizontal();
                 GUI.enabled=CanInspectMemory;
                 if(GUILayout.Button("NPC 대화 기억")) InspectMemory();
+                GUI.enabled=CanInspectMemory;
+                if(GUILayout.Button("최근 대화 기억")) InspectRecentMemory();
+                GUILayout.EndHorizontal();
                 GUI.enabled=!Busy&&failure=="";
             }
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"open","close","attack","rest","wait","bell"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();
+            GUI.enabled=CanInspectSlot;
+            if(GUILayout.Button("slot01 저장 정보")) InspectSlot();
+            GUI.enabled=!Busy&&failure=="";
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"save","load","retry","recover"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
