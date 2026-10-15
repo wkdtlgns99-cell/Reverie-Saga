@@ -30,8 +30,9 @@ namespace ReverieSaga
         public int ProcessId { get { return child.Id; } }
         public bool Busy { get { return awaiting; } }
 
-        public BrainConnection(string root, string workingFile)
+        public BrainConnection(string root, string workingFile, string scenario=WireScenarios.Legacy)
         {
+            scenario=SelectScenario(scenario);
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             string catalog = Path.Combine(root, "content", "narratives.json");
             if (!File.Exists(python) || !File.Exists(catalog))
@@ -39,7 +40,8 @@ namespace ReverieSaga
             var start = new ProcessStartInfo {
                 FileName = python, WorkingDirectory = root,
                 Arguments = "-m app.engine_bridge --working " + Quote(workingFile) +
-                    " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash,
+                    " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash +
+                    " --scenario " + Quote(scenario),
                 UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardInput = true, RedirectStandardOutput = true,
                 RedirectStandardError = true
@@ -52,6 +54,13 @@ namespace ReverieSaga
                 while ((line = child.StandardError.ReadLine()) != null) diagnostics.Enqueue(line);
             });
             reader = Task.Run(ReadLoop);
+        }
+
+        public static string SelectScenario(string value)
+        {
+            if(String.IsNullOrEmpty(value))return WireScenarios.Legacy;
+            if(value==WireScenarios.Legacy||value==WireScenarios.Courtyard)return value;
+            throw new ArgumentException("UNKNOWN_SCENARIO");
         }
 
         static string Quote(string value)

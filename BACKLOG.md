@@ -1,9 +1,47 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-12 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
+Updated:2026-10-15 (Asia/Seoul). Task/status/dependency SSOT;engineering authority:[prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Orders/evidence:docs/work_orders;designs:architecture. Read [current handoff](SESSION_HANDOFF.md) before execution.
 Execution/repair/delivery policy:[per-turn rulebook](ENGINEERING_RULES.md);actual control routing:[enforcement map](docs/ENGINEERING_ENFORCEMENT.md). Status/evidence stay here and in source orders.
 Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog](docs/history/BACKLOG_2026-10-07.md). Historical NEXT statements are non-operative;source orders remain authoritative for acceptance details.
+
+## Current Next — QT-F02 Bounded Units DONE / CP03 Deferred 2026-10-15
+
+- Latest director request authorizes publishing the completed session work,excluding further
+  independent review. [Publication scope/evidence](docs/reviews/SESSION_2026-10-15.md).
+  Follow protected-main PR/check/ordinary-merge flow;no settings bypass. CP03 stays DEFERRED,
+  feedback NOT_RECEIVED. Parent QT-F02 and human UX/broader gameplay/release remain unfinished.
+
+- Director explicitly defers CP03 because Claude quota is exhausted and authorizes the next
+  bounded [Unity selection unit](docs/work_orders/QT-F02_UNITY_SELECTION.md). DONE/self+native:
+  courtyard17/default24/invalid3/corrupt1=45PASS,Windows release build/hook absence PASS,
+  standalone startup/save/shutdown smoke PASS on this host after Hub activation. Earlier
+  75focused/C#compile evidence reused;actual rendered screenshots inspected. Small-viewport
+  UI overlap remains under existing human-UX_NOT_ACCEPTED,not final layout/art acceptance.
+  CP03 DEFERRED/feedback NOT_RECEIVED,not DONE. This one-time exception covers presentation
+  startup/reconnect selection only;broader world/content imports and CP05/06 remain held.
+- New review packets must contain root START_REVIEW.md with a copyable opening prompt,
+  request-specific read order and report format. The packet builder qualifies this behavior
+  and rejects existing outputs;old delivered CP03/CP02/CP04 snapshots stay immutable.
+- [Current receipt](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md):75focusedPASS28.12s,
+  Ruff/format5/mypy108/imports3+1 PASS. [Fresh-session review request](docs/reviews/RS-REVIEW-CP03_RESUME_REQUEST.md)
+  includes original room and current Unity boundary/native evidence and limits;resume Claude
+  when available. No actual feedback/upload/publication or next-feature activation.
+
+- Director now authorizes proceeding under Sol's judgment. [First runtime unit](docs/work_orders/QT-F02_ROOM_BINDINGS.md)
+  defines and implements immutable3x3 room bindings through existing Brain/durability/Python
+  client/Tk paths. Legacy room and courtyard differ in all role IDs and placements;default
+  pins/goldens/save envelope retained. First unit DONE;parent IN_PROGRESS.
+- [Receipt](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md):38focusedPASS including real Tk,
+  worker,save/load/retry/recovery and fresh-process replay;Ruff/format15/mypy106/imports3+1 PASS.
+  Initial full1321PASS/6FAIL/3ERROR;1new subclass issue repaired and8baseline dossier-EOL
+  failures repaired by restoring the exact existing qualification hash,without field/hash edits.
+  Entire affected84case selection PASS;fresh full1330PASS362.34s,one clean complete run.
+- [Original CP03 packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md) remains PREPARED/historical;
+  resume independent review with refreshed current inputs when usage is available.
+  Larger geometry,multiple targets,quests and bulk imports remain later scopes.
+  Historical CP04 acceptance/frozen archives and pre-update stash preserved;no publication.
+  Actual workspace C:/Reverie Saga;20local pins qualified,not the other host's native readiness.
 
 ## Workstation Prerequisites — Director Request 2026-10-12
 
@@ -41,8 +79,8 @@ Complete pre-QT-F03 logs/IDs/prerequisites/commands/failures:[historical backlog
   six existing narrative selections:[terms/decisions](docs/work_orders/QT-F04_GENERATION_TERMS.md).
   ChatGPT free web/Gemini paid web,approximately late August/early September2026,declared by director;
   official consumer terms and selected text checked. Broader corpus/assets remain unqualified.
-- After the first-priority engine prototype:author the bounded QT-F02 scenario/content-
-  generalization order;implementation remains DEFERRED until separately authorized.
+- After the first-priority engine prototype:bounded QT-F02 scenario/content-generalization
+  order authored2026-10-15;first bounded runtime unit DONE,CP03 review packet prepared.
   CP02 is already DONE;QT-F06 now imports the qualified6descriptive samples only.
 - Director explicitly requires later RS-V1-MIGRATION to screen and reuse suitable narrative
   material across the Quilltale template pool,beyond the initial6samples. Include settlement/
@@ -100,7 +138,7 @@ Scheduling was authorized2026-10-07;recording alone executed no review. CP01's s
 |---|---|---|---|
 | RS-REVIEW-CP01 | DONE | After QUALITY-05 + CLIENT-002;before next gameplay/core/client expansion | [Feedback/dispositions](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md) RECEIVED/[repair accepted](docs/work_orders/RS-REVIEW-CP01_REPAIR.md):F1/F2 SQLite/Future failures and F3 clone-count repaired;10FAIL→10PASS,focused87PASS/replays45PASS/full1252PASS313.32s,native lint/format/types/imports/docs/scope PASS. F4 nonblocking risks routed with rationale to RS-STRUCT-001;patch self-review/native acceptance,not external patch rereview. Original packet historical;CP02/rights/graphics/GOV-03 unchanged |
 | RS-REVIEW-CP02 | DONE | Actual full-input document-consistency feedback2026-10-12;closure before reuse,rights independently held | [Full feedback/verified dispositions](docs/reviews/RS-REVIEW-CP02_FULL_DISPOSITIONS_2026-10-12.md)/[repair acceptance](docs/work_orders/RS-REVIEW-CP02_FULL_REPAIR.md)/[final witness](docs/reviews/RS-REVIEW-CP02_INPUTS.json):D-1/W1/G1-G3 repaired,self-accepted;4local original-byte transforms verified. Claude did not fetch upstream/run originals/runtime;patch external rereview NOT_RECEIVED. QT-F04 six-candidate qualification subsequently accepted;QT-F06 later imports6descriptions,no blanket corpus clearance |
-| RS-REVIEW-CP03 | DEFERRED | After QT-F02 content generalization + first small playable content segment,when authorized;before more engines/bulk content | Multiple independent scenarios,no fixed-target leakage,live consumers/quest consequences/bounds,integrated save-load/replay;hold scenario/world expansion until valid findings repaired |
+| RS-REVIEW-CP03 | DEFERRED / quota exhausted | Director2026-10-15 explicitly permits bounded Unity selection continuation only;resume before broader expansion | [Original packet](docs/reviews/RS-REVIEW-CP03_REQUEST.md) preserved;feedback NOT_RECEIVED. New-session entry required;refresh current inputs for review. No CP05/06 or bulk/rights waiver |
 | RS-REVIEW-CP04 | DONE / feedback +bounded repair | First Unity room/6description import implemented and natively verified;before final engine commitment/bulk assets | [Packet](docs/reviews/RS-REVIEW-CP04_REQUEST.md); CORE ownership,coordinate/identity mapping,input/retry/resync,load/UI history,asset provenance/scale/pivot and measured render performance;not final art approval |
 | RS-REVIEW-CP05 | DEFERRED | At first major NPC memory/quest/save-contract change:before implementation for contracts,then after first integrated implementation | Determinism,causal events,memory bounds,persistence/migration/compatibility/failure cases;hold implementation until contract pass and larger integration until repair/retest pass. Track both review passes separately |
 | RS-REVIEW-CP06 | DEFERRED | After integrated feature/content freeze;before RS-RELEASE acceptance/public distribution | Native full regression/replays/crash/offline/device/build/license evidence and unresolved findings;hold release. Review is not release QA or permission to publish |
@@ -112,7 +150,7 @@ RS-REVIEW-QT-001 DONE for [Quilltale feedback storage/triage](docs/reviews/CLAUD
 | ID | State | Follow-up / entry and acceptance |
 |---|---|---|
 | QT-F01 | DONE / feedback and next order | [Playtest record](docs/reviews/QT-F01_PLAYTEST_2026-10-07.md):human feedback recorded;bounded RS-CLIENT-002 order authored and accepted. Original UX_NOT_ACCEPTED retained;graphics deferred by director,not final HD-2D or human acceptance of the updated panel |
-| QT-F02 | DEFERRED | Generalize fixed scenario targets/content only when needed;content contract plus multiple independent scenarios before reusable-content claims;no v1 engine/formula/schema port;then CP03 review/repair before further expansion |
+| QT-F02 | IN_PROGRESS / room and Unity units DONE | [Room bindings](docs/work_orders/QT-F02_ROOM_BINDINGS.md):38focused/full1330PASS. [Unity selection](docs/work_orders/QT-F02_UNITY_SELECTION.md):75focused/45native/Windows build/hook exclusion PASS;standalone startup/save/shutdown smoke PASS. Small-viewport UI/human UX and wider scope pending. CP03 deferred explicitly,feedback pending before broader expansion. [Parent scope](docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md) retained |
 | QT-F03 | DONE | [Document compaction acceptance](docs/work_orders/QT-F03_DOCUMENT_COMPACTION.md);complete linked snapshots recover exactly after presentation normalization,42task rows retained,UTF8/links/fragments/hash/scope checks PASS;no gameplay change |
 | QT-F04 | DONE / six-candidate qualification | [Investigation](docs/work_orders/QT-F04_PROVENANCE.md)/[generation and use acceptance](docs/work_orders/QT-F04_GENERATION_TERMS.md):director-declared ChatGPT free web/Gemini paid web,late Aug/early Sep2026;official consumer terms checked;6original/adapted selections individually screened and qualified for future narrative adaptation. Exact prompts/models/per-tool split unrecorded;no legal guarantee,whole-corpus/template/assets/license/import/release clearance |
 | QT-F06 | DONE / compiler +6sample +326ledger | [Actual import](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md):new narrative definitions/hash-pinned accepted compiler,15focused tests and live Unity display;326per-entry dispositions/source preserved. Bulk/runtime templates remain held |

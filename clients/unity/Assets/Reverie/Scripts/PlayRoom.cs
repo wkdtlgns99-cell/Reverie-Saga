@@ -22,7 +22,7 @@ namespace ReverieSaga
         Vector2 scroll;
         int selected;
         Font koreanFont;
-        string root, working;
+        string root, working, scenario;
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
@@ -41,8 +41,10 @@ namespace ReverieSaga
             Application.runInBackground=true;
             try {
                 root = Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",".."));
+                scenario=BrainConnection.SelectScenario(Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO"));
                 working = Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
-                if (String.IsNullOrEmpty(working)) working=Path.Combine(root,"tmp","unity-play","game.sqlite");
+                string folder=scenario==WireScenarios.Legacy?"unity-play":"unity-play-courtyard";
+                if (String.IsNullOrEmpty(working)) working=Path.Combine(root,"tmp",folder,"game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
             } catch(Exception e) { Fail(e); }
@@ -154,7 +156,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working);
+                brain=new BrainConnection(root,working,scenario);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
@@ -162,6 +164,7 @@ namespace ReverieSaga
 
         public void Reconnect() { Connect(); }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public bool HasBrainForVerification { get { return brain!=null; } }
         public int BrainProcessId { get { return brain.ProcessId; } }
         public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
         public void ApplyForVerification(WireView view) {Apply(view);}

@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from domain.scenario import LEGACY_SCENARIO, Scenario
+
 from contracts.encounter import (
     AttackResolved,
     Defeated,
@@ -20,12 +22,9 @@ from contracts.watch import (
     WatchRequested,
     WatchWake,
 )
-from domain.encounter import ENEMY_ID, GATE_ID
 from domain.primitives import EntityId
-from domain.trial import ACTOR_ID
-from domain.watch import NPC_ID, WAIT_MAX
+from domain.watch import WAIT_MAX
 
-NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문"}
 STATUS_TEXT = {
     "ATTACHED": "게임에 연결했습니다. 행동 결과는 아래 기록창에 표시됩니다.",
     "CONNECTING": "게임에 연결하는 중입니다.",
@@ -86,12 +85,18 @@ def status_text(code: str) -> str:
     return f"{message} ({code})"
 
 
-def _name(entity: EntityId) -> str:
-    return NAMES.get(entity, str(entity))
+def _name(entity: EntityId, scenario: Scenario = LEGACY_SCENARIO) -> str:
+    names = {
+        scenario.actor_id: "플레이어",
+        scenario.enemy_id: "적",
+        scenario.npc_id: "NPC",
+        scenario.gate_id: "문",
+    }
+    return names.get(entity, str(entity))
 
 
-def _attack_text(payload: AttackResolved) -> tuple[str, ...]:
-    actor, target = _name(payload.actor_id), _name(payload.target_id)
+def _attack_text(payload: AttackResolved, scenario: Scenario = LEGACY_SCENARIO) -> tuple[str, ...]:
+    actor, target = _name(payload.actor_id, scenario), _name(payload.target_id, scenario)
     damage = payload.target_hp_before - payload.target_hp_after
     lines = [
         f"{actor} → {target}: 공격, 피해 {damage} "
@@ -107,13 +112,16 @@ def _attack_text(payload: AttackResolved) -> tuple[str, ...]:
     return tuple(lines)
 
 
-def fact_messages(payload: FactPayload) -> tuple[str, ...]:
+def fact_messages(payload: FactPayload, scenario: Scenario = LEGACY_SCENARIO) -> tuple[str, ...]:
+    def name(entity: EntityId) -> str:
+        return _name(entity, scenario)
+
     match payload:
         case AttackResolved():
-            return _attack_text(payload)
+            return _attack_text(payload, scenario)
         case EncounterMoved():
             return (
-                f"{_name(payload.actor_id)}가 {payload.from_cell}번 칸에서 "
+                f"{name(payload.actor_id)}가 {payload.from_cell}번 칸에서 "
                 f"{payload.to_cell}번 칸으로 이동했습니다.",
             )
         case EncounterMoveBlocked():
@@ -121,28 +129,28 @@ def fact_messages(payload: FactPayload) -> tuple[str, ...]:
         case GateChanged():
             state = "열려" if payload.after_open else "닫혀"
             if payload.before_open == payload.after_open:
-                return (f"{_name(payload.target_id)}은 이미 {state} 있습니다. 시간을 보냈습니다.",)
+                return (f"{name(payload.target_id)}은 이미 {state} 있습니다. 시간을 보냈습니다.",)
             verb = "열었습니다" if payload.after_open else "닫았습니다"
-            return (f"{_name(payload.actor_id)}가 {_name(payload.target_id)}을 {verb}.",)
+            return (f"{name(payload.actor_id)}가 {name(payload.target_id)}을 {verb}.",)
         case Rested():
             if payload.before_stamina == payload.after_stamina:
-                return (f"{_name(payload.actor_id)}가 휴식했지만 스태미나는 변하지 않았습니다.",)
+                return (f"{name(payload.actor_id)}가 휴식했지만 스태미나는 변하지 않았습니다.",)
             return (
-                f"{_name(payload.actor_id)}가 휴식했습니다. "
+                f"{name(payload.actor_id)}가 휴식했습니다. "
                 f"스태미나 {payload.before_stamina} → {payload.after_stamina}.",
             )
         case Defeated():
             return (
-                f"{_name(payload.entity_id)}이 쓰러졌습니다. "
-                f"처치한 대상: {_name(payload.killer_id)}.",
+                f"{name(payload.entity_id)}이 쓰러졌습니다. "
+                f"처치한 대상: {name(payload.killer_id)}.",
             )
         case NpcActed():
-            return (f"{_name(payload.npc_id)}가 종을 울렸습니다. (누적 {payload.after_bells}회)",)
+            return (f"{name(payload.npc_id)}가 종을 울렸습니다. (누적 {payload.after_bells}회)",)
         case BellRung():
-            return (f"{_name(payload.actor_id)}가 {_name(payload.npc_id)}를 호출했습니다.",)
+            return (f"{name(payload.actor_id)}가 {name(payload.npc_id)}를 호출했습니다.",)
         case WatchReplied():
             return (
-                f"{_name(payload.npc_id)}가 호출에 응답했습니다. (누적 {payload.after_count}회)",
+                f"{name(payload.npc_id)}가 호출에 응답했습니다. (누적 {payload.after_count}회)",
             )
         case WatchWake() | WatchRequested() | WatchEcho():
             return ()  # Internal scheduling is not an additional spoken line or player action.
@@ -154,6 +162,7 @@ def turn_messages(
     publication: TurnPublication,
     *,
     wait_seconds: int | None = None,
+    scenario: Scenario = LEGACY_SCENARIO,
 ) -> tuple[str, ...]:
     outcome = publication.outcome
     diagnostics = tuple(status_text(d.code) for d in publication.diagnostics)
@@ -168,5 +177,7 @@ def turn_messages(
     messages: tuple[str, ...] = (
         () if wait_seconds is None else (f"플레이어가 {wait_seconds}초 동안 기다렸습니다.",)
     )
-    messages += tuple(line for event in publication.facts for line in fact_messages(event.payload))
+    messages += tuple(
+        line for event in publication.facts for line in fact_messages(event.payload, scenario)
+    )
     return (*messages, *diagnostics) or (status_text("COMMITTED"),)

@@ -1,10 +1,13 @@
 from __future__ import annotations
 
+from dataclasses import asdict
+from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
+
 from contracts.messages import EventPolicy
 from contracts.read_views import AdapterBinding
 from contracts.skeleton import FeatureBundle, PresenterBinding
 from contracts.turn import EngineBinding, NodeActivation, NodeKey
-from domain.canonical import decode_json, object_value
+from domain.canonical import JsonObject, array_value, decode_json, object_value, seal, text_value
 from domain.primitives import FieldFamily, FieldSpec, Phase, TypeKey
 from engines.encounter import EncounterActions, EncounterMovement
 from orchestration.encounter import (
@@ -19,8 +22,9 @@ from orchestration.trial import (
 )
 
 
-def encounter_bundle() -> FeatureBundle:
-    actions, movement = EncounterActions(), EncounterMovement()
+def encounter_bundle(scenario: Scenario = LEGACY_SCENARIO) -> FeatureBundle:
+    require_scenario(scenario)
+    actions, movement = EncounterActions(scenario), EncounterMovement(scenario)
     action_kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack", "interact", "rest"))
     bindings = (
         EngineBinding(actions, "engines.encounter", (NodeActivation(NodeKey(Phase.RESOLVE, "encounter.actions"), action_kinds, False, False, "A"),)),
@@ -35,7 +39,7 @@ def encounter_bundle() -> FeatureBundle:
         FieldSpec(FieldFamily("trial.position", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
         FieldSpec(FieldFamily("trial.position", "cell"), "CORE", "A", "trial.movement", consumers, "integer", "cell", 1, 0, 8, None),
         FieldSpec(FieldFamily("encounter.gate", "space_id"), "CORE", "A", "system.bootstrap", consumers, "string", "entity_id", 1, None, None, None),
-        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, 4, 4, None),
+        FieldSpec(FieldFamily("encounter.gate", "cell"), "CORE", "A", "system.bootstrap", consumers, "integer", "cell", 1, scenario.gate_cell, scenario.gate_cell, None),
         FieldSpec(FieldFamily("encounter.gate", "is_open"), "CORE", "A", "encounter.actions", consumers, "integer", "boolean_integer", 1, 0, 1, None),
         FieldSpec(FieldFamily("encounter.hp", "hp"), "CORE", "A", "encounter.actions", consumers, "integer", "hp", 1, 0, 5, None),
         FieldSpec(FieldFamily("encounter.stamina", "value"), "CORE", "A", "encounter.actions", ("encounter.actions", "encounter.presenter", "system.admission"), "integer", "stamina", 1, 0, 2, None),
@@ -43,20 +47,50 @@ def encounter_bundle() -> FeatureBundle:
     kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack-resolved", "defeated", "gate-changed", "move-blocked", "moved", "rested"))
     return FeatureBundle(
         "encounter.local", bindings,
-        (AdapterBinding(GateAdapter()), AdapterBinding(HitPointsAdapter()), AdapterBinding(StaminaAdapter()), AdapterBinding(TrialMapAdapter()), AdapterBinding(CellPositionAdapter())),
+        (AdapterBinding(GateAdapter(scenario)), AdapterBinding(HitPointsAdapter()), AdapterBinding(StaminaAdapter()), AdapterBinding(TrialMapAdapter(scenario.blocked_cells)), AdapterBinding(CellPositionAdapter())),
         specs,
         tuple(EventPolicy(k, "record_only", Phase.PRESENT, 0, "reject", ("trial.movement" if k.kind in ("encounter.move-blocked", "encounter.moved") else "encounter.actions",), (), ()) for k in kinds),
-        tuple(EncounterAdmission(k) for k in (*action_kinds, TypeKey("trial.move", 1))),
-        (EncounterCellReducer(), GateReducer(), HitPointsReducer(), StaminaReducer()),
-        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter()),),
-        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1)) for k in (
+        tuple(EncounterAdmission(k, scenario) for k in (*action_kinds, TypeKey("trial.move", 1))),
+        (EncounterCellReducer(scenario), GateReducer(scenario), HitPointsReducer(scenario), StaminaReducer(scenario)),
+        (PresenterBinding("encounter.presenter", kinds, EncounterPresenter(scenario)),),
+        tuple(EncounterPayloadCodec(TypeKey("encounter." + k, 1), scenario) for k in (
             "attack", "attack-cue", "attack-resolved", "defeat-cue", "defeated", "gate-changed", "gate-cue", "gate-delta", "gate-patch", "hp-delta", "hp-patch", "interact", "move-blocked", "move-cue", "moved", "rest", "rest-cue", "rested", "stamina-delta", "stamina-patch",
         )) + tuple(TrialPayloadCodec(TypeKey("trial." + k, 1)) for k in ("move", "position-delta", "position-patch")),
-        object_value(decode_json(SCHEMA_DOCUMENT)), object_value(decode_json(RULES_DOCUMENT)),
-        (GateCodec(), HitPointsCodec(), StaminaCodec(), TrialMapCodec(), CellPositionCodec()),
-        (GatePatchRoute(), HitPointsPatchRoute(), StaminaPatchRoute(), CellPatchRoute()),
-        EncounterCheckpointPolicy(),
+        scenario_schema(object_value(decode_json(SCHEMA_DOCUMENT)), scenario), encounter_rules(object_value(decode_json(RULES_DOCUMENT)), scenario),
+        (GateCodec(scenario), HitPointsCodec(), StaminaCodec(), TrialMapCodec(scenario.blocked_cells), CellPositionCodec()),
+        (GatePatchRoute(scenario), HitPointsPatchRoute(scenario), StaminaPatchRoute(scenario), CellPatchRoute()),
+        EncounterCheckpointPolicy(scenario),
     )
+
+
+
+def scenario_schema(document: JsonObject, scenario: Scenario) -> JsonObject:
+    if scenario == LEGACY_SCENARIO:
+        return document
+    components = []
+    for value in array_value(document["components"]):
+        component = object_value(value)
+        kind = text_value(object_value(component["schema"])["kind"])
+        cell = {"encounter.gate": scenario.gate_cell, "watch.npc": scenario.npc_cell}.get(kind)
+        if cell is not None:
+            fields = object_value(component["fields"])
+            component = object_value(seal({**component, "fields": {
+                **fields, "cell": {**object_value(fields["cell"]), "minimum": cell, "maximum": cell},
+            }}))
+        components.append(component)
+    return object_value(seal({**document, "components": tuple(components)}))
+
+
+def encounter_rules(document: JsonObject, scenario: Scenario) -> JsonObject:
+    if scenario == LEGACY_SCENARIO:
+        return document
+    return object_value(seal({**document,
+        "actor_id": scenario.actor_id, "space_id": scenario.space_id,
+        "gate_id": scenario.gate_id, "enemy_id": scenario.enemy_id,
+        "gate_cell": scenario.gate_cell, "enemy_cell": scenario.enemy_cell,
+        "initial_cell": scenario.initial_cell, "blocked_cells": scenario.blocked_cells,
+        "scenario": {"version": 1, **asdict(scenario)},
+    }))
 
 
 # Literal descriptors fixed independently before implementation in CORE-03.

@@ -59,4 +59,8 @@ public sealed class WireRequest {
     public string slot_id;
 }
 public static class WireSchema { public const string Hash = "451e90cb59cebdf90a38023caa051da695e94bf21a2299960b58eb92b015ff2e"; }
+public static class WireScenarios {
+    public const string Legacy = "scenario:legacy";
+    public const string Courtyard = "scenario:courtyard";
+}
 }
