@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from domain.scenario import LEGACY_SCENARIO, Scenario
+from domain.scenario import ScenarioBound
 
 from contracts.watch import (WATCH_NPC, LANTERN, REPLY, BellCommand, WatchWake, WatchRequested, WatchEcho, NpcActed, BellRung, WatchReplied, ChargeDelta, BellsDelta, ReplyDelta)
 from contracts.encounter import HIT_POINTS
@@ -24,12 +24,7 @@ def _context(invocation: EngineInvocation, phase: Phase) -> None:
             raise CandidateError("INVALID_FACT", "watch input timing/schema")
 
 
-class WatchNpc:
-    _scenario: Scenario = LEGACY_SCENARIO
-
-    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        self._scenario = scenario
-
+class WatchNpc(ScenarioBound):
     @property
     def manifest(self) -> CapabilityManifest:
         return _manifest("watch.npc", Phase.PRE_TICK, ("watch.npc.bells", "watch.npc.cell", "watch.npc.space_id"), ("watch.npc.bells",), ("npc-acted", "wake"), ("wake",))
@@ -39,26 +34,21 @@ class WatchNpc:
         if invocation.action is not None or len(invocation.incoming) != 1 or invocation.logical_tick % 2:
             raise CandidateError("INVALID_FACT", "watch wake scope")
         wake = invocation.incoming[0]
-        if type(wake.payload) is not WatchWake or wake.payload.npc_id != self._scenario.npc_id:
+        if type(wake.payload) is not WatchWake or wake.payload.npc_id != self._layout.npc_id:
             raise CandidateError("INVALID_FACT", "watch wake subject")
-        npc = invocation.state.component(WATCH_NPC, self._scenario.npc_id)
+        npc = invocation.state.component(WATCH_NPC, self._layout.npc_id)
         old, cell, space = npc.bells, npc.cell, npc.space_id
-        if cell != self._scenario.npc_cell or space != self._scenario.space_id or old != invocation.logical_tick // 2 - 1:
+        if cell != self._layout.npc_cell or space != self._layout.space_id or old != invocation.logical_tick // 2 - 1:
             raise CandidateError("INVALID_FACT", "watch station/count")
         try:
             new, due = increment_count(old), next_wake(invocation.logical_tick)
         except ValueError as error:
             raise CandidateError("INTEGER_OVERFLOW", "watch recurrence") from error
         cause = (wake.header.event_id,)
-        return EngineResult((BellsDelta(self._scenario.npc_id, old, new),), (EmittedFact(NpcActed(self._scenario.npc_id, old, new), invocation.logical_tick, cause), EmittedFact(WatchWake(self._scenario.npc_id), due, cause)), ())
+        return EngineResult((BellsDelta(self._layout.npc_id, old, new),), (EmittedFact(NpcActed(self._layout.npc_id, old, new), invocation.logical_tick, cause), EmittedFact(WatchWake(self._layout.npc_id), due, cause)), ())
 
 
-class WatchBell:
-    _scenario: Scenario = LEGACY_SCENARIO
-
-    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        self._scenario = scenario
-
+class WatchBell(ScenarioBound):
     @property
     def manifest(self) -> CapabilityManifest:
         return _manifest("watch.bell", Phase.RESOLVE, ("encounter.hp.hp", "trial.position.space_id", "watch.npc.cell", "watch.npc.space_id"), (), ("bell-rung", "requested"), ())
@@ -66,20 +56,15 @@ class WatchBell:
     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
         _context(invocation, Phase.RESOLVE)
         action = invocation.action
-        if action is None or action.actor_id != self._scenario.actor_id or type(action.payload) is not BellCommand or action.payload.npc_id != self._scenario.npc_id or invocation.incoming:
+        if action is None or action.actor_id != self._layout.actor_id or type(action.payload) is not BellCommand or action.payload.npc_id != self._layout.npc_id or invocation.incoming:
             raise CandidateError("INVALID_ACTION", "watch bell action")
-        npc = invocation.state.component(WATCH_NPC, self._scenario.npc_id)
-        if invocation.state.component(HIT_POINTS, self._scenario.actor_id).hp == 0 or npc.cell != self._scenario.npc_cell or npc.space_id != self._scenario.space_id or invocation.state.component(CELL_POSITION, self._scenario.actor_id).space_id != self._scenario.space_id:
+        npc = invocation.state.component(WATCH_NPC, self._layout.npc_id)
+        if invocation.state.component(HIT_POINTS, self._layout.actor_id).hp == 0 or npc.cell != self._layout.npc_cell or npc.space_id != self._layout.space_id or invocation.state.component(CELL_POSITION, self._layout.actor_id).space_id != self._layout.space_id:
             raise CandidateError("INVALID_ACTION", "watch bell references")
-        return EngineResult((), (EmittedFact(WatchRequested(self._scenario.actor_id, self._scenario.npc_id), invocation.logical_tick, ()), EmittedFact(BellRung(self._scenario.actor_id, self._scenario.npc_id), invocation.logical_tick, ())), ())
+        return EngineResult((), (EmittedFact(WatchRequested(self._layout.actor_id, self._layout.npc_id), invocation.logical_tick, ()), EmittedFact(BellRung(self._layout.actor_id, self._layout.npc_id), invocation.logical_tick, ())), ())
 
 
-class WatchRespond:
-    _scenario: Scenario = LEGACY_SCENARIO
-
-    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        self._scenario = scenario
-
+class WatchRespond(ScenarioBound):
     @property
     def manifest(self) -> CapabilityManifest:
         return _manifest("watch.respond", Phase.REACT, (), (), ("echo",), ("requested",))
@@ -90,18 +75,13 @@ class WatchRespond:
         if invocation.action is not None:
             raise CandidateError("INVALID_ACTION", "watch response action")
         for event in invocation.incoming:
-            if type(event.payload) is not WatchRequested or event.payload.npc_id != self._scenario.npc_id or event.payload.actor_id != self._scenario.actor_id:
+            if type(event.payload) is not WatchRequested or event.payload.npc_id != self._layout.npc_id or event.payload.actor_id != self._layout.actor_id:
                 raise CandidateError("INVALID_FACT", "watch request subject")
-            facts.append(EmittedFact(WatchEcho(self._scenario.npc_id, ECHO_DEPTH), invocation.logical_tick, (event.header.event_id,)))
+            facts.append(EmittedFact(WatchEcho(self._layout.npc_id, ECHO_DEPTH), invocation.logical_tick, (event.header.event_id,)))
         return EngineResult((), tuple(facts), ())
 
 
-class WatchEchoEngine:
-    _scenario: Scenario = LEGACY_SCENARIO
-
-    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        self._scenario = scenario
-
+class WatchEchoEngine(ScenarioBound):
     @property
     def manifest(self) -> CapabilityManifest:
         return _manifest("watch.echo", Phase.CASCADE, ("watch.reply.count",), ("watch.reply.count",), ("echo", "replied"), ("echo",))
@@ -110,40 +90,35 @@ class WatchEchoEngine:
         _context(invocation, Phase.CASCADE)
         if invocation.action is not None:
             raise CandidateError("INVALID_ACTION", "watch echo action")
-        old = invocation.state.component(REPLY, self._scenario.npc_id).count
+        old = invocation.state.component(REPLY, self._layout.npc_id).count
         count = old
         facts: list[EmittedFact] = []
         for event in invocation.incoming:
             payload = event.payload
-            if type(payload) is not WatchEcho or payload.npc_id != self._scenario.npc_id:
+            if type(payload) is not WatchEcho or payload.npc_id != self._layout.npc_id:
                 raise CandidateError("INVALID_FACT", "watch echo subject")
             require_integer(payload.remaining, 0, 7)
             if payload.remaining:
-                facts.append(EmittedFact(WatchEcho(self._scenario.npc_id, payload.remaining - 1), invocation.logical_tick, (event.header.event_id,)))
+                facts.append(EmittedFact(WatchEcho(self._layout.npc_id, payload.remaining - 1), invocation.logical_tick, (event.header.event_id,)))
             else:
                 try:
                     new = increment_count(count)
                 except ValueError as error:
                     raise CandidateError("INTEGER_OVERFLOW", "watch replies") from error
-                facts.append(EmittedFact(WatchReplied(self._scenario.npc_id, count, new), invocation.logical_tick, (event.header.event_id,)))
+                facts.append(EmittedFact(WatchReplied(self._layout.npc_id, count, new), invocation.logical_tick, (event.header.event_id,)))
                 count = new
-        deltas: tuple[StateDelta, ...] = (ReplyDelta(self._scenario.npc_id, old, count),) if old != count else ()
+        deltas: tuple[StateDelta, ...] = (ReplyDelta(self._layout.npc_id, old, count),) if old != count else ()
         return EngineResult(deltas, tuple(facts), ())
 
 
-class WatchPassive:
-    _scenario: Scenario = LEGACY_SCENARIO
-
-    def __init__(self, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        self._scenario = scenario
-
+class WatchPassive(ScenarioBound):
     @property
     def manifest(self) -> CapabilityManifest:
         return _manifest("watch.passive", Phase.POST_TICK, ("watch.lantern.charge",), ("watch.lantern.charge",), (), ())
 
     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
         _context(invocation, Phase.POST_TICK)
-        old = invocation.state.component(LANTERN, self._scenario.lantern_id).charge
+        old = invocation.state.component(LANTERN, self._layout.lantern_id).charge
         new = recover_charge(old)
-        deltas: tuple[StateDelta, ...] = (ChargeDelta(self._scenario.lantern_id, old, new),) if old != new else ()
+        deltas: tuple[StateDelta, ...] = (ChargeDelta(self._layout.lantern_id, old, new),) if old != new else ()
         return EngineResult(deltas, (), ())

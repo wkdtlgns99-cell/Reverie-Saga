@@ -15,6 +15,9 @@ select = ["E4", "E7", "E9", "F", "E722", "S110", "S112", "BLE001", "TID251", "PL
 "tests/unit/*.py" = ["TID251"]
 "tests/integration/*.py" = ["TID251"]
 "tests/replay/*.py" = ["TID251"]
+"src/adapters/gemini_dialogue.py" = ["TID251"]
+"src/adapters/gemini_transport.py" = ["TID251"]
+"src/adapters/generation_budget.py" = ["TID251"]
 
 [tool.ruff.lint.flake8-tidy-imports.banned-api]
 "random".msg = "Use scoped deterministic RNG in core/engines."
@@ -58,7 +61,7 @@ layers = ["app", "adapters", "orchestration", "engines", "contracts", "domain"]
 id = "rs-engines-independent"
 name = "Reverie Saga concrete engine modules are independent"
 type = "independence"
-modules = ["engines.skeleton", "engines.trial", "engines.encounter", "engines.watch"]
+modules = ["engines.skeleton", "engines.trial", "engines.encounter", "engines.watch", "engines.quest", "engines.npc_memory"]
 
 [[tool.importlinter.contracts]]
 id = "rs-core-no-external-effects"

@@ -1,0 +1,121 @@
+Status: I've finished the Unity runtime scripts and build editor script, and I'm now reading `LiveVerification.cs`, the Unity native-verification harness, before moving on to the Python engines.Status: the engines, domain layer, turn driver, RNG, scheduler and event bus are read. I'm now starting the historical-repair verification (CP03, CP05) and the cleanup evidence (blocks D and E).Status: I've verified the CP03 and CP05 repair mappings, and I'm now parsing the cleanup manifest to check its counts against the receipt.Status: I've read the approval-to-catalog compile path and I'm doing one last check on how `decision` and `approved_by` are enforced. Then I'll write up the ledger and findings.## Review status: PARTIAL
+
+This is still not a whole-review verdict. Block A is about half read, B and C are partly read, and D and E are covered only through the disposition and receipt documents. The zip has no `.git`, so I could not verify the pinned SHA, and I did not fetch GitHub or CI. Everything below comes from your zip.
+
+## Corrections to my previous report
+
+**Saved-clone finding: not a defect, reclassified as intentional.** The 8-clone cap is specified in CORE-05 §7 and recorded as CP01-F3, and `test_missing_and_clone_limit` asserts it. My reproduction (8 sessions, then `SAVE_LIMIT`) shows the contract working as written.
+- **Why automatic deletion is unsafe:** the contract keeps the active clone on close, and later `--working` resume uses that returned path, so a clone can hold real progress.
+- **Ownership:** a file may be deleted only if this same live session created it. Ownership is never inferred from a filename, and startup must not delete unknown leftovers. Cleanup is explicitly "later work".
+- **What remains is a product gap:** the player text is a generic "size or managed file count limit reached". A safe repair is an explicit, user-invoked clone listing with tick and revision that never touches the active path, plus an error message naming the directory and count.
+
+**Other retractions:**
+- The non-blocking budget lock and the coarse HTTP codes are intentional (CP05 integration P3).
+- Export failure after the file replace is `SAVE_EXPORT_UNCERTAIN` by contract (CORE-05 §5).
+- `inspect()` is fine as written, because `_read_file` already wraps everything into `SAVE_CORRUPT`.
+
+## Findings
+
+**R1: Low, confirmed (reproduced at `fetch` level).** `gemini_transport.fetch` catches `URLError`, `TimeoutError` and `OSError`, but not `http.client.HTTPException`.
+- **Trigger:** a local server returning a malformed status line raised `BadStatusLine`, and a truncated chunked body raised `IncompleteRead`. Both escaped `fetch` and `main`.
+- **Effect:** the child process dies, and the parent maps the non-zero exit to `GENERATION_OUTPUT`. A transient network fault is therefore never retried. The key does not leak, because stderr is discarded.
+- **Repair:** catch `http.client.HTTPException` in `fetch` and raise `GENERATION_TRANSIENT`.
+
+**Maintenance and hypotheses, not confirmed defects:**
+
+| ID | Observation |
+|---|---|
+| M1 | `_validate_scenario_binding` only checks consumers that implement `scenario_layout`. Unlike the quest path, it has no required-role list, so a scenario-aware engine that forgets the property is silently unchecked. This is the generic-versus-required-consumer distinction the request asks about. |
+| M2 | `ClientWorker._error_update` puts raw `str(error)` into `notices`, which crosses the wire. Unity doesn't display it. |
+| M3 | `assert` statements in `turn.py` production paths (`_persist_durable`, `_present`) vanish under `python -O`. |
+| M4 | Quest admission hard-codes `cell % 3`. This is consistent with the 3×3 prototype cap, but I did not verify whether `Scenario` carries a width. |
+| M5 | The release-hook check only looks for the `LiveVerification` type, not the `#if`-guarded `*ForVerification` members. `BuildOptions.None` compiles them out. |
+| M6 | `VerifyCorrupt` writes the corrupt file right after setting `isPlaying`, so ordering depends on play-mode entry being deferred. |
+| M7 | Error replies (`STALE_*`) don't refresh the Unity display until the next action. The 10 s first-response timeout includes Python cold start (known as F5). `performance.json` is recorded with no threshold. |
+| M8 | The review request still pins `2f591f7` and the F17 wire hash `1885…`. The current Python wire hash `a342a2f3…` equals the C# constant, and `generate_wire()` output is byte-identical to `Wire.Generated.cs`. This is documentation staleness, which the handoff already admits. |
+
+**No defects found in** the turn driver, RNG, scheduler, event bus, quest engine, quest reducer/admission/checkpoint, NPC memory engine, domain layer, or the Unity bridge and `PlayRoom`. I specifically verified these properties by reading:
+- Publication happens only after durable commit.
+- Failure to present after commit cannot roll back.
+- An unresolved save blocks new turns.
+- Retrying a command returns the retained receipt rather than re-running it.
+- The quest reward is granted exactly once, by monotonic single-step stages. The accepted net transition 0→2 is in `NET_STEPS`.
+- The SQLite journal mode is DELETE, so the Unity harness's file-hash "read-only" checks are valid, and its slot path matches the production slot root.
+
+## Historical repairs (block D, partial)
+
+I read the dispositions and the current code. I did not read the raw feedback text files, so this is not the full independent mapping the request asks for.
+
+| Finding | Current symbol | Status |
+|---|---|---|
+| CP03 F1 | `serialization._validate_scenario_binding` (`INVALID_SCENARIO_BINDING`) | Matches; residual M1 |
+| CP03 F2 | `app/watch.py` (`SCENARIO_INITIAL_CELL`) | Matches |
+| CP03 F3 | wait actor name in `client_session` | Not read |
+| CP03 F4 | `engines/encounter.py` (`SCENARIO_TYPE`) | Matches |
+| CP03 F5 | Intentional display fallback | Not read |
+| CP05 H2 / P2-1 | `_validate_quest_binding` (required roles, declaration/presence agreement) | Verified |
+| CP05 M1–M3 | `QuestReducer` single-step/compose/net checks, `QuestAdmission` order | Verified |
+| CP05 M6 | `thinkingLevel: MINIMAL` | Verified |
+| CP05 M7 | no proxy, no redirect, killable child, 60 s deadline | Verified, with residual R1 |
+| CP05 P2-2 | stale `budget.pending` removal under the lock | Verified |
+
+The other CP05 items (H1, M4, M5, L1–L4 and the remaining P3 rows) I did not verify individually. All 56 `test_cp03_repairs.py` cases pass here, but I did not read their bodies.
+
+## Cleanup evidence (block E)
+
+The manifest is internally consistent. I parsed the manifest's 122 decisions against the receipt:
+- 105 removed targets total 41,748 files and 5,033,172,862 bytes, exactly as the receipt states, and 17 failed with access-denied errors.
+- The removals break down as 93 pytest-output directories plus 12 others: the CP04 tree, the installer, the pid file, the empty key placeholder and 8 scripts.
+- Smaller checks agree: the key file is 0 bytes, the CP04 tree has 2,331 files (280 + 2,051), and the installer is 4.2 GB.
+
+I cannot verify the filesystem, the claims that the retained ZIPs equal what was removed, or the 107-file `.pytest_cache/cp01-review-20261008` removal, which has no recoverability proof in the manifest. I do not approve retiring any unique evidence. The retained categories need the original ZIPs, which are not supplied.
+
+## Block B (dialogue approval chain)
+
+On the approval-to-catalog path, the compile code requires `decision == "APPROVED"` and a non-empty `approved_by`, and binds the catalog hash to the raw output bytes. The shipped catalog's SHA-256 equals the `.sha256` pin. As documented, human identity is not machine-authenticated.
+
+## QT-F16/F17 verdict: PARTIAL
+
+The bridge, worker and Unity side are statically consistent with the contract:
+- Memory and slot inspection run after envelope, sequence and attachment checks.
+- Pre-attach inspection returns `NPC_MEMORY_UNAVAILABLE` without creating a session.
+- Unity's buttons are gated on mode, readiness, busy state and failure.
+
+`client.py`, `client_session.py`, `client_text.py`, the Tk code and both new inspection test modules are unread. So are privacy filtering and the older-load/new-worker resume paths.
+
+## Execution (exploratory, Linux Python 3.12.3, not the qualified target)
+
+| Check | Result |
+|---|---|
+| Ruff (both configs) | Pass |
+| Mypy | 4 Windows-only `CREATE_NO_WINDOW` diagnostics |
+| Import contracts | 3 + 1 kept, 0 broken |
+| Unit tests | 275 passed |
+| Adapter tests | 52 passed |
+| Replay tests | 58 passed |
+| Governance tests | 83 passed |
+| Save-slot tests | 29 passed |
+| CP03 repair tests | 56 passed |
+
+Tools were installed without `--require-hashes` (pytest unpinned). Not run: the 7 Tk modules (no `tkinter`) and the remaining integration tests. The full suite was killed after stalling in the sandbox.
+
+## Coverage ledger
+
+| Area | Read in full | Read in part | Unread remainder |
+|---|---|---|---|
+| Docs | README, AGENTS, SESSION_HANDOFF, review start-here, V3 request, CP03/CP05 dispositions, cleanup receipt and manifest | BACKLOG 1–80, CORE-05 §7 | Raw CP03/CP05 feedback `.txt`, `*_INPUTS.json`, work orders, other review records, history |
+| `src/adapters` | `gemini_transport`, `generation_budget`, `gemini_dialogue`, `save_slots` | `sqlite_store` (~L119–153, 261–320), `quest_dialogue` (grep) | Rest of `sqlite_store`, `narrative_catalog`, most of `quest_dialogue` |
+| `src/app` | `engine_bridge`, `client_worker`, `npc_dialogue_compile` | `durable` 105–160, `engine_project` (generator check) | `client`, `client_session`, `client_text`, all other `npc_*`, `quest_registry`, `scenarios`, `watch`, `feature_registry`, `headless` |
+| `src/engines` | quest, npc_memory, skeleton, trial, watch | — | `encounter.py` |
+| `src/domain` | primitives, quest, npc_memory, canonical | — | encounter, scenario, state_types, trial, watch |
+| `src/orchestration` | `turn`, `rng`, `scheduler`, `events` | `quest` 223–384, `serialization` 120–215 | persistence, replay, read_views, rest of serialization, skeleton, trial, watch, encounter, npc_memory |
+| `src/contracts` | — | `SaveError`, `GenerationError` | all other contracts |
+| Unity | `BrainConnection`, `PlayRoom`, `LiveVerification`, `Wire.Generated`, `CatalogPin`, `PlaytestBuild`, `manifest.json`, `ProjectVersion.txt` | — | Unity README, scene, `ProjectSettings`, `packages-lock.json` |
+| Tests | — | `test_save_slots` ~L140–160 and 268–295 | Assertion bodies of nearly all other test files (74 files); only the suites above were executed, not read |
+| Content | approval JSON and catalog hash | — | candidate, lineage, `narratives*.json` |
+
+## Blockers
+
+Nothing I found blocks source-review acceptance by itself. The unread remainder above blocks any whole-review claim.
+
+Next I would take `orchestration/persistence.py`, `replay.py`, `read_views.py` and the rest of `serialization.py`, then the client layer and the two new memory-inspection test modules.

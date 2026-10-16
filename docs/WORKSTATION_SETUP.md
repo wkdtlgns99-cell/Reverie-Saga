@@ -1,10 +1,94 @@
 # Workstation Setup — Laptop and Other PC
 
-Updated:2026-10-15. Installation/discovery SSOT for the two director-owned computers.
+Updated:2026-10-13. Installation/discovery SSOT for the two director-owned computers.
 Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification),
 [Unity run/build](../clients/unity/README.md). Source baseline:63670be2.
 
 ## Task Entry and Authorization
+
+Director2026-10-16:reuse the existing Unity editor for ordinary local tests and leave it open
+afterward;follow the [editor reuse workflow](../clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16).
+Use explicit process-exit mode only when qualification needs it;do not infer PASS from an open window.
+
+QT-F24current-host2026-10-16:[receipt](reviews/QT-F24_EXECUTION_2026-10-16.md). Reused Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824),pip PASS. Restricted license query unavailable;
+permitted public status active/signedIn=true,no settings change. Python515/native7modes519,
+Windows build/release-hook exclusion/static/imports and24source-preserving readbacks PASS.
+Actual1101x506wait presets/max-duration/retry/load/reconnect qualified;scene restored byte-exact.
+No installation/security change;other-device/standalone/human UX/MIN-SPEC/release remain open.
+
+QT-F23current-host2026-10-16:[receipt](reviews/QT-F23_EXECUTION_2026-10-16.md). Existing Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824) reused,pip PASS. Restricted licensing unavailable;
+permitted public status active/signedIn=true,no settings change. Seven native modes452PASS,
+Windows build/release-hook exclusion,46affected Python/static and24source-preserving readbacks PASS.
+Actual1101x506slot selector/save-load-preview/loaded-branch reconnect qualified;scene restored exactly.
+Other-device/standalone/human UX/release/MIN-SPEC remain open;no installation or policy change.
+
+QT-F21current-host2026-10-16:[receipt](reviews/QT-F21_EXECUTION_2026-10-16.md). Existing Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824) reused,pip check PASS. Restricted license status
+unavailable;permitted public CLI active/signedIn=true,no install/login/settings changes.
+Actual1101x506UI/native seven modes307PASS,Windows build/release-hook exclusion PASS;Python51/
+static/imports PASS. Scene restored after ID equivalence proof. Other-device/narrow viewport/
+standalone/release/human UX qualification remains open;this is current-host presentation evidence.
+
+QT-F20current-host2026-10-15:[receipt](reviews/QT-F20_EXECUTION_2026-10-15.md). Reused Python3.13.12/
+Tk8.6/SQLite3.50.4/editor6000.3.25f1(file6000.3.25.14801824);host CLI active/signedIn,settings
+unchanged. Restricted hardlink creation failed;actual host slot guard and full1741tests PASS.
+Native7cases273PASS,Windows build/release-hook exclusion PASS;screen and9source-preserving save
+readbacks verified. No install/upgrade;other-device/standalone/release qualification remains open.
+
+QT-F19current-host2026-10-15:[receipt](reviews/QT-F19_EXECUTION_2026-10-15.md). Reused same
+Python3.13.12 AMD64/Tk8.6/SQLite3.50.4/editor6000.3.25f1(file6000.3.25.14801824). Restricted
+license query failed;host CLI confirmed success/active/signedIn,no settings changes. Recent-memory
+Tk/Unity integration:161affected Python+2current Tk cases/static PASS;native7cases216PASS,
+Windows build/release-hook exclusion PASS;actual capture and6source-preserving memory readbacks.
+No installation/upgrade;other-device/standalone/release acceptance remains open.
+
+QT-F17current-host2026-10-15:[receipt](reviews/QT-F17_EXECUTION_2026-10-15.md). Reused actual
+Python3.13.12 AMD64/Tk8.6/SQLite3.50.4/editor6000.3.25f1(e1dba0a9aba4). Restricted license probe
+could not connect;permitted public CLI confirmed active Personal/signed-in without settings changes.
+Unity memory inspection:seven native cases159PASS/Windows build/release-hook absence PASS;actual
+capture and original/slot/loaded memory readback/API0/source hashes checked. Python144affected/
+static/imports PASS. Initial verification file-sharing fault repaired and requalified. No install/
+upgrade/security change;other-device/standalone/release acceptance remain open.
+
+Current-host closure2026-10-14:[ledger](reviews/OPEN_WORK_CLOSURE_2026-10-14.md). Existing pinned
+Python/editor reused;director-approved editorial dialogue and ordinary Unity memory route qualified:
+51affected/1664full Python and94native checks/Windows build/release-hook absence PASS. Original
+restricted licensing initialization failed;permitted current-host native runs succeeded without
+license/security settings changes. Actual original/slot/loaded NPC memories and offline preview
+checked. No-selector editor now uses approved harbor-memory preset;[Unity run](../clients/unity/README.md).
+This is current-host evidence only;other computer/account tier/release acceptance still open.
+
+QT-F07 director initially deferred live calls2026-10-13;on2026-10-14 supplied keys and authorized
+testing now/any time. [Actual qualification](reviews/QT-F07_LIVE_GEMINI_2026-10-14.md):1call/7diagnostic checks PASS. API adapter/CLI uses existing stdlib runtime,
+no SDK/dependency install. Director2026-10-14 requested a local .env with three blank Gemini key entries.
+Current ignored file:C:/ReverieSaga/.env;GEMINI_API_KEY primary,GEMINI_API_KEY_2/_3 manual spares.
+The obsolete empty tmp/gemini-api-key.txt placeholder was removed2026-10-15 during
+[local cleanup](reviews/LOCAL_FILE_CLEANUP_2026-10-15.md);use the existing local .env.
+The CLI reads only the primary process variable;no auto-load or key rotation was added.
+The director can enter the keys there later,then load the primary into GEMINI_API_KEY using the
+[README preparation command](../README.md#first-quest--prepared-gemini-dialogue).
+Never put key contents into tracked docs,source,chat,logs or review ZIPs. The file is local-only;
+the other device requires its own credential setup. Current complete Gemini request/STOP output/local validation PASS;actual project billing/remaining
+quota remain UNVERIFIED. This deferred API qualification does not
+block deterministic gameplay/replay using approved prepared content.
+
+QT-F07 current-host acceptance2026-10-13:[execution](reviews/QT-F07_EXECUTION_2026-10-13.md).
+Same installed tools reused;61native checks/Windows build/release-hook absence PASS;
+quest120frames median1.870699ms/p952.767404ms on this host. Offline test-only dialogue catalog.
+Live API/other-device/standalone acceptance remains deferred/unverified;no install or login change.
+
+QT-F02 current-host receipt2026-10-13:[execution](reviews/QT-F02_EXECUTION_2026-10-13.md).
+Reused Python3.13.12 AMD64/Tk8.6 and editor6000.3.25f1/e1dba0a9aba4;fresh permitted license
+status success/active/signedIn=true. Two scenarios11+11,legacy24,corrupt1 native checks and
+Windows build/release-hook absence PASS on observed Intel UHD750 host. No installation/version/
+license-policy change. Named other-device readiness and new standalone launch remain UNVERIFIED/NOT_RUN.
+Sandboxed initialization failure and successful permitted runs are distinct facts in the receipt.
+
+CP03 repair2026-10-13:[current acceptance](reviews/RS-REVIEW-CP03_DISPOSITIONS_2026-10-13.md).
+Same installed tools/current-host license reused;current-source47native checks plus Windows
+build/release-hook absence PASS. No installation or other-device/standalone qualification change.
 
 Director2026-10-12 authorizes an agent working on either computer to discover local tools,
 reuse matching installations,and install missing **approved task-required prerequisites**

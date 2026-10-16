@@ -1,0 +1,1892 @@
+{
+  "schema_version": 1,
+  "task_id": "RS-P1-GOV-03R",
+  "kind": "REVIEWED_SCOPE_NOT_ACTIVE_GATE",
+  "date": "2026-10-16",
+  "baseline_head": "0e0657702a0bbeed04ed8d07c8826ce05a9f34cc",
+  "runtime_inventory": {
+    "schema_version": 2,
+    "source_sha256": {
+      "src/engines/encounter.py": "6a92e34a3969cb08f2aad87bfad980b011c1c9863545ebcc25bb33f4a813a819",
+      "src/engines/npc_memory.py": "be39c2d417aec5f219f0caed015b152135c0c8343c8297c9361ea2a648a397f2",
+      "src/contracts/dialogue.py": "036d5dc8a1cd3e6012926d6a222d69ea9d2efe0e307cac827a82070c790224d4",
+      "src/engines/quest.py": "1e8932c2fe39755e6e9ee28803abfa3261507515ae1593b47ef8745790c2facd",
+      "src/engines/skeleton.py": "eebb9a1912c6727b0e30569fe3505a10e19a236a816faa46e841bf822c21b13c",
+      "src/engines/trial.py": "012b74415a924a260082408f3dafcd408fb71c9894ce946454cf62a1b4e8fa44",
+      "src/engines/watch.py": "b92f32791f6bce61866dfd926e6e6ecb190746cc26239c98354f3255fe1c3549",
+      "src/domain/scenario.py": "085c8bd5a2b504de4c17a7328b63ed5ad6acee56b6efac8e19da97d90b858a1d"
+    },
+    "golden_nodes": [
+      {
+        "node_id": "tests/replay/test_golden.py::test_core_trace",
+        "context": "tests.replay.test_golden.test_core_trace",
+        "registry": "skeleton_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_trial.py::test_trial_core_trace",
+        "context": "tests.replay.test_trial.test_trial_core_trace",
+        "registry": "trial_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_encounter.py::test_encounter_core_trace",
+        "context": "tests.replay.test_encounter.test_encounter_core_trace",
+        "registry": "encounter_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_encounter.py::test_encounter_death_trace",
+        "context": "tests.replay.test_encounter.test_encounter_death_trace",
+        "registry": "encounter_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_watch.py::test_watch_core_trace",
+        "context": "tests.replay.test_watch.test_watch_core_trace",
+        "registry": "watch_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_watch.py::test_watch_passive_trace",
+        "context": "tests.replay.test_watch.test_watch_passive_trace",
+        "registry": "watch_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_quest.py::test_independent_vector_then_real_durable_offline_replay",
+        "context": "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+        "registry": "quest_bundle"
+      },
+      {
+        "node_id": "tests/integration/test_npc_memory.py::test_retry_repeat_save_load_resume_and_offline_replay",
+        "context": "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+        "registry": "memory_bundle"
+      }
+    ],
+    "methods": [
+      {
+        "key": "engines.encounter.EncounterActions.evaluate",
+        "implementation": "engines.encounter.EncounterActions.evaluate",
+        "path": "src/engines/encounter.py",
+        "definition_line": 121,
+        "body_start": 122,
+        "body_end": 136,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterActions.manifest",
+        "implementation": "engines.encounter.EncounterActions.manifest",
+        "path": "src/engines/encounter.py",
+        "definition_line": 118,
+        "body_start": 119,
+        "body_end": 119,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterActions.scenario_layout",
+        "implementation": "engines.encounter.EncounterActions.scenario_layout",
+        "path": "src/engines/encounter.py",
+        "definition_line": 114,
+        "body_start": 115,
+        "body_end": 115,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.evaluate",
+        "implementation": "engines.encounter.EncounterMovement.evaluate",
+        "path": "src/engines/encounter.py",
+        "definition_line": 227,
+        "body_start": 228,
+        "body_end": 277,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.manifest",
+        "implementation": "engines.encounter.EncounterMovement.manifest",
+        "path": "src/engines/encounter.py",
+        "definition_line": 224,
+        "body_start": 225,
+        "body_end": 225,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.scenario_layout",
+        "implementation": "engines.encounter.EncounterMovement.scenario_layout",
+        "path": "src/engines/encounter.py",
+        "definition_line": 220,
+        "body_start": 221,
+        "body_end": 221,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.evaluate",
+        "implementation": "engines.npc_memory.NpcQuestMemory.evaluate",
+        "path": "src/engines/npc_memory.py",
+        "definition_line": 29,
+        "body_start": 30,
+        "body_end": 73,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.manifest",
+        "implementation": "engines.npc_memory.NpcQuestMemory.manifest",
+        "path": "src/engines/npc_memory.py",
+        "definition_line": 16,
+        "body_start": 17,
+        "body_end": 27,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.quest_content",
+        "implementation": "contracts.dialogue.QuestBound.quest_content",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 136,
+        "body_start": 137,
+        "body_end": 137,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.scenario_layout",
+        "implementation": "contracts.dialogue.QuestBound.scenario_layout",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 140,
+        "body_start": 141,
+        "body_end": 141,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.quest.QuestRules.evaluate",
+        "implementation": "engines.quest.QuestRules.evaluate",
+        "path": "src/engines/quest.py",
+        "definition_line": 41,
+        "body_start": 42,
+        "body_end": 90,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 89,
+            "qualname": "QuestRules.evaluate.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.quest.QuestRules.manifest",
+        "implementation": "engines.quest.QuestRules.manifest",
+        "path": "src/engines/quest.py",
+        "definition_line": 25,
+        "body_start": 26,
+        "body_end": 39,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 34,
+            "qualname": "QuestRules.manifest.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.quest.QuestRules.quest_content",
+        "implementation": "contracts.dialogue.QuestBound.quest_content",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 136,
+        "body_start": 137,
+        "body_end": 137,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": []
+      },
+      {
+        "key": "engines.quest.QuestRules.scenario_layout",
+        "implementation": "contracts.dialogue.QuestBound.scenario_layout",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 140,
+        "body_start": 141,
+        "body_end": 141,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Counter.evaluate",
+        "implementation": "engines.skeleton.Counter.evaluate",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 40,
+        "body_start": 41,
+        "body_end": 42,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.counter",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Counter.manifest",
+        "implementation": "engines.skeleton.Counter.manifest",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 35,
+        "body_start": 36,
+        "body_end": 38,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.counter",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Stepper.evaluate",
+        "implementation": "engines.skeleton.Stepper.evaluate",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 20,
+        "body_start": 21,
+        "body_end": 27,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.stepper",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Stepper.manifest",
+        "implementation": "engines.skeleton.Stepper.manifest",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 15,
+        "body_start": 16,
+        "body_end": 18,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.stepper",
+        "nested_code": []
+      },
+      {
+        "key": "engines.trial.Movement.evaluate",
+        "implementation": "engines.trial.Movement.evaluate",
+        "path": "src/engines/trial.py",
+        "definition_line": 25,
+        "body_start": 26,
+        "body_end": 48,
+        "registries": [
+          "trial_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.trial.Movement.manifest",
+        "implementation": "engines.trial.Movement.manifest",
+        "path": "src/engines/trial.py",
+        "definition_line": 15,
+        "body_start": 16,
+        "body_end": 23,
+        "registries": [
+          "trial_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 16,
+            "qualname": "Movement.manifest.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.watch.WatchBell.evaluate",
+        "implementation": "engines.watch.WatchBell.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 56,
+        "body_start": 57,
+        "body_end": 64,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchBell.manifest",
+        "implementation": "engines.watch.WatchBell.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 53,
+        "body_start": 54,
+        "body_end": 54,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchBell.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 77,
+        "body_start": 78,
+        "body_end": 78,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.evaluate",
+        "implementation": "engines.watch.WatchEchoEngine.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 89,
+        "body_start": 90,
+        "body_end": 111,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.manifest",
+        "implementation": "engines.watch.WatchEchoEngine.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 86,
+        "body_start": 87,
+        "body_end": 87,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 77,
+        "body_start": 78,
+        "body_end": 78,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.evaluate",
+        "implementation": "engines.watch.WatchNpc.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 32,
+        "body_start": 33,
+        "body_end": 48,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.manifest",
+        "implementation": "engines.watch.WatchNpc.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 29,
+        "body_start": 30,
+        "body_end": 30,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 77,
+        "body_start": 78,
+        "body_end": 78,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.evaluate",
+        "implementation": "engines.watch.WatchPassive.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 119,
+        "body_start": 120,
+        "body_end": 124,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.manifest",
+        "implementation": "engines.watch.WatchPassive.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 116,
+        "body_start": 117,
+        "body_end": 117,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 77,
+        "body_start": 78,
+        "body_end": 78,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.evaluate",
+        "implementation": "engines.watch.WatchRespond.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 72,
+        "body_start": 73,
+        "body_end": 81,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.manifest",
+        "implementation": "engines.watch.WatchRespond.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 69,
+        "body_start": 70,
+        "body_end": 70,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 77,
+        "body_start": 78,
+        "body_end": 78,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      }
+    ]
+  },
+  "counts": {
+    "registry_factories": 6,
+    "classes": 12,
+    "methods": 35,
+    "resolved_source_files": 8,
+    "traces": 8
+  },
+  "native_probe": {
+    "kind": "NATIVE_SCOPE_QUALIFICATION_NOT_ACTIVE_GATE",
+    "run_dir": "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249",
+    "python": "3.13.12 (tags/v3.13.12:1cbe481, Feb  3 2026, 18:22:25) [MSC v.1944 64 bit (AMD64)]",
+    "packages": {
+      "ast_serialize": "0.12.1",
+      "click": "8.5.0",
+      "colorama": "0.4.6",
+      "coverage": "7.16.2",
+      "grimp": "3.17",
+      "import-linter": "2.15",
+      "iniconfig": "2.3.0",
+      "librt": "0.16.0",
+      "markdown-it-py": "4.2.0",
+      "mdurl": "0.1.2",
+      "mypy": "2.4.0",
+      "mypy_extensions": "1.1.0",
+      "packaging": "26.3",
+      "pathspec": "1.1.1",
+      "pip": "25.3",
+      "pluggy": "1.6.0",
+      "Pygments": "2.21.0",
+      "pytest": "9.1.1",
+      "rich": "15.0.0",
+      "ruff": "0.16.6",
+      "typing_extensions": "4.16.0"
+    },
+    "phases": [
+      {
+        "id": "collect",
+        "argv": [
+          "C:\\ReverieSaga\\.venv\\Scripts\\python.exe",
+          "-m",
+          "pytest",
+          "--collect-only",
+          "-q",
+          "-o",
+          "cache_dir=C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\pytest-cache",
+          "tests/replay/test_golden.py::test_core_trace",
+          "tests/replay/test_trial.py::test_trial_core_trace",
+          "tests/replay/test_encounter.py::test_encounter_core_trace",
+          "tests/replay/test_encounter.py::test_encounter_death_trace",
+          "tests/replay/test_watch.py::test_watch_core_trace",
+          "tests/replay/test_watch.py::test_watch_passive_trace",
+          "tests/replay/test_quest.py::test_independent_vector_then_real_durable_offline_replay",
+          "tests/integration/test_npc_memory.py::test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 0.6875397999974666,
+        "log": "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\collect.log"
+      },
+      {
+        "id": "golden",
+        "argv": [
+          "C:\\ReverieSaga\\.venv\\Scripts\\python.exe",
+          "-m",
+          "coverage",
+          "run",
+          "--rcfile",
+          "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\coverage.toml",
+          "-m",
+          "pytest",
+          "-q",
+          "-s",
+          "-o",
+          "cache_dir=C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\pytest-cache",
+          "-p",
+          "gov03_refresh_probe",
+          "--basetemp",
+          "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\pytest-temp",
+          "--junitxml",
+          "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\golden.junit.xml",
+          "tests/replay/test_golden.py::test_core_trace",
+          "tests/replay/test_trial.py::test_trial_core_trace",
+          "tests/replay/test_encounter.py::test_encounter_core_trace",
+          "tests/replay/test_encounter.py::test_encounter_death_trace",
+          "tests/replay/test_watch.py::test_watch_core_trace",
+          "tests/replay/test_watch.py::test_watch_passive_trace",
+          "tests/replay/test_quest.py::test_independent_vector_then_real_durable_offline_replay",
+          "tests/integration/test_npc_memory.py::test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 52.9550048999954,
+        "log": "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\golden.log"
+      },
+      {
+        "id": "json",
+        "argv": [
+          "C:\\ReverieSaga\\.venv\\Scripts\\python.exe",
+          "-m",
+          "coverage",
+          "json",
+          "--rcfile",
+          "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\coverage.toml",
+          "--show-contexts",
+          "-o",
+          "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\golden.coverage.json"
+        ],
+        "exit_code": 0,
+        "elapsed_seconds": 1.084822399992845,
+        "log": "C:\\ReverieSaga\\tmp\\gov03-refresh\\native-5d3b93c5e9ae4f43b9663ff467440249\\json.log"
+      }
+    ],
+    "artifacts": {
+      "collect.log": {
+        "bytes": 546,
+        "sha256": "b0c0a56e39218827a55a86f8d5f2045e6acae61cbfd3b79453006d2f46e55926"
+      },
+      "coverage.toml": {
+        "bytes": 288,
+        "sha256": "91df5b79c4dffac88917375e1a433dbc0b4c3125fc6fc5c4160ab16db765bac6"
+      },
+      "golden.coverage": {
+        "bytes": 221184,
+        "sha256": "832ae1b8ee3b6f65beac07ef246bbb013425614dbcc15b479ee21a1d1f1587d5"
+      },
+      "golden.coverage.json": {
+        "bytes": 3377498,
+        "sha256": "62c0c988b51bf55c3b40b71cf66f46260e9249b418a0d8947fa99a43b1d4d895"
+      },
+      "golden.junit.xml": {
+        "bytes": 1066,
+        "sha256": "3f3155900c4d861b1ac56e95ace310120523628652382750aefb80b0a3995b20"
+      },
+      "golden.log": {
+        "bytes": 142,
+        "sha256": "880a9ebc95a5d816a51b7a912c09026753cc9e9601c76e45d96bce6643512f94"
+      },
+      "json.log": {
+        "bytes": 132,
+        "sha256": "e1c4dc6d0e304493c7e2d8c426b5f6aa2ef5d1eca73c19644172bbe9bcece3a7"
+      }
+    },
+    "scripts": {
+      "discover.py": "e6fca4587adee24887ee35feba143cd32b66abb716856cbc88c98fe134862d54",
+      "qualify.py": "5a4200d8e085a442df9f0579bf9ad3f6cdd794f9d3906c2c013a099b92cb6b25",
+      "gov03_refresh_probe.py": "30a7a627fe1347a52e620fa4f997ad1fe01afe8a840e6c88ea18c02a44c599b7"
+    },
+    "inputs_before_after_equal": true,
+    "executed_input_sha256": {
+      ".importlinter-runtime.toml": "c057cd7e9dea3136a245d7543f73be82386cc17d07a379176a34202928350d12",
+      "pyproject.toml": "b2f977dfc9de7f74c0f045a56ccf636a145d418f551fc0eda26b96c878e938d1",
+      "requirements-dev.lock": "a64c8668254821a0c7d2d342ee11ac7c7e612b362b13ea43bfb900e8a31c41ef",
+      "src/.gitkeep": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "src/adapters/gemini_dialogue.py": "b67eb5d7f91c3428f494707ac64d3d01765a6e227e9558157f364405ae900f22",
+      "src/adapters/gemini_transport.py": "994ab03181d2a245b21130ac0ce94e9a6614dbce3a9b707afa7e0ea1bfdef54d",
+      "src/adapters/generation_budget.py": "0a715bd8393069de0bd1f319860ab920b71d50daa7cd5f906ade04fabdde1085",
+      "src/adapters/narrative_catalog.py": "3fe2479d952dd5ca06d589c6404e8527414765c726aa205255d4d7f989c716d4",
+      "src/adapters/quest_dialogue.py": "687555ae623a6c85caf9b5e590689dea6be0c6143a35faa796c61ea0eab76ff0",
+      "src/adapters/save_slots.py": "9ae57d7ce782cab8cadcef78bfad10bb69df2b563eb9e1677387495be2acedb2",
+      "src/adapters/sqlite_store.py": "da81dc8cd4a65f34048234380f14ac2bc1d9827bede2ccf26a58adbabcc48cbc",
+      "src/app/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/app/client.py": "340366d2bc8d9c667428dac73961c2f26c0514a517f0515b95a3f5d1b4f455d5",
+      "src/app/client_session.py": "0f195b65002c7a1f44a1e0b3a9ef37478459f85de2deb3923ac56fd310580b0f",
+      "src/app/client_text.py": "8fae3b021c63998b21bb44549cd8b664ea76bbe40f8cbd9376327358a8f4228c",
+      "src/app/client_worker.py": "4305905072d6918806f18ec80710c4112b1c5527c9cefe92cccaa7123e005dab",
+      "src/app/dialogue_prepare.py": "e157586b605dc334ed7ab95a44515352a3fea64918f2be9957f9873dabd001dd",
+      "src/app/durable.py": "7dfa9478284bc90fe627a5ce8b9841c5db1ae4a44385971b232f892a7ca40699",
+      "src/app/encounter.py": "ff44af309c169447661fea61468a7ae351d9700b9298d0d8f0e96d37a2394106",
+      "src/app/encounter_registry.py": "83cd73c6a267232ddcda421491766e8ecdf87a20f856f2cfcc99fa0cd0176b26",
+      "src/app/engine_bridge.py": "bffa64c512f32cd25c1bc468b6cdfa9db5ca698ad495d1efe300c78020aa0508",
+      "src/app/engine_project.py": "2e68d91f452cdd9838f0dda65efbe3660e3953f1611ba27e5ef737c6e5a86c54",
+      "src/app/feature_registry.py": "09deccdb9e3de01a778fefa388a7043d910fd3dfc94d84dae9ecd745938558eb",
+      "src/app/headless.py": "2cbf1027a3a7ce1a1b437f0b9db23044ab96307515e7d1894dbcd4bc6e7b40d1",
+      "src/app/npc_dialogue_compile.py": "b36610015882e49818e0c300f4b7460ad779b07733b6ed8dbec5737dfe8cd577",
+      "src/app/npc_dialogue_plan.py": "3273c96c4ca42b45395d5b2b714e0e996440081883054ae28d899ce9e3d3de8c",
+      "src/app/npc_dialogue_review.py": "ca8d6ae778ca1998611d68c1e8ee41c11a02386c58ec9a549cedaa4e1e5afb16",
+      "src/app/npc_memory.py": "78a82e8151df798b91ec9bdfa089cc711cfcd1fa32a3a6c875b12904d4a54ff4",
+      "src/app/npc_memory_brief.py": "3b30ad9bcbcde9f87df2dc3c3d5758af8036d770e6806f8f8083e8b551d038da",
+      "src/app/npc_memory_check.py": "f488b35adf41d3d6e2c7e0e8eab10e65b69591d594d10daef93d11411d26c9f9",
+      "src/app/npc_memory_compare.py": "3a81cacfe77df62a01e13db6985ffbc97ba5cb6b172f7988989db520b2511b7e",
+      "src/app/npc_memory_export.py": "50b55fa4834cf2a05a2e06032546923b17eee39129d7a8ba5509fc5542cc1eb4",
+      "src/app/npc_memory_prepare.py": "6c14dd44eec219fb0593b3422190e59abb351d98852e0c360754f51a73f93172",
+      "src/app/npc_memory_query.py": "0bb70c51dcc63f6040dd5148da54be02b0445ace07a4bb3de03d1b8703a4b297",
+      "src/app/npc_prepare.py": "7779987ec1c7104e98c6b52cb5597c4f59ebaba5211e1efee15012b6219612ff",
+      "src/app/quest.py": "9743c320a37337e1bbc563a07a78a8b5b6686f2d763f5470160b0e2ee30a954c",
+      "src/app/quest_definition.py": "3fd576a73fca5fba239544c27f3d8b4d4b101e506f1232f94ce05117a0c2f3c1",
+      "src/app/quest_registry.py": "95ec15e7daa99bb8381b6ce33b678d05b9cdca5c7eb75d021e1b3cbcb72fba1f",
+      "src/app/save_inventory.py": "5bfc6a283d97fa37f23df7e839548114eba88ecb6c8502f61587b6b156371f90",
+      "src/app/scenarios.py": "02e78f85ac9c601a361d6073fb71beffd77a48efb4aabf08f973c000ba9b8bde",
+      "src/app/trial.py": "ec137de09c7b2dfd3e19ada90505efe12e74f4dbc2009a813f30937c3d27aa4a",
+      "src/app/trial_registry.py": "b22fca1bfb17e817fbef773a092a66e288de9bed27a5d529356d115a79595263",
+      "src/app/watch.py": "a642d8d5596f6e2fffd32fe42fb9e2528bc84d200167a9c1c699e4cc4a4a18fd",
+      "src/app/watch_registry.py": "00665c928c84ff8b997f819846fe768c5c803d852f14d633b84e8fbbb3645027",
+      "src/contracts/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/contracts/client.py": "5c415841140b88aff75f92113351e2ae4cc7b7ccf442b9955930fa31f3730b8e",
+      "src/contracts/dialogue.py": "036d5dc8a1cd3e6012926d6a222d69ea9d2efe0e307cac827a82070c790224d4",
+      "src/contracts/encounter.py": "4aa951e7b7d4bde0a7dbd5c602c1fbd6c56475a5a0cd4aaf885936254934eb8e",
+      "src/contracts/errors.py": "6c8ffa8cad49dd15cfedb324caf6e942fb16e442cd97b9f828daa48a250798cb",
+      "src/contracts/events.py": "26b7bc9c225b8138c31d7f5fff3757c26cf4eff89894a58b94fcee5db0b8c448",
+      "src/contracts/messages.py": "d23946681fdd0783d2d54365125fcb19a872334146edd7cd75298ed42eb78110",
+      "src/contracts/narratives.py": "9f87b7da551f38fed2d7e734ce0261bed4c86ee7816bc4950b12653bb36e45a1",
+      "src/contracts/npc_context.py": "3039c610204c92933bc406fd05fdc324fd43ef7fa3591712f6be201b7ef4350a",
+      "src/contracts/npc_memory.py": "046b852963696787bdfcc643bf32700e0cf71d67a354e0bcb60c3a7a89527375",
+      "src/contracts/persistence.py": "7fed9f2dc1c0a90b86acdb82c120f8976466169188131c9c52cf20e994451427",
+      "src/contracts/quest.py": "c7f243aaee9c4475f573e8fc55d79bc0a51c15c849794dd490b3e1335dc3a444",
+      "src/contracts/read_views.py": "47c71137717485dc84c7c20ad9664dcb3613611ad1d27d2bc9608e040396032f",
+      "src/contracts/replay.py": "497f0ddafaf3b1972a386b55ebeb2eea30cc2a391b2555252b4fdafacf992705",
+      "src/contracts/skeleton.py": "ec17ed7314ef718d2f069ee76e2343050b8db43a5c36f8cf3e2048959117cccd",
+      "src/contracts/state_io.py": "9babd676f84d4976592f23b5d977a5ea7748a37c2e74353010391c045c4e3c64",
+      "src/contracts/trial.py": "11c573a42b2f8cfa2a4d53953f1f75cec69c9580488b7a7adc23d367cf645502",
+      "src/contracts/turn.py": "8233215d9feb0a1293f16fe1a88a4081a04a8c19ab1bba5ae75e45a85a98ad3e",
+      "src/contracts/watch.py": "aab9f202db8cd13ff9839cb902b275f19bdf05dd26079a3532a6e063c4ebc73b",
+      "src/domain/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/domain/canonical.py": "f636f2565c7fc52026288971755e74cf43dc630e867162f00e4631b07417fd1c",
+      "src/domain/encounter.py": "579b8fdb36cf41a85cb1437d1b191c151b5287868dcf820dc34d95be1bab9292",
+      "src/domain/npc_memory.py": "59a6767426429d991b9fcbd733b9c4bfdd580a7888a200ec7b55e35a5d33c5cd",
+      "src/domain/primitives.py": "9cc389d1caddf8caad1291c1c4be3d855ab4ce0707517cd404fef977149f0de2",
+      "src/domain/quest.py": "8ccef7b559c1e2f76e8b81ee609ca44934c19f2aa606938499a7aaa6404a1551",
+      "src/domain/scenario.py": "085c8bd5a2b504de4c17a7328b63ed5ad6acee56b6efac8e19da97d90b858a1d",
+      "src/domain/state_types.py": "8aa9ceb079d6845c23da41bcb2a2596e6ebf961dda5cfeb73266a0fb78465732",
+      "src/domain/trial.py": "b2d9ed6ef50e13dadf84588679c04e81d3c6c4b75dd3d0c84a65fa35a513db4a",
+      "src/domain/watch.py": "0a82c5c7c268b94d21ab789f9b3288e7d41913f7982b83ffbcbb57339366f0c5",
+      "src/engines/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/engines/encounter.py": "6a92e34a3969cb08f2aad87bfad980b011c1c9863545ebcc25bb33f4a813a819",
+      "src/engines/npc_memory.py": "be39c2d417aec5f219f0caed015b152135c0c8343c8297c9361ea2a648a397f2",
+      "src/engines/quest.py": "1e8932c2fe39755e6e9ee28803abfa3261507515ae1593b47ef8745790c2facd",
+      "src/engines/skeleton.py": "eebb9a1912c6727b0e30569fe3505a10e19a236a816faa46e841bf822c21b13c",
+      "src/engines/trial.py": "012b74415a924a260082408f3dafcd408fb71c9894ce946454cf62a1b4e8fa44",
+      "src/engines/watch.py": "b92f32791f6bce61866dfd926e6e6ecb190746cc26239c98354f3255fe1c3549",
+      "src/orchestration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "src/orchestration/encounter.py": "c5cbea9a9fdd721e84bf9f080d41eecb29f8bd47577551f1ed0b2d1d2392a345",
+      "src/orchestration/events.py": "199957bb1ec960026237c8c7219760880e0d79e132101dbc2316bfe79b23d711",
+      "src/orchestration/npc_memory.py": "9757e5cdeb361aa2151a68669027659649b4173609cba5c637d176f64366844b",
+      "src/orchestration/persistence.py": "cdde049602df012ed65b051c2114292ae184b522744ea0e0d097d6dae6670c83",
+      "src/orchestration/quest.py": "67a3f44ac1fb400cbbb560a2501985ba755538fc6655fea2bc1fd25853a6a4fc",
+      "src/orchestration/read_views.py": "3f851f01f751a375335685a6067d0125c417ec4a56a95101e6a181797e35e37e",
+      "src/orchestration/replay.py": "58d8c3cc4375b9c8265873dbdd78a087e1433626ca70b901e15154b2c18437a7",
+      "src/orchestration/rng.py": "8c270c413baa87cf27005d116ece4600b115c7ce4a968f7f83b2a0d763ae17d0",
+      "src/orchestration/scheduler.py": "6f89c3b3b79ae61929d3469c12592122ab0bd27d87be5d159edacafa5edb97e8",
+      "src/orchestration/serialization.py": "6e870435fa2d683ab4e82c049cbfa42ead128bdebca7f746d8055f5ac6a77656",
+      "src/orchestration/skeleton.py": "7e8848d2887fd67870fb0df7898569dc1222a71f45d6b2f086439c26ba7be26e",
+      "src/orchestration/trial.py": "c3d3db451b84c19d7998d7ed4270bf866dc62d1a032ebfd3dff3048f20df7828",
+      "src/orchestration/turn.py": "94473064be17d55fd30400f87f8c2b4475e747f218c3c9c91101c3263746d18e",
+      "src/orchestration/watch.py": "6f6d412332fd20950e4c22aaeae477494b5bfffd2d60084e93188457e21c6b74",
+      "tests/.gitkeep": "7eb70257593da06f682a3ddda54a9d260d4fc514f645237f5ca74b08f8da61a6",
+      "tests/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/adapters/test_gemini_dialogue.py": "918e688c10fa6961189d4d063a51e2075aa5b61c0445cbf644ab2348ddd33dd3",
+      "tests/adapters/test_gemini_http_framing.py": "239e8caff9c6defa37cdc72d99cb9655638f734b3b942292022d8d32e54e6124",
+      "tests/adapters/test_generation_budget.py": "46f317187ac07116c7370a91387751435e7f538fd62d541b20c7ab151219b382",
+      "tests/adapters/test_npc_dialogue_plan_generation.py": "37795a42a7cb53ea46b40f9bc37af88cfe8fbe310d84ea273f8f80cb5adecd00",
+      "tests/adapters/test_npc_memory_prepare.py": "cd739cd1b65bf08527ae581c05cd8e962044e75e78b664fec55da3fbcb2c8273",
+      "tests/adapters/test_npc_prepare.py": "cd154ab8a146da77a79f1cbc0fc1248b18d4057aca047ef088382501e051a93b",
+      "tests/governance/__init__.py": "7200d35407808da699992ac2a66d2df5c0fbed5446b32a3135a47415223981ea",
+      "tests/governance/test_dependency_contracts.py": "7b79b5dd7327b1a98c01f2ae763b6063620499071986fb49cf5900bbc2b77c69",
+      "tests/integration/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/integration/test_client.py": "38a6fb9fe9e2b60360d682fc166c904ef582aad80340865d6ce60399f6adae64",
+      "tests/integration/test_client_memory_inspection.py": "52f1198a215e3ac1b84d4a42967c39bbd0c8ad8def9fedf24516b1030ffcac2b",
+      "tests/integration/test_client_reconciliation.py": "1ec71dfc91ec46cd6d3bf32027aaaa477895410e6940e0f9740a56ef8009bf03",
+      "tests/integration/test_core_slice.py": "51ebf3e7d5ec75f188b1f5ccc393e37fc551674c4a23538e59f9a7262aec7b21",
+      "tests/integration/test_cp03_repairs.py": "2aa6d358d5ed9d9a3dd369879dc9ca757e4753288abe6639f2034b59f269737f",
+      "tests/integration/test_durable_turn.py": "0530b2af665cb762fca4554841c45b7e28fecd6e75734d6eb2fb71dfd2fa68af",
+      "tests/integration/test_encounter.py": "628ab9b95af13dc18e5f3953c0128fb752c726f1d8dbdc43718213aa0a4400b8",
+      "tests/integration/test_engine_bridge.py": "e1b4247a40351c99e28041756612be8d1751e51883c38f6146497cee7a7d1f72",
+      "tests/integration/test_engine_memory_inspection.py": "edb8cb64cdd87ed31dd18b172a53cc115e26a09410eb465042ad04fb6ee7c24e",
+      "tests/integration/test_event_turn.py": "6dd4d03af81b108e8064e458b5f1bc0435e1c8ade768c631fd1f107b33802d03",
+      "tests/integration/test_memory_client_route.py": "c2a7271bcb4ebc05925d62fedf896cf603bda80c554c038efc0afb25f11aaa90",
+      "tests/integration/test_npc_context.py": "896255070a4b9ba8955a30dcb4f3e786ec7c579c61ba5f19b933cd7180edc8e9",
+      "tests/integration/test_npc_dialogue_compile.py": "353d97a8532a0dc491fb9da03dd49dd44d2cdb70a17ba378a876a825076ab328",
+      "tests/integration/test_npc_dialogue_plan.py": "560358cd69739e5c878bd20a8dc1586dcd54c0026dfdfc12994c09e9997d29b1",
+      "tests/integration/test_npc_dialogue_review.py": "0d536f6c0f2e80df690b74539e2fbb0df5f946fd92833c6fc33b754ab38f4306",
+      "tests/integration/test_npc_memory.py": "0bd6238b110589eb881cd53026d4088ce563948b66406936cfeffd0774d2f3d4",
+      "tests/integration/test_npc_memory_check.py": "1b92f9dc651ee1b1bf81783f29bc602740b7e8392f21ebd35a948a31241f82e3",
+      "tests/integration/test_npc_memory_compare.py": "7ee63d465a14fbc056c154f8c46a6566a53c1e67f0b6d8ea6190a3040ab53f97",
+      "tests/integration/test_npc_memory_export.py": "958de34f16d0c83e49ce8c1f601adffb93257c162b59fadb35de3e1c2ad8ab78",
+      "tests/integration/test_npc_memory_query.py": "ee8720d82793837a55d2086af4b517a8935522c8bab62256b997d8ccbaa38481",
+      "tests/integration/test_pinned_evidence_checkout.py": "13b285e4f534d33b2025083685fb210efc5f821468c99ccd347969350d0e3ab1",
+      "tests/integration/test_quest.py": "59f548378a7395b0b877203101af9b61e32597d9510634e5c147a963db1b8785",
+      "tests/integration/test_recent_memory_clients.py": "de8a3ccea72d26800a685fe8d1f1aaf8c113701e32525cb28dde605f53f9dd08",
+      "tests/integration/test_registered_state.py": "66712d583c2f7a9793fafa628d62ee75fa3edc0320e0baa4efb91d3731d08b49",
+      "tests/integration/test_save_inventory.py": "ef215a17941b003b21c12e9d94d0acbcb9684f26747086ec09ba810661fabdbb",
+      "tests/integration/test_save_slots.py": "fae9242a2c1148933782ac11ceb85a1b874496660cee8c0841e646bacaec0750",
+      "tests/integration/test_scenarios.py": "6ca4660197aa87662763aded7b3d8a79e9660ffc7a831c589d44ee1c10836116",
+      "tests/integration/test_skeleton.py": "ee9cc64a081f0cf0dc72c02ab0b18475281d11daec94e038d654af5d9bd0b55e",
+      "tests/integration/test_slot_preview.py": "ab48107ad519f96d2b45e6d4230e424339f9bf1d714f0cf4e0dad337d4bde38b",
+      "tests/integration/test_sqlite_recovery.py": "52348133b3ea6b371686b7e325fa06a07b8e4ef5c5a6348f0f868a15cb91f5ce",
+      "tests/integration/test_trial.py": "c78bd7851742e6c8b7249d6a33003d9fb0d2fd08a93f2ba23186897336468a78",
+      "tests/integration/test_unity_slot_selection.py": "7ea6a35213060dcdeb4c2d6e2ac0901a19eabd34b24e0681e259755fa211b4df",
+      "tests/integration/test_unity_wait_duration.py": "a246635f1ce664e7a8eefef59e3747a587b21959504433a6c776d4fa1821735a",
+      "tests/integration/test_watch.py": "890b440eec638b3425519ab4936e2db009ecfaa7cd11be949a25bbdf73dab4f9",
+      "tests/replay/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/replay/fixtures/durable_watch_passive_v1.json": "f0adc9c19bbb94fd4fe3f6e1a70bf95e63a1221e7f354b3a09a237c592616951",
+      "tests/replay/fixtures/durable_watch_v1.json": "4c9dcfea46c1f1ba0c08b0fc94d9a13211fb7e32fd52a43eaf7bdf0233425472",
+      "tests/replay/fixtures/encounter_death_v1.json": "d21e78ed1362ac2d6eda81eda79996f7081efefe4bcc7a13a7ceba140284919c",
+      "tests/replay/fixtures/encounter_v1.json": "aa8cdc879e3bbcdadb19269496a13449f5f1096641226a7eacc29cc44105634c",
+      "tests/replay/fixtures/quest_harbor_vector_v1.json": "1f39bbad62db19987fd48f3e57b9b5076f47b7d40e6c099048129df109b10870",
+      "tests/replay/fixtures/skeleton_v1.json": "6cc8abd517997f68d49e46816a78d865d8e12c2ea9758037a116d02477512ecb",
+      "tests/replay/fixtures/trial_v1.json": "ae6834a21be298a4015f9309bf7b710f977e39e84f3bf1a57679d6c866d59a07",
+      "tests/replay/fixtures/watch_passive_v1.json": "b421e76e9a06b42bf993b251e448858f141454ce0739b7b34e94f46f577a41fb",
+      "tests/replay/fixtures/watch_v1.json": "5417a81e82ad04886d9e63fe7669e409da0a041ef99f80200fa323c7896a2b85",
+      "tests/replay/test_contamination.py": "77fb652d0cbe27b2506268735563829bf068d6e50303785c3415bcd8db6c1a6f",
+      "tests/replay/test_durable_replay.py": "c66b6d8309e47b8fa6786c44142144f4ff9385e818d904f17e439aaf8cae1516",
+      "tests/replay/test_encounter.py": "82b278da966db9ae9aa53611d90680351d88c69b4f06e2e688c58a4453914044",
+      "tests/replay/test_golden.py": "0c4aa1d783d3b4f038c76f8943f1335f86e36b44880161088098a46f8ba0d92a",
+      "tests/replay/test_quest.py": "4282b23cd2d9fa53393339c9cb964c983ed00111f980f657dfaf0e1e4b4ce4cb",
+      "tests/replay/test_registered_replay.py": "2c240bf23a432b0e0504b5e7a4a1c656649348d2753830685205e2979174227a",
+      "tests/replay/test_trial.py": "482d6899ec0458eadb426aed90cbe3f38adaf69907f1a66c9a27d52d1ba59c1a",
+      "tests/replay/test_watch.py": "bbcfc1f5cb62fdce6be7dd7d930765a543250ace51cdc35bdbf6a6475804afea",
+      "tests/unit/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "tests/unit/durability_fixtures.py": "c0a53a8d9f8bfd8a0d7e52859e46577c3f6cece571ff3451cdd9e9d80631883c",
+      "tests/unit/encounter_fixtures.py": "9f61455a654a81d96dcb986b2ff5c9ed2856f17c1cfe474dce0b44dd8c5824d6",
+      "tests/unit/quest_fixtures.py": "e937beef6ba3b060041bf44361fadcde7bb2c407880b13c5ac5aa9295431919e",
+      "tests/unit/registered_io_fixtures.py": "84324397f9e0918ac1186b8bff3394feb1bef3f68e1507a49a487643e73fe848",
+      "tests/unit/test_canonical.py": "54dc42e884a2f74fc836b62c74e837fedaee81bf4e0e178ef246078b2b021ab2",
+      "tests/unit/test_client_text.py": "5014b1f0af4bb21798ac5d449b0e4b282a466c33c13cf3456f26b445b6bd0d17",
+      "tests/unit/test_dialogue.py": "43e8f91c620596f55c7bff7245f0904ef68c10f875e3c5fd0203982db48a57f5",
+      "tests/unit/test_encounter.py": "85a4c7638c1a2172bef7d9f0c0da31abf9d385d85d7bbb784bc646770a1e7433",
+      "tests/unit/test_engineering_rules.py": "6c0dc92cef3362696663504dfe7a7f358343eaaef1cd21c4f294d1fe6d92f5cf",
+      "tests/unit/test_events.py": "5e9b9d92d1078051f853f3672e2092b391be6e1ef936930983594585d32f0488",
+      "tests/unit/test_narrative_catalog.py": "9641dc3674abd0c3ffb6be7334708defc54d4e9e515bca22eb57e91218cec6de",
+      "tests/unit/test_npc_context.py": "6359b3cb32c754acd092f33d32cfdd2c4a031f4ce43f9c33f15fc47338f7dc19",
+      "tests/unit/test_npc_memory.py": "27d36a90d342a66e0fe2b16cbdc861491584bb754a9aa4c3b61055392723eb83",
+      "tests/unit/test_quest.py": "2e4906a6f0cbb59b4603117c90106f4041c3c304a6f50547117c3e876a4bcd3f",
+      "tests/unit/test_read_views.py": "f16d5191a47d5fee249f0c0dfb278aae984a28831ce3d47eed243332e2ba795d",
+      "tests/unit/test_registered_io.py": "2018cfa4d81b0fb353b4936ac6c0590ffa959fda02dc5924a072697a25d7589f",
+      "tests/unit/test_rng_vectors.py": "1ae3a7ec7a506610046656fbcb1f25c81975e13596dde3f203395a8c61cdf7e0",
+      "tests/unit/test_save_codec.py": "dbf207e4e16e68e3e2f71503d507d71db8925dc1f653ab99413a278ec6fb62c5",
+      "tests/unit/test_schedule.py": "279d9e898459990042823ccc51814dea6156cb7fad3e04b867bb7e4d51918b28",
+      "tests/unit/test_trial.py": "941a878ea5f5e0195c4c9ee3ffa848045e3867f0415639f5091e1ef7bebd4724",
+      "tests/unit/test_watch.py": "3c83d1ba1966f1441f59c91a048b6e6604955b5bca0efd00ee7d6faa6f28e41d",
+      "tests/unit/trial_fixtures.py": "0e769a2c7ee17293dbdaeb702a3ab39c64dbb7c9774c7903925c260130ae6e4f",
+      "tests/unit/view_fixtures.py": "31e1d8d0cdee091741ae702652a471965e43ec3aa3aff530c08137ac57d9afaf",
+      "tests/unit/watch_fixtures.py": "c75528fc221376706f39524970a748ce3f03cf72591fa1f52512166feb1140a3"
+    },
+    "factory_content_sha256": {
+      "content/dialogue/harbor-memory-v1.json": "a8ec2de96a23b0c0a7824e874bac96279194e550581a610308846d742c2fd74d",
+      "content/dialogue/harbor-memory-v1.sha256": "1732a7451b3e2277e7c37d14626edea1a8a602fec3b836b56ffac8c5af3af7d5"
+    },
+    "method_observations": [
+      {
+        "key": "engines.encounter.EncounterActions.evaluate",
+        "executable_lines": [
+          122,
+          123,
+          124,
+          125,
+          126,
+          127,
+          128,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135,
+          136
+        ],
+        "hit_lines": [
+          122,
+          123,
+          125,
+          126,
+          127,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_encounter.test_encounter_core_trace",
+          "tests.replay.test_encounter.test_encounter_death_trace",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace"
+        ],
+        "old_six_hit_lines": [
+          122,
+          123,
+          125,
+          126,
+          127,
+          130,
+          131,
+          132,
+          133,
+          134,
+          135
+        ]
+      },
+      {
+        "key": "engines.encounter.EncounterActions.manifest",
+        "executable_lines": [
+          119
+        ],
+        "hit_lines": [
+          119
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_encounter.test_encounter_core_trace",
+          "tests.replay.test_encounter.test_encounter_death_trace",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          119
+        ]
+      },
+      {
+        "key": "engines.encounter.EncounterActions.scenario_layout",
+        "executable_lines": [
+          115
+        ],
+        "hit_lines": [
+          115
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.evaluate",
+        "executable_lines": [
+          228,
+          229,
+          234,
+          235,
+          236,
+          237,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          245,
+          252,
+          253,
+          254,
+          255,
+          256,
+          257,
+          259,
+          260,
+          262,
+          263,
+          264,
+          265,
+          266,
+          267,
+          268,
+          269,
+          270,
+          271,
+          272,
+          276,
+          277
+        ],
+        "hit_lines": [
+          228,
+          235,
+          236,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          253,
+          254,
+          255,
+          256,
+          257,
+          259,
+          262,
+          263,
+          264,
+          265,
+          266,
+          267,
+          268,
+          269,
+          270,
+          271,
+          272,
+          276,
+          277
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_encounter.test_encounter_core_trace",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace"
+        ],
+        "old_six_hit_lines": [
+          228,
+          235,
+          236,
+          238,
+          239,
+          240,
+          241,
+          242,
+          243,
+          244,
+          253,
+          254,
+          255,
+          256,
+          257,
+          259,
+          262,
+          263,
+          264,
+          265,
+          266,
+          267,
+          268,
+          269,
+          270,
+          271,
+          272,
+          276,
+          277
+        ]
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.manifest",
+        "executable_lines": [
+          225
+        ],
+        "hit_lines": [
+          225
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_encounter.test_encounter_core_trace",
+          "tests.replay.test_encounter.test_encounter_death_trace",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          225
+        ]
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.scenario_layout",
+        "executable_lines": [
+          221
+        ],
+        "hit_lines": [
+          221
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.evaluate",
+        "executable_lines": [
+          30,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          55,
+          56,
+          61,
+          62,
+          63,
+          71,
+          72,
+          73
+        ],
+        "hit_lines": [
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          56,
+          62,
+          63,
+          73
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.manifest",
+        "executable_lines": [
+          17,
+          18
+        ],
+        "hit_lines": [
+          17,
+          18
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.quest_content",
+        "executable_lines": [
+          137
+        ],
+        "hit_lines": [
+          137
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.scenario_layout",
+        "executable_lines": [
+          141
+        ],
+        "hit_lines": [
+          141
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.quest.QuestRules.evaluate",
+        "executable_lines": [
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48,
+          49,
+          50,
+          51,
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          67,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81,
+          82,
+          83,
+          84,
+          85,
+          87,
+          88
+        ],
+        "hit_lines": [
+          42,
+          43,
+          44,
+          46,
+          47,
+          48,
+          49,
+          50,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          67,
+          76,
+          77,
+          78,
+          80,
+          81,
+          82,
+          83,
+          84,
+          88
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.quest.QuestRules.manifest",
+        "executable_lines": [
+          26
+        ],
+        "hit_lines": [
+          26
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.quest.QuestRules.quest_content",
+        "executable_lines": [
+          137
+        ],
+        "hit_lines": [
+          137
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.quest.QuestRules.scenario_layout",
+        "executable_lines": [
+          141
+        ],
+        "hit_lines": [
+          141
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.skeleton.Counter.evaluate",
+        "executable_lines": [
+          41,
+          42
+        ],
+        "hit_lines": [
+          41,
+          42
+        ],
+        "hit_contexts": [
+          "tests.replay.test_golden.test_core_trace"
+        ],
+        "old_six_hit_lines": [
+          41,
+          42
+        ]
+      },
+      {
+        "key": "engines.skeleton.Counter.manifest",
+        "executable_lines": [
+          36,
+          37
+        ],
+        "hit_lines": [
+          36,
+          37
+        ],
+        "hit_contexts": [
+          "tests.replay.test_golden.test_core_trace"
+        ],
+        "old_six_hit_lines": [
+          36,
+          37
+        ]
+      },
+      {
+        "key": "engines.skeleton.Stepper.evaluate",
+        "executable_lines": [
+          21,
+          22,
+          23,
+          24,
+          25,
+          26
+        ],
+        "hit_lines": [
+          21,
+          22,
+          24,
+          25,
+          26
+        ],
+        "hit_contexts": [
+          "tests.replay.test_golden.test_core_trace"
+        ],
+        "old_six_hit_lines": [
+          21,
+          22,
+          24,
+          25,
+          26
+        ]
+      },
+      {
+        "key": "engines.skeleton.Stepper.manifest",
+        "executable_lines": [
+          16,
+          17
+        ],
+        "hit_lines": [
+          16,
+          17
+        ],
+        "hit_contexts": [
+          "tests.replay.test_golden.test_core_trace"
+        ],
+        "old_six_hit_lines": [
+          16,
+          17
+        ]
+      },
+      {
+        "key": "engines.trial.Movement.evaluate",
+        "executable_lines": [
+          26,
+          27,
+          28,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          37,
+          38,
+          41,
+          42,
+          43,
+          46,
+          47,
+          48
+        ],
+        "hit_lines": [
+          26,
+          27,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          37,
+          38,
+          41,
+          42,
+          43,
+          46,
+          47,
+          48
+        ],
+        "hit_contexts": [
+          "tests.replay.test_trial.test_trial_core_trace"
+        ],
+        "old_six_hit_lines": [
+          26,
+          27,
+          29,
+          30,
+          31,
+          32,
+          33,
+          34,
+          35,
+          37,
+          38,
+          41,
+          42,
+          43,
+          46,
+          47,
+          48
+        ]
+      },
+      {
+        "key": "engines.trial.Movement.manifest",
+        "executable_lines": [
+          16,
+          20
+        ],
+        "hit_lines": [
+          16,
+          20
+        ],
+        "hit_contexts": [
+          "tests.replay.test_trial.test_trial_core_trace"
+        ],
+        "old_six_hit_lines": [
+          16,
+          20
+        ]
+      },
+      {
+        "key": "engines.watch.WatchBell.evaluate",
+        "executable_lines": [
+          57,
+          58,
+          59,
+          60,
+          61,
+          62,
+          63,
+          64
+        ],
+        "hit_lines": [
+          57,
+          58,
+          59,
+          61,
+          62,
+          64
+        ],
+        "hit_contexts": [
+          "tests.replay.test_watch.test_watch_core_trace"
+        ],
+        "old_six_hit_lines": [
+          57,
+          58,
+          59,
+          61,
+          62,
+          64
+        ]
+      },
+      {
+        "key": "engines.watch.WatchBell.manifest",
+        "executable_lines": [
+          54
+        ],
+        "hit_lines": [
+          54
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          54
+        ]
+      },
+      {
+        "key": "engines.watch.WatchBell.scenario_layout",
+        "executable_lines": [
+          78
+        ],
+        "hit_lines": [
+          78
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.evaluate",
+        "executable_lines": [
+          90,
+          91,
+          92,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          99,
+          100,
+          101,
+          102,
+          104,
+          105,
+          106,
+          107,
+          108,
+          109,
+          110,
+          111
+        ],
+        "hit_lines": [
+          90,
+          91,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          100,
+          101,
+          102,
+          104,
+          105,
+          108,
+          109,
+          110,
+          111
+        ],
+        "hit_contexts": [
+          "tests.replay.test_watch.test_watch_core_trace"
+        ],
+        "old_six_hit_lines": [
+          90,
+          91,
+          93,
+          94,
+          95,
+          96,
+          97,
+          98,
+          100,
+          101,
+          102,
+          104,
+          105,
+          108,
+          109,
+          110,
+          111
+        ]
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.manifest",
+        "executable_lines": [
+          87
+        ],
+        "hit_lines": [
+          87
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          87
+        ]
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.scenario_layout",
+        "executable_lines": [
+          78
+        ],
+        "hit_lines": [
+          78
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.evaluate",
+        "executable_lines": [
+          33,
+          34,
+          35,
+          36,
+          37,
+          38,
+          39,
+          40,
+          41,
+          42,
+          43,
+          44,
+          45,
+          46,
+          47,
+          48
+        ],
+        "hit_lines": [
+          33,
+          34,
+          36,
+          37,
+          39,
+          40,
+          41,
+          43,
+          44,
+          47,
+          48
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          33,
+          34,
+          36,
+          37,
+          39,
+          40,
+          41,
+          43,
+          44,
+          47,
+          48
+        ]
+      },
+      {
+        "key": "engines.watch.WatchNpc.manifest",
+        "executable_lines": [
+          30
+        ],
+        "hit_lines": [
+          30
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          30
+        ]
+      },
+      {
+        "key": "engines.watch.WatchNpc.scenario_layout",
+        "executable_lines": [
+          78
+        ],
+        "hit_lines": [
+          78
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.evaluate",
+        "executable_lines": [
+          120,
+          121,
+          122,
+          123,
+          124
+        ],
+        "hit_lines": [
+          120,
+          121,
+          122,
+          123,
+          124
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          120,
+          121,
+          122,
+          123,
+          124
+        ]
+      },
+      {
+        "key": "engines.watch.WatchPassive.manifest",
+        "executable_lines": [
+          117
+        ],
+        "hit_lines": [
+          117
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          117
+        ]
+      },
+      {
+        "key": "engines.watch.WatchPassive.scenario_layout",
+        "executable_lines": [
+          78
+        ],
+        "hit_lines": [
+          78
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.evaluate",
+        "executable_lines": [
+          73,
+          74,
+          75,
+          76,
+          77,
+          78,
+          79,
+          80,
+          81
+        ],
+        "hit_lines": [
+          73,
+          74,
+          75,
+          77,
+          78,
+          80,
+          81
+        ],
+        "hit_contexts": [
+          "tests.replay.test_watch.test_watch_core_trace"
+        ],
+        "old_six_hit_lines": [
+          73,
+          74,
+          75,
+          77,
+          78,
+          80,
+          81
+        ]
+      },
+      {
+        "key": "engines.watch.WatchRespond.manifest",
+        "executable_lines": [
+          70
+        ],
+        "hit_lines": [
+          70
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+          "tests.replay.test_watch.test_watch_core_trace",
+          "tests.replay.test_watch.test_watch_passive_trace"
+        ],
+        "old_six_hit_lines": [
+          70
+        ]
+      },
+      {
+        "key": "engines.watch.WatchRespond.scenario_layout",
+        "executable_lines": [
+          78
+        ],
+        "hit_lines": [
+          78
+        ],
+        "hit_contexts": [
+          "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+          "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay"
+        ],
+        "old_six_hit_lines": []
+      }
+    ]
+  },
+  "limitations": [
+    "Not an implemented producer/assessor or active G07 gate",
+    "Body hits are not full method/branch/instance/access coverage",
+    "Raw native artifacts remain ignored;tracked observations alone cannot qualify later assessment",
+    "Timing3s/all11/device/full game/independent review remain unqualified"
+  ]
+}

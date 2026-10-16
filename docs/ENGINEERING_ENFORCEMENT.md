@@ -73,9 +73,10 @@ G01–G11 gate or a second full heavy suite.
 - Contract completeness,oracle independence,appropriate scope/reuse/architecture quality,
   exception rationale,review independence and truthful reporting remain review obligations.
   Passing lint/tests cannot prove these;review actual diff/callers/evidence.
-- G07 replay-body coverage implementation remains DEFERRED/NOT_ACTIVE;mutation,custom
-  manifest/artifact joins,counter/report expansion and device qualification retain their
-  existing orders/limits. Do not advertise all11planned gates as implemented.
+- G07 has a locally accepted manual [producer/read-only assessor](work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md)
+  with [native evidence](work_orders/RS-P1-GOV_03_ACTIVATION.json). Automated CI/hooks remain NOT_ACTIVE;
+  mutation,custom manifest/artifact joins,counter/report expansion and device qualification retain
+  their existing orders/limits. Do not advertise all11planned gates as implemented.
 - RS-CI-002 main protection/required remote checks remains TODO;no remote setting changes.
   Remote acceptance requires actual successful required jobs on the published commit SHA;
   local qualification/workflow text/old runs cannot establish it.

@@ -1,162 +1,207 @@
-# QT-F02 — Bounded Scenario Generalization
+# QT-F02 — Bounded Scenario and Content Generalization
 
-Date:2026-10-15 | Executor:Sol | Review:self-review,not independent acceptance.
-State:order authoring DONE;parent IN_PROGRESS;first bounded runtime unit DONE,CP03 pending.
-Latest director authorization now permits proceeding under Sol's judgment. The concrete
-[room-bindings unit](QT-F02_ROOM_BINDINGS.md) supersedes this document's earlier DRAFT only
-for3x3/one-instance bindings;larger maps/multiple targets/external packages remain later.
-Authorization:director requests reading the current handoff/backlog and executing the next
-recorded action. That action is authoring this order after RS-CLIENT-003/CP04,not bulk import.
-Authority:[MASTER](../MASTER_GAME_ARCHITECTURE.md#13-scope-gates--order),
-[work-order template](../prompts/SOL_CODING_WORK_ORDER.md),
-[turn rules](../../ENGINEERING_RULES.md),[backlog](../../BACKLOG.md).
+Date:2026-10-13 (Asia/Seoul) | Executor/reviewer:Sol;self-review only
+State:DONE for first embedded generalization;CP03 actual subset feedback/scoped repair accepted
+Authorization:director subsequently requested the remaining design,code and verification in chat.
+Current coding contract:[embedded scenarios](QT-F02_SCENARIO_CONTRACTS.md);supersedes the
+historical authoring-only scope/DRAFT below. No publication or further bulk/world expansion.
 
-## Original authoring scope and baseline
+Authority:[turn rules](../../ENGINEERING_RULES.md),[MASTER](../MASTER_GAME_ARCHITECTURE.md)
+§§1–3,[engineering prompt](../ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),
+[coding template](../prompts/SOL_CODING_WORK_ORDER.md),[A10](../../architecture/BLOCK_05.md#a10-typed-schemas--content-pipeline).
+Status/dependencies:[BACKLOG](../../BACKLOG.md);human progress:[Korean companion](../../GAME_SYSTEM_SUMMARY_KO.md).
 
-Goal:replace the single-room assumptions with content-owned scenario identities and geometry,
-then demonstrate two independently authored scenarios through the same authoritative path.
-The original authoring delivery established the source map,dependency order and acceptance requirements only.
-That authoring delivery installed no tools,changed no gameplay/public contracts,and made no
-executable READY claim. The linked runtime unit now supplies its own exact contract/evidence.
-Non-goals:procedural continents,new combat balance,quests/NPC cognition,bulk narratives/assets,
-final engine selection,standalone release,LLM integration or governance changes.
+## 1. Observed Baseline
 
-Baseline:main1ad22446d48c50b8b72a6d3af8de3c9d775134ea,clean tracked/untracked tree on entry.
-Actual workspace:C:/Reverie Saga;older documents' C:/ReverieSaga is another documented layout.
-Prior local work remains in stash `pre-update-local-work-20261015`;it is not part of this
-baseline or evidence. Preserve it;do not automatically apply it over the newer main.
-Before implementation refresh HEAD/status and all relevant source fingerprints;this source
-inspection does not qualify a different checkout or an old stashed repair.
+HEAD:`1ad22446d48c50b8b72a6d3af8de3c9d775134ea`;entry tree clean,288tracked files.
+Current-host Python probe:CPython3.13.12,exit0. No fresh gameplay/native/remote CI evidence.
+Refresh HEAD,status and input hashes before design or implementation;do not overwrite intervening work.
 
-Prerequisites:RS-P1-CORE representative slice,QT-F06 six-description compiler/sample,and
-RS-CLIENT-003/CP04 first reviewed prototype DONE. CP03 remains DEFERRED/not received.
-Documentation tools:local CPython3.13.12 and Git;Unity is unnecessary for this delivery.
-For later native work follow [per-device setup](../WORKSTATION_SETUP.md);another host's
-Unity/license/native PASS cannot qualify this workspace.
+| Actual source | Fixed coupling / live consumer |
+|---|---|
+| `src/app/client_session.py` `_payload`, `ClientSession.update`, `act` | Gate/enemy/NPC/actor/map IDs selected from constants;creates/resumes only watch bundle |
+| `src/app/watch.py` `_bootstrap` | Fixed ten records;3×3 map,wall1,gate4,enemy8,NPC6;genesis wake addresses fixed NPC |
+| `src/app/encounter_registry.py`, `src/app/watch_registry.py` | Fixed fields/ranges,feature documents and fingerprints;NPC cell restricted to6 |
+| `src/engines/encounter.py`, `src/engines/watch.py` | Actions/events address fixed roles;watch wake/reply/lantern consumers are coupled |
+| `src/orchestration/encounter.py`, `src/orchestration/watch.py` | Codecs/admission/reducers/presenters/checkpoints enforce IDs,topology and event provenance |
+| `src/app/client_text.py` `NAMES` | Committed-fact narration has a fixed ID→Korean role table |
+| `src/app/client_worker.py` → `src/app/engine_bridge.py` | Single owner worker;private-pipe requests expose actions,not scenario/target selection |
+| `src/contracts/client.py` → Unity `PlayRoom.cs` | One actor/gate/enemy/NPC projection;no generic entity collection |
+| `src/contracts/narratives.py`, `src/adapters/narrative_catalog.py`, `content/narratives.json` | Six immutable descriptions displayed through the bridge;no gameplay spawn/effect contract |
 
-Reads:AGENTS,ENGINEERING_RULES,SESSION_HANDOFF,BACKLOG,GAME_SYSTEM_SUMMARY_KO,README;
-MASTER §§2–4/13;v2.6 overrides/AI-documentation/checkpoint rules;
-[original finding](../reviews/CLAUDE_QUILLTALE_FEEDBACK_2026-10-07.md),
-[QT-F06](QT-F06_NARRATIVE_IMPORT.md),[CP04 dispositions](../reviews/RS-REVIEW-CP04_DISPOSITIONS_2026-10-12.md);
-the actual source/callers in the table below and existing encounter/watch/durable/client tests.
+These are intentional accepted prototype restrictions,not defects to fix by relaxing validators.
+Changing bootstrap positions alone is insufficient:registry,codec,checkpoint and presenter contracts
+must agree. [CORE-03](RS-P1-CORE_03_INTERACTION_COMBAT.md),
+[CORE-04](RS-P1-CORE_04_EVENTS_NPC.md) and [CORE-05](RS-P1-CORE_05_DURABILITY_SAVE.md)
+retain the accepted v1 contracts and literal replay expectations.
 
-Allowed NEW:C:/Reverie Saga/docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md.
-Allowed MODIFY:C:/Reverie Saga/BACKLOG.md;C:/Reverie Saga/SESSION_HANDOFF.md;
-C:/Reverie Saga/GAME_SYSTEM_SUMMARY_KO.md.
-Forbidden this delivery:all runtime/tests/config/locks,reference checkout,compiled catalogs,
-frozen CP02/CP04 witnesses/archives,stash contents and remote settings/publication.
-Future runtime allowed paths must be enumerated in a separate complete implementation unit.
+Entry worktree SHA256 witnesses,not Git blob hashes:
 
-## Observed live consumers
+| Path | SHA256 |
+|---|---|
+| src/app/client_session.py | f321f43ed089ab6f068ea13785091aa04124e7454715f3315382c778898749e8 |
+| src/app/watch.py | 73a0c1aa8ea5ed7fd369b666dd32192131a5f1ef61a2d68fe8d8e1a2a2bbdce6 |
+| src/app/encounter_registry.py | 9a514ba3724df1da51c0fbf506660a58c2a107a3f8e310f1e5a0a024f17af1df |
+| src/app/watch_registry.py | 73e98a8410d893093dccf3f1a6b6d6a7a9fc2094460538b36f5f119e9a3f1c93 |
+| src/orchestration/encounter.py | dfe5d672b20b9b4a93f38f19ed978055d1be1bd2ab8d3f31fe4a14ff6d6e778a |
+| src/orchestration/watch.py | 268ebb0214090404dfe6b333e22e706ca270b227e6cde69da8331601932ab138 |
+| src/app/engine_bridge.py | 8aaa6922f94674714f3a3626ab8e6a207f0ab5bae29dd49a02e1631632f79667 |
+| src/contracts/narratives.py | 9f87b7da551f38fed2d7e734ce0261bed4c86ee7816bc4950b12653bb36e45a1 |
+| content/narratives.json | 5b5927c5a354a06bfea69eaf36a005b87ca5c211c2d35e155c1ef3be4d9eac5e |
 
-| Boundary | Actual source/symbol | Constraint to resolve together |
-|---|---|---|
-| Bootstrap | src/app/watch.py:WatchBootstrapSpec/_bootstrap | Fixed gate4/enemy8/NPC6,3x3 map,role IDs and initial wake event |
-| Registration/pins | src/app/encounter_registry.py:encounter_bundle;src/app/watch_registry.py:watch_bundle | Literal rules/schema descriptors and field bounds encode the same room |
-| Geometry/rules | src/domain/trial.py:cell_coordinates;src/domain/encounter.py:adjacent_cells;src/engines/encounter.py | Coordinates,actor/target IDs,gate/enemy cells and adjacency use fixed metadata |
-| NPC/events | src/engines/watch.py;src/orchestration/watch.py | Fixed NPC/lantern IDs,cell,event validation and pending-event checkpoint invariants |
-| Admission/serialization | src/orchestration/trial.py;src/orchestration/encounter.py | Codecs,fact/delta/cue checks,checkpoint policy and presenters also enforce fixed IDs/cells |
-| Durable ownership | src/app/durable.py:create_durable/resume_durable;src/contracts/state_io.py:StateIO | Caller supplies registered bundles;load/replay must reconstruct the same pinned rules |
-| Input/projection | src/app/client_session.py:_payload/ClientSession.update;src/app/client_worker.py | Requests and view select fixed roles;all SQLite/session work has one worker owner |
-| Text | src/app/client_text.py:NAMES | Player-visible names resolve fixed entity IDs |
-| Engine wire | src/app/engine_bridge.py:schema_fingerprint;src/app/engine_project.py:generate_wire | Public DTO changes require fingerprint/codegen and real framing/capacity checks |
-| Unity scene | clients/unity/Assets/Reverie/Scripts/PlayRoom.cs:Apply | Explicitly rejects non3x3 or changed board geometry under accepted CP04 policy |
+## 2. Complete Authoring Work Order — Historical Snapshot
 
-Six QT-F06 descriptions are UI text,not scenario definitions or quest logic. Replacing only
-client constants or adding a scenario JSON reader cannot satisfy this task. Existing
-SimulationPins/PackageDocument are the starting point for identity/pinning design;do not add
-an independent mutable configuration SSOT or bypass existing checkpoint validation.
+| Field | Contract / result |
+|---|---|
+| task_id/title | QT-F02;author the first bounded scenario-generalization order |
+| status/executor/review | Authoring DONE;Sol/self-review;runtime DRAFT until §4 contracts are complete |
+| goal/non_goals | Define two independently playable configurations through one registered path;exclude bulk content,new combat balance,quest consequences,NPC cognition,world travel,art and release |
+| baseline | §1 exact HEAD/clean tree/source witnesses;refresh before execution |
+| prerequisites | CORE integration,CP01/CP02/CP04,CLIENT-003 and QT-F06 accepted for their recorded scopes;these do not qualify new gameplay schemas |
+| read_files | §1 actual sources/callers;AGENTS/ENGINEERING_RULES/BACKLOG/SESSION_HANDOFF/GAME_SYSTEM_SUMMARY_KO;MASTER §§1–3;prompt format/reuse/checkpoints;BLOCK1 ownership,BLOCK4 A7/A9,BLOCK5 A10;CORE-03/04/05;QT-F06;CLIENT-003;CP01 dispositions/CP04 repair |
+| allowed_edit_paths | NEW `C:/ReverieSaga/docs/work_orders/QT-F02_SCENARIO_GENERALIZATION.md`;MODIFY `C:/ReverieSaga/BACKLOG.md`,`C:/ReverieSaga/SESSION_HANDOFF.md`,`C:/ReverieSaga/GAME_SYSTEM_SUMMARY_KO.md` |
+| forbidden_paths | All other tracked files;reference C:/Quilltale;runtime/tests/accepted content,original review witnesses/ZIPs,goldens,architecture authority,pins,CI and remote settings |
+| public_contract | Documentation only;no function,DTO,wire,component,save-format or feature-registration change;runtime additions require §4 |
+| behavior | Inventory live fixed bindings;define staged scope and required contract decisions;link original semantics;keep authoring/runtime/review states distinct |
+| edge_policy | Empty/zero/negative/duplicates/invalid IDs/missing fields/order/error decisions for runtime are required in §4;numeric behavior here NOT_APPLICABLE because documents do not execute domain input |
+| examples | Two changed labels alone→FAIL generalization;two independent IDs/layouts with the same accepted rules and correct load/replay→candidate acceptance;unqualified source entry→excluded from both samples |
+| algorithm_steps | Read authoritative entry and sources;capture baseline;trace fixed bindings through callers;write §3–5;update all three progress documents;validate links/UTF8/scope/hashes/diff |
+| wiring | BACKLOG→this order→actual sources/checkpoints;handoff/current Korean next-step reference same scope;no new runtime registration |
+| performance | NOT_APPLICABLE for document behavior;runtime measurements remain NOT_RUN;A10 cache/chunk targets are not measured results |
+| baseline_commands | `git status --porcelain=v1` empty;`git rev-parse HEAD` §1 SHA;`.venv/Scripts/python.exe --version` 3.13.12/exit0;source inspection only |
+| verification_commands | `git diff --check`;UTF8/local-link/fragment/fence validation for four delivery files;source witness rehash;exact changed-file inventory/unchanged HEAD |
+| test_responsibilities | No new runtime tests for documentation;§5 defines future behavioral responsibilities;reuse prior evidence only as historical |
+| acceptance | All template fields present;actual sources exist;§4 unresolved semantics explicitly DRAFT;two-sample/compatibility/review criteria concrete;four-file scope/progress consistency/document checks PASS |
+| claude_checkpoints | Authoring does not trigger CP03/CP05;future triggers and held downstream steps in §6;no external provider call/upload |
+| stop_conditions | Intervening overlapping user edits;missing source evidence;attempt to promote incomplete runtime contract to READY;report actual cause before dependent changes |
+| delivery | Brief Korean result,files and actual checks;local documentation only;no commit/push/PR/dependency/agent/remote administration in this task |
 
-## Dependency order and readiness
+## 3. First Playable Scope
 
-The following table bounds the broader parent. The linked first runtime unit resolves its
-own subset;do not treat remaining larger-map/package questions as blockers for that unit.
+- Exactly two small,independent scenarios;one player,one door,one enemy,one watch NPC and one
+  lantern per scenario. Retain3×3/1000mm cells and existing combat/time rules for this first stage.
+  Vary role IDs and legal object/wall positions;do not require a larger map or multiple same-role actors.
+- Configuration A and B must share one implementation and registration path. No branch on scenario
+  name,content name or special enemy ID inside simulation. The old fixed prototype remains a
+  compatibility case,not the test oracle for new traces.
+- New-game selection chooses one validated immutable configuration before owner creation.
+  Resume/load use saved accepted pins;UI selection cannot rewrite an existing world.
+- Names/descriptions may bind only the six accepted QT-F06 narratives after category/reference
+  validation. Fresh mechanical IDs/topology are authored for this project;source narrative IDs
+  never become legacy entity bindings. The319queued+1rewrite-required entries remain held.
+- Player actions:move,open/close,attack,rest,wait,bell;save/load/retry/recovery continue through
+  the authoritative owner. A short action sequence that reaches the door/enemy/NPC is sufficient
+  for each sample. Quest descriptions stay descriptive;no reward/status/neglect consequence is implied.
+- First client remains provisional Unity;Tk regression behavior must remain qualified. Client
+  geometry/labels follow committed projections and accepted definitions;client collision decides no outcomes.
 
-1. **Contract unit,next design work:**specify immutable scenario definitions,role bindings,
-   geometry/occupancy,accepted-content identity and version routing. Resolve the readiness
-   table below into exact signatures/schema/bounds/error codes and independent examples.
-   Link applicable A10/save/replay contracts before making any new public contract effective.
-2. **Headless implementation unit,not READY:**register validated metadata through legal
-   layers;update bootstrap,admission,engines,reducers,codecs,checkpoint policy and presenters
-   together. Preserve existing published schemas/pins/fixtures;qualify compatibility explicitly.
-3. **Client integration unit,not READY:**carry authoritative roles/selection through
-   ClientWorker/ClientSession/text and generated wire DTOs into Tk/Unity. Replace the CP04
-   fixed-board guard only with an explicitly specified geometry lifetime/resync policy.
-4. **Evidence/checkpoint:**exercise two independent scenarios,save/load/retry/recovery and
-   replay,then prepare RS-REVIEW-CP03 with actual sources/tests/commands/failures/hashes.
-   Obtain director-forwarded Claude feedback,verify findings,repair/retest before expansion.
+## 4. Contract Completion Before Runtime READY — Authoring Gap Inventory
 
-| Required runtime contract | Decision required before READY | Acceptance condition |
-|---|---|---|
-| Public I/O | Exact definition fields/types/versions;compile/bootstrap/select API;who owns selection | All registered callers and construction/resume paths specified |
-| Cardinality/targets | First-unit actor/door/enemy/NPC counts;explicit target vs unique-role selection | Zero/multiple/missing/stale target behavior has exact diagnostics,no fallback to old constants |
-| Geometry | Width/height/cell-mm bounds;row-major conversion;walls;collisions;NPC blocking policy | Invalid/overlapping/out-of-range entities reject before state creation or view mutation |
-| Ordering/errors | Closed fields,exact integer types,bool rejection,duplicate IDs,canonical order,first error | Empty/negative/boundary/duplicate/unknown/missing cases have exact code/path or justified N/A |
-| Ownership | Immutable accepted metadata vs COMMIT-owned mutable state;pending-event references | No engine-to-engine imports,no unvalidated cache,state writes remain COMMIT-only |
-| Persistence | Package bytes/hash/version binding;legacy save route;cross-scenario load;failure cleanup | No silent repinning or new-content reconstruction of old saves;failed load preserves attachment |
-| Replay | Genesis/world identity,rule/catalog pins,package availability and mismatch handling | Same accepted package/seed/trace gives identical state/facts;wrong package rejects explicitly |
-| Presentation | Role/name IDs,view cardinality,geometry lifetime,wire schema/version/capacity | No local predicted outcomes;load/reconnect rebuild or reject before partial geometry change |
+At authoring,the architecture supplied general rules but no complete scenario payload/schema.
+The following gap inventory is now resolved for the embedded first stage by the linked contract;
+external gameplay packages and major save/quest/memory changes remain later scopes.
+Develop them together in a bounded contract-design stage before producing a READY coding order.
 
-No proposed type,formula,bound or error in this document is an active runtime contract.
-Missing semantics above mean DRAFT under the work-order template,not guessed TODOs.
-Quest consequence schemas are outside this first unit. If a later unit changes major
-NPC-memory/quest/save contracts,apply the CP05 preimplementation trigger separately.
+| Contract gap | Required concrete decision / artifact |
+|---|---|
+| Scenario definition | Frozen concrete DTO and compiler schema:scenario/version IDs;actor/space/gate/enemy/NPC/lantern roles;cells/walls/initial values;narrative references. Exact field types/defaults/ranges/cardinality/ownership and type/version registry;versioned feature documents. Suggested NEW contract artifact:`docs/work_orders/QT-F02_SCENARIO_CONTRACTS.md`;path is PLANNED,not present |
+| Role resolution | Named public signatures and a single immutable binding source available to admission/engines/codecs/reducers/presenters/client. No engine I/O or sibling-engine imports;declare every read/consumer in FieldSpec/manifests. Entity identity distinct from player-facing description |
+| Geometry / overlap | Derive coordinates from map record,not fixed WIDTH;define wall ordering,uniqueness and legal start cells,door/enemy/NPC overlaps,open-door occupancy and defeated-body movement. Initial HP/stamina and all arithmetic retain current constants;do not copy source stats |
+| NPC events | Define binding of each wake/request/echo/reply/charge to selected roles,queue cardinality/next wake and cause provenance;retain period2/echo1/charge cap3/wait1..16. No added memories/goals or changed wake behavior |
+| Accepted packages | Exact package/catalog/hash/dependency fields,compiler/load signatures and durable accepted-package path. Distinguish existing display-only narrative pin from authoritative scenario pin;persist dependencies before reference;missing/hash-mismatched definition explicitly fails before publication |
+| Compatibility | Select exact type/schema/rules fingerprints and versioned feature path without widening old v1 validators. Specify old-save selection,scenario-save resume/load and package-unavailable errors. No automatic migration or rewrite;any format/migration change requires CP05 contract review and an explicit bounded order |
+| Input / projection | Exact bootstrap/new-game selector and client request/projection signatures;how identities/labels survive load,retry,reconnect. Update generated wire bindings from canonical Python source,never edit generated C# as separate authority. No hot scenario switching |
+| Error priority / boundary | Exact diagnostic codes/paths and priority for unknown/duplicate keys,wrong exact types,bool as int,missing IDs/cross-links,invalid cell,overlap,package rejection,wrong compatibility pin. Failure preserves files,attachment,CORE/protocol and displayed input/history as applicable |
+| Samples / vectors | Two literal legal role/layout configurations and independently derived normal/blocked/attack/NPC/load/replay traces. Include cells→mm,HP/stamina/tick,count/queue/hash expectations and rejection preservation;no copied v1 goldens |
+| Edit / verification scope | Exact absolute NEW/MODIFY paths and symbols after contract resolution;select existing owned routes/helpers first. Name actual test nodes/native scenarios,commands,performance measurements and public readers before coding READY |
 
-## Independent verification requirements
+Contract-design acceptance:every row complete,all source consumers accounted for,independent
+vectors hand-derived,existing accepted contracts preserved and no unresolved version/ownership/error
+semantics. Runtime DRAFT is a contract-readiness state,not a fabricated environment blocker.
+The next authorized design task may edit this order plus its NEW contract artifact/progress;
+it must establish its own concrete allowed paths/baseline. This routing grants no runtime authority.
 
-Test responsibilities for later concrete units,not tests added by this delivery:
+## 5. Future Implementation / Acceptance Sequence
 
-- Two original fixtures must use different IDs and placements,not merely renamed prose or
-  a changed seed. At least one must omit every historical role ID to expose target leakage.
-  Geometry variability must match the approved first-unit bounds;do not claim untested sizes.
-- Derive exact movement/blocker/adjacency,damage/stamina and wake/reply outcomes from the
-  approved new contract. Keep existing mechanics unless a separately scoped change is approved.
-  Assert fact/delta/cue entity IDs as well as HP/tick;reuse no v1 or newly generated oracle.
-- Trace each scenario through registered headless callers and the client boundary. Save at
-  a pending event,load the branch,continue/retry/recover,and replay in fresh processes/hashseeds.
-  Check old golden fixtures unchanged,matching pins,wrong-package rejection and unchanged
-  attachment/files/state on precommit failures. Test postcommit truth separately.
-- Cover unknown/duplicate IDs,missing roles,invalid cells/walls,noncanonical inputs,exact types,
-  wrong versions/hashes and unavailable content. Exact error codes/paths must come from the
-  completed contract,not from observing implementation output.
-- Run [README gates](../../README.md#verification) and affected tests. Shared CORE changes
-  require full regression. Unity changes require fresh native scene/error/reconnect/save/load
-  evidence on this computer;headless PASS alone is not graphical acceptance.
-- Performance:reuse accepted execution/frame capacities;define package/entity/geometry caps
-  and a named measurement before READY. New performance numbers are UNVERIFIED here.
+1. Complete §4 contracts and exact coding edit scope;refresh baseline and verify current-host
+   tools through [workstation setup](../WORKSTATION_SETUP.md). Existing device evidence does not
+   qualify another machine. Resolve CP05 applicability before any changed save/quest contract.
+2. Implement typed definition/compiler/reader and role binding with one registered bootstrap path.
+   Validate packages before new-game creation;pin accepted data for save/replay. Existing rejected
+   package/codec/lifecycle risks from [CP01](../reviews/RS-REVIEW-CP01_DISPOSITIONS.md) must be
+   assessed against actual new consumers,not automatically escalated into a structural rewrite.
+3. Register admission,engines,reducers/codecs,checkpoint validation and presenters consistently.
+   Run two independent headless scenarios;prove no old-target leakage or mutation before COMMIT.
+4. Wire worker,committed-fact Korean narration,bridge/generated DTOs and Unity projection.
+   Select each scenario in a fresh owned working directory;verify gameplay and its own load/resume.
+5. Execute necessary focused normal/boundary/error/integration/replay tests;shared CORE changes
+   require full regression. Run [README verification commands](../../README.md#verification),plus
+   affected formatter targets and [Unity native workflow](../../clients/unity/README.md#generate--verify--build)
+   extended with actual two-scenario cases. The existing fixed-room verifier alone cannot qualify B.
+6. Record actual CP03 packet and await feedback before further scenario/world/bulk expansion.
 
-CP03 trigger:after generalized content and the first small playable segment,before further
-scenario/world/engine or bulk-content expansion. Packet:exact HEAD/diff/input hashes,contracts,
-all necessary source/tests/fixtures/locks,independent expectations,actual results/limitations.
-No checkpoint triggered or external feedback requested by order authoring alone. CP04 remains
-DONE for its accepted prototype;320other narratives remain unqualified/outside runtime.
+Future test responsibilities (PLANNED;exact new nodes/paths assigned at contract completion):
 
-## This delivery's acceptance
+- Definition/compiler:exact types and integer wire strings,closed fields,empty/boundary values,
+  duplicate/reference errors,hash/qualification checks,deterministic output,failed publication preservation.
+- Headless integration:both role/layout configurations through registered real callers,gate/occupied
+  movement,attack/rest/death and invalid target,wait/wake/bell/echo chains. Swap all role IDs between
+  legal fixtures;results follow definitions rather than old constants. Same-rules label-only edits
+  cannot change authoritative outcomes unless explicitly included in a pinned package identity.
+- Persistence/replay:save midcombat,before NPC wake,load and continue;wake/attack occurs once;
+  exact retry uses prior fingerprint;bad/missing package and wrong pins preserve old owner.
+  Frozen accepted package plus seed/trace reproduces state,protocol,events and relevant hashes.
+- Client/native:projected cells/labels/tick/HP/counts match both Brain sessions;load resets history,
+  failure preserves it;reconnect uses loaded branch;request failure/input polling/shutdown remain usable.
+- Compatibility:original prototype and original replay goldens unchanged;accepted old saves remain
+  explicitly supported or explicitly rejected according to approved policy,never silently reinterpreted.
 
-Public contract/behavior/formulas:wiring/source-map documentation only;no runtime API or
-numeric behavior changed. Empty/invalid/ordering policies for runtime are readiness items
-above. Documentation output is one order and three synchronized progress records;links
-must resolve,English technical prose/Korean companion remain separated,history retained.
-Algorithm:inspect actual entry/status/callers → bound order and dependencies → record DRAFT
-gaps honestly → synchronize progress → strict UTF8/link/fence/scope/whitespace checks.
+Completion requires actual source,registered consumers,two independent live samples,focused and
+required full checks,save/load/replay/error preservation,portable evidence and checkpoint dispositions.
+Performance remains UNVERIFIED until cold/warm load memory/time and actual client frame samples
+are recorded;use existing A10/A13 targets and declare device/scenario/method,not new unsupported numbers.
 
-Baseline commands:git status --short --branch,git rev-parse HEAD,Python --version;clean main
-and Python3.13.12 observed. Verification:strict UTF8/local links/fragments/fences for four
-changed Markdown files;git diff --check;the five existing document-guard cases in
-tests/unit/test_engineering_rules.py. Runtime/full/Unity tests NOT_RUN for documentation.
-Acceptance:source map matches current callers;next units/checkpoints distinguish plan from
-implementation;all required work-order fields are addressed or explicitly DRAFT;only four
-allowed documents change;backlog/handoff/Korean progress agree;document checks PASS.
-Stop conditions:overlapping user edits,baseline drift or absent contract evidence;preserve
-the tree and report concrete evidence. Do not broaden this task into a runtime repair.
-Delivery:brief Korean result and roadmap/checkpoint position. No commit/push/agent launch.
+## 6. Checkpoints and Holds
 
-## Acceptance receipt — 2026-10-15
+- CP03:trigger after first generalized two-scenario playable segment and native acceptance;
+  hold further scenario/world/bulk imports. Packet includes refreshed HEAD/diff/hashes,contracts,
+  actual callers/tests,independent vectors,logs/screenshots and save/replay limitations. Obtain
+  actual Claude feedback,validate dispositions,repair/retest before DONE. No automatic provider call.
+- CP05:conditional preimplementation contract review if §4 changes save format/compatibility or
+  introduces major quest/NPC-memory semantics;postimplementation review remains separately required
+  under the [checkpoint register](../../BACKLOG.md#claude-checkpoints-and-defect-repair--2026-10-07).
+  The first scope excludes new quest/memory mechanics;scenario-package persistence still needs an
+  explicit applicability decision. Do not assume the existing empty-package format already supports it.
+- CP04 retains accepted prototype status;final engine/bulk art decisions remain separate.
+  No checkpoint is closed by this authoring delivery.
 
-Order-authoring acceptance PASS,self-review only. Existing document guards:
-`.venv/Scripts/python.exe -m pytest -q tests/unit/test_engineering_rules.py -k 'not standard_lint'`
-exit0,5PASS/5deselected0.05s;the deselected subprocess lint probes are outside this document-only
-selection. Strict UTF8/154local links/8fragments/balanced fences/exact4file scope PASS;
-git diff --check PASS. Python emits a base-location shim warning while version/tests/checks
-return success;no reinstall or claim of full environment qualification. Runtime/full/Unity
-tests NOT_RUN. Parent remains IN_PROGRESS,runtime DRAFT;no CP03 feedback or gameplay acceptance.
+## 7. Authoring Acceptance — 2026-10-13
+
+Source inventory and clean entry baseline recorded;all22required template fields present.
+`.venv/Scripts/python.exe -` document audit:exit0;4UTF8 files/balanced fences,
+160local links/10fragments,9unchanged source SHA256 witnesses,exact4-file delivery scope and
+unchanged HEAD PASS. `git diff --check`:exit0. Actual diff self-reviewed against authoring scope
+and existing contract/checkpoint limits. Python printed the preexisting launcher-location diagnostic
+before completing the audit;no environment repair needed for this successful document check.
+Runtime remains DRAFT because §4 contracts are not settled. Two scenarios are acceptance scope,
+not implemented worlds. Gameplay/Unity/full tests/remote CI NOT_RUN for this document-only task.
+No publication.
+
+## 8. Implementation / Native Acceptance — 2026-10-13
+
+Director subsequently authorized remaining design/code/tests. [Embedded contract](QT-F02_SCENARIO_CONTRACTS.md)
+resolves §4 for this first scope without new save format/package storage. [Actual receipt](../reviews/QT-F02_EXECUTION_2026-10-13.md):
+1304full/332focused/47native checks/build/hook-absence and required static/document checks PASS.
+Two independent live scenarios,legacy compatibility and old-target/wrong-save rejection verified.
+[CP03 packet](../reviews/RS-REVIEW-CP03_REQUEST.md) prepared;actual feedback NOT_RECEIVED.
+Parent remains READY_FOR_REVIEW;further world/bulk expansion held. No publication.
+
+## 9. CP03 Feedback / Repair Acceptance — 2026-10-13
+
+Actual static subset feedback received;[verified dispositions/repairs](../reviews/RS-REVIEW-CP03_DISPOSITIONS_2026-10-13.md)
+accepted:1360full/133focused/47native/build/static checks PASS. F1–F4 repaired;F5 generic
+programmatic display label intentional. Original witness/ZIP preserved,repaired witness separate.
+QT-F02/CP03 DONE for this first embedded scope only;external packages/world/quest/bulk and release
+remain later authorized orders. No full independent/runtime/C# or external patch rereview claim.
+
+PR09parallel-history snapshot:[QT-F02_SCENARIO_GENERALIZATION_PR09_SNAPSHOT.md](QT-F02_SCENARIO_GENERALIZATION_PR09_SNAPSHOT.md). Its original acceptance is retained;current execution scope belongs to the latest orders.

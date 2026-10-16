@@ -1,0 +1,37 @@
+I'm running the packet's test suite in a sandbox. Tk isn't installed here, so I'm skipping the Tk client tests.Status: the tests pass (1,626 of 1,626 runnable after installing the pinned tools, with the Tk client tests excluded). Now I'm reading the code and the cleanup receipt for the review itself.I re-checked both links and the new zip (`OPEN_WORK_V3_3159c92_2026-10-15.zip`). This is a partial review: I ran the tests and read the key files, but I did not trace every item in the review request. I found no confirmed defects, so my provisional verdict is **PASS_WITH_CORRECTIONS**, and the corrections are small.
+
+## What I checked
+
+- **GitHub page:** I fetched `OPEN_WORK_REVIEW_START_HERE_2026-10-15.md` on the `codex/open-work-closure-20261014` branch. Its text is identical in substance to `START_HERE.md` in the zip. It confirms PR #8 and the base `1ad22446…`.
+- **Branch head not checked:** The page doesn't show the branch head SHA, so I couldn't confirm that the branch head is `3159c92…`. I also didn't separately open the branch tree URL.
+- **Zip integrity:** All 405 files listed in `REVIEW_INPUTS.json` match their SHA-256 hashes. The only extra files are `REVIEW_DIFF.patch`, `REVIEW_INPUTS.json`, and `START_HERE.md`. The head is `3159c92…`.
+- **Tests I ran:** 1,620 of the roughly 1,675 tests pass, using Python 3.12.3, the pinned pytest 9.1.1, ruff 0.16.6, import-linter 2.15 and mypy 2.4.0. `ruff check` is clean. I ran no mypy, no Unity build and no native checks.
+- **Not run:** I skipped the 55 Tk client tests because this sandbox has no `tkinter` (`test_client.py`, `test_client_reconciliation.py`, `test_memory_client_route.py`). That includes the ordinary client → memory route test, so focus item 1 is untested by me.
+- **Python version:** The project is validated on 3.13.12, and I used 3.12.3.
+- **First run:** 87 tests failed at first only because ruff and import-linter weren't installed. After installing the pinned versions, those governance and lint tests pass (93 of 93).
+- **Reading:** I read the START_HERE and review-request files, the cleanup receipt and JSON, and `src/app/client_worker.py`. I did not read the quest and memory engines, the Gemini adapters, the Unity C# code, or the CP03/CP05 repair history.
+
+## Findings
+
+No confirmed defects in what I inspected. These are all maintainability notes or unverified hypotheses.
+
+1. **P3, maintainability, `src/app/client_worker.py` lines 77–82:** Player-visible errors are classified by matching the exception text, so a `ValueError` whose message happens to equal `"NO_RETRY"` or `"QUEST_UNAVAILABLE"` is treated as a normal rejection. This is deliberate and fine for now, but a typed exception (like `SaveError`/`WorldUnavailable`) would be safer.
+2. **P3, unverified hypothesis, `_error_update` fallback (lines ~93–109):** If the owner projection itself fails after a commit, the worker returns the old cached state with an error status. The code says this is explicit and doesn't invent a success, and I didn't find a flaw. I couldn't run `test_client_reconciliation.py`, so I can't say whether a test covers "commit succeeded, projection failed". Worth confirming that it does.
+3. **P3, documentation:**
+   - `docs/reviews/OPEN_WORK_INDEPENDENT_REVIEW_REQUEST_2026-10-14.md` still shows the old 0f53820 state and date. START_HERE marks that section as historical, but a one-line pointer at the top of that file would avoid confusion.
+   - The cleanup receipt says no commit or push was made. That is consistent with it being written before commit `3159c92`, but a reader of the final packet may find it confusing.
+
+## Cleanup receipt (retirement questions)
+
+- **Figures are internally consistent:** The receipt records 105 targets removed (93 pytest-output folders, 1 duplicate CP04 tree, 11 obsolete files), 41,748 files, and 5,033,172,862 logical bytes. Physical space reclaimed is honestly recorded as not measured.
+- **Can't verify:** I can't check anything on your local disk, such as ownership, permissions, or whether the retained snapshots are really byte-identical.
+- **Retirement criteria:** I'd agree with its own rule for retiring the old closed-checkpoint snapshots. Each must first be shown to be recoverable exactly from Git or a retained source, covering inputs, original findings, provenance and acceptance receipts. CP02 rights evidence and the latest unreviewed context stay.
+- **Legacy Python copy:** The copy under `.pytest_cache/python-3.13.12` should be assessed separately from ordinary pytest output.
+- **Restricted caches:** For the 17 restricted cache folders, confirm who owns them before proposing any permission change, as the receipt says.
+
+## Still open
+
+- Latest remote CI for this head is `NOT_YET_VERIFIED` per `REVIEW_INPUTS.json`, so don't treat the old 1,664-test remote pass as covering it.
+- This is not the formal independent review, so the record should still say "feedback NOT_RECEIVED" until you submit it. It also approves no content, rights or release.
+
+I can go deeper on one area next, such as the quest/memory engines, the Unity C# bridge, or the CP03/CP05 repair dispositions.

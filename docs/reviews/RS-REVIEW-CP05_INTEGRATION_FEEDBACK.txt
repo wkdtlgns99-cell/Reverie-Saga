@@ -1,0 +1,82 @@
+I'll start by looking at what's in the archive.This looks like a review packet. I'll read its README and the review request to see what's being asked.The request asks for a code review with a verdict. I'll extract the archive and read the core quest code.Next I'll read the orchestration layer and the adapters, and try running the quest tests on this Linux box.The quest rules, reducer, checkpoint policy and presenter read coherently so far. Now I'll try to run the tests in this sandbox so I can report what I actually executed.The 89 focused tests pass. I'll start the full suite in the background and meanwhile read the budget, transport and provider code.Here is the boot validator itself.Boot validation looks sound, though it skips entirely when the bundle's `rules_document` has no `quest` key. Before reading more I'll check the full suite.The prepare CLI reads the key from the `GEMINI_API_KEY` environment variable, while the docs describe a key file. I'll check that against the README and then look at the client session.The key wiring is coherent. Now the client session, covering retry, recover and presentation failure.`ClientSession` is clean. Next, how the client picks dialogue text from committed facts.Dialogue text is selected from committed `QuestSpoken` facts, which is correct. I'll check whether the full suite is still running.While it runs, I'll test the stale `.pending` ledger wedge I suspected, and the missing-`quest`-key skip in boot validation.The role tests cover many consumers. Now my probe: strip the `quest` key from `rules_document` and swap in a wrong-content presenter.P1 is confirmed: a bundle with the `quest` key removed is accepted. My probe script had a serialization bug, which I'll fix before running P2 and the control.Confirmed. With the `quest` key absent, the validator accepts a presenter bound to different dialogue. I'll also check what happens to a skipped constructor in that same fail-open path.A skipped constructor still fails closed in that path, just with a raw `AttributeError` rather than a typed `BootstrapError`. Next up is post-commit presentation failure handling.`PlayRoom.cs` reads quest catalog environment variables around lines 46-56. I'll check whether that code is compiled into a release build.The Unity README confirms that environment selectors are part of a local development harness. Next I'll confirm provider isolation by checking what the play path imports.The play path has no network or provider imports. For the API-uncertainty question, I'll verify the model ID and thinking parameter against current Gemini docs.The search settles two API points: `gemini-3.5-flash-lite` exists and supports MINIMAL thinking, which is also its default. I'll check on the full suite.While the suite finishes, I'll run my own cross-process contention check on the budget ledger. At most 2 of 6 simultaneous reservations should succeed.The output interleaved, so I'll redo this with per-process result files.No bypass: 6 simultaneous processes produced 1 success and 5 `GENERATION_BUDGET_UNAVAILABLE`. Back to the suite.`pgrep` matched its own command line. I'll check for the actual pytest process.The suite process died with the timed-out tool call, so I'll relaunch it fully detached and write progress to a file.While that runs, I'll map the integration test names against the review questions to find coverage gaps.Coverage is decent, and I have the gaps. Checking the suite.The sandbox has no `tkinter`, so `test_client.py` can't be collected here. I'll exclude it and run everything else.85 failures. I need to see whether they come from missing tools in the sandbox or from real defects.All 85 failures are in the governance and engineering-rule tests, and the first error is a missing `importlinter` module. I'll install the pinned tools and rerun just those files.Governance passes with the pinned tools. I'll also run the client-text test, which I excluded unnecessarily, and a quick lint and layering pass.I have what I need for the verdict. I'll pull exact line numbers for the findings.# CP05-INTEGRATION review: PASS WITH CORRECTIONS
+
+The one-quest integration is sound and I found no blocker. I found two P2 defects (both reproduced with probes) and several P3 items. The two P2 repairs are small and should land before CP05-INTEGRATION closes.
+
+## What I ran and didn't run
+
+I ran these in a Linux sandbox (Python 3.12.3; Sol used 3.13.12 on Windows):
+- **Focused tests:** the quest, dialogue, adapter and narrative-catalog tests, 89 passed.
+- **Full suite:** the first run had 85 failures, all in `tests/governance` and `test_engineering_rules.py`. Their first error was a missing `importlinter` module, so I installed the pinned `import-linter==2.15`, `ruff==0.16.6` and `mypy==2.4.0` from `requirements-dev.lock`. After that, 91 governance and rule tests passed, plus 13 in `test_client_text.py`. That makes about 1,400 of Sol's 1,437 passing here.
+- **Static checks:** `ruff check src tests` passed, and `lint-imports` reported 3 contracts kept. I installed mypy but did not run it.
+- **Probes:** I wrote four ad hoc probes, covering boot validation, the budget ledger, cross-process lock contention and provider isolation. Their results are below.
+- **API facts:** I searched the Gemini docs for the model ID and the thinking parameter.
+
+I did not run these:
+- The 37 tests in `tests/integration/test_client.py` (my inference from 1,437 minus 1,400). They need `tkinter`, which the sandbox lacks, so the real Tk quest test was not run.
+- Unity and any native or Windows execution. The native results are Sol's evidence only, and I did not open the screenshots or build output.
+- `mypy` and the live Gemini API.
+
+I inspected the code for:
+- Quest domain, contracts, engine, orchestration and registry.
+- Boot validation in `serialization.py`.
+- The `adapters/` files for dialogue, Gemini, transport and budget.
+- `dialogue_prepare.py`, `client_session.py`, `client_worker.py` and the quest paths in `client_text.py`.
+- The Unity `PlayRoom`, `BrainConnection` and `LiveVerification` gating.
+
+I did not read:
+- `durable.py`, the store, `save_slots`, the driver and scheduler.
+- `engine_bridge.py` and the Tk module.
+- Most C#, the scene YAML and `changes.patch`.
+
+On composition, `validate_net` checks only the net transition and the after-state. I did not trace `turn.py` to confirm that each step's before-stage is checked first.
+
+## Findings
+
+**P2-1: Quest boot validation fails open when `rules_document` has no `quest` key** (`orchestration/serialization.py:173`)
+- **Problem:** `if "quest" not in bundle.rules_document: return` skips the whole check, including the uninitialized-constructor guard.
+- **Probe:** I deleted the `quest` key from a real `quest_bundle` and `state_io` accepted it. I then also bound the presenter to different dialogue text and it was still accepted. The control with the key intact rejects with `presenter:quest.presenter:mismatch`.
+- **Skipped constructor:** with the key absent, a skipped-constructor engine leaks a raw `AttributeError` from the scenario guard instead of a `BootstrapError`.
+- **Risk:** low in practice, since bundles are built in app code, but the guard should be tight.
+- **Repair:** detect quest presence from the quest-prefixed engines, schemas and presenters, and require `("quest" in rules_document) == present`. Add a test for the key-absent case.
+
+**P2-2: A crashed process permanently wedges the call-budget ledger** (`adapters/generation_budget.py:119`)
+- **Problem:** `_write` opens `budget.pending` with `"xb"`, and cleanup only runs after that open succeeds. A stale `.pending` left by a kill or power loss makes every later `reserve` raise `GENERATION_BUDGET_UNAVAILABLE`.
+- **Probe:** I planted a `.pending` file and the next reserve failed. Deleting it by hand restored service.
+- **Safety:** this fails closed, so it is not a budget bypass, but it is not self-healing.
+- **Repair:** while holding the lock, call `pending.unlink(missing_ok=True)` before opening. `publish_fresh` has the same pattern, but it is recoverable by hand.
+
+**P3 items**
+- **Intent order is not enforced by the response schema** (`gemini_dialogue.py:57`): `decode_candidate` requires the exact order `completion, gratitude, offer, reminder`, but the schema only requires 4 lines drawn from the intent enum. A reordered response burns one of the two daily attempts and returns `GENERATION_OUTPUT`. Repair: sort lines by `INTENTS` in `parse_response` before validating, hashing the normalized bytes.
+- **Approval is a label at load time** (`quest_dialogue.py:67`): `output_sha256` and `brief_sha256` are only format-checked, and `compile_dialogue` never checks the brief hash against `harbor_brief()`. In Unity, the expected catalog hash comes from `REVERIE_UNITY_QUEST_SHA256`, the same environment as the catalog (`PlayRoom.cs:50`). The real gate is the pinned catalog hash plus the prep-time `compile_dialogue`. I'd document it that way rather than call it authenticated approval.
+- **Budget lock contention is reported as unavailability** (`generation_budget.py:51`): the lock is non-blocking. In my probe of 6 simultaneous processes there was 1 success and 5 `GENERATION_BUDGET_UNAVAILABLE`, never more than the cap of 2, so there is no bypass. A short bounded retry would avoid misleading failures.
+- **HTTP error mapping is coarse** (`gemini_transport.py:59`): all other 4xx codes, including 400 and 404, map to `REJECTED`, and TLS or DNS errors map to `TIMEOUT`. Gemini commonly returns 400 for an invalid key, which would not be labeled `AUTH`. I did not verify that against the live service.
+- **Hard-coded component count** (`orchestration/quest.py:360`): `len(core.components) != 11` is brittle. Derive it from the watch policy.
+- **Unguarded Unity selectors:** the `LiveVerification` and malformed-frame hooks are correctly under `#if UNITY_EDITOR || DEVELOPMENT_BUILD`. The environment selectors in `PlayRoom.Start` are not gated. The README calls this a local development harness, so I'd note it rather than treat it as a defect.
+
+## Answers to the seven focused questions
+
+1. **Required-role boot validation:** yes, apart from P2-1. It enforces the exact role set, including `component:quest.progress`. Uninitialized instances raise `AttributeError` on `quest_content` and are caught, whether or not `isinstance` passes on this Python. The parametrized test covers the engine, checkpoint, adapter, presenter, admission, reducer, patch, payload and component roles.
+2. **Check split:**
+   - **Codec:** accepts any `before < after`.
+   - **Single-step and net checks:** `stage` accepts only the single steps 0→1, 1→2 and 2→3, and `compose` and `validate_net` allow the net set plus 0→2.
+   - **Forged 0→3 and 1→3:** both are rejected.
+   - **Checkpoint:** requires exactly one quest record and canonical ordering. It rejects stage 1 with a dead target, and stage 2 or 3 with a living one.
+   - **Limit:** a checkpoint cannot prove history, since stage 3 with a dead enemy looks honest. That relies on the persisted-diff checks, and `test_forged_persisted_completion_diff_rejected_through_real_io` covers it.
+3. **Retry and recovery:** I read the post-commit path in `_present`, which logs the failure and adds a `PRESENTATION_FAILED` diagnostic without rolling back. The uncertain-recovery, precommit-preservation and postcommit tests pass here. I did not re-derive the durable layer.
+4. **Pins and provider isolation:**
+   - **Pins:** the behavioral pin comes from `rules["dialogue"]`, which holds the lines, `artifact_id` and the two hashes. Reviewer, timestamp and usage live only in the receipt or metadata and never enter it.
+   - **Isolation:** a grep found no Gemini, `urllib`, `subprocess`, `socket` or `http` imports in `app` (apart from `dialogue_prepare.py`), `orchestration`, `engines`, `contracts` or `domain`. `lint-imports` reports 3 contracts kept.
+5. **Transport and budget:** I read the transport code directly. It sets `ProxyHandler({})`, raises on redirects, passes the key over stdin, sanitizes errors with `from None` and discards stderr. The parent kills the child on any `BaseException`. Reconcile is idempotent via the `settled` set. The weak points are P2-2 and the contention behavior above.
+6. **Request and API coherence:** the stdlib JSON parsing, nullable thought usage and the two explicit free-tier and data-use flags are coherent.
+   - **Confirmed:** the model ID `gemini-3.5-flash-lite` and its MINIMAL thinking level are in current docs, and the code does not set temperature, top-K or top-P, which that model rejects.
+   - **Still unverified:** free-tier availability and quota for this model, the enum casing of `thinkingLevel` (MINIMAL is the default, so I'd drop the field), support for `responseJsonSchema` keywords like `additionalProperties`, `minItems` and `maxItems`, and the 400-versus-401/403 behavior for a bad key.
+7. **Client paths:** `act("talk")` raises `QUEST_UNAVAILABLE` without quest content and the worker maps that code. `retry` resends the same command and attachment token, and `load` clears `_previous`. I did not execute the Tk or Unity paths.
+
+## Missing behavioral tests
+
+- Boot validation with the `quest` key absent.
+- A ledger with a stale `.pending` file.
+- A response with out-of-order intents, checking budget accounting.
+- Approval fields that are well-formed but do not match the candidate bytes, which the loader should accept or reject deliberately.
+
+The remaining Windows, Tk and Unity checks stay with Sol's evidence.

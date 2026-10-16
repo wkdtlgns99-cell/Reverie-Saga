@@ -1,0 +1,31 @@
+# QT-F18 — Compare Two Persisted NPC Memory Snapshots
+
+Date:2026-10-15 | State:LOCAL_ACCEPTED | Executor/reviewer:self;Claude review deferred by director.
+Director asks to execute the next eligible task. D2 staged retrieval support;primary4,related6/7.
+GOV-03 preflight found stale20-method scope versus27current methods in its four registries;
+its explicit stop condition prevents activation under the old order. No gate weakened or enabled.
+
+| Field | Contract |
+|---|---|
+| goal/non-goals | Offline source-bound comparison of before/after persisted conversation evidence. Report snapshot differences,not forgetting,causality or an authoritative update. No new memory/cognition/schema/save/wire/UI/provider/content approval |
+| baseline | HEAD2f591f752ec332476daa1e64bbb4aa0a1521c1fa;preserve six dirty request/progress documents. Existing src/tests fingerprints in tmp/gov03/entry.json;QT-F18 snapshot before edits in tmp/qt-f18/entry.json. Current-head two CI runs1697PASS qualify unchanged baseline;in-flight GOV-03 baseline remains separate |
+| prerequisites/reads | Rulebook/handoff/backlog/guide/template/setup,MASTER truth/memory;BLOCK4 A8 source-bound T0;existing npc_memory/query/export/check/prepare,npc_prepare._target_available,quest_dialogue.publish_fresh,context/evidence contracts and real-save tests |
+| allowed edits | Prefix C:/ReverieSaga/. NEW src/app/npc_memory_compare.py,tests/integration/test_npc_memory_compare.py,this order,docs/reviews/QT-F18_EXECUTION_2026-10-15.md. MODIFY README.md,BACKLOG.md,SESSION_HANDOFF.md,GAME_SYSTEM_SUMMARY_KO.md;factual stale-entry note only in docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md. Owned tmp/qt-f18 and .pytest_cache/qt-f18-* |
+| forbidden | Existing runtime/contracts/domain/engines/orchestration/adapters/Unity/content/pins/locks/config/CI/old witnesses;other preexisting request edits. No gate activation,public/save contract changes,agents,publication or Claude call |
+| public API | comparison_document(before:NpcMemoryContext,after:NpcMemoryContext)->JsonObject. export_comparison(before:Path,after:Path,content:QuestContent,npc_id:str,output:Path)->tuple[NpcMemoryContext,NpcMemoryContext]. main(argv:Sequence[str]\|None=None)->int;CLI requires --before,--after,--quest-catalog,--quest-sha256,--output;--npc-id defaults existing harbor owner |
+| identity | Exact context types required:wrong input→NPC_CONTEXT_INPUT. Both contexts must share world_id,catalog_sha256,npc_id,actor_id,quest_id;otherwise NPC_MEMORY_COMPARISON_OWNER. Branch/tick/revision/core hash may differ,including reversed chronological input. Never claim snapshots are a common instant or one branch caused another |
+| format | New developer artifact reverie-npc-memory-comparison/v1,status SNAPSHOT_COMPARISON. before/after reuse complete existing query_document(EvidenceQuery()) snapshots. added/removed/retained are tuples of stable memory IDs;added follows after's newest-first selection,removed/retained before's newest-first selection. Same identity with inconsistent evidence→NPC_MEMORY_COMPARISON_IDENTITY |
+| algorithm | Validate contexts/identity;derive each existing full bounded query projection;compare memory-ID sets;produce canonical JSON. At most two entries per context;no cache/index/LLM. Membership difference never implies actual forgetting or an observed enemy death |
+| edges/examples | Empty→empty gives three empty tuples;acceptance@2→report@11 adds report only and retains acceptance;reverse removes report only;wait with unchanged memories gives no added/removed even if source hash differs. Different branches allowed;different worlds/catalogs/owners reject. No duplicate IDs allowed by existing context contracts |
+| IO/ownership | Validate fresh output first;read both existing saves through read_memory;serialize≤3*MAX_EXPORT_BYTES;re-read BOTH contexts before exclusive atomic publish_fresh. Either changed→NPC_CONTEXT_STALE,no output. Invalid save propagates its SaveError. Existing output/pending/symlink refuses without replacement;output aliases existing source refuses. IO/publication errors stay explicit;only owned output may be created |
+| CLI/errors | Success prints MEMORY_COMPARISON_SNAPSHOT plus both context digests,not local paths/private data. Errors on stderr/exits1,success0;argparse malformed args2. Reuse existing GenerationError/SaveError codes;other ordinary IO/encoding/input errors→NPC_CONTEXT_INPUT;process-control propagates |
+| wiring/performance | Explicit python -m app.npc_memory_compare only;reuses owner-validated SQLite reader and canonical publication. No ordinary turn/client invocation. O(MEMORY_CAPACITY),four read-only save reads;24KiB artifact cap,not a measured device latency target |
+| baseline/verification | Reuse current-target1697PASS CI on unchanged inputs;run real saved-game comparison tests and existing query/export/check/memory/prepare regressions. README both Ruff/scoped format/strict mypy/pip/native import3+1;UTF8/links/diff/protected-source checks. No CORE/Unity/full-repeat unless failure/input change requires it |
+| test responsibilities | Actual before/after/save-load branch/reverse/empty/wait;stable IDs/certainty/no hidden enemy facts;source/slot hashes unchanged;foreign identity/exact types;both stale-read cases via real COMMIT;fresh output/pending/alias/IO failure;network-forbidden standalone CLI and bad inputs. No mocked domain outcomes |
+| acceptance/checkpoints | CLI produces correct independently asserted deltas from real saved states;both sources unchanged,no writes on rejection;all affected/static checks pass and progress docs agree. Derived read-only tool does not reopen CP01–05;Claude V3 remains deferred/incomplete and CP06release held |
+| stops/delivery | Preserve overlapping work,repair scoped failures;unsettled identity/public authority requires clarification. Report exact evidence and standalone developer-tool scope;no full D2/cognition/gameplay completion claim,commit/push or automatic next task |
+
+Acceptance:[execution](../reviews/QT-F18_EXECUTION_2026-10-15.md). Final67affected PASS38.78s,
+including17new comparison cases;Ruff both/format2/mypy162/pip/imports3+1 PASS. Three real prior
+Unity-save comparisons offline PASS/source bytes unchanged. Baseline1697PASS502.83s excludes
+new cases;no combined full-suite/native/editor/new CI or independent-review claim.

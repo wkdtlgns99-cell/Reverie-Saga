@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from typing import Literal
 
 type ClientAction = Literal[
-    "up", "down", "left", "right", "open", "close", "attack", "rest", "wait", "bell"
+    "up", "down", "left", "right", "open", "close", "attack", "rest", "wait", "bell", "talk"
 ]
 type ClientRequest = ClientAction | Literal["attach", "save", "load", "retry", "recover"]
 
@@ -40,3 +40,9 @@ class ClientUpdate:
     working_path: str
     messages: tuple[str, ...] = ()
     reset_log: bool = False
+    scenario_id: str = ""
+    scenario_name: str = ""
+    quest_id: str = ""
+    quest_stage: int = -1
+    quest_reward: int = 0
+    dialogue_sha256: str = ""

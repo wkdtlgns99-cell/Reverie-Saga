@@ -20,14 +20,43 @@ namespace ReverieSaga
         string boardWalls;
         string transportError="";
         Vector2 scroll;
+        Vector2 controlsScroll;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public Rect ControlsViewport { get; private set; }
+        public Rect HistoryViewport { get; private set; }
+        public float ControlsContentHeight { get; private set; }
+        public float ControlsScrollForVerification {
+            get { return controlsScroll.y; }
+            set { controlsScroll.y=value; }
+        }
+#endif
         int selected;
+        int slotIndex;
+        static readonly string[] SlotLabels={"01","02","03","04","05","06","07","08"};
+        int waitIndex;
+        static readonly int[] WaitSeconds={1,4,8,16};
+        static readonly string[] WaitLabels={"1초","4초","8초","16초"};
         Font koreanFont;
-        string root, working, scenario;
+        string root, working;
+        string scenario = "legacy";
+        string questCatalog="",questSha256="";
+        bool npcMemory;
+        public string QuestCatalog { get { return questCatalog; } }
+        public bool NpcMemoryEnabled { get { return npcMemory; } }
+        public bool CanInspectMemory { get { return npcMemory&&latest!=null&&!Busy&&failure==""; } }
+        public bool CanInspectSlot { get { return latest!=null&&!Busy&&failure==""; } }
+        public bool CanSelectSlot { get { return CanInspectSlot; } }
+        public string SelectedSlot { get { return "slot"+SlotLabels[slotIndex]; } }
+        public bool CanSelectWaitDuration { get { return CanInspectSlot; } }
+        public int SelectedWaitSeconds { get { return WaitSeconds[waitIndex]; } }
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
         public string TransportError { get { return transportError; } }
         public string Failure { get { return failure; } }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public bool HasBrainForVerification { get { return brain!=null; } }
+#endif
 
         public static int Number(string value)
         {
@@ -41,10 +70,36 @@ namespace ReverieSaga
             Application.runInBackground=true;
             try {
                 root = Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",".."));
-                scenario=BrainConnection.SelectScenario(Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO"));
+                string scenarioSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
+                string memorySelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_MEMORY");
+                questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
+                questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
+                bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
+                    String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(questSha256)&&
+                    String.IsNullOrEmpty(memorySelection);
+                if(approvedPreset) {
+                    scenario="harbor";npcMemory=true;
+                    questCatalog=Path.Combine(root,"content","dialogue","harbor-memory-v1.json");
+                    questSha256=File.ReadAllText(Path.Combine(root,"content","dialogue",
+                        "harbor-memory-v1.sha256")).Trim();
+                } else {
+                    scenario=String.IsNullOrEmpty(scenarioSelection)?"legacy":scenarioSelection;
+                    if(!String.IsNullOrEmpty(memorySelection)&&memorySelection!="0"&&memorySelection!="1")
+                        throw new IOException("NPC_MEMORY_SELECTION");
+                    npcMemory=memorySelection=="1";
+                }
+                scenario=BrainConnection.SelectScenario(scenario);
+                if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
+                    questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
+                    throw new IOException("NPC_MEMORY_CONTENT");
                 working = Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
-                string folder=scenario==WireScenarios.Legacy?"unity-play":"unity-play-courtyard";
-                if (String.IsNullOrEmpty(working)) working=Path.Combine(root,"tmp",folder,"game.sqlite");
+                if (String.IsNullOrEmpty(working)) working=(scenario=="legacy"||scenario==WireScenarios.Legacy) ?
+                    Path.Combine(root,"tmp","unity-play","game.sqlite") :
+                    Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
+                if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
+                    Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play","harbor-memory",questSha256,"game.sqlite"):
+                        Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
             } catch(Exception e) { Fail(e); }
@@ -63,12 +118,20 @@ namespace ReverieSaga
                     transportError="";
                     if (!reply.has_view || reply.update.view == null)
                         throw new IOException(reply.update.status+": "+String.Join("\n",reply.update.messages));
+                    if(!String.IsNullOrEmpty(questCatalog)) {
+                        int stage=Number(reply.update.quest_stage),reward=Number(reply.update.quest_reward);
+                        if(stage>3||reward!=(stage==3?1:0)||reply.update.quest_id!="quest:harbor-sentinel"||
+                           reply.update.dialogue_sha256!=questSha256)
+                            throw new IOException("QUEST_PROJECTION_INVALID");
+                    } else if(reply.update.quest_stage!="-1"||reply.update.quest_reward!="0")
+                        throw new IOException("QUEST_PROJECTION_INVALID");
                     latest=reply;
                     working=reply.update.working_path;
                     Apply(reply.update.view);
                     if (reply.update.reset_log) messages.Clear();
                     messages.AddRange(reply.update.messages);
                     if(messages.Count>200) messages.RemoveRange(0,messages.Count-200);
+                    if(reply.update.messages.Length>0) scroll.y=float.MaxValue;
                 } else if(error!=null) throw new IOException(error);
                 if (!Busy) {
                     if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow)) Send("up");
@@ -137,8 +200,26 @@ namespace ReverieSaga
 
         public void Send(string intent)
         {
-            try { brain.Send(intent); } catch(Exception e) { Fail(e); }
+            try { brain.Send(intent,SelectedSlot,SelectedWaitSeconds); } catch(Exception e) { Fail(e); }
         }
+
+        public bool SelectSlot(int index)
+        {
+            if(index<0||index>=SlotLabels.Length)throw new ArgumentOutOfRangeException(nameof(index));
+            if(!CanSelectSlot)return false;
+            slotIndex=index;return true;
+        }
+
+        public bool SelectWaitDuration(int index)
+        {
+            if(index<0||index>=WaitSeconds.Length)throw new ArgumentOutOfRangeException(nameof(index));
+            if(!CanSelectWaitDuration)return false;
+            waitIndex=index;return true;
+        }
+
+        public void InspectMemory() { if(CanInspectMemory)Send("memory"); }
+        public void InspectRecentMemory() { if(CanInspectMemory)Send("memory_recent"); }
+        public void InspectSlot() { if(CanInspectSlot)Send("slot_inspect"); }
 
         void Connect()
         {
@@ -156,7 +237,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working,scenario);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
@@ -164,10 +245,10 @@ namespace ReverieSaga
 
         public void Reconnect() { Connect(); }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-        public bool HasBrainForVerification { get { return brain!=null; } }
         public int BrainProcessId { get { return brain.ProcessId; } }
         public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
         public void ApplyForVerification(WireView view) {Apply(view);}
+        public string HistoryForVerification { get { return String.Join("\n",messages); } }
 #endif
         void Fail(Exception error) { failure=error.Message;Debug.LogException(error); }
 
@@ -179,6 +260,7 @@ namespace ReverieSaga
                 case "open": return "문 열기"; case "close": return "문 닫기";
                 case "attack": return "공격"; case "rest": return "휴식";
                 case "wait": return "대기"; case "bell": return "NPC 호출";
+                case "talk": return "NPC 대화·보고";
                 case "save": return "저장"; case "load": return "불러오기";
                 case "retry": return "재전송";
                 case "recover": return "복구";
@@ -190,8 +272,37 @@ namespace ReverieSaga
         {
             if(koreanFont==null)koreanFont=Font.CreateDynamicFontFromOSFont("Malgun Gothic",16);
             GUI.skin.font=koreanFont;
-            GUILayout.BeginArea(new Rect(12,12,380,Screen.height-24),GUI.skin.box);
-            GUILayout.Label("Reverie Saga — 플레이테스트");
+            float width=Mathf.Max(0,Mathf.Min(380,Screen.width-24));
+            float height=Mathf.Max(0,Screen.height-24);
+            var panel=new Rect(12,12,width,height);
+            GUI.Box(panel,GUIContent.none);
+            float innerWidth=Mathf.Max(0,width-12);
+            GUI.Label(new Rect(18,18,innerWidth,24),"Reverie Saga — 플레이테스트");
+            float available=Mathf.Max(0,height-72);
+            float controlsHeight=Mathf.Floor(available*.6f);
+            var controls=new Rect(18,48,innerWidth,controlsHeight);
+            var history=new Rect(18,controls.yMax+30,innerWidth,available-controlsHeight);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ControlsViewport=controls;HistoryViewport=history;
+#endif
+            GUILayout.BeginArea(controls);
+            controlsScroll=GUILayout.BeginScrollView(controlsScroll,false,false);
+            DrawControls(innerWidth);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            var end=GUILayoutUtility.GetRect(0,0);
+            if(Event.current.type==EventType.Repaint)ControlsContentHeight=end.yMax;
+#endif
+            GUILayout.EndScrollView();GUILayout.EndArea();
+            GUI.Label(new Rect(18,controls.yMax+6,innerWidth,24),"행동·대화 기록");
+            GUILayout.BeginArea(history);
+            scroll=GUILayout.BeginScrollView(scroll,false,false);
+            foreach(string message in messages) GUILayout.Label(message);
+            GUILayout.EndScrollView();GUILayout.EndArea();
+        }
+
+        void DrawControls(float width)
+        {
+            if(latest!=null)GUILayout.Label(latest.update.scenario_name);
             if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
             if(failure!="") {
                 GUILayout.Label("연결 오류: "+failure);
@@ -201,16 +312,47 @@ namespace ReverieSaga
                 var v=latest.update.view;
                 GUILayout.Label("체력 "+v.actor_hp+" / 적 "+v.enemy_hp+" / 기력 "+v.stamina);
                 GUILayout.Label("시간 "+v.tick+" / NPC 응답 "+v.npc_replies);
+                if(latest.update.quest_stage!="-1") {
+                    string[] stages={"미수락","진행 중","보고 가능","완료"};
+                    GUILayout.Label("임무 "+stages[Number(latest.update.quest_stage)]+
+                                    " / 포구의 호의 "+latest.update.quest_reward);
+                }
             }
             GUI.enabled=!Busy&&failure=="";
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"up","down","left","right"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
             GUILayout.EndHorizontal();
-            GUILayout.BeginHorizontal();
-            foreach(string intent in new [] {"open","close","attack","rest","wait","bell"})
+            if(!String.IsNullOrEmpty(questCatalog)&&GUILayout.Button(Label("talk"))) Send("talk");
+            if(npcMemory) {
+                GUILayout.BeginHorizontal();
+                GUI.enabled=CanInspectMemory;
+                if(GUILayout.Button("NPC 대화 기억")) InspectMemory();
+                GUI.enabled=CanInspectMemory;
+                if(GUILayout.Button("최근 대화 기억")) InspectRecentMemory();
+                GUILayout.EndHorizontal();
+                GUI.enabled=!Busy&&failure=="";
+            }
+            GUI.enabled=CanSelectWaitDuration;
+            GUILayout.Label("대기 시간 · "+SelectedWaitSeconds.ToString(CultureInfo.InvariantCulture)+"초");
+            int nextWait=GUILayout.SelectionGrid(waitIndex,WaitLabels,4);
+            if(nextWait!=waitIndex)SelectWaitDuration(nextWait);
+            GUI.enabled=!Busy&&failure=="";
+            string[] actions={"open","close","attack","rest","wait","bell"};
+            int columns=width<330?2:3;
+            for(int i=0;i<actions.Length;i++) {
+                if(i%columns==0)GUILayout.BeginHorizontal();
+                string intent=actions[i];
                 if(GUILayout.Button(Label(intent))) Send(intent);
-            GUILayout.EndHorizontal();
+                if(i%columns==columns-1||i==actions.Length-1)GUILayout.EndHorizontal();
+            }
+            GUI.enabled=CanSelectSlot;
+            GUILayout.Label("저장 슬롯 · "+SelectedSlot);
+            int nextSlot=GUILayout.SelectionGrid(slotIndex,SlotLabels,4);
+            if(nextSlot!=slotIndex)SelectSlot(nextSlot);
+            GUI.enabled=CanInspectSlot;
+            if(GUILayout.Button(SelectedSlot+" 저장 정보")) InspectSlot();
+            GUI.enabled=!Busy&&failure=="";
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"save","load","retry","recover"})
                 if(GUILayout.Button(Label(intent))) Send(intent);
@@ -221,9 +363,6 @@ namespace ReverieSaga
                     selected=(selected+1)%latest.narratives.Length;
                 GUILayout.Label(latest.narratives[selected].description_ko);
             }
-            scroll=GUILayout.BeginScrollView(scroll);
-            foreach(string message in messages) GUILayout.Label(message);
-            GUILayout.EndScrollView();GUILayout.EndArea();
         }
 
         void OnDestroy()

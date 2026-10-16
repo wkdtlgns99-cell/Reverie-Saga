@@ -1,94 +1,72 @@
 # Reverie Saga
 
-An AI-produced HD-2D / 2.5D graphical turn-based RPG in development.
-Current implementation:deterministic 3×3 movement,doors,combat/rest,timed NPC/events,
-SQLite save/load,recovery,replay,Tk boundary harness and a provisional Unity graphical room.
-Not a finished HD-2D graphical game.
+AI-produced HD-2D/2.5D graphical turn-based RPG in development.
+Current prototype:Python deterministic rules,3x3rooms,combat/NPC events,one quest,two NPC conversation
+records,SQLite save/load/recovery/replay,Tk and provisional Unity. [Current status](BACKLOG.md).
 
 ## Runtime
 
-When switching computers or resuming a task with local tools,follow [workstation setup](docs/WORKSTATION_SETUP.md):
-discover/reuse matching installations,install missing approved prerequisites,and verify on this host.
-Git transfers project files,not editors/environments/login/license/private saves.
+Commands run from `C:\Reverie Saga` in PowerShell. Reuse local `.venv`;for another computer
+follow [workstation setup](docs/WORKSTATION_SETUP.md). Git excludes tools,licenses,keys and private saves.
+Validated host:CPython3.13.12 x64,Tk8.6;Ruff/mypy target3.12syntax,not tested3.12runtime support.
 
-Validated development runtime:CPython3.13.12,Windows AMD64. Ruff/mypy currently
-analyze Python3.12-compatible syntax/APIs;this is not a tested Python3.12 support claim.
-Existing environment:`.venv`. Fresh setup requires Python3.13.12:
-
+Fresh environment only:
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --require-hashes -r requirements-dev.lock
 $env:PYTHONPATH = "$PWD/src"
-.\.venv\Scripts\python.exe -m app.durable --working tmp/game.db --create
 ```
-
-The durable CLI reads framed JSON-line command/export/load/recover requests;
-it is a diagnostic interface,not the playable window. Never use `--create`
-to replace an existing game. Keep local saves under ignored `tmp/`.
 
 ## Play the prototype
 
+Basic Tk room:
 ```powershell
 $env:PYTHONPATH = "$PWD/src"
 .\.venv\Scripts\python.exe -m app.client --working tmp/client/game.sqlite
 ```
 
-Requires stdlib Tk (validated locally8.6). A new path creates the representative
-world;an existing path resumes it without overwriting. WASD/arrows or buttons move;
-stand beside the door/enemy to interact/attack. Rest restores stamina,not HP.
-Wait/NPC call/save/load/retry/recovery are exposed as buttons;the Brain decides outcomes.
-Example:Down → Open → Right → Down → Attack → Save → Attack → Rest → Attack.
+A new path creates a game;an existing path resumes it. WASD/arrows/buttons move;stand beside
+doors/enemies/NPCs to interact. Rest restores stamina,not HP. Add `--scenario harbor` or
+`--scenario grove` with a separate working path for the other embedded rooms.
 
-The bottom Korean action/history panel explains who attacked whom,actual damage,
-counterattacks,movement/blockers,rest,NPC responses and rejected actions. It uses
-committed facts,not an LLM or predicted outcomes. The read-only scrollable panel
-keeps the latest200lines;this display history is not stored in saves. Exact retries
-confirm the previous result without repeating attack narration. A successful load
-clears the displayed history and identifies the new branch;failed loads preserve it.
-Technical schema/status details remain available under the diagnostic checkbox.
-
-Save slots slot01..slot08 retain current/previous generations. Loading creates a
-private working clone and changes the attachment token;the window shows its path.
-To resume that loaded branch after exit,pass the displayed path to --working.
-The original working file remains a separate branch. Closing drains accepted work
-and closes SQLite on its single owner thread;game/save work never runs on the Tk thread.
-This placeholder tests the boundary,not final HD-2D art/camera/gamepad/MIN-SPEC or release QA.
-
-The first QT-F02 unit also supplies a courtyard with different wall,door,enemy,NPC and role
-identities through the same rules. Start it with its own working path:
-
+Approved harbor quest+NPC memory:
 ```powershell
-$env:PYTHONPATH = "$PWD/src"
-.\.venv\Scripts\python.exe -m app.client --scenario scenario:courtyard --working tmp/client-courtyard/game.sqlite
+$taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha256 -Raw).Trim()
+.\.venv\Scripts\python.exe -m app.client --working tmp/client-harbor-memory/game.sqlite --scenario harbor --quest-catalog content/dialogue/harbor-memory-v1.json --quest-sha256 $taskDialoguePin --npc-memory
 ```
 
-Courtyard example:Up → Attack → Attack → Rest → Attack. To reach its door from the starting
-cell:Up → Right → Up → Open → Right. Resuming this save requires the same --scenario;
-loading a different scenario's slot rejects the mismatch and preserves current progress.
-The default is scenario:legacy and retains the existing saves/replays. Both rooms remain3x3
-with one door/enemy/NPC;larger worlds and multi-target selection are later work. This selection
-is available in the Tk/Python client and Unity through the startup selection below.
+| Control / state | Behavior |
+|---|---|
+| Quest | Accept→defeat→report→one favor;ordinary turns use prepared approved text without API calls |
+| NPC memory | Full/recent conversation inspection;reported evidence remains distinguished from direct observation |
+| Slot info | Preview saved metadata;current stats/retry remain current |
+| Save/load | slot01..slot08;load creates a private branch and clears later display history. Resume using displayed working path and original scenario/catalog/memory selectors |
+| History/retry | Latest200lines,not persisted display history;exact retry does not repeat gameplay or narration |
+| Close | Drains accepted work;SQLite/session remains owned by worker thread |
 
 ## Unity graphical prototype
 
-Unity6000.3.25f1 is installed on the observed host and connected to the same Python Brain.
-[Project/run/build/native verification](clients/unity/README.md);6adapted descriptions are loaded
-from content/narratives.json. CP04 feedback/repair accepted:24play/failure checks plus1corrupt-save check PASS;
-release verification hook absent. Standalone launch is blocked by current-host Windows application control.
-Other-device setup/native verification and final-engine/HD-2D release acceptance remain pending.
-The2026-10-15 courtyard selection unit has75focused Python/tool checks and editor/release C#
-compile PASS. After Hub setup,the pinned Program Files editor recognized Personal and opened
-this project with successful initial import/script compilation;earlier exit198 is resolved.
-Latest courtyard17/default24/invalid3/corrupt1=45native checks PASS;Windows release build and
-verification-hook exclusion PASS. Actual standalone startup/save/shutdown smoke also PASS
-on this host. This supersedes earlier blocked launch evidence for this run;small-viewport UI
-overlap/human UX,portable packaging and full standalone fault/input acceptance remain pending.
-[Current receipt](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md);older CP04 results above
-are historical and do not qualify this host's courtyard.
+[Unity play/build/native verification](clients/unity/README.md):editor6000.3.25f1.
+No-selector Unity starts the approved harbor-memory preset in a catalog-pin-specific save directory;
+explicit legacy/scenario/quest selectors preserve their existing modes.
+Independent control/history scrolling is qualified at1101x506on the observed host.
+Human UX,final art/camera/engine,gamepad,MIN-SPEC,portable standalone and other-device acceptance remain open.
+
+## First quest / prepared Gemini dialogue
+
+[CLI workflows](docs/CLI_WORKFLOWS.md) contain key loading,explicit preparation,offline review/approval/
+compilation,NPC context,query export/check/comparison and plan-based generation.
+Normal play needs no key/network. New generated content stays NEEDS_REVIEW until actual director approval;
+existing games retain their content pins. [Current qualification limits](BACKLOG.md#qt-f07-deferred-qualification).
 
 ## Verification
 
+Use the applicable order for affected tests;shared CORE changes require full regression.
+The environment setup below applies to all commands,including both import checks.
 ```powershell
+$env:PYTHONPATH = "$PWD/src"
+$env:PYTHONHASHSEED = '0'
+$env:PYTHONUTF8 = '1'
 .\.venv\Scripts\python.exe -m ruff check src tests
 .\.venv\Scripts\python.exe -m ruff check --config ruff-quality.toml src tests
 .\.venv\Scripts\python.exe -m ruff format --check src/orchestration/turn.py src/contracts/encounter.py src/engines/encounter.py tests/replay/test_encounter.py src/contracts/client.py src/app/client.py src/app/client_session.py src/app/client_worker.py src/app/client_text.py tests/integration/test_client.py tests/unit/test_client_text.py tests/unit/test_engineering_rules.py
@@ -100,43 +78,28 @@ if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Py
 .\.venv\Scripts\python.exe -m pytest -q --basetemp .pytest_cache/local-run
 ```
 
-The shared import config includes TYPE_CHECKING imports;the runtime config excludes
-them to permit annotation-only sibling cycles. Both are intentional and required.
-The source tree is currently run via PYTHONPATH,not an installable package.
-Selective E501/PT011 checks cover the changed core/replay/client and rulebook-guard paths;they do not
-claim repository-wide complexity cleanup. Windows GitHub Actions runs these native
-gates after publication. Patched commit8d90592 [run37581088580](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37581088580)
-passed all steps and1242tests393.67s;fresh native qualification1242PASS280.99s.
-Baseline run37578176533 (commit99786af) failed because the pytest parent was absent;
-that historical failure remains recorded,not hidden by the successful repair.
-Repair/protection follow-ups:[fact check](docs/reviews/GPT_STRUCTURAL_PLAN_REVIEW_2026-10-07.md).
-The [RS-CI-001 repair](docs/work_orders/RS-CI-001_CLEAN_RUN.md) explicitly prepares
-that ignored parent and aligns all11formatter targets;local/remote acceptance is recorded
-in the linked order,not inferred from the workflow file alone.
-
-The [per-turn rulebook](ENGINEERING_RULES.md) owns execution/repair policy;
-[enforcement map](docs/ENGINEERING_ENFORCEMENT.md) distinguishes active checks from review/deferred work.
-CI now runs named **Rulebook and integration boundary guards** before full regression:
-entry/link/compactness and real Ruff rejection/acceptance probes,SQLite/clone cleanup,
-worker/Future/Tk continuation,process-control propagation and atomic/postcommit truth.
-The exact small selection lives in [checks.yml](.github/workflows/checks.yml);a missing node
-fails collection. To inspect the guard families locally,run:
-
+Shared imports include TYPE_CHECKING;runtime imports exclude it. Both checks are required.
+Source mode uses PYTHONPATH;the project is not an installable package.
+[CI](.github/workflows/checks.yml) owns the exact named boundary selection;
+[enforcement map](docs/ENGINEERING_ENFORCEMENT.md) distinguishes active/deferred guards.
+For a broader local boundary run:
 ```powershell
 .\.venv\Scripts\python.exe -m pytest -q tests/unit/test_engineering_rules.py tests/integration/test_client.py tests/integration/test_save_slots.py tests/integration/test_durable_turn.py --basetemp .pytest_cache/local-boundaries
 ```
 
-This broader local selection is distinct from the CI's bounded named selection.
-The published workflow at0708483 passed [Native checks37746111893](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/37746111893):
-31focused guards and1270full regression tests,lint/format/strict types/imports all PASS.
-See the [session receipt](docs/reviews/SESSION_2026-10-08.md) for exact SHA/evidence;future changes require their own remote acceptance.
-
 ## Navigation
 
-- [Agent entry](AGENTS.md),[backlog](BACKLOG.md),[handoff](SESSION_HANDOFF.md),[Korean game progress](GAME_SYSTEM_SUMMARY_KO.md).
-- [Every-turn rules](ENGINEERING_RULES.md),[enforcement/residency](docs/ENGINEERING_ENFORCEMENT.md),[engineering contracts](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),[product requirements](docs/MASTER_GAME_ARCHITECTURE.md).
-- [Implementation template](docs/prompts/SOL_CODING_WORK_ORDER.md),[current quality/client order](docs/work_orders/RS-P1-QUALITY.md),[reference location](REFERENCE_REPOSITORY.txt).
-- [Historical backlog](docs/history/BACKLOG_2026-10-07.md),[historical handoff](docs/history/SESSION_HANDOFF_2026-10-07.md):complete pre-compaction records;their old NEXT instructions are not current. Root backlog/handoff contain current state and resume context.
+| Need | Read |
+|---|---|
+| Agent/session entry | [AGENTS](AGENTS.md)→[rules](ENGINEERING_RULES.md),[handoff](SESSION_HANDOFF.md),[backlog](BACKLOG.md) |
+| Product/architecture | [MASTER](docs/MASTER_GAME_ARCHITECTURE.md),[engineering prompt](docs/ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md),[numbered structure](docs/GAME_STRUCTURE_GUIDE_EN.md) |
+| Task contracts/evidence | [order template](docs/prompts/SOL_CODING_WORK_ORDER.md),docs/work_orders/,docs/reviews/ |
+| Human progress | [Korean companion](GAME_SYSTEM_SUMMARY_KO.md) |
+| Past commands/results | [README snapshot](docs/history/README_2026-10-16.md);historical instructions are non-operative |
 
-`architecture/` contains design/contracts;`docs/work_orders/` contains bounded orders
-and acceptance evidence. Historical v1 material is read-only reference,not active rules.
+## PR09 Integration
+
+Preserve the courtyard room and its V1 rules/save identity through the shared current layout path.
+Original [room evidence](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md) and
+[Unity evidence](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md) remain historical;
+[PR08 repair](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) records current integration acceptance.

@@ -1,0 +1,774 @@
+{
+  "date": "2026-10-15",
+  "status": "COMPLETED_WITH_ACCESS_LIMITS",
+  "full_regression": "1675PASS549.13s",
+  "removed_targets": 105,
+  "removed_files": 41748,
+  "logical_bytes_removed": 5033172862,
+  "physical_space_reclaimed": "NOT_MEASURED",
+  "retained_restricted_targets": 17,
+  "preservation": {
+    "all_source_test_inputs": "UNCHANGED",
+    "review_originals_and_ledger": "UNCHANGED",
+    "credential_metadata": "UNCHANGED_NO_VALUE_OR_HASH_RECORDED",
+    "git_head": "UNCHANGED_NO_COMMIT_OR_PUSH"
+  },
+  "decisions": [
+    {
+      "path": ".pytest_cache/ci-boundaries",
+      "status": "REMOVED",
+      "files": 73,
+      "bytes": 2252856
+    },
+    {
+      "path": ".pytest_cache/ci001-f59afaae097f4135a5b85d187c40e7ec",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\ci001-f59afaae097f4135a5b85d187c40e7ec\\fixed-snapshot\\.pytest_cache\\ci-probe' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-baseline",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-baseline' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-baseline-native",
+      "status": "REMOVED",
+      "files": 39,
+      "bytes": 1421343
+    },
+    {
+      "path": ".pytest_cache/client002-baseline-retry",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-baseline-retry' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-final-full",
+      "status": "REMOVED",
+      "files": 1830,
+      "bytes": 33995687
+    },
+    {
+      "path": ".pytest_cache/client002-focused",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-focused' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-focused-final",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-focused-final' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-focused-native",
+      "status": "REMOVED",
+      "files": 62,
+      "bytes": 2297887
+    },
+    {
+      "path": ".pytest_cache/client002-full-native",
+      "status": "REMOVED",
+      "files": 1828,
+      "bytes": 33930611
+    },
+    {
+      "path": ".pytest_cache/client002-repeat-confirmation",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-repeat-confirmation' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-single-interpreter",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\client002-single-interpreter' is denied."
+    },
+    {
+      "path": ".pytest_cache/client002-single-tk",
+      "status": "REMOVED",
+      "files": 2,
+      "bytes": 65536
+    },
+    {
+      "path": ".pytest_cache/cp01-failing-20261008",
+      "status": "REMOVED",
+      "files": 42,
+      "bytes": 1204280
+    },
+    {
+      "path": ".pytest_cache/cp01-fixed-20261008",
+      "status": "REMOVED",
+      "files": 51,
+      "bytes": 1531960
+    },
+    {
+      "path": ".pytest_cache/cp01-focused-20261008",
+      "status": "REMOVED",
+      "files": 238,
+      "bytes": 8274135
+    },
+    {
+      "path": ".pytest_cache/cp01-repair-full-20261008",
+      "status": "REMOVED",
+      "files": 1881,
+      "bytes": 35542295
+    },
+    {
+      "path": ".pytest_cache/cp01-review-20261008",
+      "status": "REMOVED",
+      "files": 107,
+      "bytes": 3866655
+    },
+    {
+      "path": ".pytest_cache/cp03-focused",
+      "status": "REMOVED",
+      "files": 137,
+      "bytes": 5099520
+    },
+    {
+      "path": ".pytest_cache/cp03-full-final",
+      "status": "REMOVED",
+      "files": 2018,
+      "bytes": 40243490
+    },
+    {
+      "path": ".pytest_cache/cp03-gaps",
+      "status": "REMOVED",
+      "files": 56,
+      "bytes": 2080768
+    },
+    {
+      "path": ".pytest_cache/cp03-repaired",
+      "status": "REMOVED",
+      "files": 2,
+      "bytes": 65536
+    },
+    {
+      "path": ".pytest_cache/cp03-reproduce",
+      "status": "REMOVED",
+      "files": 2,
+      "bytes": 65536
+    },
+    {
+      "path": ".pytest_cache/cp04-final-py",
+      "status": "REMOVED",
+      "files": 27,
+      "bytes": 585259
+    },
+    {
+      "path": ".pytest_cache/cp04-first-green",
+      "status": "REMOVED",
+      "files": 21,
+      "bytes": 539569
+    },
+    {
+      "path": ".pytest_cache/cp04-full-local",
+      "status": "REMOVED",
+      "files": 1924,
+      "bytes": 36647202
+    },
+    {
+      "path": ".pytest_cache/cp04-python-green",
+      "status": "REMOVED",
+      "files": 21,
+      "bytes": 539569
+    },
+    {
+      "path": ".pytest_cache/cp04-qualified-final",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 207609
+    },
+    {
+      "path": ".pytest_cache/cp04-red",
+      "status": "REMOVED",
+      "files": 2,
+      "bytes": 15207
+    },
+    {
+      "path": ".pytest_cache/cp05-repair-before",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 396
+    },
+    {
+      "path": ".pytest_cache/cp05-repair-focused",
+      "status": "REMOVED",
+      "files": 65,
+      "bytes": 1307901
+    },
+    {
+      "path": ".pytest_cache/cp05-repair-full",
+      "status": "REMOVED",
+      "files": 2204,
+      "bytes": 41675745
+    },
+    {
+      "path": ".pytest_cache/engine-delivery-final",
+      "status": "REMOVED",
+      "files": 1914,
+      "bytes": 36523549
+    },
+    {
+      "path": ".pytest_cache/engine-final-focused",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 443590
+    },
+    {
+      "path": ".pytest_cache/engine-focused",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 443590
+    },
+    {
+      "path": ".pytest_cache/engine-pin-final",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 443590
+    },
+    {
+      "path": ".pytest_cache/engine-qualified",
+      "status": "REMOVED",
+      "files": 17,
+      "bytes": 458826
+    },
+    {
+      "path": ".pytest_cache/engine-qualified-final",
+      "status": "REMOVED",
+      "files": 5,
+      "bytes": 81176
+    },
+    {
+      "path": ".pytest_cache/engine-regression",
+      "status": "REMOVED",
+      "files": 1912,
+      "bytes": 36506457
+    },
+    {
+      "path": ".pytest_cache/engine-repair-pass",
+      "status": "REMOVED",
+      "files": 17,
+      "bytes": 458826
+    },
+    {
+      "path": ".pytest_cache/gemini-after",
+      "status": "REMOVED",
+      "files": 74,
+      "bytes": 1085955
+    },
+    {
+      "path": ".pytest_cache/gemini-before",
+      "status": "REMOVED",
+      "files": 35,
+      "bytes": 1309
+    },
+    {
+      "path": ".pytest_cache/gemini-final",
+      "status": "REMOVED",
+      "files": 78,
+      "bytes": 1086127
+    },
+    {
+      "path": ".pytest_cache/git-publish-56053bdc8f5f4b3fba26696631e2f0bb",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\git-publish-56053bdc8f5f4b3fba26696631e2f0bb\\pytest-tmp' is denied."
+    },
+    {
+      "path": ".pytest_cache/gpt-invariants-7e01a435",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\gpt-invariants-7e01a435' is denied."
+    },
+    {
+      "path": ".pytest_cache/open-work-full",
+      "status": "REMOVED",
+      "files": 2879,
+      "bytes": 54393339
+    },
+    {
+      "path": ".pytest_cache/open-work-route",
+      "status": "REMOVED",
+      "files": 124,
+      "bytes": 4404587
+    },
+    {
+      "path": ".pytest_cache/publication-20261007",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\publication-20261007' is denied."
+    },
+    {
+      "path": ".pytest_cache/qt-f01-baseline",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\qt-f01-baseline' is denied."
+    },
+    {
+      "path": ".pytest_cache/qt-f02-focused-final",
+      "status": "REMOVED",
+      "files": 38,
+      "bytes": 1515520
+    },
+    {
+      "path": ".pytest_cache/qt-f02-full",
+      "status": "REMOVED",
+      "files": 1950,
+      "bytes": 37718493
+    },
+    {
+      "path": ".pytest_cache/qt-f02-full-final",
+      "status": "REMOVED",
+      "files": 1962,
+      "bytes": 38163642
+    },
+    {
+      "path": ".pytest_cache/qt-f02-legacy",
+      "status": "REMOVED",
+      "files": 90,
+      "bytes": 3215391
+    },
+    {
+      "path": ".pytest_cache/qt-f02-scenarios",
+      "status": "REMOVED",
+      "files": 22,
+      "bytes": 942080
+    },
+    {
+      "path": ".pytest_cache/qt-f02-scenarios-fixed-env",
+      "status": "REMOVED",
+      "files": 26,
+      "bytes": 1073152
+    },
+    {
+      "path": ".pytest_cache/qt-f07-adapters",
+      "status": "REMOVED",
+      "files": 14,
+      "bytes": 524
+    },
+    {
+      "path": ".pytest_cache/qt-f07-adapters-fixed",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 1475
+    },
+    {
+      "path": ".pytest_cache/qt-f07-client",
+      "status": "REMOVED",
+      "files": 226,
+      "bytes": 8072778
+    },
+    {
+      "path": ".pytest_cache/qt-f07-client-diagnose",
+      "status": "REMOVED",
+      "files": 92,
+      "bytes": 3301407
+    },
+    {
+      "path": ".pytest_cache/qt-f07-collection-diagnose",
+      "status": "REMOVED",
+      "files": 34,
+      "bytes": 7884
+    },
+    {
+      "path": ".pytest_cache/qt-f07-diagnose",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 1475
+    },
+    {
+      "path": ".pytest_cache/qt-f07-expanded",
+      "status": "REMOVED",
+      "files": 42,
+      "bytes": 983787
+    },
+    {
+      "path": ".pytest_cache/qt-f07-final-faults",
+      "status": "REMOVED",
+      "files": 33,
+      "bytes": 1219884
+    },
+    {
+      "path": ".pytest_cache/qt-f07-first",
+      "status": "REMOVED",
+      "files": 15,
+      "bytes": 675840
+    },
+    {
+      "path": ".pytest_cache/qt-f07-full",
+      "status": "REMOVED",
+      "files": 2070,
+      "bytes": 41601798
+    },
+    {
+      "path": ".pytest_cache/qt-f07-full-final",
+      "status": "REMOVED",
+      "files": 2189,
+      "bytes": 41675696
+    },
+    {
+      "path": ".pytest_cache/qt-f07-guard-probe-final",
+      "status": "REMOVED",
+      "files": 63,
+      "bytes": 23580
+    },
+    {
+      "path": ".pytest_cache/qt-f07-guard-probe-fixed",
+      "status": "REMOVED",
+      "files": 63,
+      "bytes": 23580
+    },
+    {
+      "path": ".pytest_cache/qt-f07-io",
+      "status": "REMOVED",
+      "files": 29,
+      "bytes": 1068322
+    },
+    {
+      "path": ".pytest_cache/qt-f07-rules",
+      "status": "REMOVED",
+      "files": 2,
+      "bytes": 86016
+    },
+    {
+      "path": ".pytest_cache/qt-f08-current",
+      "status": "REMOVED",
+      "files": 103,
+      "bytes": 2391591
+    },
+    {
+      "path": ".pytest_cache/qt-f08-final",
+      "status": "REMOVED",
+      "files": 100,
+      "bytes": 2326028
+    },
+    {
+      "path": ".pytest_cache/qt-f08-final-cli",
+      "status": "REMOVED",
+      "files": 6,
+      "bytes": 68045
+    },
+    {
+      "path": ".pytest_cache/qt-f08-focused",
+      "status": "REMOVED",
+      "files": 35,
+      "bytes": 1018136
+    },
+    {
+      "path": ".pytest_cache/qt-f08-integrated",
+      "status": "REMOVED",
+      "files": 83,
+      "bytes": 2325503
+    },
+    {
+      "path": ".pytest_cache/qt-f08-qualified",
+      "status": "REMOVED",
+      "files": 103,
+      "bytes": 2391595
+    },
+    {
+      "path": ".pytest_cache/qt-f09-focus",
+      "status": "REMOVED",
+      "files": 43,
+      "bytes": 1344271
+    },
+    {
+      "path": ".pytest_cache/qt-f09-focus2",
+      "status": "REMOVED",
+      "files": 43,
+      "bytes": 1344272
+    },
+    {
+      "path": ".pytest_cache/qt-f09-full",
+      "status": "REMOVED",
+      "files": 2418,
+      "bytes": 44125786
+    },
+    {
+      "path": ".pytest_cache/qt-f09-guard-repair",
+      "status": "REMOVED",
+      "files": 44,
+      "bytes": 15971
+    },
+    {
+      "path": ".pytest_cache/qt-f10",
+      "status": "REMOVED",
+      "files": 45,
+      "bytes": 1430281
+    },
+    {
+      "path": ".pytest_cache/qt-f11",
+      "status": "REMOVED",
+      "files": 30,
+      "bytes": 527304
+    },
+    {
+      "path": ".pytest_cache/qt-f12",
+      "status": "REMOVED",
+      "files": 61,
+      "bytes": 1324673
+    },
+    {
+      "path": ".pytest_cache/qt-f13-focus",
+      "status": "REMOVED",
+      "files": 89,
+      "bytes": 2448332
+    },
+    {
+      "path": ".pytest_cache/qt-f13-qualified",
+      "status": "REMOVED",
+      "files": 185,
+      "bytes": 4795190
+    },
+    {
+      "path": ".pytest_cache/qt-f14-first",
+      "status": "REMOVED",
+      "files": 150,
+      "bytes": 3347191
+    },
+    {
+      "path": ".pytest_cache/qt-f14-qualified",
+      "status": "REMOVED",
+      "files": 155,
+      "bytes": 3441132
+    },
+    {
+      "path": ".pytest_cache/qt-f14-regression",
+      "status": "REMOVED",
+      "files": 79,
+      "bytes": 2040177
+    },
+    {
+      "path": ".pytest_cache/qt-f15-first",
+      "status": "REMOVED",
+      "files": 146,
+      "bytes": 2714045
+    },
+    {
+      "path": ".pytest_cache/qt-f15-regression",
+      "status": "REMOVED",
+      "files": 163,
+      "bytes": 3777956
+    },
+    {
+      "path": ".pytest_cache/quality-baseline",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-baseline' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality-client",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-client' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality-client-recheck",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-client-recheck' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality-core-full",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-core-full' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality-core-goldens",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-core-goldens' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality-final-full",
+      "status": "FAILED",
+      "files": 0,
+      "bytes": 0,
+      "error": "Access to the path 'C:\\ReverieSaga\\.pytest_cache\\quality-final-full' is denied."
+    },
+    {
+      "path": ".pytest_cache/quality06-corrections-after",
+      "status": "REMOVED",
+      "files": 12,
+      "bytes": 393216
+    },
+    {
+      "path": ".pytest_cache/quality06-corrections-before",
+      "status": "REMOVED",
+      "files": 8,
+      "bytes": 262144
+    },
+    {
+      "path": ".pytest_cache/quality06-corrections-final-focused",
+      "status": "REMOVED",
+      "files": 12,
+      "bytes": 393216
+    },
+    {
+      "path": ".pytest_cache/quality06-corrections-full",
+      "status": "REMOVED",
+      "files": 1897,
+      "bytes": 36067039
+    },
+    {
+      "path": ".pytest_cache/quality06-corrections-repro",
+      "status": "REMOVED",
+      "files": 8,
+      "bytes": 262144
+    },
+    {
+      "path": ".pytest_cache/rules-after",
+      "status": "REMOVED",
+      "files": 6,
+      "bytes": 196608
+    },
+    {
+      "path": ".pytest_cache/rules-full-20261008",
+      "status": "REMOVED",
+      "files": 1887,
+      "bytes": 35736115
+    },
+    {
+      "path": ".pytest_cache/struct-001-after",
+      "status": "REMOVED",
+      "files": 29,
+      "bytes": 1024000
+    },
+    {
+      "path": ".pytest_cache/struct-001-before",
+      "status": "REMOVED",
+      "files": 24,
+      "bytes": 835584
+    },
+    {
+      "path": ".pytest_cache/struct-001-client-rerun",
+      "status": "REMOVED",
+      "files": 144,
+      "bytes": 5173825
+    },
+    {
+      "path": ".pytest_cache/struct-001-focused",
+      "status": "REMOVED",
+      "files": 363,
+      "bytes": 36161062
+    },
+    {
+      "path": ".pytest_cache/struct-001-full",
+      "status": "REMOVED",
+      "files": 2168,
+      "bytes": 11958809
+    },
+    {
+      "path": ".pytest_cache/struct-001-tk-before",
+      "status": "REMOVED",
+      "files": 5,
+      "bytes": 188416
+    },
+    {
+      "path": ".pytest_cache/struct-001-tk-isolation",
+      "status": "REMOVED",
+      "files": 10,
+      "bytes": 401408
+    },
+    {
+      "path": "tmp/cp04-unpacked-validation",
+      "status": "REMOVED",
+      "files": 2331,
+      "bytes": 47771652
+    },
+    {
+      "path": "tmp/engine-install/UnitySetup64-6000.3.25f1.exe",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 4201959888
+    },
+    {
+      "path": "tmp/engine-install/editor-install.pid",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 7
+    },
+    {
+      "path": "tmp/gemini-api-key.txt",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 0
+    },
+    {
+      "path": "tmp/cp03_packet.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 5151
+    },
+    {
+      "path": "tmp/qt_f02_packet.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 4973
+    },
+    {
+      "path": "tmp/qt_f02_refactor.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 3574
+    },
+    {
+      "path": "tmp/gemini_failure_diagnosis.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 1860
+    },
+    {
+      "path": "tmp/session-publication-check.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 2836
+    },
+    {
+      "path": "tmp/session-publication-receipt.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 3495
+    },
+    {
+      "path": "tmp/verify_session_publish.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 5543
+    },
+    {
+      "path": "tmp/open-work-closure/prepare_publication.py",
+      "status": "REMOVED",
+      "files": 1,
+      "bytes": 3021
+    }
+  ],
+  "retention_review": [
+    "unique closed review snapshots before retirement",
+    "unreviewed V3/current-repair context",
+    "GOV02/GOV03 native proof",
+    "legacy .pytest_cache/python-3.13.12 copy",
+    "17 restricted old cache targets;no ACL or owner takeover"
+  ]
+}

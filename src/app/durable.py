@@ -53,6 +53,7 @@ class DurableSession:
         self._busy = False
         self._closed = False
         self._owned_clones: set[Path] = set()
+        self._retired_stores: list[SqliteCommitStore] = []
         self._logger = logging.getLogger(__name__)
 
     def _guard(self, *, recovery: bool = False) -> None:
@@ -113,6 +114,10 @@ class DurableSession:
         with self._operation():
             return self._attachment.slots.export(slot_id)
 
+    def inspect_slot(self, slot_id: str) -> DurableCheckpoint:
+        with self._operation():
+            return self._attachment.slots.inspect(slot_id)
+
     def load(self, slot_id: str) -> SaveLoadReceipt:
         with self._operation():
             previous = self._attachment
@@ -132,15 +137,20 @@ class DurableSession:
                 raise SaveError("SAVE_LOAD_FAILED", "prepared attachment failed") from error
             self._attachment = prepared  # Single app owner/token/driver/store swap.
             self._owned_clones.add(store.path)
+            self._retired_stores.append(previous.store)
             previous.owner._driver.detach()
             previous.store.close()
-            if previous.store.path in self._owned_clones:
-                try:
-                    cleanup_owned_clone(previous.store.path, previous.store.path.parent)
-                    self._owned_clones.remove(previous.store.path)
-                except (OSError, SaveError):
-                    self._logger.warning("superseded owned working clone cleanup failed", exc_info=True)
+            self._retired_stores.remove(previous.store)
+            self._cleanup_superseded(previous.store)
             return receipt
+
+    def _cleanup_superseded(self, store: SqliteCommitStore) -> None:
+        if store.path in self._owned_clones:
+            try:
+                cleanup_owned_clone(store.path, store.path.parent)
+                self._owned_clones.remove(store.path)
+            except (OSError, SaveError):
+                self._logger.warning("superseded owned working clone cleanup failed", exc_info=True)
 
     def recover(self) -> TurnPublication:
         with self._operation(recovery=True):
@@ -155,7 +165,21 @@ class DurableSession:
             if self._busy:
                 raise SaveError("SAVE_BUSY", "active attachment operation")
             self._attachment.owner._driver.detach()
-            self._attachment.store.close()
+            failure: Exception | None = None
+            for store in (*self._retired_stores, self._attachment.store):
+                try:
+                    store.close()
+                except Exception as error:
+                    # Try the remaining owned resources without losing the first failure.
+                    self._logger.exception("owned store close failed")
+                    if failure is None:
+                        failure = error
+                else:
+                    if store is not self._attachment.store:
+                        self._retired_stores.remove(store)
+                        self._cleanup_superseded(store)
+            if failure is not None:
+                raise failure
             self._closed = True
 
     def __enter__(self) -> DurableSession:

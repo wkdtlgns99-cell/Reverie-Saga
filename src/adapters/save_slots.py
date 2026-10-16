@@ -11,7 +11,7 @@ import sqlite3
 from adapters.sqlite_store import (
     SqliteCommitStore, _backup_file_reserved, safe_path, validate_save,
 )
-from contracts.persistence import SaveError, SaveExportReceipt
+from contracts.persistence import DurableCheckpoint, SaveError, SaveExportReceipt
 from contracts.state_io import StateIO
 from domain.canonical import hash_document
 
@@ -160,6 +160,19 @@ class SqliteSlots:
             raise SaveError("SAVE_EXPORT_FAILED", str(error)) from error
         finally:
             self._cleanup(tuple(temporaries))
+            self._busy = False
+
+    def inspect(self, slot_id: str) -> DurableCheckpoint:
+        current, _ = self._paths(slot_id)
+        if self._busy:
+            raise SaveError("SAVE_BUSY", "slot operation active")
+        self._busy = True
+        try:
+            self._store.load()
+            return validate_save(current, io=self._io)
+        except (sqlite3.Error, OSError) as error:
+            raise SaveError("SAVE_INSPECT_FAILED", str(error)) from error
+        finally:
             self._busy = False
 
     def stage_load(self, slot_id: str) -> SqliteCommitStore:

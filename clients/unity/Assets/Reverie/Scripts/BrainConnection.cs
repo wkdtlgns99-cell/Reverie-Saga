@@ -30,18 +30,27 @@ namespace ReverieSaga
         public int ProcessId { get { return child.Id; } }
         public bool Busy { get { return awaiting; } }
 
-        public BrainConnection(string root, string workingFile, string scenario=WireScenarios.Legacy)
+        public BrainConnection(string root, string workingFile, string scenario = "legacy",
+            string questCatalog = "", string questSha256 = "", bool npcMemory = false)
         {
             scenario=SelectScenario(scenario);
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             string catalog = Path.Combine(root, "content", "narratives.json");
             if (!File.Exists(python) || !File.Exists(catalog))
                 throw new IOException("Python runtime or accepted catalog is missing");
+            string questArgs="";
+            if(npcMemory&&(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256)))
+                throw new IOException("NPC_MEMORY_CONTENT");
+            if(!String.IsNullOrEmpty(questCatalog)||!String.IsNullOrEmpty(questSha256)) {
+                if(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256))
+                    throw new IOException("QUEST_CONTENT_UNAVAILABLE");
+                questArgs=" --quest-catalog "+Quote(questCatalog)+" --quest-sha256 "+Quote(questSha256);
+            }
             var start = new ProcessStartInfo {
                 FileName = python, WorkingDirectory = root,
                 Arguments = "-m app.engine_bridge --working " + Quote(workingFile) +
                     " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash +
-                    " --scenario " + Quote(scenario),
+                    " --scenario " + Quote(scenario) + questArgs + (npcMemory?" --npc-memory":""),
                 UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardInput = true, RedirectStandardOutput = true,
                 RedirectStandardError = true
@@ -59,7 +68,8 @@ namespace ReverieSaga
         public static string SelectScenario(string value)
         {
             if(String.IsNullOrEmpty(value))return WireScenarios.Legacy;
-            if(value==WireScenarios.Legacy||value==WireScenarios.Courtyard)return value;
+            if(value==WireScenarios.Legacy||value==WireScenarios.Courtyard||
+               value=="legacy"||value=="courtyard"||value=="harbor"||value=="grove")return value;
             throw new ArgumentException("UNKNOWN_SCENARIO");
         }
 
@@ -122,12 +132,16 @@ namespace ReverieSaga
             return true;
         }
 
-        public void Send(string intent)
+        public void Send(string intent,string slotId="slot01",int waitSeconds=1)
         {
             if (disposed || awaiting) throw new InvalidOperationException("Brain unavailable/busy");
+            if(slotId==null||slotId.Length!=6||!slotId.StartsWith("slot0",StringComparison.Ordinal)||
+               slotId[5]<'1'||slotId[5]>'8')throw new ArgumentException("Invalid save slot",nameof(slotId));
+            int seconds=intent=="wait"?waitSeconds:1;
+            if(seconds<1)throw new ArgumentOutOfRangeException(nameof(waitSeconds));
             var request = new WireRequest {kind="request", version="1",
                 request_id=nextId.ToString(CultureInfo.InvariantCulture), attachment_id=attachment,
-                request=intent, seconds="1", slot_id="slot01"};
+                request=intent, seconds=seconds.ToString(CultureInfo.InvariantCulture), slot_id=slotId};
             byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(request));
             if (body.Length > 16 * 1024) throw new IOException("Request capacity");
             int size = body.Length;

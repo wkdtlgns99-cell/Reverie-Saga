@@ -2,24 +2,37 @@
 
 from __future__ import annotations
 
-from domain.scenario import LEGACY_SCENARIO, Scenario, require_scenario
-
 from concurrent.futures import Future, ThreadPoolExecutor
 from dataclasses import replace
 import logging
 from pathlib import Path
+from typing import Literal
 
 from app.client_session import ClientSession
 from app.client_text import status_text
 from contracts.client import ClientRequest, ClientUpdate
+from contracts.dialogue import QuestContent
 from contracts.persistence import SaveError, WorldUnavailable
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 
 class ClientWorker:
-    def __init__(self, path: Path, *, scenario: Scenario = LEGACY_SCENARIO) -> None:
-        require_scenario(scenario)
-        self._scenario = scenario
+    def __init__(
+        self,
+        path: Path,
+        layout: Scenario = LEGACY,
+        *,
+        scenario: Scenario = LEGACY,
+        quest_content: QuestContent | None = None,
+        npc_memory: bool = False,
+    ) -> None:
+        if type(npc_memory) is not bool or npc_memory and quest_content is None:
+            raise ValueError("NPC_MEMORY_CONTENT")
+        layout = resolve_selection(layout, scenario)
         self._path = path
+        self._layout = layout
+        self._quest_content = quest_content
+        self._npc_memory = npc_memory
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
         self._last = ClientUpdate(None, "CONNECTING", (), "", str(path))
@@ -34,10 +47,46 @@ class ClientWorker:
             raise ValueError("CLIENT_CLOSING")
         return self._executor.submit(self._run, request, seconds, slot_id)
 
-    def _run(self, request: ClientRequest, seconds: int, slot_id: str) -> ClientUpdate:
+    def inspect_memory(self) -> Future[ClientUpdate]:
+        """Serialize full read-only inspection on the Brain owner thread."""
+        return self._inspect("memory")
+
+    def inspect_recent_memory(self) -> Future[ClientUpdate]:
+        return self._inspect("memory_recent")
+
+    def inspect_slot(self, slot_id: str = "slot01") -> Future[ClientUpdate]:
+        return self._inspect("slot_inspect", slot_id)
+
+    def _inspect(
+        self, request: Literal["memory", "memory_recent", "slot_inspect"], slot_id: str = "slot01"
+    ) -> Future[ClientUpdate]:
+        if self._closing:
+            raise ValueError("CLIENT_CLOSING")
+        return self._executor.submit(self._run, request, 1, slot_id)
+
+    def _run(
+        self,
+        request: ClientRequest | Literal["memory", "memory_recent", "slot_inspect"],
+        seconds: int,
+        slot_id: str,
+    ) -> ClientUpdate:
         try:
+            # Inspection must never create a game or open an unattached save.
+            if request in ("memory", "memory_recent") and self._owner is None:
+                raise ValueError("NPC_MEMORY_UNAVAILABLE")
+            if request == "slot_inspect" and self._owner is None:
+                raise ValueError("SLOT_INSPECTION_UNAVAILABLE")
             if self._owner is None:
-                self._owner = ClientSession(self._path, scenario=self._scenario)
+                self._owner = (
+                    ClientSession(self._path, self._layout)
+                    if self._quest_content is None
+                    else ClientSession(
+                        self._path,
+                        self._layout,
+                        quest_content=self._quest_content,
+                        npc_memory=self._npc_memory,
+                    )
+                )
             owner = self._owner
             match request:
                 case "attach":
@@ -50,6 +99,12 @@ class ClientWorker:
                     update = owner.retry()
                 case "recover":
                     update = owner.recover()
+                case "memory":
+                    update = owner.inspect_memory()
+                case "memory_recent":
+                    update = owner.inspect_recent_memory()
+                case "slot_inspect":
+                    update = owner.inspect_slot(slot_id)
                 case _:
                     update = owner.act(request, seconds=seconds)
             self._last = update
@@ -57,7 +112,17 @@ class ClientWorker:
             self._last = self._error_update(error.code, error)
         except ValueError as error:
             # Unexpected adapter bugs remain visible,not classified as valid player rejection.
-            code = str(error) if str(error) == "NO_RETRY" else "CLIENT_ERROR"
+            code = (
+                str(error)
+                if str(error)
+                in (
+                    "NO_RETRY",
+                    "QUEST_UNAVAILABLE",
+                    "NPC_MEMORY_UNAVAILABLE",
+                    "SLOT_INSPECTION_UNAVAILABLE",
+                )
+                else "CLIENT_ERROR"
+            )
             if code == "CLIENT_ERROR":
                 self._logger.exception("client boundary operation failed")
             self._last = self._error_update(code, error)
@@ -69,6 +134,19 @@ class ClientWorker:
         return self._last
 
     def _error_update(self, code: str, error: Exception) -> ClientUpdate:
+        if self._owner is not None:
+            try:
+                current = self._owner.update(code, (str(error),), messages=(status_text(code),))
+                return replace(
+                    current,
+                    reset_log=bool(
+                        self._last.attachment_id
+                        and current.attachment_id != self._last.attachment_id
+                    ),
+                )
+            except Exception:
+                # Projection can fail independently;the cache remains an explicit error.
+                self._logger.exception("client error reconciliation failed")
         return replace(
             self._last,
             status=code,

@@ -13,10 +13,13 @@ from typing import IO, Sequence, cast
 
 from adapters.narrative_catalog import load_catalog
 from app.client_worker import ClientWorker
+from app.scenarios import select_scenario
+from app.quest import client_quest
+from contracts.dialogue import QuestContent
+from domain.scenario import LEGACY, Scenario
 from contracts.client import ClientRequest, ClientUpdate, ClientView
 from contracts.narratives import NARRATIVE_CATEGORIES, Narrative
 from domain.canonical import JsonObject, JsonValue, canonical_json, decode_json, exact_fields, seal
-from domain.scenario import LEGACY_SCENARIO, Scenario, scenario_by_id
 
 MAX_FRAME = 1024 * 1024
 MAX_REQUEST = 16 * 1024
@@ -33,6 +36,10 @@ REQUEST_NAMES = (
     "rest",
     "wait",
     "bell",
+    "talk",
+    "memory",
+    "memory_recent",
+    "slot_inspect",
     "save",
     "load",
     "retry",
@@ -132,9 +139,15 @@ def wire(value: object) -> JsonValue:
 
 class EngineBridge:
     def __init__(
-        self, path: Path, narratives: tuple[Narrative, ...], *, scenario: Scenario = LEGACY_SCENARIO
+        self,
+        path: Path,
+        narratives: tuple[Narrative, ...],
+        layout: Scenario = LEGACY,
+        *,
+        quest_content: QuestContent | None = None,
+        npc_memory: bool = False,
     ) -> None:
-        self.worker = ClientWorker(path, scenario=scenario)
+        self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
         self.highest_request = 0
@@ -177,9 +190,17 @@ class EngineBridge:
         self.highest_request = sequence
         if d["request"] == "quit":
             return self.response(request_id), True
-        self.last = self.worker.request(
-            cast(ClientRequest, d["request"]), seconds=seconds, slot_id=d["slot_id"]
-        ).result()
+        if d["request"] == "memory":
+            pending = self.worker.inspect_memory()
+        elif d["request"] == "memory_recent":
+            pending = self.worker.inspect_recent_memory()
+        elif d["request"] == "slot_inspect":
+            pending = self.worker.inspect_slot(d["slot_id"])
+        else:
+            pending = self.worker.request(
+                cast(ClientRequest, d["request"]), seconds=seconds, slot_id=d["slot_id"]
+            )
+        self.last = pending.result()
         return self.response(request_id), False
 
     def close(self) -> None:
@@ -191,10 +212,14 @@ def serve(
     target: IO[bytes],
     path: Path,
     narratives: tuple[Narrative, ...],
+    layout: Scenario = LEGACY,
     *,
-    scenario: Scenario = LEGACY_SCENARIO,
+    quest_content: QuestContent | None = None,
+    npc_memory: bool = False,
 ) -> int:
-    bridge = EngineBridge(path, narratives, scenario=scenario)
+    bridge = EngineBridge(
+        path, narratives, layout, quest_content=quest_content, npc_memory=npc_memory
+    )
     try:
         write_frame(target, bridge.response("0"))
         while (body := read_frame(source)) is not None:
@@ -216,14 +241,31 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--working", type=Path, required=True)
     parser.add_argument("--catalog", type=Path, required=True)
     parser.add_argument("--catalog-sha256", required=True)
-    parser.add_argument("--scenario", default=LEGACY_SCENARIO.scenario_id)
+    parser.add_argument("--scenario", default="legacy")
+    parser.add_argument("--quest-catalog", type=Path)
+    parser.add_argument("--quest-sha256")
+    parser.add_argument("--npc-memory", action="store_true")
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
-        scenario = scenario_by_id(args.scenario)
         narratives = load_catalog(args.catalog, args.catalog_sha256)
+        try:
+            choice = select_scenario(args.scenario)
+        except ValueError as error:
+            raise ValueError("UNKNOWN_SCENARIO") from error
+        if choice.narrative_id and not any(
+            n.entry_id == choice.narrative_id and n.category == "settlement" for n in narratives
+        ):
+            raise ValueError("SCENARIO_NARRATIVE")
+        content = client_quest(choice.layout, args.quest_catalog, args.quest_sha256)
         return serve(
-            sys.stdin.buffer, sys.stdout.buffer, args.working, narratives, scenario=scenario
+            sys.stdin.buffer,
+            sys.stdout.buffer,
+            args.working,
+            narratives,
+            choice.layout,
+            quest_content=content,
+            npc_memory=args.npc_memory,
         )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)
