@@ -64,3 +64,34 @@ def test_compiler_still_rejects_unqualified_lf_bytes(tmp_path: Path) -> None:
         target.write_bytes((root / name).read_bytes().replace(b"\r\n", b"\n"))
     with pytest.raises(ValueError, match="^NARRATIVE_DOSSIER_UNQUALIFIED$"):
         build_sample(tmp_path)
+
+
+@pytest.mark.parametrize("autocrlf", ("false", "true", "input"))
+def test_git_checkout_preserves_reviewed_g07_source_bytes(tmp_path: Path, autocrlf: str) -> None:
+    root = Path(__file__).resolve().parents[2]
+    inventory = object_value(decode_json((root / "tools/replay_body_inventory.json").read_bytes()))
+    sources = object_value(inventory["source_sha256"])
+    assert len(sources) == 8
+    checkout = tmp_path / "checkout"
+    subprocess.run(
+        [
+            "git",
+            "-c",
+            f"core.autocrlf={autocrlf}",
+            "-c",
+            "core.eol=lf",
+            "-c",
+            f"core.attributesfile={os.devnull}",
+            "checkout-index",
+            "--prefix=" + checkout.as_posix() + "/",
+            "--",
+            *sources,
+        ],
+        cwd=root,
+        check=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
+    )
+    for name, digest in sources.items():
+        body = (checkout / name).read_bytes()
+        assert hashlib.sha256(body).hexdigest() == text_value(digest), name

@@ -13,6 +13,11 @@ Current workspace `C:\ReverieSaga`;reference `C:\Quilltale` is read-only.
 
 ## Checkout and Local Work
 
+Current director request2026-10-16:repair PR8checks,merge normally and update C:/Reverie Saga.
+Branch86ba74c was fetched;clean local maincec6869 preserved. Checkout-ending repair and
+[receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) preserve existing raw G07hashes.
+Previous no-merge publication constraint is superseded for PR8by this explicit request.
+
 | Item | Last observed state;recheck Git before edits |
 |---|---|
 | Branch / HEAD | codex/open-work-closure-20261014;4257d4f plus current GOV-03 and architecture-direction documentation;recheck exact HEAD |

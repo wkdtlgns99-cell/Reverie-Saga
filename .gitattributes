@@ -3,3 +3,12 @@ docs/reference/QUILLTALE_CONTENT_CANDIDATES.json text eol=crlf
 docs/reviews/QT-F04_GENERATION_EVIDENCE_2026-10-12.json text eol=crlf
 # Keep the newly published raw reviewer attachment byte-identical to its recorded digest.
 docs/reviews/OPEN_WORK_V3_THIRD_FEEDBACK_2026-10-15.txt -text whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol
+# GOV-03 binds reviewed raw source bytes, including their original line endings.
+src/contracts/dialogue.py text eol=lf
+src/domain/scenario.py text eol=lf
+src/engines/npc_memory.py text eol=lf
+src/engines/quest.py text eol=lf
+src/engines/encounter.py text eol=crlf
+src/engines/skeleton.py text eol=crlf
+src/engines/trial.py text eol=crlf
+src/engines/watch.py text eol=crlf

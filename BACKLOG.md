@@ -7,6 +7,10 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+PR8 repair2026-10-16:director authorizes CI repair,ordinary merge and local synchronization.
+Explicit checkout endings preserve all8existing G07source hashes;7checkout tests PASS.
+[Receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md);remote acceptance pending current checks.
+
 | ID | State | Result / evidence |
 |---|---|---|
 | RS-P1-GOV-03 | LOCAL_ACCEPTED,uncommitted | Manual producer/read-only assessor:8replays/35body hits/200inputs;110new tests/full1897PASS. Identical assessment,no writes;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Full uses identical Tcl copy;original Tk error/symlink/timing limits retained;CI NOT_ACTIVE |
