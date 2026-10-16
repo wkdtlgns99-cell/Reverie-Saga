@@ -53,6 +53,19 @@ namespace ReverieSaga
 
         public static void BuildAndVerify() { Build(); Verify(); }
 
+        [MenuItem("Reverie/Verify Current Selection (Keep Editor Open)")]
+        public static void VerifyInteractive()
+        {
+            if(EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new IOException("Stop Play mode before starting another verification");
+            if(!EditorSceneManager.SaveCurrentModifiedScenesIfUserWantsTo())return;
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_VERIFY_EXIT","0");
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_WORKING",Path.GetFullPath(
+                Path.Combine(Application.dataPath,"..","..","..","tmp","unity-verification",
+                    Guid.NewGuid().ToString("N"),"game.sqlite")));
+            Verify();
+        }
+
         public static void Verify()
         {
             string working=Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
@@ -61,6 +74,7 @@ namespace ReverieSaga
             if(Directory.Exists(parent)&&Directory.GetFileSystemEntries(parent).Length!=0)
                 throw new IOException("Verification directory must be empty;existing saves are preserved");
             Prepare();
+            SessionState.SetInt("Reverie.Verify.ExitCode",-1);
             SessionState.SetBool("Reverie.Verify",true);
             if(!Application.isBatchMode)EditorApplication.ExecuteMenuItem("Window/General/Game");
             EditorApplication.isPlaying=true;
@@ -74,14 +88,38 @@ namespace ReverieSaga
             File.WriteAllBytes(working,new byte[]{1,2,3,4});
         }
 
+        public static void VerifyCourtyard()
+        {
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO")!=WireScenarios.Courtyard)
+                throw new IOException("Courtyard verification requires the selected scenario");
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_CASE","courtyard");
+            Verify();
+        }
+
+        public static void VerifyInvalidScenario()
+        {
+            string selected=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
+            if(String.IsNullOrEmpty(selected)||selected==WireScenarios.Legacy||selected==WireScenarios.Courtyard)
+                throw new IOException("Invalid-scenario verification requires an unknown ID");
+            Environment.SetEnvironmentVariable("REVERIE_UNITY_CASE","invalid-scenario");
+            Verify();
+        }
+
         [InitializeOnLoadMethod]
-        static void Initialize() { EditorApplication.playModeStateChanged+=Changed; }
+        static void Initialize()
+        {
+            EditorApplication.playModeStateChanged-=Changed;
+            EditorApplication.playModeStateChanged+=Changed;
+        }
 
         static void Changed(PlayModeStateChange state)
         {
+            if(state==PlayModeStateChange.EnteredEditMode&&SessionState.GetBool("Reverie.Verify.Retained",false)) {
+                SessionState.SetBool("Reverie.Verify.Retained",false);
+                Debug.Log("ENGINE_VERIFY_EDITOR_IDLE code="+SessionState.GetInt("Reverie.Verify.ExitCode",-1));
+            }
             if(state!=PlayModeStateChange.EnteredPlayMode||!SessionState.GetBool("Reverie.Verify",false))return;
             SessionState.SetBool("Reverie.Verify",false);
-            EditorApplication.playModeStateChanged-=Changed;
             var runner=new GameObject("Verification Runner").AddComponent<LiveVerification>();
             runner.StartCoroutine(runner.Run());
         }

@@ -23,7 +23,15 @@ namespace ReverieSaga
         static void Exit(int code)
         {
 #if UNITY_EDITOR
-            EditorApplication.Exit(code);
+            SessionState.SetInt("Reverie.Verify.ExitCode",code);
+            Debug.Log("ENGINE_VERIFY_RESULT code="+code);
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_VERIFY_EXIT")=="1")
+                EditorApplication.Exit(code);
+            else {
+                SessionState.SetBool("Reverie.Verify.Retained",true);
+                Debug.Log("ENGINE_VERIFY_EDITOR_RETAINED code="+code);
+                EditorApplication.delayCall+=()=>{EditorApplication.isPlaying=false;};
+            }
 #else
             Application.Quit(code);
 #endif
@@ -434,9 +442,84 @@ namespace ReverieSaga
             Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }
 
+        IEnumerator Courtyard()
+        {
+            var v=room.Latest.update.view;
+            Check(room.Latest.narratives.Length==6,"courtyard_catalog_loaded");
+            Check(v.actor_cell=="6"&&v.enemy_cell=="0"&&v.gate_cell=="2"&&v.npc_cell=="8"&&
+                  v.walls.Length==1&&v.walls[0]=="7","courtyard_initial_positions");
+            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..","..",
+                "tmp","qtf02-unity","native",
+                Path.GetFileName(Path.GetDirectoryName(Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))));
+            Directory.CreateDirectory(output);
+            if(!Application.isBatchMode) {
+                ScreenCapture.CaptureScreenshot(Path.Combine(output,"initial.png"));
+                yield return new WaitForSecondsRealtime(1);
+                Check(File.Exists(Path.Combine(output,"initial.png")),"courtyard_initial_capture");
+            }
+            yield return Intent("right");
+            Check(room.Latest.update.view.actor_cell=="6","courtyard_wall_blocks");
+            yield return Intent("up");
+            Check(room.Latest.update.view.actor_cell=="3","courtyard_movement");
+            yield return Intent("attack");
+            v=room.Latest.update.view;
+            Check(v.actor_hp=="2"&&v.enemy_hp=="3"&&v.stamina=="1","courtyard_attack_counter");
+            string saved=JsonUtility.ToJson(v);
+            yield return Intent("save");yield return Intent("attack");yield return Intent("load");
+            Check(room.Latest.update.status=="LOADED"&&JsonUtility.ToJson(room.Latest.update.view)==saved,
+                  "courtyard_load_branch");
+            yield return Intent("attack");string once=JsonUtility.ToJson(room.Latest.update.view);
+            yield return Intent("retry");
+            Check(JsonUtility.ToJson(room.Latest.update.view)==once,"courtyard_retry_once");
+            yield return Intent("rest");yield return Intent("attack");
+            Check(room.Latest.update.view.enemy_hp=="0"&&room.Latest.update.view.actor_hp=="1",
+                  "courtyard_kill_no_counter");
+            yield return Intent("up");
+            Check(room.Latest.update.view.actor_cell=="0","courtyard_defeated_cell_passable");
+            yield return Intent("bell");
+            Check(room.Latest.update.view.npc_replies=="1","courtyard_npc_reply");
+            yield return Intent("down");yield return Intent("right");yield return Intent("up");
+            yield return Intent("right");
+            Check(room.Latest.update.view.actor_cell=="1","courtyard_door_blocks");
+            yield return Intent("open");yield return Intent("right");
+            Check(room.Latest.update.view.actor_cell=="2"&&room.Latest.update.view.gate_open,
+                  "courtyard_door_opens");
+            string committed=JsonUtility.ToJson(room.Latest.update.view);
+            System.Diagnostics.Process.GetProcessById(room.BrainProcessId).Kill();
+            float until=Time.realtimeSinceStartup+12;
+            while(room.Failure==""&&Time.realtimeSinceStartup<until)yield return null;
+            Check(room.Failure!="","courtyard_disconnect_visible");
+            room.Reconnect();yield return Ready();
+            Check(room.Latest!=null&&JsonUtility.ToJson(room.Latest.update.view)==committed,
+                  "courtyard_reconnect_same_scenario");
+            int tick=PlayRoom.Number(room.Latest.update.view.tick);
+            yield return Intent("wait");
+            Check(room.Latest.update.status=="COMMITTED"&&
+                  room.Latest.update.view.tick==(tick+1).ToString(),"courtyard_input_after_reconnect");
+            if(!Application.isBatchMode) {
+                ScreenCapture.CaptureScreenshot(Path.Combine(output,"final.png"));
+                yield return new WaitForSecondsRealtime(1);
+                Check(File.Exists(Path.Combine(output,"final.png")),"courtyard_final_capture");
+            }
+            File.WriteAllText(Path.Combine(output,"final-view.json"),JsonUtility.ToJson(room.Latest));
+            Debug.Log("COURTYARD_NATIVE_OUTPUT "+output);
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");
+            Exit(failed?1:0);
+        }
+
         public IEnumerator Run()
         {
             room=FindFirstObjectByType<PlayRoom>();
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")=="invalid-scenario") {
+                float until=Time.realtimeSinceStartup+12;
+                while(room.Failure==""&&Time.realtimeSinceStartup<until)yield return null;
+                Check(room.Failure.Contains("UNKNOWN_SCENARIO"),"invalid_scenario_visible");
+                Check(!room.HasBrainForVerification,"invalid_scenario_no_child");
+                Check(!File.Exists(Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")),"invalid_scenario_no_save");
+                Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");
+                Exit(failed?1:0);yield break;
+            }
+
             if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")!="corrupt") {
                 yield return Ready();if(failed){Exit(1);yield break;}
                 Check(room.CanInspectMemory==room.NpcMemoryEnabled,"memory_control_mode");
@@ -464,6 +547,9 @@ namespace ReverieSaga
                 Exit(failed?1:0);yield break;
             }
             yield return Ready();if(failed){Exit(1);yield break;}
+            if(Environment.GetEnvironmentVariable("REVERIE_UNITY_CASE")=="courtyard") {
+                yield return Courtyard();yield break;
+            }
             Check(room.Latest.has_view&&room.Latest.narratives.Length==6,"catalog_loaded");
             Check(room.Latest.update.view.actor_cell=="0","initial_actor");
             string output=Path.Combine(Path.GetDirectoryName(

@@ -33,6 +33,7 @@ namespace ReverieSaga
         public BrainConnection(string root, string workingFile, string scenario = "legacy",
             string questCatalog = "", string questSha256 = "", bool npcMemory = false)
         {
+            scenario=SelectScenario(scenario);
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             string catalog = Path.Combine(root, "content", "narratives.json");
             if (!File.Exists(python) || !File.Exists(catalog))
@@ -62,6 +63,14 @@ namespace ReverieSaga
                 while ((line = child.StandardError.ReadLine()) != null) diagnostics.Enqueue(line);
             });
             reader = Task.Run(ReadLoop);
+        }
+
+        public static string SelectScenario(string value)
+        {
+            if(String.IsNullOrEmpty(value))return WireScenarios.Legacy;
+            if(value==WireScenarios.Legacy||value==WireScenarios.Courtyard||
+               value=="legacy"||value=="courtyard"||value=="harbor"||value=="grove")return value;
+            throw new ArgumentException("UNKNOWN_SCENARIO");
         }
 
         static string Quote(string value)

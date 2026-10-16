@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from domain.scenario import scenario_document
+
 from dataclasses import asdict, fields, replace
 
 from app.quest_definition import harbor_definition
@@ -137,7 +139,10 @@ def quest_bundle(content: QuestContent) -> FeatureBundle:
     rules["quest"] = object_value(
         seal(
             {
-                "definition": asdict(content.definition),
+                "definition": {
+                    **asdict(content.definition),
+                    "layout": scenario_document(content.definition.layout),
+                },
                 "consumer_roles": QUEST_ROLES,
                 "talk_duration_seconds": 1,
                 "talk_reach_cells": 1,

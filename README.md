@@ -6,7 +6,7 @@ records,SQLite save/load/recovery/replay,Tk and provisional Unity. [Current stat
 
 ## Runtime
 
-Commands run from `C:\ReverieSaga` in PowerShell. Reuse local `.venv`;for another computer
+Commands run from `C:\Reverie Saga` in PowerShell. Reuse local `.venv`;for another computer
 follow [workstation setup](docs/WORKSTATION_SETUP.md). Git excludes tools,licenses,keys and private saves.
 Validated host:CPython3.13.12 x64,Tk8.6;Ruff/mypy target3.12syntax,not tested3.12runtime support.
 
@@ -96,3 +96,10 @@ For a broader local boundary run:
 | Task contracts/evidence | [order template](docs/prompts/SOL_CODING_WORK_ORDER.md),docs/work_orders/,docs/reviews/ |
 | Human progress | [Korean companion](GAME_SYSTEM_SUMMARY_KO.md) |
 | Past commands/results | [README snapshot](docs/history/README_2026-10-16.md);historical instructions are non-operative |
+
+## PR09 Integration
+
+Preserve the courtyard room and its V1 rules/save identity through the shared current layout path.
+Original [room evidence](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md) and
+[Unity evidence](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md) remain historical;
+[PR08 repair](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) records current integration acceptance.

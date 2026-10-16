@@ -52,3 +52,5 @@ standalone launch/new remote CI/human UX/extracted-packet run NOT_RUN or UNVERIF
 Return severity,file/symbol or line,trigger,expected/actual effect and independently justified
 repair/test recommendation. Sol will verify each finding,record dispositions,perform scoped repairs
 and rerun affected checks. Feedback can neither grant source rights nor authorize bulk expansion.
+
+PR09parallel-history snapshot:[RS-REVIEW-CP03_REQUEST_PR09_SNAPSHOT.md](RS-REVIEW-CP03_REQUEST_PR09_SNAPSHOT.md). Its original acceptance is retained;current execution scope belongs to the latest orders.

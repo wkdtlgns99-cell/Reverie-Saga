@@ -203,3 +203,5 @@ accepted:1360full/133focused/47native/build/static checks PASS. F1–F4 repaired
 programmatic display label intentional. Original witness/ZIP preserved,repaired witness separate.
 QT-F02/CP03 DONE for this first embedded scope only;external packages/world/quest/bulk and release
 remain later authorized orders. No full independent/runtime/C# or external patch rereview claim.
+
+PR09parallel-history snapshot:[QT-F02_SCENARIO_GENERALIZATION_PR09_SNAPSHOT.md](QT-F02_SCENARIO_GENERALIZATION_PR09_SNAPSHOT.md). Its original acceptance is retained;current execution scope belongs to the latest orders.

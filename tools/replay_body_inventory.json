@@ -8,7 +8,7 @@
     "src/engines/skeleton.py": "eebb9a1912c6727b0e30569fe3505a10e19a236a816faa46e841bf822c21b13c",
     "src/engines/trial.py": "012b74415a924a260082408f3dafcd408fb71c9894ce946454cf62a1b4e8fa44",
     "src/engines/watch.py": "b92f32791f6bce61866dfd926e6e6ecb190746cc26239c98354f3255fe1c3549",
-    "src/domain/scenario.py": "085c8bd5a2b504de4c17a7328b63ed5ad6acee56b6efac8e19da97d90b858a1d"
+    "src/domain/scenario.py": "dcde6202bd8d0f281f92ce3240002518c002305253fce0450bf4674a3ccc56d0"
   },
   "golden_nodes": [
     {
@@ -390,9 +390,9 @@
       "key": "engines.watch.WatchBell.scenario_layout",
       "implementation": "domain.scenario.ScenarioBound.scenario_layout",
       "path": "src/domain/scenario.py",
-      "definition_line": 77,
-      "body_start": 78,
-      "body_end": 78,
+      "definition_line": 139,
+      "body_start": 140,
+      "body_end": 140,
       "registries": [
         "memory_bundle",
         "quest_bundle",
@@ -435,9 +435,9 @@
       "key": "engines.watch.WatchEchoEngine.scenario_layout",
       "implementation": "domain.scenario.ScenarioBound.scenario_layout",
       "path": "src/domain/scenario.py",
-      "definition_line": 77,
-      "body_start": 78,
-      "body_end": 78,
+      "definition_line": 139,
+      "body_start": 140,
+      "body_end": 140,
       "registries": [
         "memory_bundle",
         "quest_bundle",
@@ -480,9 +480,9 @@
       "key": "engines.watch.WatchNpc.scenario_layout",
       "implementation": "domain.scenario.ScenarioBound.scenario_layout",
       "path": "src/domain/scenario.py",
-      "definition_line": 77,
-      "body_start": 78,
-      "body_end": 78,
+      "definition_line": 139,
+      "body_start": 140,
+      "body_end": 140,
       "registries": [
         "memory_bundle",
         "quest_bundle",
@@ -525,9 +525,9 @@
       "key": "engines.watch.WatchPassive.scenario_layout",
       "implementation": "domain.scenario.ScenarioBound.scenario_layout",
       "path": "src/domain/scenario.py",
-      "definition_line": 77,
-      "body_start": 78,
-      "body_end": 78,
+      "definition_line": 139,
+      "body_start": 140,
+      "body_end": 140,
       "registries": [
         "memory_bundle",
         "quest_bundle",
@@ -570,9 +570,9 @@
       "key": "engines.watch.WatchRespond.scenario_layout",
       "implementation": "domain.scenario.ScenarioBound.scenario_layout",
       "path": "src/domain/scenario.py",
-      "definition_line": 77,
-      "body_start": 78,
-      "body_end": 78,
+      "definition_line": 139,
+      "body_start": 140,
+      "body_end": 140,
       "registries": [
         "memory_bundle",
         "quest_bundle",

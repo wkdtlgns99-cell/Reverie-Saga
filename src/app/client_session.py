@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 from app.scenarios import scenario_name
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 from types import MappingProxyType
 
 from pathlib import Path
@@ -80,9 +80,11 @@ class ClientSession:
         path: Path,
         layout: Scenario = LEGACY,
         *,
+        scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
     ) -> None:
+        layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
             raise ValueError("SCENARIO_TYPE")
         self._layout = layout

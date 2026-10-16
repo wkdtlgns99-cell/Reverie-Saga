@@ -249,7 +249,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     logging.basicConfig(stream=sys.stderr)
     try:
         narratives = load_catalog(args.catalog, args.catalog_sha256)
-        choice = select_scenario(args.scenario)
+        try:
+            choice = select_scenario(args.scenario)
+        except ValueError as error:
+            raise ValueError("UNKNOWN_SCENARIO") from error
         if choice.narrative_id and not any(
             n.entry_id == choice.narrative_id and n.category == "settlement" for n in narratives
         ):

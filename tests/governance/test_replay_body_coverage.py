@@ -632,12 +632,12 @@ def _change_native(run: Path, mode: str) -> None:
                     and filename.replace("\\", "/").endswith("src/domain/scenario.py")
                     and context
                 ):
-                    # Independent reviewed single-line getter oracle:line78.
-                    moved = [arc for arc in arcs if 78 in arc]
+                    # Independent reviewed single-line getter oracle:line140.
+                    moved = [arc for arc in arcs if 140 in arc]
                     result.set_context("")
                     result.add_arcs({filename: moved})
                     result.set_context(actual_context)
-                    arcs = [arc for arc in arcs if 78 not in arc]
+                    arcs = [arc for arc in arcs if 140 not in arc]
                 result.add_arcs({filename: arcs})
     result.write()
     output_path.replace(run / "golden.coverage")
@@ -666,7 +666,7 @@ def test_native_rejections(evidence: tuple[Path, Path], mode: str, code: str) ->
 def test_zero_hit_is_cli_one(evidence: tuple[Path, Path]) -> None:
     root, run = evidence
     assert (root / "src/domain/scenario.py").read_text().splitlines()[
-        77
+        139
     ].strip() == "return self._layout"
     _change_native(run, "zero")
     _bind(root, run)

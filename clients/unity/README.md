@@ -96,17 +96,39 @@ the real screen. [Current acceptance](../../docs/reviews/QT-F17_EXECUTION_2026-1
 
 ## Generate / verify / build
 
+### Reuse the editor — director preference 2026-10-16
+
+Keep Unity open after ordinary local verification. Reuse the open project and choose
+**Reverie → Verify Current Selection (Keep Editor Open)** for another run. This uses a new
+private working-save directory,retains the selected mode,and stops Play mode on completion.
+Do not relaunch the editor merely to repeat unchanged tests. The menu offers to save modified
+scenes before preparing the test scene. Keep existing results;never delete saves to obtain freshness.
+
+Success/failure remains explicit:ENGINE_VERIFY_RESULT code=0/1 and
+ENGINE_VERIFY_EDITOR_IDLE code=0/1;the last code is retained in SessionState
+Reverie.Verify.ExitCode. An open editor or a stopped Play session alone does not prove PASS.
+For automated qualification that genuinely requires an editor process exit code,set
+REVERIE_UNITY_VERIFY_EXIT=1 before launching the existing Verify methods. Standalone verification
+still quits its player. Restart only for measured startup/environment/selection-isolation checks,
+an unavailable editor,or a build workflow requiring its own process;state the reason.
+Environment variables set in a new shell do not change an already running editor's environment.
+
+The preference reduces startup time and repeated command/log inspection;token savings are not
+measured and there is no claimed fixed token charge per Unity restart.
+
 From repository root:
 
 ```powershell
 $env:PYTHONPATH="$PWD/src"
 .\.venv\Scripts\python.exe -m app.engine_project --root C:\ReverieSaga
+# Only for this fresh-process automated qualification;ordinary menu runs keep Unity open.
+$env:REVERIE_UNITY_VERIFY_EXIT="1"
 $env:REVERIE_UNITY_WORKING="C:\ReverieSaga\tmp\unity-verification\run-$([guid]::NewGuid().ToString('N'))\game.sqlite"
 & .\tmp\unity-editor\6000.3.25f1\Editor\Unity.exe -projectPath C:\ReverieSaga\clients\unity -executeMethod ReverieSaga.PlaytestBuild.BuildAndVerify -logFile C:\ReverieSaga\tmp\unity-check.log
 ```
 
 Graphical verification opens the Game window,builds a Windows player and exercises24checks.
-Wait for ENGINE_VERIFY_PASSED and editor exit0,not merely the launcher returning. Fresh empty
+In explicit automated exit mode,wait for ENGINE_VERIFY_PASSED and editor exit0,not merely the launcher returning. Fresh empty
 working directory is mandatory;old saves/slots are never deleted to make tests pass.
 Actual initial/final screenshots,final view and120frame sample are under tmp/cp04-native.
 Additional corrupt-file case:REVERIE_UNITY_CASE=corrupt with a fresh working directory,then
@@ -159,3 +181,10 @@ Transport errors remain visibly recoverable;no-view failures retain status and K
 Timeout/shutdown waits run off-thread,reconnect waits by coroutine;recovery button submits the
 existing Brain recover request. Catalog cap64KiB leaves1MiB-frame headroom. Wire hash covers
 view/update/narrative/response fields,and generator uses declared types.
+
+## Courtyard Compatibility
+
+Set REVERIE_UNITY_SCENARIO=scenario:courtyard for the original PR9 room;scenario:legacy
+also retains the original explicit selector. Short current selectors remain supported.
+The no-selector approved harbor-memory preset is unchanged. Original qualification:
+[PR9 Unity selection](../../docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md).

@@ -13,7 +13,7 @@ from app.client_text import status_text
 from contracts.client import ClientRequest, ClientUpdate
 from contracts.dialogue import QuestContent
 from contracts.persistence import SaveError, WorldUnavailable
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 
 class ClientWorker:
@@ -22,11 +22,13 @@ class ClientWorker:
         path: Path,
         layout: Scenario = LEGACY,
         *,
+        scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
     ) -> None:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
+        layout = resolve_selection(layout, scenario)
         self._path = path
         self._layout = layout
         self._quest_content = quest_content

@@ -21,7 +21,7 @@ from contracts.dialogue import QuestContent
 from contracts.client import ClientRequest, ClientUpdate, ClientView
 from domain.encounter import ACTOR_HP_MAX, ENEMY_HP_MAX, STAMINA_MAX
 from domain.watch import CHARGE_MAX, WAIT_MAX
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 CELL_PIXELS = 144
 POLL_MS = 20
@@ -63,9 +63,11 @@ class PlayWindow:
         path: Path,
         layout: Scenario = LEGACY,
         *,
+        scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
     ) -> None:
+        layout = resolve_selection(layout, scenario)
         self.root = root
         self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
         self._quest_content = quest_content

@@ -11,7 +11,7 @@ from contracts.dialogue import QuestConsumer, QuestContent
 from contracts.errors import BootstrapError, CandidateError, SchemaError
 from contracts.messages import CommandPayload, EventHeader, FactPayload, PresentationPayload, StateDelta, WorldEvent
 from contracts.read_views import AdapterBinding, ComponentPatch, ViewEpoch
-from domain.scenario import Scenario, ScenarioConsumer
+from domain.scenario import scenario_document, Scenario, ScenarioConsumer
 from contracts.replay import PackagePin
 from contracts.skeleton import FeatureBundle
 from contracts.turn import (CommitReceipt, CompiledSchedule, Failure, GameCommand, NodeKey,
@@ -152,9 +152,12 @@ def _immutable(value: object, depth: int = 0) -> None:
 
 
 def _validate_scenario_binding(bundle: FeatureBundle) -> None:
-    if "scenario" not in bundle.rules_document:
+    descriptor = bundle.rules_document
+    if "scenario" not in descriptor and "encounter" in descriptor:
+        descriptor = object_value(descriptor["encounter"])
+    if "scenario" not in descriptor:
         return  # Legacy feature descriptors have no selected-scenario extension.
-    expected = canonical_json(object_value(bundle.rules_document["scenario"]))
+    expected = canonical_json(object_value(descriptor["scenario"]))
     consumers: tuple[object, ...] = (
         *(b.engine for b in bundle.bindings),
         *(r.adapter if isinstance(r, AdapterBinding) else r for r in bundle.read_adapters),
@@ -165,7 +168,7 @@ def _validate_scenario_binding(bundle: FeatureBundle) -> None:
     for consumer in consumers:
         if isinstance(consumer, ScenarioConsumer):
             layout = consumer.scenario_layout
-            if type(layout) is not Scenario or canonical_json(seal(asdict(layout))) != expected:
+            if type(layout) is not Scenario or canonical_json(scenario_document(layout)) != expected:
                 raise BootstrapError("INVALID_SCENARIO_BINDING", type(consumer).__name__)
 
 
@@ -204,7 +207,7 @@ def _validate_quest_binding(bundle: FeatureBundle) -> None:
         except AttributeError as error:
             raise BootstrapError("INVALID_QUEST_BINDING", role + ":uninitialized") from error
         if (type(content) is not QuestContent
-                or canonical_json(seal(asdict(content.definition))) != expected_definition
+                or canonical_json(seal({**asdict(content.definition), "layout": scenario_document(content.definition.layout)})) != expected_definition
                 or content.catalog_sha256 != expected_catalog):
             raise BootstrapError("INVALID_QUEST_BINDING", role + ":mismatch")
 

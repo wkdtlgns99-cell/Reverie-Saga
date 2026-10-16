@@ -54,6 +54,9 @@ namespace ReverieSaga
         public bool Connecting { get { return connecting; } }
         public string TransportError { get { return transportError; } }
         public string Failure { get { return failure; } }
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public bool HasBrainForVerification { get { return brain!=null; } }
+#endif
 
         public static int Number(string value)
         {
@@ -85,13 +88,12 @@ namespace ReverieSaga
                         throw new IOException("NPC_MEMORY_SELECTION");
                     npcMemory=memorySelection=="1";
                 }
-                if(scenario!="legacy"&&scenario!="harbor"&&scenario!="grove")
-                    throw new IOException("SCENARIO_SELECTION");
+                scenario=BrainConnection.SelectScenario(scenario);
                 if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
                     questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
                     throw new IOException("NPC_MEMORY_CONTENT");
                 working = Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING");
-                if (String.IsNullOrEmpty(working)) working=scenario=="legacy" ?
+                if (String.IsNullOrEmpty(working)) working=(scenario=="legacy"||scenario==WireScenarios.Legacy) ?
                     Path.Combine(root,"tmp","unity-play","game.sqlite") :
                     Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
                 if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(

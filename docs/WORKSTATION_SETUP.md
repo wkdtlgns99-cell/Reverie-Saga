@@ -6,6 +6,10 @@ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification
 
 ## Task Entry and Authorization
 
+Director2026-10-16:reuse the existing Unity editor for ordinary local tests and leave it open
+afterward;follow the [editor reuse workflow](../clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16).
+Use explicit process-exit mode only when qualification needs it;do not infer PASS from an open window.
+
 QT-F24current-host2026-10-16:[receipt](reviews/QT-F24_EXECUTION_2026-10-16.md). Reused Python3.13.12/
 Tk8.6/editor6000.3.25f1(file6000.3.25.14801824),pip PASS. Restricted license query unavailable;
 permitted public status active/signedIn=true,no settings change. Python515/native7modes519,
@@ -179,3 +183,77 @@ credentials were copied and no reinstallation/login was needed on the current ho
 
 Instruction-discovery reference:[OpenAI Docs AGENTS.md](https://learn.chatgpt.com/docs/agent-configuration/agents-md).
 AGENTS is the entry route;BACKLOG is an explicit linked read,not an installer trigger itself.
+
+## QT-F02 current-workspace qualification — 2026-10-15
+
+Actual checkout:C:/Reverie Saga;local .venv probes CPython3.13.12 AMD64/Tk8.6. Device mapping
+to the two named computers remains unconfirmed. Reused this environment;no Unity work or
+editor installation required for this Python/Tk unit. No second-device qualification inferred.
+
+Initial13locked packages lacked click/coverage/grimp/import-linter/markdown-it-py/mdurl/rich.
+Sandboxed pip could not resolve its index;permitted
+`.venv/Scripts/python.exe -m pip install --require-hashes -r requirements-dev.lock --retries 0`
+installed those7exact locked packages. The lock was unchanged;pip check PASS. No upgrades.
+The base-location shim warning persists while actual Python/Tk/tests run successfully.
+
+Installed mypy2.4.0's fscache native module is blocked by OS application control,including a
+permitted retry. Strict checking succeeds using the *same installed package's Python source*
+and data copied to ignored tmp/qtf02/typecheck/mypy with .pyd/.pyc/__pycache__ excluded:
+
+```powershell
+$env:PYTHONPATH = "$PWD/tmp/qtf02/typecheck;$PWD/src"
+.\.venv\Scripts\python.exe -m mypy --no-native-parser
+```
+
+Original installed sources/binaries remain unchanged. This is source execution of the pinned
+checker,not native-module qualification or a security-policy change. Shared/selective Ruff,
+strict mypy106files and both Import Linter configs PASS;actual gameplay/full results belong
+to the linked [unit receipt](reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md). Another computer must
+discover/reuse/install and qualify its own environment;do not copy this .venv or infer Unity
+license/build/native readiness from Python results.
+
+This clone initially had LF dossier bytes SHA7923b65e… while the unchanged QT-F04 receipt pins
+its original CRLF bytes SHAb10e8dca…. Exact LF→CRLF reconstruction matched the full approved
+hash before restoration;original LF bytes retained in ignored tmp/qtf02. No narrative fields,
+Git-normalized blob,qualification or frozen witness changed. Before running the narrative
+sample compiler on another clone,verify its raw dossier SHA against candidate_dossier_sha256;
+restore a newline representation only if the exact result matches that existing approval.
+Do not regenerate approvals or accept mismatches. The execution receipt retains both full hashes.
+
+## Unity selection unit setup — 2026-10-15
+
+Actual checkout C:/Reverie Saga;device mapping still unconfirmed. Discovered Hub editors
+6000.3.4f1/6000.3.9f1,neither matches the tracked6000.3.25f1. Preserved both. Downloaded
+the official pinned Windows installer linked above to ignored tmp/qtf02-unity/install:
+4,201,959,888bytes,SHA256 d70a5d8f9a7a463017c056a838fe393c97207f34972732794543c53368bfbf01,
+Authenticode Valid,Unity Technologies SF. Installed into this checkout's
+tmp/unity-editor/6000.3.25f1;observed file version6000.3.25.14801824,installer exit0.
+Used official [/S /D=PATH instructions](https://docs.unity3d.com/6000.0/Documentation/Manual/InstallingUnity.html)
+with /D last and unquoted as required,including the space in this checkout path.
+
+Initial unprivileged process discovery incorrectly appeared empty while the elevated
+installer was still extracting;a duplicate identical installer was started. Elevated
+read-only discovery identified both;stopping the duplicate was denied by OS permissions.
+Both subsequently completed;the waited installer exited0. No policy relaxation or existing
+editor removal. Native editor execution,not file presence alone,qualifies this installation.
+Installation/login/native results belong to
+[the unit receipt](reviews/QT-F02_UNITY_SELECTION_2026-10-15.md),not either named device by inference.
+Fresh editor launch exited198 before play/import qualification:No valid Unity Editor license
+found;access token unavailable/0entitlements. Current Hub login/activation is required per
+[official license guidance](https://docs.unity.com/en-us/hub/manage-license). Director notified;
+no copied credentials/license files or policy changes. Shipped Roslyn editor/release compile
+checks PASS;actual graphical/player-build qualification remains NOT_RUN until activation.
+
+Latest opening after director's Hub setup supersedes the startup blocker:reused newly
+available C:/Program Files/Unity/Hub/Editor/6000.3.25f1/Editor/Unity.exe,matching pinned revision.
+Actual editor recognized Personal,compiled scripts and finished initial import;window responds.
+No credentials/license identifiers copied. Gameplay/player build remain pending;this is
+project-opening qualification on this host only. See unit receipt's latest opening section.
+
+Final native qualification after director requested play/build completion:45graphical editor
+checks PASS(courtyard17/default24/invalid3/corrupt1),Windows release build/hook exclusion PASS,
+standalone startup/save/shutdown smoke PASS. Earlier this-host blocked/pending evidence is
+superseded for these actual runs,not rewritten. Measured GPU:NVIDIA GeForce RTX4050 Laptop;
+120editor frames median1.523802ms/p95 1.786997ms at642x500 capture,not MIN-SPEC qualification.
+The small Game view has existing UI overlap;human UX pending. Both named device identities
+are still not established by GPU alone;no qualification is inferred for another computer.

@@ -8,21 +8,23 @@ Replace current rows when status changes;put execution detail in linked receipts
 ## Current Delivery
 
 PR8 repair2026-10-16:director authorizes CI repair,ordinary merge and local synchronization.
-Explicit checkout endings preserve all8existing G07source hashes;7checkout tests PASS.
-[Receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md);remote acceptance pending current checks.
+Compatible integration retains courtyard plus current harbor/grove/quest/memory paths and both save identities.
+Checkout7/courtyard40/affected82/pin3tests and Unity225checks/build PASS;final merged checks are revision-specific.
+[Receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md);use the live PR8checks and final delivery for publication acceptance.
+Ordinary Unity verification now retains the editor;[workflow](clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16).
 
 | ID | State | Result / evidence |
 |---|---|---|
-| RS-P1-GOV-03 | LOCAL_ACCEPTED,uncommitted | Manual producer/read-only assessor:8replays/35body hits/200inputs;110new tests/full1897PASS. Identical assessment,no writes;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Full uses identical Tcl copy;original Tk error/symlink/timing limits retained;CI NOT_ACTIVE |
-| RS-P1-GOV-03R | LOCAL_ACCEPTED,local commit4257d4f | GOV-03 scope refreshed:35methods/12classes/8sources,8replays PASS/all35body hits. Planning/probe only. [Receipt](docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md) |
-| QT-F24 | LOCAL_ACCEPTED,local commit4257d4f | Unity wait1/4/8/16presets;515Python/native7modes519/build/static and24readbacks PASS. [Receipt](docs/reviews/QT-F24_EXECUTION_2026-10-16.md) |
-| QT-F23 | LOCAL_ACCEPTED,local commit4257d4f | Unity slot01–08selector/shared save-load-preview;452native/Windows build,46Python/static and24save readbacks PASS. [Receipt](docs/reviews/QT-F23_EXECUTION_2026-10-16.md) |
-| RS-V3-R1 | LOCAL_ACCEPTED,local commit4257d4f | Real malformed HTTP reproduced;transient classification/child-parent retry fixed. [Receipt](docs/reviews/RS-V3-R1_EXECUTION_2026-10-16.md);combined225affected/static PASS |
-| QT-F22 | LOCAL_ACCEPTED,local commit4257d4f | Explicit read-only retained-save inventory;17new cases,combined225affected/static PASS. No deletion/cap change. [Receipt](docs/reviews/QT-F22_EXECUTION_2026-10-16.md) |
+| RS-P1-GOV-03 | LOCAL_ACCEPTED,published86ba74c | Manual producer/read-only assessor:8replays/35body hits/200inputs;110new tests/full1897PASS. Identical assessment,no writes;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Full uses identical Tcl copy;original Tk error/symlink/timing limits retained;CI NOT_ACTIVE |
+| RS-P1-GOV-03R | LOCAL_ACCEPTED,published4257d4f | GOV-03 scope refreshed:35methods/12classes/8sources,8replays PASS/all35body hits. Planning/probe only. [Receipt](docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md) |
+| QT-F24 | LOCAL_ACCEPTED,published4257d4f | Unity wait1/4/8/16presets;515Python/native7modes519/build/static and24readbacks PASS. [Receipt](docs/reviews/QT-F24_EXECUTION_2026-10-16.md) |
+| QT-F23 | LOCAL_ACCEPTED,published4257d4f | Unity slot01–08selector/shared save-load-preview;452native/Windows build,46Python/static and24save readbacks PASS. [Receipt](docs/reviews/QT-F23_EXECUTION_2026-10-16.md) |
+| RS-V3-R1 | LOCAL_ACCEPTED,published4257d4f | Real malformed HTTP reproduced;transient classification/child-parent retry fixed. [Receipt](docs/reviews/RS-V3-R1_EXECUTION_2026-10-16.md);combined225affected/static PASS |
+| QT-F22 | LOCAL_ACCEPTED,published4257d4f | Explicit read-only retained-save inventory;17new cases,combined225affected/static PASS. No deletion/cap change. [Receipt](docs/reviews/QT-F22_EXECUTION_2026-10-16.md) |
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
-| QT-F21 | LOCAL_ACCEPTED,local commit4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
+| QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | Current branch publication requested | Publish accumulated local work and this backlog note;no merge/release authorization. CI remains revision-specific |
+| Publication / CI | Current branch publication requested | Current director authorizes ordinary PR8merge and local update after passing checks;CP06release remains held. CI remains revision-specific |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
@@ -101,3 +103,10 @@ READY=complete order,not authority;DONE=scope accepted;LOCAL_ACCEPTED=local evid
 DEFERRED=not active;UNVERIFIED=missing evidence. Evidence is revision/host/scope specific.
 All old IDs,states,failures,permissions and receipts remain in [2026-10-16snapshot](docs/history/BACKLOG_2026-10-16.md)
 and [earlier history](docs/history/BACKLOG_2026-10-07.md). Historical NEXT is non-operative.
+
+## PR09 Integration
+
+Preserve the courtyard room and its V1 rules/save identity through the shared current layout path.
+Original [room evidence](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md) and
+[Unity evidence](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md) remain historical;
+[PR08 repair](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) records current integration acceptance.

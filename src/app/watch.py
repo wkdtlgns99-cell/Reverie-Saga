@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 from collections.abc import Sequence
 from dataclasses import dataclass
@@ -98,8 +98,8 @@ def _bootstrap(spec: WatchBootstrapSpec, rng: RngService | None, layout: Scenari
     return session, io
 
 
-def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None, layout: Scenario = LEGACY) -> HeadlessSession:
-    return _bootstrap(spec, rng, layout)[0]
+def bootstrap_watch(spec: WatchBootstrapSpec, *, rng: RngService | None = None, layout: Scenario = LEGACY, scenario: Scenario = LEGACY) -> HeadlessSession:
+    return _bootstrap(spec, rng, resolve_selection(layout, scenario))[0]
 
 
 def main(argv: Sequence[str] | None = None) -> int:

@@ -2,11 +2,11 @@
 
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import dataclass
 
 from domain.canonical import JsonObject, array_value, object_value, seal
 from domain.primitives import EntityId
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import COURTYARD_SCENARIO, LEGACY, Scenario, scenario_document
 
 
 @dataclass(frozen=True, slots=True)
@@ -36,6 +36,7 @@ def _sample(key: str, initial: int, wall: int, enemy: int, npc: int) -> Scenario
 
 SCENARIOS = (
     ScenarioChoice("legacy", "기본 연습 방", LEGACY, ""),
+    ScenarioChoice("courtyard", "안뜰", COURTYARD_SCENARIO, ""),
     ScenarioChoice(
         "harbor",
         "소금눈물 포구",
@@ -54,7 +55,9 @@ SCENARIOS = (
 def select_scenario(key: str) -> ScenarioChoice:
     if type(key) is not str:
         raise ValueError("SCENARIO_SELECTION")
-    matches = tuple(choice for choice in SCENARIOS if choice.key == key)
+    matches = tuple(
+        choice for choice in SCENARIOS if key in (choice.key, choice.layout.scenario_id)
+    )
     if len(matches) != 1:
         raise ValueError("SCENARIO_SELECTION")
     return matches[0]
@@ -87,7 +90,7 @@ def bind_documents(
             component["fields"] = fields
             components[index] = component
     next_schema["components"] = tuple(components)
-    document = object_value(seal(asdict(layout)))
+    document = scenario_document(layout)
     next_rules["scenario"] = document
     encounter = dict(object_value(rules["encounter"])) if "encounter" in rules else next_rules
     for field in (
@@ -99,8 +102,11 @@ def bind_documents(
         "enemy_cell",
         "blocked_cells",
     ):
-        encounter[field] = document[field]
+        encounter[field] = layout.blocked_cells if field == "blocked_cells" else document[field]
     encounter["initial_cell"] = layout.initial_cell
+    if layout.wall_cell is not None and "encounter" in rules:
+        del next_rules["scenario"]
+        encounter["scenario"] = document
     if "encounter" in rules:
         next_rules["encounter"] = encounter
     for field in ("npc_id", "npc_cell", "lantern_id"):

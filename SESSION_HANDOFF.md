@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 Updated:2026-10-16 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
-Current workspace `C:\ReverieSaga`;reference `C:\Quilltale` is read-only.
+Current workspace `C:\Reverie Saga`;reference `C:\Quilltale` is read-only.
 
 ## Read on Entry
 
@@ -14,7 +14,7 @@ Current workspace `C:\ReverieSaga`;reference `C:\Quilltale` is read-only.
 ## Checkout and Local Work
 
 Current director request2026-10-16:repair PR8checks,merge normally and update C:/Reverie Saga.
-Branch86ba74c was fetched;clean local maincec6869 preserved. Checkout-ending repair and
+PR8and maincec6869 are integrated using current shared engines,original courtyard selectors/save pins and current quest/memory clients. Checkout-ending repair and
 [receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) preserve existing raw G07hashes.
 Previous no-merge publication constraint is superseded for PR8by this explicit request.
 
@@ -28,6 +28,9 @@ Previous no-merge publication constraint is superseded for PR8by this explicit r
 | Verification | Full1897PASS616.61s/110new tests;actual8replays/35body hits/200inputs and unchanged read-only assessment PASS. Ruff both/format16/mypy173/imports3+1/pip/supplements3PASS;183prior inputs preserved. No CI/independent acceptance |
 
 ## Resume Constraints
+
+- Director2026-10-16:ordinary Unity verification leaves the editor open;reuse its menu for later runs.
+  [Workflow](clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16);explicit automated process-exit mode remains available.
 
 - Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,prepared approved dialogue,recent/full memory and saved-slot inspection.
 - Truth:deterministic COMMIT-owned facts;ordinary play/replay requires no live LLM. Received completion reports are not witnessed enemy defeats. Existing saves retain original feature/catalog pins.
@@ -46,3 +49,10 @@ Previous no-merge publication constraint is superseded for PR8by this explicit r
 Replace current checkout/resume facts;link task results through BACKLOG/receipts.
 Keep completed chronology in [history](docs/history/SESSION_HANDOFF_2026-10-16.md),not appended here.
 Detailed visual/provider candidates and past authorization/failure records remain recoverable there.
+
+## PR09 Integration
+
+Preserve the courtyard room and its V1 rules/save identity through the shared current layout path.
+Original [room evidence](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md) and
+[Unity evidence](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md) remain historical;
+[PR08 repair](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) records current integration acceptance.

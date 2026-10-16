@@ -16,6 +16,7 @@ This template owns task-contract fields;it does not restate the per-turn checkli
 6. v1 reuse:individually reviewed narrative content only;no code/formulas/stats/balance/behavior/schema bindings/test oracles.
 7. If BACKLOG is in scope,include GAME_SYSTEM_SUMMARY_KO in reads/allowed edits/delivery checks under the prompt's **Korean Game Progress Companion** rule.
 8. Specify checkpoint IDs/trigger/held step/packet/acceptance from the [canonical Claude procedure](../ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md#claude-checkpoints-and-defect-repair--director-rule-2026-10-07),or NOT_APPLICABLE + reason.
+   Review ZIPs include its required new-session START_REVIEW.md and opening message;use the exact request path rather than sending a bare handoff.
 
 Small tasks include pure functions under settled contracts, DTO conversion, approved-schema data preparation, adapters, tests, indexes.
 Sol resolves boundaries, public contracts, ownership, scheduler/RNG/hash/catch-up/save/IPC/lifecycle/dependencies/concurrency/governance before implementation.

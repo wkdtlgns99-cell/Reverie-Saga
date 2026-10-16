@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from app.scenarios import bind_documents
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 from dataclasses import replace
 from app.encounter_registry import encounter_bundle
@@ -15,7 +15,8 @@ from engines.watch import WatchNpc, WatchBell, WatchRespond, WatchEchoEngine, Wa
 from orchestration.watch import (WatchNpcAdapter, LanternAdapter, ReplyAdapter, WatchNpcCodec, LanternCodec, ReplyCodec, WatchPayloadCodec, WatchAdmission, ChargeReducer, BellsReducer, ReplyReducer, ChargePatchRoute, BellsPatchRoute, ReplyPatchRoute, WatchCheckpointPolicy, WatchPresenter)
 
 
-def watch_bundle(layout: Scenario = LEGACY) -> FeatureBundle:
+def watch_bundle(layout: Scenario = LEGACY, *, scenario: Scenario = LEGACY) -> FeatureBundle:
+    layout = resolve_selection(layout, scenario)
     base = encounter_bundle(layout=layout)
     engines: tuple[Engine, ...] = (WatchNpc(layout=layout), WatchBell(layout=layout), WatchRespond(layout=layout), WatchEchoEngine(layout=layout), WatchPassive(layout=layout))
     bindings = tuple(EngineBinding(e, "engines.watch", (NodeActivation(NodeKey(e.manifest.phases[0], e.manifest.engine_id), (TypeKey("watch.bell", 1),) if e.manifest.engine_id == "watch.bell" else (), bool(e.manifest.consumes), e.manifest.engine_id == "watch.passive", "A"),)) for e in engines)

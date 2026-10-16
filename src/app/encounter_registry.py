@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from app.scenarios import bind_documents
-from domain.scenario import LEGACY, Scenario
+from domain.scenario import resolve_selection, LEGACY, Scenario
 
 from contracts.messages import EventPolicy
 from contracts.read_views import AdapterBinding
@@ -22,7 +22,8 @@ from orchestration.trial import (
 )
 
 
-def encounter_bundle(layout: Scenario = LEGACY) -> FeatureBundle:
+def encounter_bundle(layout: Scenario = LEGACY, *, scenario: Scenario = LEGACY) -> FeatureBundle:
+    layout = resolve_selection(layout, scenario)
     actions, movement = EncounterActions(layout=layout), EncounterMovement(layout=layout)
     action_kinds = tuple(TypeKey("encounter." + k, 1) for k in ("attack", "interact", "rest"))
     bindings = (

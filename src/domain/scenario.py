@@ -2,7 +2,9 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
+from dataclasses import asdict, dataclass
+
+from domain.canonical import JsonObject, object_value, seal
 from typing import Protocol, runtime_checkable
 
 from domain.encounter import ENEMY_CELL, ENEMY_ID, GATE_CELL, GATE_ID
@@ -25,8 +27,14 @@ class Scenario:
     enemy_cell: int = ENEMY_CELL
     npc_cell: int = NPC_CELL
     blocked_cells: tuple[int, ...] = BLOCKED_CELLS
+    # V1 authored rooms retain their descriptor and validation contract.
+    wall_cell: int | None = None
 
     def __post_init__(self) -> None:
+        if self.wall_cell is not None:
+            self._validate_v1()
+            object.__setattr__(self, "blocked_cells", (self.wall_cell,))
+            return
         identifiers = (
             (self.scenario_id, "scenario:"),
             (self.actor_id, "actor:"),
@@ -56,6 +64,60 @@ class Scenario:
         if len(set(occupied)) != 4 or set(occupied).intersection(self.blocked_cells):
             raise ValueError("SCENARIO_OVERLAP")
 
+    def _validate_v1(self) -> None:
+        if self.wall_cell is None:
+            raise ValueError("SCENARIO_CELL")
+        for code, values in (
+            ("SCENARIO_ID", (self.scenario_id,)),
+            (
+                "SCENARIO_ROLE_ID",
+                (
+                    self.actor_id,
+                    self.space_id,
+                    self.gate_id,
+                    self.enemy_id,
+                    self.npc_id,
+                    self.lantern_id,
+                ),
+            ),
+        ):
+            for value in values:
+                try:
+                    if type(value) is not str:
+                        raise ValueError("exact string required")
+                    require_namespace(value)
+                except ValueError as error:
+                    raise ValueError(code) from error
+        if (
+            len(
+                {
+                    self.actor_id,
+                    self.space_id,
+                    self.gate_id,
+                    self.enemy_id,
+                    self.npc_id,
+                    self.lantern_id,
+                }
+            )
+            != 6
+        ):
+            raise ValueError("SCENARIO_DUPLICATE_ID")
+        try:
+            for cell in (
+                self.initial_cell,
+                self.wall_cell,
+                self.gate_cell,
+                self.enemy_cell,
+                self.npc_cell,
+            ):
+                require_integer(cell, 0, 8)
+        except ValueError as error:
+            raise ValueError("SCENARIO_CELL") from error
+        if len(
+            {self.wall_cell, self.gate_cell, self.enemy_cell, self.npc_cell}
+        ) != 4 or self.initial_cell in (self.wall_cell, self.gate_cell, self.enemy_cell):
+            raise ValueError("SCENARIO_OCCUPANCY")
+
 
 LEGACY = Scenario()
 
@@ -81,3 +143,48 @@ class ScenarioBound:
         if type(layout) is not Scenario:
             raise ValueError("SCENARIO_TYPE")
         self._layout = layout
+
+
+LEGACY_SCENARIO = LEGACY
+COURTYARD_SCENARIO = Scenario(
+    scenario_id="scenario:courtyard",
+    actor_id=EntityId("actor:courtyard-player"),
+    space_id=EntityId("space:courtyard"),
+    gate_id=EntityId("object:courtyard-door"),
+    enemy_id=EntityId("actor:courtyard-guard"),
+    npc_id=EntityId("actor:courtyard-bellkeeper"),
+    lantern_id=EntityId("object:courtyard-lamp"),
+    initial_cell=6,
+    wall_cell=7,
+    gate_cell=2,
+    enemy_cell=0,
+    npc_cell=8,
+)
+
+
+def scenario_by_id(identifier: str) -> Scenario:
+    if type(identifier) is str:
+        for scenario in (LEGACY_SCENARIO, COURTYARD_SCENARIO):
+            if identifier == scenario.scenario_id:
+                return scenario
+    raise ValueError("UNKNOWN_SCENARIO")
+
+
+def scenario_document(layout: Scenario) -> JsonObject:
+    values = asdict(layout)
+    wall = values.pop("wall_cell")
+    if wall is not None:
+        del values["blocked_cells"]
+        values["wall_cell"] = wall
+        values["version"] = 1
+    return object_value(seal(values))
+
+
+def resolve_selection(layout: Scenario, scenario: Scenario = LEGACY) -> Scenario:
+    if type(layout) is not Scenario or type(scenario) is not Scenario:
+        raise ValueError("SCENARIO_TYPE")
+    if scenario != LEGACY:
+        if layout != LEGACY:
+            raise ValueError("SCENARIO_SELECTION")
+        return scenario
+    return layout
