@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from http.client import HTTPException
 import sys
 import time
 from urllib.error import HTTPError, URLError
@@ -65,6 +66,8 @@ def fetch(body: bytes) -> bytes:
         else:
             code = "GENERATION_REJECTED"
         raise GenerationError(code) from None
+    except HTTPException:
+        raise GenerationError("GENERATION_TRANSIENT") from None
     except (URLError, TimeoutError, OSError):
         raise GenerationError("GENERATION_TIMEOUT") from None
 

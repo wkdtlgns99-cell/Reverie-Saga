@@ -1,6 +1,7 @@
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
 using System;
 using System.Collections;
+using System.Globalization;
 using System.IO;
 #if UNITY_EDITOR
 using UnityEditor;
@@ -76,12 +77,62 @@ namespace ReverieSaga
                 return Convert.ToBase64String(hash.ComputeHash(stream));
         }
 
-        IEnumerator InspectSlot(string label,string tick)
+        [Serializable] sealed class LayoutEvidence {
+            public int screenWidth,screenHeight;
+            public Rect controls,history;
+            public float contentHeight,bottomScroll;
+        }
+
+        IEnumerator InspectLayout(string output)
+        {
+            if(Application.isBatchMode||failed)yield break;
+            string state=JsonUtility.ToJson(room.Latest),bytes=FileHash(room.Latest.update.working_path);
+            room.ControlsScrollForVerification=0;
+            yield return new WaitForEndOfFrame();
+            var controls=room.ControlsViewport;var history=room.HistoryViewport;
+            Check(controls.width>0&&controls.height>0&&history.height>=50&&
+                  controls.xMin>=0&&controls.xMax<=Screen.width&&history.yMax<=Screen.height&&
+                  controls.yMax+24<=history.yMin,"layout_visible_separate_regions");
+            ScreenCapture.CaptureScreenshot(Path.Combine(output,"controls-top.png"));
+            yield return new WaitForSecondsRealtime(.2f);
+            room.ControlsScrollForVerification=float.MaxValue;
+            yield return null;yield return new WaitForEndOfFrame();
+            float bottom=room.ControlsScrollForVerification;
+            Check(room.ControlsContentHeight<=controls.height||
+                  bottom>0&&bottom+controls.height>=room.ControlsContentHeight-24,
+                  "layout_controls_bottom_reachable");
+            ScreenCapture.CaptureScreenshot(Path.Combine(output,"controls-bottom.png"));
+            yield return new WaitForSecondsRealtime(.2f);
+            room.ControlsScrollForVerification=bottom*.5f;
+            yield return null;yield return new WaitForEndOfFrame();
+            ScreenCapture.CaptureScreenshot(Path.Combine(output,"controls-middle.png"));
+            yield return new WaitForSecondsRealtime(.2f);
+            room.ControlsScrollForVerification=bottom;
+            yield return null;yield return new WaitForEndOfFrame();
+            Check(JsonUtility.ToJson(room.Latest)==state&&FileHash(room.Latest.update.working_path)==bytes,
+                  "layout_scroll_preserves_committed_state");
+            if(room.NpcMemoryEnabled) {
+                yield return InspectMemorySelection("layout_scrolled_memory",1,true);
+                yield return new WaitForEndOfFrame();
+                Check(Mathf.Abs(room.ControlsScrollForVerification-bottom)<1,
+                      "layout_history_does_not_scroll_controls");
+            }
+            File.WriteAllText(Path.Combine(output,"layout.json"),JsonUtility.ToJson(new LayoutEvidence {
+                screenWidth=Screen.width,screenHeight=Screen.height,controls=controls,history=history,
+                contentHeight=room.ControlsContentHeight,bottomScroll=bottom
+            }));
+            Check(File.Exists(Path.Combine(output,"controls-top.png"))&&
+                  File.Exists(Path.Combine(output,"controls-bottom.png")),"layout_captures");
+            room.ControlsScrollForVerification=0;
+            yield return new WaitForEndOfFrame();
+        }
+
+        IEnumerator InspectSlot(string label,string tick,int memoryCount=1)
         {
             if(failed)yield break;
             var before=room.Latest.update;
             string view=JsonUtility.ToJson(before.view),working=FileHash(before.working_path);
-            string slot=Path.Combine(Path.GetDirectoryName(before.working_path),"slots","slot01.sqlite");
+            string slot=Path.Combine(Path.GetDirectoryName(before.working_path),"slots",room.SelectedSlot+".sqlite");
             string slotHash=File.Exists(slot)?FileHash(slot):null;
             Check(room.CanInspectSlot,label+"_enabled");
             room.InspectSlot();
@@ -97,11 +148,113 @@ namespace ReverieSaga
                   (slotHash==null?!File.Exists(slot):FileHash(slot)==slotHash),label+"_read_only");
             if(tick!=null) {
                 string text=String.Join("\n",after.messages);
-                bool expected=text.Contains("slot01 저장 정보 · "+tick+"초");
-                if(room.NpcMemoryEnabled)expected=expected&&text.Contains("저장된 NPC 대화 기억: 1개")&&
-                    text.Contains("완료 보고를 받은 기억은 없습니다.");
+                bool expected=text.Contains(room.SelectedSlot+" 저장 정보 · "+tick+"초");
+                if(room.NpcMemoryEnabled)expected=expected&&text.Contains("저장된 NPC 대화 기억: "+memoryCount+"개")&&
+                    text.Contains(memoryCount==2?"플레이어의 완료 보고를 받은 기억이 있습니다.":
+                        "완료 보고를 받은 기억은 없습니다.");
                 Check(expected&&room.HistoryForVerification.Contains(after.messages[0]),label+"_display");
             }
+        }
+
+        IEnumerator SelectSlots(string output)
+        {
+            if(failed)yield break;
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),state=JsonUtility.ToJson(room.Latest);
+            string workingHash=FileHash(before.working_path);
+            string slotRoot=Path.Combine(Path.GetDirectoryName(before.working_path),"slots");
+            string originalSlot=Path.Combine(slotRoot,"slot01.sqlite"),originalHash=FileHash(originalSlot);
+            int tick=PlayRoom.Number(before.view.tick);
+            Check(room.SelectedSlot=="slot01"&&room.CanSelectSlot,"slots_default_01");
+            foreach(int index in new [] {-1,8}) {
+                bool rejected=false;
+                try {room.SelectSlot(index);}catch(ArgumentOutOfRangeException){rejected=true;}
+                Check(rejected&&room.SelectedSlot=="slot01","slots_invalid_index_"+index);
+            }
+            bool allSelected=true;
+            for(int index=0;index<8;index++)
+                allSelected=room.SelectSlot(index)&&room.SelectedSlot=="slot0"+(index+1)&&allSelected;
+            Check(allSelected&&JsonUtility.ToJson(room.Latest)==state&&
+                  FileHash(before.working_path)==workingHash,"slots_selection_local_only");
+            room.InspectSlot();
+            Check(room.Busy&&!room.CanSelectSlot&&!room.SelectSlot(1)&&room.SelectedSlot=="slot08",
+                  "slots_busy_selection_preserves_target");
+            yield return Ready();if(failed)yield break;
+            Check(room.Latest.update.status=="SAVE_NOT_FOUND"&&
+                  JsonUtility.ToJson(room.Latest.update.view)==view,"slots_missing_08_no_fallback");
+            yield return Intent("save");
+            Check(room.Latest.update.status=="SAVED"&&File.Exists(Path.Combine(slotRoot,"slot08.sqlite")),
+                  "slots_save_08");
+            Check(room.SelectSlot(1)&&room.SelectedSlot=="slot02","slots_select_02");
+            yield return Intent("wait");
+            Check(room.Latest.update.status=="COMMITTED"&&PlayRoom.Number(room.Latest.update.view.tick)==tick+1,
+                  "slots_distinct_newer_state");
+            yield return Intent("save");
+            Check(room.Latest.update.status=="SAVED"&&File.Exists(Path.Combine(slotRoot,"slot02.sqlite")),
+                  "slots_save_02");
+            room.SelectSlot(7);
+            yield return InspectSlot("slots_preview_08",tick.ToString(CultureInfo.InvariantCulture),2);
+            yield return Intent("load");
+            Check(room.Latest.update.status=="LOADED"&&room.Latest.update.reset_log&&
+                  JsonUtility.ToJson(room.Latest.update.view)==view&&room.SelectedSlot=="slot08"&&
+                  room.Latest.update.working_path!=before.working_path,"slots_load_08_exact");
+            int pid=room.BrainProcessId;room.Reconnect();
+            Check(!room.CanSelectSlot&&!room.SelectSlot(0)&&room.SelectedSlot=="slot08",
+                  "slots_connecting_gate");
+            yield return Ready();if(failed)yield break;
+            Check(room.BrainProcessId!=pid&&room.SelectedSlot=="slot08"&&
+                  JsonUtility.ToJson(room.Latest.update.view)==view,"slots_reconnect_retains_selection");
+            room.SelectSlot(1);
+            yield return InspectSlot("slots_preview_02",(tick+1).ToString(CultureInfo.InvariantCulture),2);
+            Check(FileHash(originalSlot)==originalHash,"slots_original_01_unchanged");
+            room.SelectSlot(7);
+            File.WriteAllText(Path.Combine(output,"selected-slot.json"),
+                "{\"selected_slot\":\""+room.SelectedSlot+"\",\"slot08_tick\":"+tick+
+                ",\"slot02_tick\":"+(tick+1)+",\"slot01_sha256_base64\":\""+originalHash+"\"}");
+        }
+
+        IEnumerator SelectWait(string output)
+        {
+            if(failed)yield break;
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),state=JsonUtility.ToJson(room.Latest);
+            string workingHash=FileHash(before.working_path);
+            string slotPath=Path.Combine(Path.GetDirectoryName(before.working_path),"slots",room.SelectedSlot+".sqlite");
+            string slotHash=FileHash(slotPath);
+            int tick=PlayRoom.Number(before.view.tick);
+            Check(room.SelectedWaitSeconds==1&&room.CanSelectWaitDuration,"wait_default_1");
+            foreach(int index in new [] {-1,4}) {
+                bool rejected=false;
+                try {room.SelectWaitDuration(index);}catch(ArgumentOutOfRangeException){rejected=true;}
+                Check(rejected&&room.SelectedWaitSeconds==1,"wait_invalid_index_"+index);
+            }
+            bool allSelected=true;int[] expected={1,4,8,16};
+            for(int index=0;index<expected.Length;index++)
+                allSelected=room.SelectWaitDuration(index)&&room.SelectedWaitSeconds==expected[index]&&allSelected;
+            Check(allSelected&&JsonUtility.ToJson(room.Latest)==state&&
+                  FileHash(before.working_path)==workingHash,"wait_selection_local_only");
+            room.Send("wait");
+            Check(room.Busy&&!room.CanSelectWaitDuration&&!room.SelectWaitDuration(0)&&
+                  room.SelectedWaitSeconds==16,"wait_busy_selection_preserves_duration");
+            yield return Ready();if(failed)yield break;
+            Check(room.Latest.update.status=="COMMITTED"&&PlayRoom.Number(room.Latest.update.view.tick)==tick+16,
+                  "wait_actual_16_seconds");
+            string waited=JsonUtility.ToJson(room.Latest.update.view);
+            room.SelectWaitDuration(1);yield return Intent("retry");
+            Check(room.SelectedWaitSeconds==4&&JsonUtility.ToJson(room.Latest.update.view)==waited,
+                  "wait_retry_uses_original_command_once");
+            room.SelectWaitDuration(3);yield return Intent("load");
+            Check(room.Latest.update.status=="LOADED"&&JsonUtility.ToJson(room.Latest.update.view)==view&&
+                  room.SelectedWaitSeconds==16,"wait_load_restores_state_retains_choice");
+            int pid=room.BrainProcessId;room.Reconnect();
+            Check(!room.CanSelectWaitDuration&&!room.SelectWaitDuration(0),"wait_connecting_gate");
+            yield return Ready();if(failed)yield break;
+            Check(room.BrainProcessId!=pid&&room.SelectedWaitSeconds==16&&
+                  JsonUtility.ToJson(room.Latest.update.view)==view,"wait_reconnect_retains_choice");
+            Check(FileHash(slotPath)==slotHash,"wait_load_does_not_modify_slot");
+            File.WriteAllText(Path.Combine(output,"selected-wait.json"),
+                "{\"selected_seconds\":16,\"before_tick\":"+tick+",\"waited_tick\":"+(tick+16)+
+                ",\"restored_tick\":"+room.Latest.update.view.tick+"}");
         }
 
         IEnumerator InspectMemory(string label,int count)
@@ -183,6 +336,9 @@ namespace ReverieSaga
             string output=Path.Combine(Path.GetDirectoryName(
                 Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")),"evidence");
             Directory.CreateDirectory(output);
+            yield return SelectSlots(output);
+            yield return SelectWait(output);
+            yield return InspectLayout(output);
             if(!Application.isBatchMode) {
                 yield return new WaitForEndOfFrame();
                 ScreenCapture.CaptureScreenshot(Path.Combine(output,"scenario.png"));
@@ -259,6 +415,9 @@ namespace ReverieSaga
                   "slot_preview_does_not_replace_current_progress");
             string output=Path.Combine(Path.GetDirectoryName(Environment.GetEnvironmentVariable(
                 "REVERIE_UNITY_WORKING")),"evidence");Directory.CreateDirectory(output);
+            yield return SelectSlots(output);
+            yield return SelectWait(output);
+            yield return InspectLayout(output);
             if(!Application.isBatchMode) {
                 yield return new WaitForEndOfFrame();
                 ScreenCapture.CaptureScreenshot(Path.Combine(output,"quest.png"));
@@ -296,6 +455,10 @@ namespace ReverieSaga
                 float until=Time.realtimeSinceStartup+12;
                 while(room.Failure==""&&Time.realtimeSinceStartup<until)yield return null;
                 Check(room.Failure.Contains("SAVE_CORRUPT"),"corrupt_status_visible");
+                Check(!room.CanSelectSlot&&!room.SelectSlot(7)&&room.SelectedSlot=="slot01",
+                      "slots_failure_selection_disabled");
+                Check(!room.CanSelectWaitDuration&&!room.SelectWaitDuration(3)&&room.SelectedWaitSeconds==1,
+                      "wait_failure_selection_disabled");
                 Debug.Log("CORRUPT_DIAGNOSTIC "+room.Failure);
                 Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");
                 Exit(failed?1:0);yield break;
@@ -306,6 +469,7 @@ namespace ReverieSaga
             string output=Path.Combine(Path.GetDirectoryName(
                 Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")),"evidence");
             Directory.CreateDirectory(output);
+            yield return InspectLayout(output);
             if(!Application.isBatchMode) {
                 ScreenCapture.CaptureScreenshot(Path.Combine(output,"initial-room.png"));
                 yield return new WaitForSecondsRealtime(1);
@@ -377,6 +541,8 @@ namespace ReverieSaga
             yield return Intent("wait");
             Check(room.Latest.update.status=="COMMITTED"&&room.Latest.update.view.tick==(oldTick+1).ToString(),"input_after_reconnect");
             Directory.CreateDirectory(output);
+            yield return SelectSlots(output);
+            yield return SelectWait(output);
             if(!Application.isBatchMode) {
                 ScreenCapture.CaptureScreenshot(Path.Combine(output,"playroom.png"));
                 yield return new WaitForSecondsRealtime(2);

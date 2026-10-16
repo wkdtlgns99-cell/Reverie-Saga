@@ -1,0 +1,24 @@
+# GOV-03R — Refresh Replay Coverage Scope
+
+Date:2026-10-16 | State:LOCAL_ACCEPTED | Executor/review:self.
+Authorization:director requests next task;existing staged D4/GOV work needs current scope before implementation.
+Primary7 engineering verification support;no gameplay capability.
+
+| Field | Contract |
+|---|---|
+| goal/non-goals | Replace stale20-method/four-source/six-trace assumptions with a reviewed current input/range/trace specification and native qualification probe. No production gate implementation/activation,CI/shared policy/dependency/runtime/fixture change |
+| baseline/reads | HEAD0e06577,dirty F21–24/docs/R1/F22 preserved. Read old GOV-03 contract/inventory/staged controls,BLOCK08 G07,rulebook/handoff/backlog/guide/template/setup,actual six factories/engine getters and selected replay assertion bodies. Snapshot all tracked/nonignored bytes before edits in tmp/gov03-refresh |
+| allowed | NEW this order,docs/work_orders/RS-P1-GOV_03_SCOPE_2026-10-16.json,docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md,docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md. MODIFY current-entry notes only in docs/work_orders/RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md,RS-P1-GOV_STAGED_CONTROLS.md;BACKLOG.md,SESSION_HANDOFF.md,GAME_SYSTEM_SUMMARY_KO.md. Owned tmp/gov03-refresh;ephemeral probe scripts/coverage artifacts only |
+| protected | All src/tests/Unity/content/config/locks/authority files,old inventories/native witnesses;tools/replay_body_coverage.py remains absent. No agents/provider/publication/cleanup/install/CI/checkpoint change |
+| discovery | Enumerate skeleton/trial/encounter/watch/quest/memory factories under existing approved content. Public functions/property getters including inherited members;deduplicate full concrete module.class.member key,retain resolved implementation/source and registry owners. Ignore private/generated constructors/noncallable fields;unsupported public callable→stop. Source AST is one-off manual range authoring only,not active/custom gate |
+| expected scope | Four old factories now27methods;all six factories35methods/12classes/8source files. Include resolved inherited getters in domain/scenario.py and contracts/dialogue.py. Bind exact source hashes and full current executed-input hashes;do not repin old inventory |
+| nested semantics | Review every nested code object. Three current generator expressions remain part of enclosing source-body obligation;no callable/helper/lambda exemption. Current .co_lines positions must stay within reviewed body. Future named/lambda/nested generator changes require explicit scope review;old reject-all-nested assumption cannot pass current source unchanged |
+| native probe | Existing pinned Windows Python3.13.12/coverage7.16.2/pytest9.1.1;no installs. Private branch/pytrace/test_function config collects engines/domain/contracts so inherited getter lines are measured. Run original six goldens plus existing quest independent-vector replay and NPC-memory retry/save/load/offline-replay assertion body. Public coverage analysis2/context APIs only;test execution/definition hits alone do not prove body coverage |
+| ownership/errors | Fresh private artifacts;no production saves opened. Preserve collect/golden/json logs/JUnit/tracer/packages/before-after hashes;only exact successful node contexts may supply body hits. Missing evidence→UNVERIFIED;zero qualified body hit→GAP,no source/test change to force positivity. Actual probe is not a permanent producer/assessor/freshness gate |
+| examples | Old six traces leave new quest/memory obligations uncovered;all35must be explicit even when old27pass. Shared getter has distinct concrete-class obligations and shared implementation identity;native line/context coverage proves a qualified call,not every instance/access/branch |
+| acceptance/checks | All discovered methods reviewed with source/body/hash/owners/nested classification;exact trace collection/JUnit/native contexts and measured-body results recorded;current implementation order specifies changed bindings/errors/native safeguards. Document UTF8/JSON/schema/links/fences/progress/source preservation and entry guards PASS. Noncovered methods remain honest prerequisites,not exemptions |
+| performance/checkpoints | Record actual durations;3s/all11/device/performance budgets remain unqualified. No CORE/native UI change:full suite/Unity not required. CP01–05unchanged,V3stopped PARTIAL,CP06held;no new checkpoint from scope/probe-only work |
+| delivery/stops | Current scope/order+receipt,actual native proof/limits;G07 NOT_ACTIVE,parent GOV IN_PROGRESS. Stop only for unresolved method/trace semantics or unavailable native tool after safe alternatives;no silent scope narrowing or automatic following task |
+
+Accepted:[receipt](../reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md). Current35method/8trace
+scope qualified natively;G07implementation remains a separate explicit task.

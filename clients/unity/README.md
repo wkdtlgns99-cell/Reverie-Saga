@@ -14,6 +14,11 @@ Current-host PASS and application-control failures are per-device evidence,not r
 
 Open C:/ReverieSaga/clients/unity with the installed editor,open
 Assets/Reverie/Scenes/PlayRoom.unity and press Play. Use WASD/arrows or Korean buttons.
+QT-F24 adds **대기 시간** presets1/4/8/16seconds(default1) in the controls scroll area.
+Choosing a preset changes only the next **대기** command;other actions keep their existing timing.
+Selection is disabled while busy/connecting/failed and retained across load/reconnect in this room.
+Retry repeats the original command even after the preset changes. A new room starts at1second.
+[Acceptance](../../docs/reviews/QT-F24_EXECUTION_2026-10-16.md).
 With no scenario/quest/memory selectors,the ordinary editor starts the director-approved harbor
 quest with persisted NPC memory. Catalog:content/dialogue/harbor-memory-v1.json;trusted pin in
 harbor-memory-v1.sha256. Save:tmp/unity-play/harbor-memory/<catalog-pin>/game.sqlite. The view is a 3x3 test room.
@@ -24,11 +29,15 @@ Memory modes also show **최근 대화 기억**(QT-F19). This read-only action s
 conversation;the original full-memory button keeps all records in time order. A received completion
 report remains a report,not eyewitness evidence. Both buttons share busy/load/reconnect behavior
 and take no turn. [Acceptance](../../docs/reviews/QT-F19_EXECUTION_2026-10-15.md).
-**slot01 저장 정보**(QT-F20) previews the same slot01used by the prototype's save/load controls.
+QT-F23 adds a **저장 슬롯** selector for slot01–slot08(default01),shared by save/load/preview.
+Selection is local only;it is disabled during a request,connection or failure and retained across
+load/reconnect in the same room. A new room starts at01. **slotNN 저장 정보** previews that selected slot.
 Saved time,quest progress and registered NPC-memory count appear in the history,while current
 stats and attachment stay unchanged. The slot is validated without loading a new branch;an empty
 or unusable slot reports an error. Full/recent memory controls share one row to retain history
-space. [Acceptance](../../docs/reviews/QT-F20_EXECUTION_2026-10-15.md).
+space. Slot selection does not identify retained working clones or permit deletion.
+[Preview acceptance](../../docs/reviews/QT-F20_EXECUTION_2026-10-15.md),
+[slot selection](../../docs/reviews/QT-F23_EXECUTION_2026-10-16.md).
 
 QT-F02 selectors:`REVERIE_UNITY_SCENARIO=legacy|harbor|grove` before starting the editor.
 Explicit legacy retains tmp/unity-play/game.sqlite;harbor/grove get separate default subdirectories.
@@ -123,6 +132,14 @@ final unsigned standalone executable. Editor verification passes;standalone runt
 remains UNVERIFIED. No security policy or license settings were weakened.
 
 ## Boundary / limitations
+
+QT-F21 separates the controls and **행동·대화 기록** into independent scrolling regions.
+Scroll over the upper region to reach save/load/retry/recovery and imported descriptions;
+scroll over the lower region to read earlier messages. New messages follow the history bottom
+without moving the control list. Short windows retain a dedicated history area,and action
+buttons use two or three columns according to available width. The title stays visible.
+This is a prototype layout repair;human UX acceptance and final HD-2D presentation remain open.
+[Current layout qualification](../../docs/reviews/QT-F21_EXECUTION_2026-10-16.md).
 
 BrainConnection owns one Python subprocess/private binary pipe;engine_bridge routes intents
 through existing ClientWorker. Full derived views drive every displayed position,HP and event.

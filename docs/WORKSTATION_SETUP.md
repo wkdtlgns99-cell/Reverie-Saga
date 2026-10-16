@@ -6,6 +6,27 @@ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification
 
 ## Task Entry and Authorization
 
+QT-F24current-host2026-10-16:[receipt](reviews/QT-F24_EXECUTION_2026-10-16.md). Reused Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824),pip PASS. Restricted license query unavailable;
+permitted public status active/signedIn=true,no settings change. Python515/native7modes519,
+Windows build/release-hook exclusion/static/imports and24source-preserving readbacks PASS.
+Actual1101x506wait presets/max-duration/retry/load/reconnect qualified;scene restored byte-exact.
+No installation/security change;other-device/standalone/human UX/MIN-SPEC/release remain open.
+
+QT-F23current-host2026-10-16:[receipt](reviews/QT-F23_EXECUTION_2026-10-16.md). Existing Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824) reused,pip PASS. Restricted licensing unavailable;
+permitted public status active/signedIn=true,no settings change. Seven native modes452PASS,
+Windows build/release-hook exclusion,46affected Python/static and24source-preserving readbacks PASS.
+Actual1101x506slot selector/save-load-preview/loaded-branch reconnect qualified;scene restored exactly.
+Other-device/standalone/human UX/release/MIN-SPEC remain open;no installation or policy change.
+
+QT-F21current-host2026-10-16:[receipt](reviews/QT-F21_EXECUTION_2026-10-16.md). Existing Python3.13.12/
+Tk8.6/editor6000.3.25f1(file6000.3.25.14801824) reused,pip check PASS. Restricted license status
+unavailable;permitted public CLI active/signedIn=true,no install/login/settings changes.
+Actual1101x506UI/native seven modes307PASS,Windows build/release-hook exclusion PASS;Python51/
+static/imports PASS. Scene restored after ID equivalence proof. Other-device/narrow viewport/
+standalone/release/human UX qualification remains open;this is current-host presentation evidence.
+
 QT-F20current-host2026-10-15:[receipt](reviews/QT-F20_EXECUTION_2026-10-15.md). Reused Python3.13.12/
 Tk8.6/SQLite3.50.4/editor6000.3.25f1(file6000.3.25.14801824);host CLI active/signedIn,settings
 unchanged. Restricted hardlink creation failed;actual host slot guard and full1741tests PASS.

@@ -123,12 +123,16 @@ namespace ReverieSaga
             return true;
         }
 
-        public void Send(string intent)
+        public void Send(string intent,string slotId="slot01",int waitSeconds=1)
         {
             if (disposed || awaiting) throw new InvalidOperationException("Brain unavailable/busy");
+            if(slotId==null||slotId.Length!=6||!slotId.StartsWith("slot0",StringComparison.Ordinal)||
+               slotId[5]<'1'||slotId[5]>'8')throw new ArgumentException("Invalid save slot",nameof(slotId));
+            int seconds=intent=="wait"?waitSeconds:1;
+            if(seconds<1)throw new ArgumentOutOfRangeException(nameof(waitSeconds));
             var request = new WireRequest {kind="request", version="1",
                 request_id=nextId.ToString(CultureInfo.InvariantCulture), attachment_id=attachment,
-                request=intent, seconds="1", slot_id="slot01"};
+                request=intent, seconds=seconds.ToString(CultureInfo.InvariantCulture), slot_id=slotId};
             byte[] body = Encoding.UTF8.GetBytes(JsonUtility.ToJson(request));
             if (body.Length > 16 * 1024) throw new IOException("Request capacity");
             int size = body.Length;

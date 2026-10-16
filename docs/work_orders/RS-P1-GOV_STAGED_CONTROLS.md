@@ -1,5 +1,9 @@
 # RS-P1-GOV — Staged Dependency / Replay Coverage Controls
 
+Current2026-10-16:GOV-03Rscope refresh accepted;[current implementation order](RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md)
+supersedes historical20method/6trace assumptions with35methods/8sources/8traces. Native probe
+35body hits/8PASS;implementation NOT_STARTED/G07 NOT_ACTIVE. Older dated evidence remains historical.
+
 Date:2026-10-07 | Owner/executor/reviewer:Sol | Authoring:DONE,self-reviewed | Parent:IN_PROGRESS | GOV-01 historical qualification:DONE | GOV-02 shared G03:ACCEPTED/DONE | GOV-03:READY/implementation NEXT
 
 Director request "담꺼 ㄱㄱ" executes the next authoring item after [CORE integration acceptance](RS-P1-CORE_INTEGRATION_REVIEW.md). This document supplies a READY isolated qualification order; actual shared dependency/policy activation is a later stage with its own qualified inputs. No agent/model change, commit/push or eleven-gate activation.
@@ -14,7 +18,7 @@ GOV-02 installation/activation2026-10-07:director authorized exact Python3.13.12
 |---|---|---|
 | GOV-01 tool qualification | ACCEPTED/DONE | Isolated Windows CPython3.13.12;20 hashed packages preserve original13 pins;native probes/51-module graph/20 golden body hits;1113tests253.15s,Ruff/native strict mypy87files PASS;§10 evidence |
 | GOV-02 G03 dependency control | ACCEPTED/DONE,shared locally | [Acceptance](RS-P1-GOV_02_DEPENDENCY_CONTROL.md#10-gov-02-execution--native-corrections--2026-10-07)/[fresh evidence](RS-P1-GOV_02_ACTIVATION.json);Python3.13.12/20 pins;type-inclusive3+runtime1 native contracts;79 probes/full1192tests/Ruff/strict Python-parser mypy89files PASS |
-| GOV-03 G07 replay body coverage | Order READY,implementation NOT_STARTED | [Typed native order](RS-P1-GOV_03_REPLAY_BODY_COVERAGE.md)/[current inventory](RS-P1-GOV_03_INPUT_INVENTORY.json);six goldens/all20 body hits freshly observed;producer/assessor/errors/independent rejection examples fixed;NEXT execute bounded implementation when directed |
+| GOV-03 G07 replay body coverage | Current order READY,implementation NOT_STARTED | [Current order](RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md)/[scope](RS-P1-GOV_03_SCOPE_2026-10-16.json):35methods/12classes/8sources/8qualified traces. Producer/assessor/negative tests remain unimplemented;G07 NOT_ACTIVE |
 | GOV later G08/G09/G10/G11/report/mutation | DEFERRED implementation | Actual applicable counters, supported migration corpus, observed access/consumer semantics, approved artifacts, selected native interfaces; bounded orders required |
 
 Historical initial execution scope was **GOV-01 only**;current next execution is the separate linked READY GOV-03 order. Qualification is a real standalone tooling experiment, with no shared gate installation. Its readiness means complete experiment instructions, not already-compatible tools. Failed or unavailable native support stays FAIL/UNVERIFIED, with its actual reason. No automatic version upgrade, substitute AST checker or empty lane.

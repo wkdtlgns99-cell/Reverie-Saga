@@ -20,7 +20,22 @@ namespace ReverieSaga
         string boardWalls;
         string transportError="";
         Vector2 scroll;
+        Vector2 controlsScroll;
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+        public Rect ControlsViewport { get; private set; }
+        public Rect HistoryViewport { get; private set; }
+        public float ControlsContentHeight { get; private set; }
+        public float ControlsScrollForVerification {
+            get { return controlsScroll.y; }
+            set { controlsScroll.y=value; }
+        }
+#endif
         int selected;
+        int slotIndex;
+        static readonly string[] SlotLabels={"01","02","03","04","05","06","07","08"};
+        int waitIndex;
+        static readonly int[] WaitSeconds={1,4,8,16};
+        static readonly string[] WaitLabels={"1초","4초","8초","16초"};
         Font koreanFont;
         string root, working;
         string scenario = "legacy";
@@ -30,6 +45,10 @@ namespace ReverieSaga
         public bool NpcMemoryEnabled { get { return npcMemory; } }
         public bool CanInspectMemory { get { return npcMemory&&latest!=null&&!Busy&&failure==""; } }
         public bool CanInspectSlot { get { return latest!=null&&!Busy&&failure==""; } }
+        public bool CanSelectSlot { get { return CanInspectSlot; } }
+        public string SelectedSlot { get { return "slot"+SlotLabels[slotIndex]; } }
+        public bool CanSelectWaitDuration { get { return CanInspectSlot; } }
+        public int SelectedWaitSeconds { get { return WaitSeconds[waitIndex]; } }
         public WireResponse Latest { get { return latest; } }
         public bool Busy { get { return connecting || brain == null || brain.Busy; } }
         public bool Connecting { get { return connecting; } }
@@ -179,7 +198,21 @@ namespace ReverieSaga
 
         public void Send(string intent)
         {
-            try { brain.Send(intent); } catch(Exception e) { Fail(e); }
+            try { brain.Send(intent,SelectedSlot,SelectedWaitSeconds); } catch(Exception e) { Fail(e); }
+        }
+
+        public bool SelectSlot(int index)
+        {
+            if(index<0||index>=SlotLabels.Length)throw new ArgumentOutOfRangeException(nameof(index));
+            if(!CanSelectSlot)return false;
+            slotIndex=index;return true;
+        }
+
+        public bool SelectWaitDuration(int index)
+        {
+            if(index<0||index>=WaitSeconds.Length)throw new ArgumentOutOfRangeException(nameof(index));
+            if(!CanSelectWaitDuration)return false;
+            waitIndex=index;return true;
         }
 
         public void InspectMemory() { if(CanInspectMemory)Send("memory"); }
@@ -237,8 +270,36 @@ namespace ReverieSaga
         {
             if(koreanFont==null)koreanFont=Font.CreateDynamicFontFromOSFont("Malgun Gothic",16);
             GUI.skin.font=koreanFont;
-            GUILayout.BeginArea(new Rect(12,12,380,Screen.height-24),GUI.skin.box);
-            GUILayout.Label("Reverie Saga — 플레이테스트");
+            float width=Mathf.Max(0,Mathf.Min(380,Screen.width-24));
+            float height=Mathf.Max(0,Screen.height-24);
+            var panel=new Rect(12,12,width,height);
+            GUI.Box(panel,GUIContent.none);
+            float innerWidth=Mathf.Max(0,width-12);
+            GUI.Label(new Rect(18,18,innerWidth,24),"Reverie Saga — 플레이테스트");
+            float available=Mathf.Max(0,height-72);
+            float controlsHeight=Mathf.Floor(available*.6f);
+            var controls=new Rect(18,48,innerWidth,controlsHeight);
+            var history=new Rect(18,controls.yMax+30,innerWidth,available-controlsHeight);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            ControlsViewport=controls;HistoryViewport=history;
+#endif
+            GUILayout.BeginArea(controls);
+            controlsScroll=GUILayout.BeginScrollView(controlsScroll,false,false);
+            DrawControls(innerWidth);
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            var end=GUILayoutUtility.GetRect(0,0);
+            if(Event.current.type==EventType.Repaint)ControlsContentHeight=end.yMax;
+#endif
+            GUILayout.EndScrollView();GUILayout.EndArea();
+            GUI.Label(new Rect(18,controls.yMax+6,innerWidth,24),"행동·대화 기록");
+            GUILayout.BeginArea(history);
+            scroll=GUILayout.BeginScrollView(scroll,false,false);
+            foreach(string message in messages) GUILayout.Label(message);
+            GUILayout.EndScrollView();GUILayout.EndArea();
+        }
+
+        void DrawControls(float width)
+        {
             if(latest!=null)GUILayout.Label(latest.update.scenario_name);
             if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
             if(failure!="") {
@@ -270,12 +331,25 @@ namespace ReverieSaga
                 GUILayout.EndHorizontal();
                 GUI.enabled=!Busy&&failure=="";
             }
-            GUILayout.BeginHorizontal();
-            foreach(string intent in new [] {"open","close","attack","rest","wait","bell"})
+            GUI.enabled=CanSelectWaitDuration;
+            GUILayout.Label("대기 시간 · "+SelectedWaitSeconds.ToString(CultureInfo.InvariantCulture)+"초");
+            int nextWait=GUILayout.SelectionGrid(waitIndex,WaitLabels,4);
+            if(nextWait!=waitIndex)SelectWaitDuration(nextWait);
+            GUI.enabled=!Busy&&failure=="";
+            string[] actions={"open","close","attack","rest","wait","bell"};
+            int columns=width<330?2:3;
+            for(int i=0;i<actions.Length;i++) {
+                if(i%columns==0)GUILayout.BeginHorizontal();
+                string intent=actions[i];
                 if(GUILayout.Button(Label(intent))) Send(intent);
-            GUILayout.EndHorizontal();
+                if(i%columns==columns-1||i==actions.Length-1)GUILayout.EndHorizontal();
+            }
+            GUI.enabled=CanSelectSlot;
+            GUILayout.Label("저장 슬롯 · "+SelectedSlot);
+            int nextSlot=GUILayout.SelectionGrid(slotIndex,SlotLabels,4);
+            if(nextSlot!=slotIndex)SelectSlot(nextSlot);
             GUI.enabled=CanInspectSlot;
-            if(GUILayout.Button("slot01 저장 정보")) InspectSlot();
+            if(GUILayout.Button(SelectedSlot+" 저장 정보")) InspectSlot();
             GUI.enabled=!Busy&&failure=="";
             GUILayout.BeginHorizontal();
             foreach(string intent in new [] {"save","load","retry","recover"})
@@ -287,9 +361,6 @@ namespace ReverieSaga
                     selected=(selected+1)%latest.narratives.Length;
                 GUILayout.Label(latest.narratives[selected].description_ko);
             }
-            scroll=GUILayout.BeginScrollView(scroll);
-            foreach(string message in messages) GUILayout.Label(message);
-            GUILayout.EndScrollView();GUILayout.EndArea();
         }
 
         void OnDestroy()
