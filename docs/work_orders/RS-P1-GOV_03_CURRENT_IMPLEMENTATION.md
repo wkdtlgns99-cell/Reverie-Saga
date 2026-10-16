@@ -1,7 +1,7 @@
 # GOV-03 — Current Replay Body Coverage Implementation
 
-Date:2026-10-16 | Order:READY,self-reviewed | Implementation:NOT_STARTED | G07:NOT_ACTIVE.
-Authored under [GOV-03R](RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md);execute only on a later director request.
+Date:2026-10-16 | LOCAL_ACCEPTED,self-reviewed | Implementation:DONE,local command | CI activation:NOT_ACTIVE.
+Authored under [GOV-03R](RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md);executed on the director's next-task request.
 Primary7 engineering support;no gameplay/CI/release/independent-review acceptance.
 
 ## Contract and Baseline
@@ -12,10 +12,27 @@ negative tests and acceptance requirements. Apply the replacements below;all oth
 remain mandatory. Old20method/four-source/six-trace/no-nested assumptions are historical.
 Scope SSOT:[current authoring manifest](RS-P1-GOV_03_SCOPE_2026-10-16.json).
 
-Baseline:HEAD0e0657702a0bbeed04ed8d07c8826ce05a9f34cc plus preserved F21–24/docs/R1/F22dirty work.
+Reviewed scope baseline:0e06577;execution baseline:4257d4f864867541772237922c9acd70da926e78,clean checkout.
+Previous F21–24/docs/R1/F22work is preserved in that local commit;no remote publication occurred.
 At execution refresh actual HEAD/status,installed package set and whole input hashes before edits.
 Require reviewed source/factory/nested identities to match;never regenerate inventory from hits.
 No new dependency/marker/shared config/CI/runtime/save/approval change is authorized by this order.
+
+Entry correction2026-10-16:the live selected tests also read five JSON fixtures under docs.
+The architecture's [executed-input freshness contract](../../architecture/BLOCK_07.md#b22-evidence-identity--truth--three-way-verification)
+requires these actual transitive inputs;the previous blanket docs exclusion was incorrect.
+Include exactly docs/work_orders/PHASE0_REFERENCE_VECTORS.json,
+docs/work_orders/RS-P1-CORE_02_REFERENCE_VECTORS.json,
+docs/work_orders/RS-P1-CORE_03_REFERENCE_VECTORS.json,
+docs/work_orders/RS-P1-CORE_04_REFERENCE_VECTORS.json and
+docs/reviews/QT-F07_DIALOGUE_EXAMPLE.json in both input snapshots/current checks.
+Their contents and independent expected values remain read-only;other delivery docs remain excluded.
+Add a source-drift negative for each file. Schema/result/error/API contracts are unchanged.
+Keep pytest-owned cache/temp in the exclusive run:both pytest phases add
+-o cache_dir=<run>/pytest-cache;golden adds --basetemp <run>/pytest-temp.
+These fixed producer-owned operands are part of exact phase validation,not caller-selected options.
+Delivery routing correction:docs/ENGINEERING_ENFORCEMENT.md may receive a factual local-command
+availability pointer only. Existing automated CI/check activation and all other policy stay unchanged.
 
 ## Current Binding Replacements
 
@@ -54,7 +71,8 @@ MethodHit.path is the resolved implementation file,including inherited files. Wh
 snapshots include all regular src/tests/tools/content files,excluding __pycache__/bytecode only,
 plus pyproject.toml,.importlinter-runtime.toml,requirements-dev.lock. This includes new factory
 catalog/pin dependencies. Source/config/content/test/tool set changes mean STALE_INPUT;do not
-include docs/Unity/private ignored saves/credentials as gate inputs. Original path/case/reparse/
+include other docs/Unity/private ignored saves/credentials as gate inputs. The five executed
+document fixtures listed in the entry correction are mandatory. Original path/case/reparse/
 artifact/cap/package protections remain. No current total input count is a permanent oracle.
 
 Collect/golden/JUnit require exactly8nodes/pairs once,zero failures/errors/skips/XPASS;native
@@ -68,7 +86,8 @@ NEW under C:/ReverieSaga:tools/__init__.py,tools/replay_body_coverage.py,
 tools/replay_body_inventory.json,tests/governance/test_replay_body_coverage.py,
 docs/work_orders/RS-P1-GOV_03_ACTIVATION.json. Allowed factual delivery updates:this order,original
 current-entry note,staged controls,IMPLEMENTATION_ROADMAP_ORDERS.md,BACKLOG.md,SESSION_HANDOFF.md,
-GAME_SYSTEM_SUMMARY_KO.md. Existing production/tests/fixtures/authorities/config/locks/old inventories
+GAME_SYSTEM_SUMMARY_KO.md,and the factual enforcement-map pointer specified above.
+Existing production/tests/fixtures/authorities/config/locks/old inventories
 remain protected. Owned runs retain original direct .pytest_cache/gov03-32hex boundary;no erase/
 cached reuse. No production import of tools and no source/fixture changes to manufacture hits.
 
@@ -88,4 +107,29 @@ independent rejection tests,full/static PASS,self-reviewed scope and three-progr
 Original §9stops remain,plus unresolved current factory/content/nested semantics. Native scope
 probe covered process52.96s;3s/all11/device budgets remain TARGET/UNQUALIFIED. CP01–05unchanged,
 V3stopped PARTIAL,CP06held. No independent review/CI/counters/release/commit/push/agent/provider or
-next gate activation. This READY order is not an implemented producer/assessor or active G07.
+next gate activation. Local command acceptance does not install CI/hooks or activate all11gates.
+
+## Execution — 2026-10-16
+
+[Actual evidence](RS-P1-GOV_03_ACTIVATION.json):LOCAL_ACCEPTED,self-review;primary7support,related2/6.
+Typed producer/read-only assessor/CLI and schema2runtime inventory implemented;110new tests PASS.
+Actual root run8213054a9755e1b67cbdf2e8e64664e4:8replays/35positive bodies,PASS/CURRENT;
+200executed inputs unchanged,183prior inputs preserved. Producer52.979s;assessor0.808s returns
+identical JSON and leaves every owned file unchanged. No probe hits became expected-output oracles.
+Full1897PASS616.61s;Ruff both/format16/mypy173files/pip/native imports3+1/supplements3PASS.
+Full qualification uses1027byte-identical relocated Tcl/Tk8.6.15scripts via child-process
+TCL_LIBRARY/TK_LIBRARY;original installation unchanged. Original-path1896PASS/1Tk setup ERROR
+and entry212PASS/1ERROR are retained;their script-read root cause remains unproved.
+Windows symlink creation unavailable(WinError1314),recorded in JUnit;that real branch UNVERIFIED.
+Early multiline-header/config-newline/test-line/environment-file defects were repaired and
+failed/interrupted evidence retained. External COVERAGE_FILE cannot select the assessor's data.
+3s/all11/device/independent review/release remain unqualified;CP06held. No commit/push/agent/provider.
+Next unmet GOV item:author a current bounded deterministic-cost order;no automatic execution.
+
+Manual invocation from the workspace with README's Python environment:
+```powershell
+$g07Run=Join-Path "$PWD/.pytest_cache" ('gov03-'+[guid]::NewGuid().ToString('N'))
+.\.venv\Scripts\python.exe -m tools.replay_body_coverage run --project-root "$PWD" --run-dir $g07Run
+.\.venv\Scripts\python.exe -m tools.replay_body_coverage assess --project-root "$PWD" --run-dir $g07Run
+```
+Runs are exclusive and retained;choose a new ID for each producer run. Assessment is read-only.

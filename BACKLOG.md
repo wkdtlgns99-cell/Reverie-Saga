@@ -9,17 +9,27 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 | ID | State | Result / evidence |
 |---|---|---|
-| RS-P1-GOV-03R | LOCAL_ACCEPTED,published | GOV-03 scope refreshed:35methods/12classes/8sources,8replays PASS/all35body hits. Planning/probe only;G07 NOT_ACTIVE. [Receipt](docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md) |
-| QT-F24 | LOCAL_ACCEPTED,published | Unity wait1/4/8/16presets;515Python/native7modes519/build/static and24readbacks PASS. [Receipt](docs/reviews/QT-F24_EXECUTION_2026-10-16.md) |
-| QT-F23 | LOCAL_ACCEPTED,published | Unity slot01–08selector/shared save-load-preview;452native/Windows build,46Python/static and24save readbacks PASS. [Receipt](docs/reviews/QT-F23_EXECUTION_2026-10-16.md) |
-| RS-V3-R1 | LOCAL_ACCEPTED,published | Real malformed HTTP reproduced;transient classification/child-parent retry fixed. [Receipt](docs/reviews/RS-V3-R1_EXECUTION_2026-10-16.md);combined225affected/static PASS |
-| QT-F22 | LOCAL_ACCEPTED,published | Explicit read-only retained-save inventory;17new cases,combined225affected/static PASS. No deletion/cap change. [Receipt](docs/reviews/QT-F22_EXECUTION_2026-10-16.md) |
+| RS-P1-GOV-03 | LOCAL_ACCEPTED,uncommitted | Manual producer/read-only assessor:8replays/35body hits/200inputs;110new tests/full1897PASS. Identical assessment,no writes;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Full uses identical Tcl copy;original Tk error/symlink/timing limits retained;CI NOT_ACTIVE |
+| RS-P1-GOV-03R | LOCAL_ACCEPTED,local commit4257d4f | GOV-03 scope refreshed:35methods/12classes/8sources,8replays PASS/all35body hits. Planning/probe only. [Receipt](docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md) |
+| QT-F24 | LOCAL_ACCEPTED,local commit4257d4f | Unity wait1/4/8/16presets;515Python/native7modes519/build/static and24readbacks PASS. [Receipt](docs/reviews/QT-F24_EXECUTION_2026-10-16.md) |
+| QT-F23 | LOCAL_ACCEPTED,local commit4257d4f | Unity slot01–08selector/shared save-load-preview;452native/Windows build,46Python/static and24save readbacks PASS. [Receipt](docs/reviews/QT-F23_EXECUTION_2026-10-16.md) |
+| RS-V3-R1 | LOCAL_ACCEPTED,local commit4257d4f | Real malformed HTTP reproduced;transient classification/child-parent retry fixed. [Receipt](docs/reviews/RS-V3-R1_EXECUTION_2026-10-16.md);combined225affected/static PASS |
+| QT-F22 | LOCAL_ACCEPTED,local commit4257d4f | Explicit read-only retained-save inventory;17new cases,combined225affected/static PASS. No deletion/cap change. [Receipt](docs/reviews/QT-F22_EXECUTION_2026-10-16.md) |
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
-| QT-F21 | LOCAL_ACCEPTED,published | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
+| QT-F21 | LOCAL_ACCEPTED,local commit4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | Current branch tracked at 0e06577 | No current-head CI qualified here;push+PR success at 2f591f7 is [historical](docs/history/BACKLOG_2026-10-16.md#current-ci-verification--pr8-resubmission). Local F21–24/docs/R1excluded |
+| Publication / CI | Current branch publication requested | Publish accumulated local work and this backlog note;no merge/release authorization. CI remains revision-specific |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
+
+## Adopted Architecture Direction — 2026-10-16
+
+Direction only;not an implementation order or completion claim.
+
+- Keep deterministic code authoritative for state,events,replay and persistence. Use RAG for retrieval and a shared optional LLM for bounded dialogue or proposals,never factual calculation.
+- Simulate gameplay-relevant off-screen changes through exact ordered events/catch-up;freeze only proven no-op or cosmetic state.
+- Continue with Unity 3D/HD-2D plus selective sprites. Treat low-spec performance as UNVERIFIED until measured on target hardware;do not infer speed from abstraction or art style.
+- Prefer one bounded end-to-end village slice across categories2–7 before broad legacy migration,bulk assets or more general governance tooling:accept quest → travel/combat → off-screen change → changed NPC return → report/reward → save/restart.
 
 ## Priority Tasks
 
@@ -30,7 +40,7 @@ old READY labels or historical permissions alone do not authorize implementation
 |---|---|---|
 | D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F08–20cover bounded subsets only |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
-| RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[current GOV-03order](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) READY:35methods/8sources/8traces. Producer/assessor implementation NOT_STARTED,G07 NOT_ACTIVE;3s/all11/device targets unqualified |
+| RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |
 | RS-ARCH-002 / D6 | IN_PROGRESS | B02–08 design DONE;B09 READY_FOR_REVIEW,#6/#34 later-order readiness PARTIAL;[BLOCK09](architecture/BLOCK_09.md). Design completion does not qualify runtime |
 | RS-RELEASE / D7 | OPEN,CP06 held | Standalone packaging/lifecycle/crash timing/offline/device/MIN-SPEC/human UX/final engine qualification;no security bypass. F21 layout repair does not establish human UX acceptance |
 | RS-STRUCT-001 residuals | CONDITIONAL / DEFERRED | D5postcommit/load-close repairs accepted;remaining codec-extension/format/performance follow-ups need demonstrated scope,not a broad rewrite. [Original risks](docs/reviews/RS-REVIEW-CP01_DISPOSITIONS.md#findings) |

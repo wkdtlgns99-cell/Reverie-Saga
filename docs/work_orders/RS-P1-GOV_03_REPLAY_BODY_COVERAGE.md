@@ -1,11 +1,10 @@
 # RS-P1-GOV / GOV-03 — Native Golden Replay Body Coverage
 
-Current2026-10-16:GOV-03Rscope refresh LOCAL_ACCEPTED. All six factories require35methods/12classes/
-8sources/8replay contexts;old four-factory slice has27methods. Use the
-[current implementation order](RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) and
-[reviewed scope](RS-P1-GOV_03_SCOPE_2026-10-16.json);35native body hits/8traces qualified.
-Implementation NOT_STARTED/G07 NOT_ACTIVE. Everything below is historical;old20/6/no-nested
-assumptions and archived NEXT cannot override current scope or authorize automatic execution.
+Current2026-10-16:GOV-03local command LOCAL_ACCEPTED:35methods/12classes/8sources/8replays,
+200input hashes,110new tests/full1897PASS. [Current order](RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md)/
+[actual evidence](RS-P1-GOV_03_ACTIVATION.json) own scope and Tcl/symlink/timing limits.
+Producer/read-only assessor agree;CI/hooks NOT_ACTIVE. Everything below is historical;
+old20/6/no-nested assumptions and archived NEXT cannot override current scope or authorize execution.
 
 Current2026-10-15:ENTRY_STOP_STALE_SCOPE,not executable READY at2f591f7. Actual public-method
 enumeration of the same four factories finds27methods versus the historical20below:two concrete

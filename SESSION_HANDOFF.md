@@ -15,19 +15,21 @@ Current workspace `C:\ReverieSaga`;reference `C:\Quilltale` is read-only.
 
 | Item | Last observed state;recheck Git before edits |
 |---|---|
-| Branch / HEAD | codex/open-work-closure-20261014 / 0e06577;tracking head matched after pull2026-10-16 |
+| Branch / HEAD | codex/open-work-closure-20261014;4257d4f plus current GOV-03 and architecture-direction documentation;recheck exact HEAD |
 | Other branch | origin/main separatelycec6869(QT-F02merge);not merged/switched/reset here |
-| Local accepted work | QT-F21–24UI/save tools,RS-DOC-005entry compaction,RS-V3-R1HTTP repair,GOV-03Rscope refresh. Preserve all dirty files;receipts in BACKLOG |
-| Current request | GOV-03Rscope/probe LOCAL_ACCEPTED;[receipt](docs/reviews/RS-P1-GOV_03_SCOPE_REFRESH_2026-10-16.md). Current35method/8trace implementation order READY;no gate implementation or automatic further task |
-| Publication | Existing [PR8](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/8);current accumulated local work is authorized for commit/push,with no merge/release |
-| Verification | GOV-03R8covered replays/all35body hits PASS,1787collection only;456entry files preserved outside notes. F24Python515/native519/build/static and F20full1741historical;no new CI/independent acceptance |
+| Local accepted work | QT-F21–24UI/save tools,RS-DOC-005entry compaction,RS-V3-R1HTTP repair,GOV-03Rscope refresh saved at4257d4f. Preserve current new GOV-03files |
+| Current request | [GOV-03](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Manual producer/read-only assessor implemented;no automatic next task |
+| Publication | Director requests commit/push of all current local files plus the concise architecture-direction backlog note;no merge/release authorization |
+| Verification | Full1897PASS616.61s/110new tests;actual8replays/35body hits/200inputs and unchanged read-only assessment PASS. Ruff both/format16/mypy173/imports3+1/pip/supplements3PASS;183prior inputs preserved. No CI/independent acceptance |
 
 ## Resume Constraints
 
 - Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,prepared approved dialogue,recent/full memory and saved-slot inspection.
 - Truth:deterministic COMMIT-owned facts;ordinary play/replay requires no live LLM. Received completion reports are not witnessed enemy defeats. Existing saves retain original feature/catalog pins.
 - Director2026-10-16stops additional Claude V3review at PARTIAL;[final dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md). No continuation requested. Any future resume needs current snapshot/scope refresh;old2f591f7request is historical. CP06remains held.
-- CP01–05closed for bounded scopes;CP06holds release. [Current GOV-03order](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) covers35methods/8sources/8traces;implementation NOT_STARTED,G07 NOT_ACTIVE. D2/D3/D4/D6/D7remain open;see backlog.
+- Adopted audit direction is recorded in [BACKLOG](BACKLOG.md):deterministic authoritative rules,exact event-driven off-screen state,optional shared LLM/RAG context,measured Unity HD-2D,and a bounded categories2–7village slice. This is direction only,not an active order.
+- CP01–05closed for bounded scopes;CP06holds release. GOV-03manual command accepted;CI/hooks NOT_ACTIVE. D2/D3/D4/D6/D7remain open;see backlog.
+- Full qualification used byte-identical1027-file Tcl/Tk8.6.15copy via process TCL_LIBRARY/TK_LIBRARY;local paths/hashes in tmp/gov03-implementation/tcl-runtime.json. Revalidate before reuse. Original-path1896PASS/1Tk initialization ERROR remains unexplained;no installation repair claim. Windows symlink creation unavailable(1314).
 - Images/modeling/camera are excluded from current closure. Final HD-2D/engine/human UX/device/MIN-SPEC/standalone release qualification remains separate.
 - Current-host Python3.13.12/Tk8.6/editor6000.3.25f1 tools and license were reused;Intel UHD750observed. Laptop specifications and other-device readiness are unmeasured here.
 - Credentials:`C:/ReverieSaga/.env` is ignored;primary GEMINI_API_KEY plus two manual spares. Old tmp/gemini-api-key.txt was removed. Never print/copy keys;[loading/approval workflow](docs/CLI_WORKFLOWS.md).
