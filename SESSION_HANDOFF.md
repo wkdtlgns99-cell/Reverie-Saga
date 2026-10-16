@@ -1,7 +1,8 @@
 # Reverie Saga — Session Handoff
 
 Updated:2026-10-16 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
-Current workspace `C:\Reverie Saga`;reference `C:\Quilltale` is read-only.
+Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
+Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Read on Entry
 
