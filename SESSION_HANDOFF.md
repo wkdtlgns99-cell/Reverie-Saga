@@ -1,6 +1,6 @@
 # Reverie Saga — Session Handoff
 
-Updated:2026-10-16 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-10-19 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -14,19 +14,40 @@ Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual c
 
 ## Checkout and Local Work
 
-Current director request2026-10-16:repair PR8checks,merge normally and update C:/Reverie Saga.
+Latest director request2026-10-19:commit and push all session changes. Includes accepted
+RS-TK-001/QT-F25/QT-F26 plus QT-F27implementation with final native acceptance UNVERIFIED.
+[QT-F27receipt](docs/reviews/QT-F27_EXECUTION_2026-10-18.md):own recent8 activities,isolated
+verified replay,current attachment binding,chronological UI display;189affected distinct tests
+across recorded revisions,final7new PASS/static PASS. Initial native passed;final source/display
+changes not native-rechecked because physical Escape stopped Computer Use. Do not claim DONE.
+No Unity close/restart in publication turn;no current process state qualification. D2OPEN/CP06held.
+This request supersedes the historical local-only publication text below.
+
+
+Current director request2026-10-18:Unity closed;execute next task. QT-F26native Unity activity
+qualification LOCAL_ACCEPTED:143native/28Python/static,2actual captures/5save readbacks+replays
+PASS. [Receipt](docs/reviews/QT-F26_EXECUTION_2026-10-18.md). One launch,editor5088left open in
+Edit mode;result/retained/idle0. Initial runner path rejection was repaired through the same
+editor's menu,no restart. Logs must stay outside the empty working-save parent.
+Prior director request2026-10-16:repair intermittent Tk errors,then execute one next task.
+PR8merge/local synchronization completed at main b2876a7. Current local repair branch:
+codex/tk-lifecycle-village-20261016;HEAD b2876a7 with uncommitted authorized work.
+RS-TK-001121affected checks/static PASS;QT-F25NPC activity presentation implemented,
+18targeted/strict177files/static/imports PASS. Combined full1971PASS1092.70s/exit0,
+tmp/tk-f25-full.log. Both LOCAL_ACCEPTED;[QT-F25receipt](docs/reviews/QT-F25_EXECUTION_2026-10-16.md).
+Publication is now explicitly authorized by the latest request above.
 PR8and maincec6869 are integrated using current shared engines,original courtyard selectors/save pins and current quest/memory clients. Checkout-ending repair and
 [receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) preserve existing raw G07hashes.
 Previous no-merge publication constraint is superseded for PR8by this explicit request.
 
 | Item | Last observed state;recheck Git before edits |
 |---|---|
-| Branch / HEAD | codex/open-work-closure-20261014;4257d4f plus current GOV-03 and architecture-direction documentation;recheck exact HEAD |
-| Other branch | origin/main separatelycec6869(QT-F02merge);not merged/switched/reset here |
-| Local accepted work | QT-F21–24UI/save tools,RS-DOC-005entry compaction,RS-V3-R1HTTP repair,GOV-03Rscope refresh saved at4257d4f. Preserve current new GOV-03files |
-| Current request | [GOV-03](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED;[evidence](docs/work_orders/RS-P1-GOV_03_ACTIVATION.json). Manual producer/read-only assessor implemented;no automatic next task |
-| Publication | Director requests commit/push of all current local files plus the concise architecture-direction backlog note;no merge/release authorization |
-| Verification | Full1897PASS616.61s/110new tests;actual8replays/35body hits/200inputs and unchanged read-only assessment PASS. Ruff both/format16/mypy173/imports3+1/pip/supplements3PASS;183prior inputs preserved. No CI/independent acceptance |
+| Branch / HEAD | codex/tk-lifecycle-village-20261016 at b2876a7;recheck uncommitted work before edits |
+| Other branch | main/origin/main b2876a7;PR8merged and local files synchronized |
+| Local work | RS-TK-001/QT-F25plus QT-F26native verification hook/docs;preserve all uncommitted sources/tests/docs. Prior accumulated work is included in merged PR8 |
+| Current request | Commit/push all session work;QT-F27final native acceptance remains UNVERIFIED;D2OPEN |
+| Publication | Commit/push explicitly authorized2026-10-19;no merge/release request |
+| Verification | QT-F26native143PASS/28Python12.04s/static PASS,2captures/5save readbacks+replays. Prior unchanged full1971PASS1092.70s reused;no new full/CI/release/independent run |
 
 ## Resume Constraints
 
@@ -38,9 +59,9 @@ Previous no-merge publication constraint is superseded for PR8by this explicit r
 - Director2026-10-16stops additional Claude V3review at PARTIAL;[final dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md). No continuation requested. Any future resume needs current snapshot/scope refresh;old2f591f7request is historical. CP06remains held.
 - Adopted audit direction is recorded in [BACKLOG](BACKLOG.md):deterministic authoritative rules,exact event-driven off-screen state,optional shared LLM/RAG context,measured Unity HD-2D,and a bounded categories2–7village slice. This is direction only,not an active order.
 - CP01–05closed for bounded scopes;CP06holds release. GOV-03manual command accepted;CI/hooks NOT_ACTIVE. D2/D3/D4/D6/D7remain open;see backlog.
-- Full qualification used byte-identical1027-file Tcl/Tk8.6.15copy via process TCL_LIBRARY/TK_LIBRARY;local paths/hashes in tmp/gov03-implementation/tcl-runtime.json. Revalidate before reuse. Original-path1896PASS/1Tk initialization ERROR remains unexplained;no installation repair claim. Windows symlink creation unavailable(1314).
+- Historical GOV03full qualification used an identical Tcl copy;preserve that evidence. RS-TK-001 now reproduces descriptor-capture interference and uses canonical sys capture with the original installation;[receipt](docs/reviews/RS-TK-001_EXECUTION_2026-10-16.md). Do not use the historical copy workaround. Windows symlink qualification remains separate.
 - Images/modeling/camera are excluded from current closure. Final HD-2D/engine/human UX/device/MIN-SPEC/standalone release qualification remains separate.
-- Current-host Python3.13.12/Tk8.6/editor6000.3.25f1 tools and license were reused;Intel UHD750observed. Laptop specifications and other-device readiness are unmeasured here.
+- Current-host Python3.13.12/Tk8.6/editor6000.3.25f1 reused;director reported prior editor closed,QT-F26started one editor5088and retained it. Recheck live process before reuse;other-device readiness is not inferred here.
 - Credentials:`C:/ReverieSaga/.env` is ignored;primary GEMINI_API_KEY plus two manual spares. Old tmp/gemini-api-key.txt was removed. Never print/copy keys;[loading/approval workflow](docs/CLI_WORKFLOWS.md).
 - Preserve frozen CP02/CP04/other review witnesses,ZIPs,accepted content and private saves. Original failures/mixed CI/partial review limits remain in linked receipts/history.
 - On a future implementation request,select one bounded current order;do not infer a new feature from an archived NEXT. Further gameplay/product constraints remain in [MASTER](docs/MASTER_GAME_ARCHITECTURE.md).

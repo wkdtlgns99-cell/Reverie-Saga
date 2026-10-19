@@ -6,6 +6,20 @@ Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification
 
 ## Task Entry and Authorization
 
+QT-F26current-host2026-10-18:[receipt](reviews/QT-F26_EXECUTION_2026-10-18.md). Reused actual
+Python3.13.12/Tk8.6/editor6000.3.25f1(e1dba0a9aba4);pip PASS,actual startup resolved existing
+Personal entitlement. One launch/native143PASS/result-retained-idle0,2actual642x500captures,
+5unchanged save readbacks/replays and Python28/static PASS. Editor5088left open,scene restored.
+Initial log/save-parent placement rejection corrected using the same editor's menu;keep logs
+outside the empty working parent. No install/login/security change or other-device qualification.
+
+RS-TK-001 current-host2026-10-16:original CPython3.13.12/Tcl8.6 reused;no installation change.
+Pytest descriptor capture reproduced stale native Tcl stdout handles and false missing-file
+errors. Canonical pyproject default is now capture=sys;121affected and final integrated1971checks
+PASS on permitted host(1092.70s/exit0),with the original installed Tcl files.
+Do not copy Tcl or retry/skip to qualify a run;[diagnosis](reviews/RS-TK-001_EXECUTION_2026-10-16.md).
+Historical Tcl-copy results below remain historical,not a required setup procedure.
+
 Director2026-10-16:reuse the existing Unity editor for ordinary local tests and leave it open
 afterward;follow the [editor reuse workflow](../clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16).
 Use explicit process-exit mode only when qualification needs it;do not infer PASS from an open window.

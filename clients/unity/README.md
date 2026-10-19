@@ -98,6 +98,13 @@ the real screen. [Current acceptance](../../docs/reviews/QT-F17_EXECUTION_2026-1
 
 ### Reuse the editor — director preference 2026-10-16
 
+QT-F26 current-host2026-10-18:[native NPC-activity acceptance](../../docs/reviews/QT-F26_EXECUTION_2026-10-18.md).
+Actual143checks/2captures/5save readbacks and replays PASS;talk activity,quiet retry,loaded history
+and reconnect qualified. Editor stayed open after Play stopped. This closes QT-F25's native gap.
+Keep editor logs **outside the working save's parent directory**:Verify requires that parent
+empty before starting. A sibling logs/ directory or a working/game.sqlite subdirectory preserves
+the guard;use the menu for a new private save when the editor is already open.
+
 Keep Unity open after ordinary local verification. Reuse the open project and choose
 **Reverie → Verify Current Selection (Keep Editor Open)** for another run. This uses a new
 private working-save directory,retains the selected mode,and stops Play mode on completion.
@@ -188,3 +195,12 @@ Set REVERIE_UNITY_SCENARIO=scenario:courtyard for the original PR9 room;scenario
 also retains the original explicit selector. Short current selectors remain supported.
 The no-selector approved harbor-memory preset is unchanged. Original qualification:
 [PR9 Unity selection](../../docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md).
+
+## Recent NPC Self-Activity (QT-F27)
+
+Memory mode adds **NPC 활동 기록**. It retrieves the latest8 own bell/reply events from
+verified isolated replay of the current retained save,then displays them chronologically.
+No turn,save write or provider call occurs. Existing conversation memories remain separate.
+The private pipe adds `activity`;Wire.Generated.cs has the corresponding regenerated pin.
+Final native acceptance is pending after interrupted UI validation;see the
+[receipt](../../docs/reviews/QT-F27_EXECUTION_2026-10-18.md). Long-save latency is unqualified.

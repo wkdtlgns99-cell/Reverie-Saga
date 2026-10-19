@@ -43,7 +43,9 @@ warn_unused_configs = true
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
-addopts = "--strict-config --strict-markers"
+# Windows Tcl caches native standard-channel handles across interpreter lifetimes.
+# Keep OS descriptors stable;fd capture replaces them at every pytest phase.
+addopts = "--strict-config --strict-markers --capture=sys"
 
 # GOV-02 active: type-inclusive layers, engine independence and named external bans.
 [tool.importlinter]

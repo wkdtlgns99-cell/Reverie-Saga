@@ -248,6 +248,7 @@ namespace ReverieSaga
             Check(room.Latest.update.status=="COMMITTED"&&PlayRoom.Number(room.Latest.update.view.tick)==tick+16,
                   "wait_actual_16_seconds");
             string waited=JsonUtility.ToJson(room.Latest.update.view);
+            yield return InspectActivity("wait_self_activity",tick+16);
             room.SelectWaitDuration(1);yield return Intent("retry");
             Check(room.SelectedWaitSeconds==4&&JsonUtility.ToJson(room.Latest.update.view)==waited,
                   "wait_retry_uses_original_command_once");
@@ -269,6 +270,34 @@ namespace ReverieSaga
         {
             yield return InspectMemorySelection(label,count,false);
             yield return InspectMemorySelection(label+"_recent",count==0?0:1,true);
+        }
+
+        IEnumerator InspectActivity(string label,int tick)
+        {
+            if(failed||!room.NpcMemoryEnabled)yield break;
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),bytes=FileHash(before.working_path);
+            float start=Time.realtimeSinceStartup;
+            room.InspectActivity();
+            Check(room.Busy&&!room.CanInspectMemory,label+"_busy_gate");
+            room.InspectActivity();room.InspectMemory();
+            yield return Ready();if(failed)yield break;
+            var after=room.Latest.update;
+            Check(after.status=="ACTIVITY_INSPECTED"&&JsonUtility.ToJson(after.view)==view&&
+                  after.attachment_id==before.attachment_id&&after.working_path==before.working_path&&
+                  after.quest_stage==before.quest_stage&&after.quest_reward==before.quest_reward&&
+                  !after.reset_log&&FileHash(after.working_path)==bytes,label+"_read_only");
+            int count=Math.Min(8,tick/2);
+            bool expected=after.messages.Length==(count==0?1:count);
+            if(count==0)expected=expected&&after.messages[0]=="현재 저장 구간에 남은 NPC 자기 활동이 없습니다.";
+            for(int i=0;i<count&&expected;i++) {
+                int at=tick/2*2-(count-1-i)*2;
+                string line="NPC 활동 기록 · "+at+"초: 종을 울렸습니다. (누적 "+at/2+"회)";
+                expected=after.messages[i]==line&&room.HistoryForVerification.Contains(line);
+            }
+            Check(expected&&room.CanInspectMemory,label+"_exact_records");
+            Debug.Log("NPC_ACTIVITY_LATENCY_MS "+label+" "+
+                      ((Time.realtimeSinceStartup-start)*1000).ToString(CultureInfo.InvariantCulture));
         }
 
         IEnumerator InspectMemorySelection(string label,int count,bool recent)
@@ -363,11 +392,55 @@ namespace ReverieSaga
             Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }
 
+        void CheckActivity(string label,string tick,string bells,string expected)
+        {
+            if(failed)return;
+            var update=room.Latest.update;
+            int count=0;
+            foreach(string message in update.messages)
+                if(message.StartsWith("NPC 활동 현황 · ",StringComparison.Ordinal))count++;
+            Check(update.status=="COMMITTED"&&update.view.tick==tick&&
+                  update.view.npc_bells==bells&&update.view.npc_replies=="0"&&count==1&&
+                  Array.IndexOf(update.messages,expected)>=0&&
+                  room.HistoryForVerification.EndsWith(expected,StringComparison.Ordinal),label);
+        }
+
+        void CheckNoActivity(string label)
+        {
+            if(failed)return;
+            bool absent=true;
+            foreach(string message in room.Latest.update.messages)
+                if(message.StartsWith("NPC 활동 현황 · ",StringComparison.Ordinal))absent=false;
+            Check(absent,label);
+        }
+
+        IEnumerator CaptureActivity(string label)
+        {
+            if(failed)yield break;
+            string output=Path.Combine(Path.GetDirectoryName(Environment.GetEnvironmentVariable(
+                "REVERIE_UNITY_WORKING")),"evidence");Directory.CreateDirectory(output);
+            string response=JsonUtility.ToJson(room.Latest),history=room.HistoryForVerification;
+            string bytes=FileHash(room.Latest.update.working_path);
+            File.WriteAllText(Path.Combine(output,label+"-response.json"),response);
+            File.WriteAllText(Path.Combine(output,label+"-history.txt"),history);
+            if(!Application.isBatchMode) {
+                yield return new WaitForEndOfFrame();
+                ScreenCapture.CaptureScreenshot(Path.Combine(output,label+".png"));
+                yield return new WaitForSecondsRealtime(1);
+                Check(File.Exists(Path.Combine(output,label+".png")),label+"_capture");
+            }
+            Check(JsonUtility.ToJson(room.Latest)==response&&room.HistoryForVerification==history&&
+                  FileHash(room.Latest.update.working_path)==bytes,label+"_capture_read_only");
+        }
+
         IEnumerator QuestFlow()
         {
             yield return Ready();if(failed){Exit(1);yield break;}
             Check(room.Latest.update.quest_stage=="0"&&room.Latest.update.quest_reward=="0","quest_initial");
-            if(room.NpcMemoryEnabled)yield return InspectMemory("memory_empty",0);
+            if(room.NpcMemoryEnabled) {
+                yield return InspectMemory("memory_empty",0);
+                yield return InspectActivity("self_empty",0);
+            }
             else {
                 string initial=JsonUtility.ToJson(room.Latest.update.view);
                 yield return Intent("memory");
@@ -380,43 +453,67 @@ namespace ReverieSaga
             yield return Intent("talk");
             Check(room.Latest.update.status=="OUT_OF_RANGE"&&room.Latest.update.view.tick=="0",
                   "quest_out_of_range_preserves");
+            CheckNoActivity("activity_rejected_absent");
             yield return Intent("down");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="2","quest_accepted");
             Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("offer")),"quest_offer_text");
+            CheckActivity("activity_accepted","2","1","NPC 활동 현황 · 2초 · 종 1회 · 호출 응답 0회.");
             yield return InspectMemory("memory_accepted",1);
+            yield return InspectActivity("self_accepted",2);
             yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.view.tick=="3"&&
                   String.Join("\n",room.Latest.update.messages).Contains(QuestText("reminder")),"quest_reminder_text");
+            CheckActivity("activity_reminder","3","1","NPC 활동 현황 · 3초 · 종 1회 · 호출 응답 0회.");
             foreach(string action in new [] {"open","right","down","attack","attack","rest","attack"})
                 yield return Intent(action);
             Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
                   room.Latest.update.view.tick=="10"&&room.Latest.update.view.enemy_hp=="0", "quest_goal_met");
             yield return InspectMemory("memory_unreported",1);
+            yield return InspectActivity("self_unreported",10);
             yield return Intent("save");yield return Intent("left");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1"&&
                   room.Latest.update.view.tick=="12","quest_report_grants_once");
             Check(String.Join("\n",room.Latest.update.messages).Contains(QuestText("completion")),"quest_completion_text");
+            CheckActivity("activity_reported","12","6","NPC 활동 현황 · 12초 · 종 6회 · 호출 응답 0회.");
+            yield return CaptureActivity("activity-reported");
             yield return InspectMemory("memory_reported",2);
+            yield return InspectActivity("self_reported",12);
+            yield return CaptureActivity("self-activity-reported");
             string committed=JsonUtility.ToJson(room.Latest.update.view);
+            string committedBytes=FileHash(room.Latest.update.working_path);
             yield return Intent("retry");
             Check(JsonUtility.ToJson(room.Latest.update.view)==committed&&room.Latest.update.quest_reward=="1",
                   "quest_retry_no_second_grant");
             Check(!String.Join("\n",room.Latest.update.messages).Contains(QuestText("completion")),"quest_retry_no_repeat_line");
+            CheckNoActivity("activity_retry_absent");
+            Check(FileHash(room.Latest.update.working_path)==committedBytes,"activity_retry_save_unchanged");
             yield return Intent("talk");
             Check(room.Latest.update.view.tick=="13"&&room.Latest.update.quest_reward=="1"&&
                   String.Join("\n",room.Latest.update.messages).Contains(QuestText("gratitude")),"quest_gratitude");
+            CheckActivity("activity_gratitude","13","6","NPC 활동 현황 · 13초 · 종 6회 · 호출 응답 0회.");
             yield return Intent("load");
             Check(room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0"&&
                   room.Latest.update.reset_log&&room.Latest.update.view.tick=="10","quest_load_progress");
+            Check(room.Latest.update.view.npc_bells=="5"&&
+                  !room.HistoryForVerification.Contains("NPC 활동 현황 · 12초")&&
+                  !room.HistoryForVerification.Contains("NPC 활동 현황 · 13초"),"activity_load_rewinds_history");
             yield return InspectMemory("memory_loaded",1);
+            yield return InspectActivity("self_loaded",10);
             if(room.NpcMemoryEnabled)Check(!room.HistoryForVerification.Contains("12초:"),"memory_load_clears_report");
             int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
             Check(room.BrainProcessId!=pid&&room.Latest.update.quest_stage=="2"&&
                   room.Latest.update.view.tick=="10","quest_loaded_branch_reconnect");
+            Check(room.Latest.update.view.npc_bells=="5"&&room.Latest.update.quest_reward=="0",
+                  "activity_reconnect_uses_loaded_branch");
+            CheckNoActivity("activity_reconnect_no_new_talk");
             yield return InspectMemory("memory_reconnected",1);
+            yield return InspectActivity("self_reconnected",10);
             yield return Intent("left");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1","quest_branch_report_once");
+            CheckActivity("activity_branch_reported","12","6","NPC 활동 현황 · 12초 · 종 6회 · 호출 응답 0회.");
+            yield return CaptureActivity("activity-branch-reported");
             yield return InspectMemory("memory_branch_report",2);
+            yield return InspectActivity("self_branch_report",12);
             yield return InspectSlot("quest_saved_slot","10");
             Check(room.Latest.update.quest_reward=="1"&&
                   String.Join("\n",room.Latest.update.messages).Contains("저장된 임무: 보고 가능 · 포구의 호의 0"),
