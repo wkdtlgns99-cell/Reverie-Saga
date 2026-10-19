@@ -1,6 +1,6 @@
 # QT-F27 — Retrieve the NPC's own committed activity
 
-Date:2026-10-18 | Status:UNVERIFIED (implemented;final native acceptance pending) | Executor/review:Sol,self-review.
+Date:2026-10-18 | Status:LOCAL_ACCEPTED (final native acceptance2026-10-19) | Executor/review:Sol,self-review.
 Director requests one next implementation from BACKLOG and retaining the open Unity editor.
 Primary4 runtime retrieval;related2/3/5/6/7. Bounded D2 increment,not D2 closure.
 
@@ -29,3 +29,5 @@ Contract correction before native integration:compact persistence has no witness
 Real-screen adjustment:history scrolls to its end. Display the selected recent8 chronologically;retrieval ranking remains newest-first. Native captures must expose newest records. Final source binding rejects a valid retained segment from a different current core/protocol.
 
 Director2026-10-19 explicitly authorizes commit/push of this session,including partial work;prior no-publication wording is superseded. See [execution status](../reviews/QT-F27_EXECUTION_2026-10-18.md). No merge/release authorization.
+
+Final acceptance2026-10-19:169native PASS/0FAIL,actual chronological capture inspected,5save/activity/replay readbacks unchanged,17Python/static PASS. No editor existed at resume;one launch30672retained,zero restart. Director now authorizes PR/checks/main merge;see execution receipt.

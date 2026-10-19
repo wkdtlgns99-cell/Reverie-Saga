@@ -202,5 +202,6 @@ Memory mode adds **NPC 활동 기록**. It retrieves the latest8 own bell/reply 
 verified isolated replay of the current retained save,then displays them chronologically.
 No turn,save write or provider call occurs. Existing conversation memories remain separate.
 The private pipe adds `activity`;Wire.Generated.cs has the corresponding regenerated pin.
-Final native acceptance is pending after interrupted UI validation;see the
-[receipt](../../docs/reviews/QT-F27_EXECUTION_2026-10-18.md). Long-save latency is unqualified.
+Final native acceptance2026-10-19:169checks/0failures,actual display and5save/replay readbacks PASS;
+see the [receipt](../../docs/reviews/QT-F27_EXECUTION_2026-10-18.md). Editor retained after Play stopped.
+Long-save latency is unqualified.

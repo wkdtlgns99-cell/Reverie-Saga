@@ -14,15 +14,13 @@ Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual c
 
 ## Checkout and Local Work
 
-Latest director request2026-10-19:commit and push all session changes. Includes accepted
-RS-TK-001/QT-F25/QT-F26 plus QT-F27implementation with final native acceptance UNVERIFIED.
-[QT-F27receipt](docs/reviews/QT-F27_EXECUTION_2026-10-18.md):own recent8 activities,isolated
-verified replay,current attachment binding,chronological UI display;189affected distinct tests
-across recorded revisions,final7new PASS/static PASS. Initial native passed;final source/display
-changes not native-rechecked because physical Escape stopped Computer Use. Do not claim DONE.
-No Unity close/restart in publication turn;no current process state qualification. D2OPEN/CP06held.
-This request supersedes the historical local-only publication text below.
-
+Latest director request2026-10-19:finish final Unity validation,create PR,pass checks and
+merge main;retain Unity. QT-F27now LOCAL_ACCEPTED:169native/0FAIL,actual chronological display
+inspected,5save/activity/readback/replay byte-preservation guards PASS;fresh17Python/static PASS.
+[Receipt](docs/reviews/QT-F27_EXECUTION_2026-10-18.md). No editor was running at entry;one launch
+PID30672retained after result/retained/idle0,no restart. No runtime change since published a0c9217.
+Main merge is now explicitly authorized after CI passes;CP06release remains held,D2OPEN.
+This supersedes the interrupted/local-only publication statements in historical context below.
 
 Current director request2026-10-18:Unity closed;execute next task. QT-F26native Unity activity
 qualification LOCAL_ACCEPTED:143native/28Python/static,2actual captures/5save readbacks+replays
@@ -45,8 +43,8 @@ Previous no-merge publication constraint is superseded for PR8by this explicit r
 | Branch / HEAD | codex/tk-lifecycle-village-20261016 at b2876a7;recheck uncommitted work before edits |
 | Other branch | main/origin/main b2876a7;PR8merged and local files synchronized |
 | Local work | RS-TK-001/QT-F25plus QT-F26native verification hook/docs;preserve all uncommitted sources/tests/docs. Prior accumulated work is included in merged PR8 |
-| Current request | Commit/push all session work;QT-F27final native acceptance remains UNVERIFIED;D2OPEN |
-| Publication | Commit/push explicitly authorized2026-10-19;no merge/release request |
+| Current request | QT-F27LOCAL_ACCEPTED;create PR/pass CI/merge main;D2OPEN |
+| Publication | PR/main merge explicitly authorized2026-10-19 after passing final-head checks;release remains held |
 | Verification | QT-F26native143PASS/28Python12.04s/static PASS,2captures/5save readbacks+replays. Prior unchanged full1971PASS1092.70s reused;no new full/CI/release/independent run |
 
 ## Resume Constraints

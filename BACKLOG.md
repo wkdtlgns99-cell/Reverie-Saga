@@ -7,13 +7,12 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-QT-F27implemented / final native acceptance UNVERIFIED2026-10-19:recent8 own bell/reply
-records through verified isolated replay,source-bound to live attachment;Unity/Tk/pipe wired.
-Affected189distinct tests PASS across recorded revisions;final new7PASS and static PASS.
-Physical Escape interrupted final native recheck;D2 remains OPEN.
+QT-F27LOCAL_ACCEPTED2026-10-19:recent8 own bell/reply retrieval,source-bound isolated replay,
+chronological Unity/Tk display. Final169native PASS/0FAIL,actual capture inspected,5unchanged
+save/activity/replay readbacks;fresh17Python/strict179files/Ruff PASS. Prior affected189PASS.
+At resume no editor was running;one launch30672retained,no close/restart. D2 remains OPEN.
 [Receipt](docs/reviews/QT-F27_EXECUTION_2026-10-18.md).
-Director now authorizes commit/push of all session changes,including this partial task.
-
+Director authorizes PR creation,passing CI and ordinary main merge;CP06release remains held.
 
 QT-F26LOCAL_ACCEPTED2026-10-18:closed QT-F25's native Unity display gap. Actual143native checks,
 2visually inspected captures,5save readbacks/replays and Python28/static PASS;result/retained/idle0.
@@ -45,7 +44,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | Session commit/push authorized2026-10-19 | Includes RS-TK-001/QT-F25/QT-F26 and partial QT-F27;final native acceptance pending. CP06release held;CI revision-specific |
+| Publication / CI | PR/checks/main merge authorized2026-10-19 | Includes RS-TK-001/QT-F25/QT-F26/QT-F27LOCAL_ACCEPTED;merge only after final-head checks pass. CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
