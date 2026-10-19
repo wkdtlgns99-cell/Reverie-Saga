@@ -39,6 +39,7 @@ REQUEST_NAMES = (
     "talk",
     "memory",
     "memory_recent",
+    "activity",
     "slot_inspect",
     "save",
     "load",
@@ -194,6 +195,8 @@ class EngineBridge:
             pending = self.worker.inspect_memory()
         elif d["request"] == "memory_recent":
             pending = self.worker.inspect_recent_memory()
+        elif d["request"] == "activity":
+            pending = self.worker.inspect_activity()
         elif d["request"] == "slot_inspect":
             pending = self.worker.inspect_slot(d["slot_id"])
         else:

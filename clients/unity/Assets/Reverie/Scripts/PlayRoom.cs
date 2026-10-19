@@ -219,6 +219,7 @@ namespace ReverieSaga
 
         public void InspectMemory() { if(CanInspectMemory)Send("memory"); }
         public void InspectRecentMemory() { if(CanInspectMemory)Send("memory_recent"); }
+        public void InspectActivity() { if(CanInspectMemory)Send("activity"); }
         public void InspectSlot() { if(CanInspectSlot)Send("slot_inspect"); }
 
         void Connect()
@@ -331,6 +332,8 @@ namespace ReverieSaga
                 GUI.enabled=CanInspectMemory;
                 if(GUILayout.Button("최근 대화 기억")) InspectRecentMemory();
                 GUILayout.EndHorizontal();
+                GUI.enabled=CanInspectMemory;
+                if(GUILayout.Button("NPC 활동 기록")) InspectActivity();
                 GUI.enabled=!Busy&&failure=="";
             }
             GUI.enabled=CanSelectWaitDuration;

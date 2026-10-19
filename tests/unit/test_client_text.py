@@ -2,7 +2,8 @@ from __future__ import annotations
 
 import pytest
 
-from app.client_text import fact_messages, status_text, turn_messages
+from app.client_text import fact_messages, npc_activity_text, status_text, turn_messages
+from contracts.client import ClientView
 from contracts.encounter import AttackResolved, Defeated, EncounterMoveBlocked, GateChanged, Rested
 from contracts.messages import EventHeader, WorldEvent
 from contracts.trial import Moved
@@ -10,6 +11,20 @@ from contracts.turn import TurnAborted, TurnPublication, failure
 from domain.encounter import ATTACK_PROFILE_ID, ENEMY_ID, GATE_ID
 from domain.primitives import EntityId, EventId, Phase, Tick
 from domain.trial import ACTOR_ID, SPACE_ID
+
+
+@pytest.mark.parametrize(
+    "tick,bells,replies,expected",
+    (
+        (0, 0, 0, "NPC 활동 현황 · 0초 · 종 0회 · 호출 응답 0회."),
+        (27, 13, 7, "NPC 활동 현황 · 27초 · 종 13회 · 호출 응답 7회."),
+    ),
+)
+def test_npc_activity_formats_supplied_committed_values(
+    tick: int, bells: int, replies: int, expected: str
+) -> None:
+    view = ClientView(3, 3, (), 3, 4, True, 8, 1, 0, 0, 6, bells, replies, 3, tick, 12)
+    assert npc_activity_text(view) == expected
 
 
 @pytest.mark.parametrize(

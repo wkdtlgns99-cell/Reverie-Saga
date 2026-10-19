@@ -44,6 +44,11 @@ $taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha
 | History/retry | Latest200lines,not persisted display history;exact retry does not repeat gameplay or narration |
 | Close | Drains accepted work;SQLite/session remains owned by worker thread |
 
+Successful harbor NPC conversations include committed activity counts in the action log.
+They use the restored save's current state;exact command retries do not repeat the line.
+The bounded return/report/save/restart route and its limits are recorded in
+[QT-F25](docs/reviews/QT-F25_EXECUTION_2026-10-16.md).
+
 ## Unity graphical prototype
 
 [Unity play/build/native verification](clients/unity/README.md):editor6000.3.25f1.
@@ -79,6 +84,11 @@ if (-not (Test-Path -LiteralPath .pytest_cache -PathType Container)) { throw 'Py
 ```
 
 Shared imports include TYPE_CHECKING;runtime imports exclude it. Both checks are required.
+Pytest uses `--capture=sys` from pyproject.toml. Keep this default for Windows Tk tests:
+descriptor capture replaces native standard handles between test phases and reproduced
+false missing-Tcl-file errors. Python output remains captured;subprocess checks capture their
+own output explicitly. Do not retry,skip,copy Tcl libraries or override with `--capture=fd`.
+Root-cause evidence:[RS-TK-001](docs/reviews/RS-TK-001_EXECUTION_2026-10-16.md).
 Source mode uses PYTHONPATH;the project is not an installable package.
 [CI](.github/workflows/checks.yml) owns the exact named boundary selection;
 [enforcement map](docs/ENGINEERING_ENFORCEMENT.md) distinguishes active/deferred guards.

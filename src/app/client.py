@@ -74,6 +74,7 @@ class PlayWindow:
         self._npc_memory = npc_memory
         self.memory_button: ttk.Button | None = None
         self.recent_memory_button: ttk.Button | None = None
+        self.activity_button: ttk.Button | None = None
         self.view: ClientView | None = None
         self.last_update: ClientUpdate | None = None
         self.history: deque[str] = deque(maxlen=LOG_LINE_LIMIT)
@@ -151,7 +152,11 @@ class PlayWindow:
             self.recent_memory_button.grid(
                 row=9, column=0, columnspan=2, sticky="ew", padx=3, pady=3
             )
-        wait_row = 10 if self._npc_memory else 9
+            self.activity_button = ttk.Button(
+                controls, text="NPC 활동 기록", command=self._inspect_activity
+            )
+            self.activity_button.grid(row=10, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
+        wait_row = 11 if self._npc_memory else 9
         ttk.Label(controls, text="대기 시간(게임 초)").grid(row=wait_row, column=0, sticky="w")
         self.wait_input = ttk.Spinbox(
             controls, from_=1, to=WAIT_MAX, textvariable=self.wait_seconds, width=10
@@ -239,6 +244,8 @@ class PlayWindow:
             self.memory_button.configure(state="normal" if enabled else "disabled")
         if self.recent_memory_button is not None:
             self.recent_memory_button.configure(state="normal" if enabled else "disabled")
+        if self.activity_button is not None:
+            self.activity_button.configure(state="normal" if enabled else "disabled")
         self.slot_preview_button.configure(state="normal" if enabled else "disabled")
         self.wait_input.configure(state="normal" if enabled else "disabled")
         self.slot_input.configure(state="readonly" if enabled else "disabled")
@@ -266,6 +273,10 @@ class PlayWindow:
     def _inspect_slot(self) -> None:
         if not self.busy:
             self._begin_request(self.worker.inspect_slot(self.slot.get()))
+
+    def _inspect_activity(self) -> None:
+        if not self.busy:
+            self._begin_request(self.worker.inspect_activity())
 
     def _begin_request(self, pending: Future[ClientUpdate]) -> None:
         self._pending = pending

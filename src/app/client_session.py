@@ -2,13 +2,14 @@
 
 from __future__ import annotations
 
+from dataclasses import replace
 from app.scenarios import scenario_name
 from domain.scenario import resolve_selection, LEGACY, Scenario
 from types import MappingProxyType
 
 from pathlib import Path
 
-from app.client_text import QUEST_STAGE_NAMES, status_text, turn_messages
+from app.client_text import QUEST_STAGE_NAMES, npc_activity_text, status_text, turn_messages
 from app.durable import DurableSession, create_durable, resume_durable
 from app.watch import WatchBootstrapSpec, bootstrap_watch
 from app.watch_registry import watch_bundle
@@ -16,8 +17,9 @@ from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import recent_evidence
+from app.npc_activity import recent_activity
 from contracts.dialogue import QuestContent
-from contracts.quest import QuestTalkCommand
+from contracts.quest import QuestSpoken, QuestTalkCommand
 from contracts.client import ClientAction, ClientUpdate, ClientView
 from contracts.encounter import AttackCommand, InteractCommand, RestCommand
 from contracts.messages import CommandPayload
@@ -194,6 +196,23 @@ class ClientSession:
     def inspect_recent_memory(self) -> ClientUpdate:
         return self._inspect_memory(recent=True)
 
+    def inspect_activity(self) -> ClientUpdate:
+        if not self._npc_memory:
+            raise ValueError("NPC_MEMORY_UNAVAILABLE")
+        if self._quest_content is None:
+            raise ValueError("NPC_MEMORY_UNAVAILABLE")
+        entries = recent_activity(
+            self._owner.retained_segment(),
+            self._layout.npc_id,
+            content=self._quest_content,
+            current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+        )
+        return self.update(
+            "ACTIVITY_INSPECTED",
+            messages=tuple(entry.text() for entry in reversed(entries))
+            or ("현재 저장 구간에 남은 NPC 자기 활동이 없습니다.",),
+        )
+
     def _inspect_memory(self, *, recent: bool) -> ClientUpdate:
         if not self._npc_memory:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
@@ -227,7 +246,7 @@ class ClientSession:
         notices = tuple(c.payload.schema.kind for c in publication.cues) + tuple(
             diagnostic.code for diagnostic in publication.diagnostics
         )
-        return self.update(
+        update = self.update(
             status,
             notices,
             messages=turn_messages(
@@ -238,6 +257,15 @@ class ClientSession:
                 quest_content=self._quest_content,
             ),
         )
+        # Present facts from the same committed projection as the dialogue,without
+        # creating NPC knowledge or another command. Exact retries have no new facts.
+        if isinstance(outcome, TurnCommitted) and any(
+            isinstance(event.payload, QuestSpoken) for event in publication.facts
+        ):
+            if update.view is None:
+                raise RuntimeError("committed NPC talk requires a client view")
+            update = replace(update, messages=(*update.messages, npc_activity_text(update.view)))
+        return update
 
     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
         if action == "talk" and self._quest_content is None:

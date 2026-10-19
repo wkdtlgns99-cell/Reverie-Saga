@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from collections.abc import Mapping
 
+from contracts.client import ClientView
 from contracts.encounter import (
     AttackResolved,
     Defeated,
@@ -32,6 +33,10 @@ from domain.watch import NPC_ID, WAIT_MAX
 NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문"}
 QUEST_STAGE_NAMES = ("미수락", "진행 중", "보고 가능", "완료")
 STATUS_TEXT = {
+    "ACTIVITY_INSPECTED": (
+        "저장에 남은 최근 NPC 자기 활동을 최대 8개 확인했습니다. 게임 시간은 흐르지 않습니다."
+    ),
+    "NPC_ACTIVITY_SOURCE": "NPC 활동의 저장 근거를 읽지 못했습니다. 현재 진행은 유지됩니다.",
     "SLOT_INSPECTED": "저장 슬롯의 진행 정보를 확인했습니다. 현재 게임은 바뀌지 않습니다.",
     "SLOT_INSPECTION_UNAVAILABLE": "게임에 연결한 뒤 저장 슬롯을 확인하세요.",
     "SAVE_INSPECT_FAILED": "저장 슬롯 정보를 읽지 못했습니다. 현재 진행은 유지됩니다.",
@@ -104,6 +109,12 @@ def status_text(code: str) -> str:
     }:
         return message
     return f"{message} ({code})"
+
+
+def npc_activity_text(view: ClientView) -> str:
+    return (
+        f"NPC 활동 현황 · {view.tick}초 · 종 {view.npc_bells}회 · 호출 응답 {view.npc_replies}회."
+    )
 
 
 def _name(entity: EntityId, names: Mapping[EntityId, str] | None = None) -> str:

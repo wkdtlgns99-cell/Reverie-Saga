@@ -14,7 +14,7 @@ import pytest
 from app.client import PlayWindow
 from app.client_session import ClientSession
 from app.client_worker import ClientWorker
-from contracts.client import ClientAction, ClientUpdate, ClientView
+from contracts.client import ClientAction, ClientRequest, ClientUpdate, ClientView
 from contracts.persistence import SaveError, WorldUnavailable
 from contracts.turn import GameCommand
 from contracts.watch import WaitCommand
@@ -209,7 +209,7 @@ def window(tmp_path: Path, tk_host: tk.Tk) -> Iterator[PlayWindow]:
     screen = PlayWindow(root, tmp_path / "ui.sqlite")
     try:
         _pump(root, lambda: not screen.busy)
-        assert screen.view is not None
+        assert screen.view is not None, screen.last_update
         yield screen
     finally:
         screen.close()
@@ -218,7 +218,7 @@ def window(tmp_path: Path, tk_host: tk.Tk) -> Iterator[PlayWindow]:
         screen.worker.join()
 
 
-def _click(window: PlayWindow, action: ClientAction) -> None:
+def _click(window: PlayWindow, action: ClientRequest) -> None:
     window.buttons[action].invoke()
     _pump(window.root, lambda: not window.busy)
 

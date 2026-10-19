@@ -54,11 +54,16 @@ class ClientWorker:
     def inspect_recent_memory(self) -> Future[ClientUpdate]:
         return self._inspect("memory_recent")
 
+    def inspect_activity(self) -> Future[ClientUpdate]:
+        return self._inspect("activity")
+
     def inspect_slot(self, slot_id: str = "slot01") -> Future[ClientUpdate]:
         return self._inspect("slot_inspect", slot_id)
 
     def _inspect(
-        self, request: Literal["memory", "memory_recent", "slot_inspect"], slot_id: str = "slot01"
+        self,
+        request: Literal["memory", "memory_recent", "activity", "slot_inspect"],
+        slot_id: str = "slot01",
     ) -> Future[ClientUpdate]:
         if self._closing:
             raise ValueError("CLIENT_CLOSING")
@@ -66,13 +71,13 @@ class ClientWorker:
 
     def _run(
         self,
-        request: ClientRequest | Literal["memory", "memory_recent", "slot_inspect"],
+        request: ClientRequest | Literal["memory", "memory_recent", "activity", "slot_inspect"],
         seconds: int,
         slot_id: str,
     ) -> ClientUpdate:
         try:
             # Inspection must never create a game or open an unattached save.
-            if request in ("memory", "memory_recent") and self._owner is None:
+            if request in ("memory", "memory_recent", "activity") and self._owner is None:
                 raise ValueError("NPC_MEMORY_UNAVAILABLE")
             if request == "slot_inspect" and self._owner is None:
                 raise ValueError("SLOT_INSPECTION_UNAVAILABLE")
@@ -103,6 +108,8 @@ class ClientWorker:
                     update = owner.inspect_memory()
                 case "memory_recent":
                     update = owner.inspect_recent_memory()
+                case "activity":
+                    update = owner.inspect_activity()
                 case "slot_inspect":
                     update = owner.inspect_slot(slot_id)
                 case _:
