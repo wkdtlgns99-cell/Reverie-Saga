@@ -1,6 +1,6 @@
 # Reverie Saga — Session Handoff
 
-Updated:2026-10-19 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-10-20 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -13,6 +13,36 @@ Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual c
 5. Latest user request governs scope. No automatic next task,agent,publication,remote administration or checkpoint waiver.
 
 ## Checkout and Local Work
+
+Director2026-10-20now explicitly authorizes publishing this session's QT-F28–32,finishing
+verification and ordinary main merge after required PR checks. This supersedes the earlier
+local-only publication limits for this batch;CP06release remains held,no agents authorized.
+Use Git/GitHub for the current checkout,PR/check/merge SHA and remote status. Preserve the
+earlier5-edit stash and tmp/sync-main-backup-20261020-085716;they are outside this delivery.
+
+Latest director request2026-10-20:autonomously select/implement/verify one more D2increment;
+write an order only when useful. QT-F32dialogue focus LOCAL_ACCEPTED;[receipt](docs/reviews/QT-F32_EXECUTION_2026-10-20.md).
+Final116native PASS/0FAIL at547x376,full memory/error readable;real buttons/W/Escape verify
+reading17unchanged versus normal18movement. Seven exact save/replay/byte guards PASS.
+Fresh Windows build89,487,648bytes/release-hook absence PASS in separate GUID output.
+Same editor8336reused,0restart;static/type189/imports/doc guards PASS. Python unchanged;
+F31affected206/F28full evidence reused,no fresh full. Actual branch unchanged;all35entry dirty
+paths backed up in tmp/qt-f32/baseline. Original scene bytes restored,editor open in Edit mode.
+Current delivery scope is F28–32sources/tests/docs. Publication now authorized as above.
+
+Current director request2026-10-20:choose one D2 NPC action,author its work order,implement
+and verify it. Actual checkout C:/ReverieSaga;main synchronized467e6cd before creating
+codex/npc-provision-20261020. QT-F28communal provisions is LOCAL_ACCEPTED;[order](docs/work_orders/QT-F28_NPC_PROVISIONS.md).
+Preserve all current edits. Earlier5local CI/doc edits remain separately backed up in Git stash
+and tmp/sync-main-backup-20261020-085716;do not apply them to this feature. Current task has
+publication authorization as stated above. Old publication instructions below describe prior tasks.
+Python3.13.12/Tk8.6/pip and installed editor6000.3.25f1 reused;no editor running at entry.
+Full2029cases qualified across restricted2014PASS/15environment failures and permitted reruns
+covering all15failures. Native27PASS/0FAIL,3captures/3save-readback/replay byte guards PASS;
+activity127–207ms. Single editor8336retained,result/retained/idle0;reuse it,do not restart.
+Scene content-normalized equality proved and entry bytes restored. Current default remains
+old memory mode;explicit REVERIE_UNITY_NPC_WORK=1 uses separate harbor-work save. D2OPEN,CP06held.
+[Receipt](docs/reviews/QT-F28_EXECUTION_2026-10-20.md).
 
 Latest director request2026-10-19:finish final Unity validation,create PR,pass checks and
 merge main;retain Unity. QT-F27now LOCAL_ACCEPTED:169native/0FAIL,actual chronological display
@@ -40,12 +70,12 @@ Previous no-merge publication constraint is superseded for PR8by this explicit r
 
 | Item | Last observed state;recheck Git before edits |
 |---|---|
-| Branch / HEAD | codex/tk-lifecycle-village-20261016 at b2876a7;recheck uncommitted work before edits |
-| Other branch | main/origin/main b2876a7;PR8merged and local files synchronized |
-| Local work | RS-TK-001/QT-F25plus QT-F26native verification hook/docs;preserve all uncommitted sources/tests/docs. Prior accumulated work is included in merged PR8 |
-| Current request | QT-F27LOCAL_ACCEPTED;create PR/pass CI/merge main;D2OPEN |
-| Publication | PR/main merge explicitly authorized2026-10-19 after passing final-head checks;release remains held |
-| Verification | QT-F26native143PASS/28Python12.04s/static PASS,2captures/5save readbacks+replays. Prior unchanged full1971PASS1092.70s reused;no new full/CI/release/independent run |
+| Source branch / base | codex/npc-provision-20261020,base467e6cd;inspect Git for current checkout/head |
+| Prior main baseline |467e6cd,PR10merged;new main identity follows this delivery's GitHub PR |
+| Delivery scope | QT-F28–32sources/tests/client/docs;separate earlier backups remain private |
+| Current request | Publish/qualify QT-F28–32and ordinary main merge;D2OPEN,no automatic next feature |
+| Publication | Explicitly authorized2026-10-20;required PR checks gate ordinary merge;CP06release held |
+| Verification | QT-F32native116/real input/build/7saves PASS;unchanged-Python F31affected206/F28full evidence reused;see receipts |
 
 ## Resume Constraints
 

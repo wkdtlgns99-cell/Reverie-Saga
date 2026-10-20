@@ -1,11 +1,57 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-19 | Current task/status/dependency SSOT.
+Updated:2026-10-20 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
+
+Director2026-10-20authorizes publishing QT-F28–32and ordinary main merge after required
+checks. The linked local receipts retain their actual host/scope evidence;GitHub PR/checks
+and Git record the delivered head and merge state. Earlier5-edit stash/backups excluded.
+This is integration/publication support for categories2–7;D2OPEN and CP06release held.
+
+QT-F32 LOCAL_ACCEPTED2026-10-20:Unity dialogue focus expands existing547x376history to250px,
+actual full memory/transport error readable;button/Escape return,reading suppresses movement,
+pending replies/load/reconnect retained. Final116native PASS/0FAIL,actual W17unchanged→normal
+W18verified,7exact saves validate/replay/byte guards PASS. Fresh Windows build89,487,648bytes/
+release hook absence PASS;editor8336retained,no restart. [Receipt](docs/reviews/QT-F32_EXECUTION_2026-10-20.md).
+Primary5presentation support for D2;D2OPEN. Python unchanged,F31affected206/F28full evidence
+reused;static/type189/imports/document guards PASS,no new full/CI/release acceptance claim.
+
+QT-F31 LOCAL_ACCEPTED2026-10-20:work-mode return context uses latest persistent player
+promise/report with original time;objective defeat never invents report/eyewitness knowledge.
+Existing CORE anchors survive truncated trace;no new rule/schema.16new cases,206affected
+PASS133.77s;static/type189/imports PASS. Same editor8336,no restart;native98PASS/0FAIL twice
+to resolve clipped small capture,final955x672full wording inspected. Final5exact saves replay/
+bytes PASS,context210–598ms. [Receipt](docs/reviews/QT-F31_EXECUTION_2026-10-20.md).
+D2OPEN;unchanged-authority F28full evidence reused,no fresh full/CI/release claim.
+
+QT-F30 LOCAL_ACCEPTED2026-10-20:work-mode NPC recalls actual answered player calls since
+the previous retained conversation;request/echo/reply causal IDs,exact count and latest3,
+one replay shared with work recall.20new cases in168affected PASS103.46s;static/type188/
+imports PASS. Same editor8336reused,zero restart,native66PASS/0FAIL;actual small-viewport
+captures inspected,4exact save/replay/byte guards PASS,combined context224–571ms.
+[Receipt](docs/reviews/QT-F30_EXECUTION_2026-10-20.md). D2OPEN;derived retrieval/context only.
+Authoritative inputs unchanged;F28full evidence reused,no new full/CI/release claim.
+
+QT-F29 LOCAL_ACCEPTED2026-10-20:work-mode NPC recalls verified own production after the
+previous retained conversation;separate work3/talk2 collector,source-bound replay,no inferred
+lost history.14new cases in148affected PASS84.52s;static/import PASS. Same editor8336reused,
+zero restart,native40PASS/0FAIL,actual captures and3unchanged-save/replay readbacks PASS.
+Recollection205–211ms on this host. Shared authoritative inputs unchanged;F28full evidence
+reused,no new full/CI/release claim. [Receipt](docs/reviews/QT-F29_EXECUTION_2026-10-20.md).
+D2OPEN;this is bounded retrieval/context,presentation and truthful postcommit error handling.
+
+QT-F28 LOCAL_ACCEPTED2026-10-20:opt-in NPC communal supplies at4/8/12seconds,capacity3;
+COMMIT-owned stock,return dialogue/activity/slot display and save/replay isolation.
+New49unit/integration+2independence cases;full2029cases qualified:restricted2014PASS/15environment
+failures,all15distinct failures PASS on permitted reruns(HTTP15/links2,including2overlapping passes).
+Native27PASS/0FAIL,3actual captures inspected,3exact saves validated/replayed/byte-preserved.
+Activity readback127–207ms;single editor8336retained after result/retained/idle0.
+[Order](docs/work_orders/QT-F28_NPC_PROVISIONS.md),[receipt](docs/reviews/QT-F28_EXECUTION_2026-10-20.md).
+D2 remains OPEN;no publication/release,other-device or broader cognition claim.
 
 QT-F27LOCAL_ACCEPTED2026-10-19:recent8 own bell/reply retrieval,source-bound isolated replay,
 chronological Unity/Tk display. Final169native PASS/0FAIL,actual capture inspected,5unchanged
@@ -44,7 +90,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | PR/checks/main merge authorized2026-10-19 | Includes RS-TK-001/QT-F25/QT-F26/QT-F27LOCAL_ACCEPTED;merge only after final-head checks pass. CP06release held |
+| Publication / CI | QT-F28–32PR/checks/ordinary main merge authorized2026-10-20 | Latest session batch;merge only after final-head required checks pass. Previous PR10already integrated. CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
@@ -64,7 +110,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
-| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F08–20cover bounded subsets only |
+| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |
 | RS-ARCH-002 / D6 | IN_PROGRESS | B02–08 design DONE;B09 READY_FOR_REVIEW,#6/#34 later-order readiness PARTIAL;[BLOCK09](architecture/BLOCK_09.md). Design completion does not qualify runtime |

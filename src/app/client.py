@@ -66,10 +66,13 @@ class PlayWindow:
         scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
+        npc_work: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         self.root = root
-        self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
+        self.worker = ClientWorker(
+            path, layout, quest_content=quest_content, npc_memory=npc_memory, npc_work=npc_work
+        )
         self._quest_content = quest_content
         self._npc_memory = npc_memory
         self.memory_button: ttk.Button | None = None
@@ -425,14 +428,22 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--quest-catalog", type=Path)
     parser.add_argument("--quest-sha256")
     parser.add_argument("--npc-memory", action="store_true")
+    parser.add_argument("--npc-work", action="store_true")
     args = parser.parse_args(argv)
     layout = select_scenario(args.scenario).layout
     content = client_quest(layout, args.quest_catalog, args.quest_sha256)
     if args.npc_memory and content is None:
         raise ValueError("NPC_MEMORY_CONTENT")
+    if args.npc_work and not args.npc_memory:
+        raise ValueError("NPC_WORK_CONTENT")
     root = tk.Tk()
     window = PlayWindow(
-        root, args.working, layout, quest_content=content, npc_memory=args.npc_memory
+        root,
+        args.working,
+        layout,
+        quest_content=content,
+        npc_memory=args.npc_memory,
+        npc_work=args.npc_work,
     )
     try:
         root.mainloop()

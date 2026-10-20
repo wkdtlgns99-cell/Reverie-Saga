@@ -36,8 +36,21 @@ namespace ReverieSaga
 
         public static void Build()
         {
+            BuildTo(Path.GetFullPath(Path.Combine(Application.dataPath,"..","..","..","tmp","unity-build","ReverieSaga.exe")));
+        }
+
+        [MenuItem("Reverie/Build Windows Player (Keep Editor Open)")]
+        public static void BuildInteractive()
+        {
+            BuildTo(Path.GetFullPath(Path.Combine(Application.dataPath,"..","..","..","tmp",
+                "unity-builds",Guid.NewGuid().ToString("N"),"ReverieSaga.exe")));
+        }
+
+        static void BuildTo(string output)
+        {
+            if(EditorApplication.isPlayingOrWillChangePlaymode)
+                throw new IOException("Stop Play mode before building the player");
             Prepare();
-            string output=Path.GetFullPath(Path.Combine(Application.dataPath,"..","..","..","tmp","unity-build","ReverieSaga.exe"));
             Directory.CreateDirectory(Path.GetDirectoryName(output));
             var report=BuildPipeline.BuildPlayer(new [] {"Assets/Reverie/Scenes/PlayRoom.unity"},output,
                 BuildTarget.StandaloneWindows64,BuildOptions.None);
@@ -48,6 +61,7 @@ namespace ReverieSaga
             if(assembly.GetType("ReverieSaga.LiveVerification",false)!=null)
                 throw new IOException("Release contains verification hook");
             Debug.Log("RELEASE_VERIFICATION_HOOK_ABSENT");
+            Debug.Log("ENGINE_BUILD_OUTPUT "+output);
             Debug.Log("ENGINE_BUILD_PASSED bytes="+report.summary.totalSize);
         }
 

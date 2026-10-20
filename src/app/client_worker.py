@@ -25,14 +25,18 @@ class ClientWorker:
         scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
+        npc_work: bool = False,
     ) -> None:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
+        if type(npc_work) is not bool or npc_work and not npc_memory:
+            raise ValueError("NPC_WORK_CONTENT")
         layout = resolve_selection(layout, scenario)
         self._path = path
         self._layout = layout
         self._quest_content = quest_content
         self._npc_memory = npc_memory
+        self._npc_work = npc_work
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
         self._last = ClientUpdate(None, "CONNECTING", (), "", str(path))
@@ -90,6 +94,7 @@ class ClientWorker:
                         self._layout,
                         quest_content=self._quest_content,
                         npc_memory=self._npc_memory,
+                        npc_work=self._npc_work,
                     )
                 )
             owner = self._owner

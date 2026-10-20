@@ -66,6 +66,43 @@ existing games retain their content pins. [Current qualification limits](BACKLOG
 
 ## Verification
 
+QT-F28 adds an explicit harbor NPC work mode. It prepares one communal supply at logical
+seconds4/8/12,then stops at capacity3. Travel/combat time counts;wall time does not.
+Talk shows committed stock;NPC activity and slot preview remain read-only. No player inventory
+or extra quest reward is granted. Existing modes/saves are never upgraded.
+
+```powershell
+$questPin = (Get-Content content/dialogue/harbor-memory-v1.sha256 -Raw).Trim()
+$env:PYTHONPATH = "$PWD/src"
+.\.venv\Scripts\python.exe -m app.client --scenario harbor --working tmp/npc-work/game.sqlite --quest-catalog content/dialogue/harbor-memory-v1.json --quest-sha256 $questPin --npc-memory --npc-work
+```
+
+Use a fresh work path;an older memory save intentionally rejects with UNSUPPORTED_RULESET.
+[Work contract](docs/work_orders/QT-F28_NPC_PROVISIONS.md).
+
+QT-F29 work-mode dialogue also recalls the NPC's verified production since the previous
+retained conversation. Work is collected separately from frequent bell events,so those
+events do not hide production. Only actual retained facts are recalled;missing earlier
+history is labeled as the current saved segment. Same-turn production is included once;
+retry adds no duplicate recall. This adds no new save/rules/wire format or live API call.
+
+QT-F30 adds answered-player-call recollection to that same work-mode return dialogue.
+It follows actual request→echo→response event identities,shows the range's confirmed
+response count and most recent3,and survives save/load/reconnect. Frequent periodic bells
+cannot hide these calls;missing checkpoint history is never reconstructed from counters.
+Work and call context share one verified replay. [Contract](docs/work_orders/QT-F30_NPC_CALL_RECOLLECTION.md).
+
+QT-F31 return context also selects the newest persistent player statement:the heard quest
+promise or received completion report,with its original time. Objective enemy defeat alone
+does not become a received report or eyewitness memory. These existing CORE anchors survive
+retained-trace truncation;work/call evidence keeps its explicitly retained-history boundary.
+[Contract](docs/work_orders/QT-F31_NPC_PLAYER_MEMORY.md).
+
+QT-F32 Unity **대화 크게 보기** expands NPC history within the existing window. The fixed
+header button or Escape restores controls;movement keys are suppressed while reading.
+This is local presentation only,preserving turns/save data and ongoing response polling.
+[Contract](docs/work_orders/QT-F32_DIALOGUE_FOCUS.md).
+
 Use the applicable order for affected tests;shared CORE changes require full regression.
 The environment setup below applies to all commands,including both import checks.
 ```powershell

@@ -2,6 +2,9 @@
 
 from __future__ import annotations
 
+from contracts.npc_work import ProvisionPrepared
+from domain.npc_work import STOCK_CAP
+
 from collections.abc import Mapping
 
 from contracts.client import ClientView
@@ -85,6 +88,9 @@ STATUS_TEXT = {
     "PRESENTATION_FAILED": "게임 결과는 확정됐지만 일부 연출을 표시하지 못했습니다.",
     "EVENT_DEFERRED": "일부 사건이 이후 게임 시간으로 예약됐습니다.",
     "CLIENT_ERROR": "화면 연결 작업에 오류가 발생했습니다. 상세 정보를 확인하세요.",
+    "NPC_RECOLLECTION_SOURCE": (
+        "행동은 확정됐지만 NPC 작업 회상을 확인하지 못했습니다. 현재 상태를 확인하세요."
+    ),
 }
 BLOCK_TEXT = {
     "boundary": "맵 경계 밖으로는 이동할 수 없습니다.",
@@ -146,6 +152,10 @@ def fact_messages(
     quest_content: QuestContent | None = None,
 ) -> tuple[str, ...]:
     match payload:
+        case ProvisionPrepared():
+            return (
+                f"NPC가 공동 비축 물자 1개를 준비했습니다. (재고 {payload.after}/{STOCK_CAP}개)",
+            )
         case QuestAccepted():
             return ("임무를 받았습니다. 길을 막는 적을 처치하고 NPC에게 보고하세요.",)
         case GoalMet():

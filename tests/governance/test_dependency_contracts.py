@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG = PROJECT_ROOT / "pyproject.toml"
 RUNTIME_CONFIG = PROJECT_ROOT / ".importlinter-runtime.toml"
 ROOTS = ("app", "adapters", "orchestration", "engines", "contracts", "domain")
-ENGINE_MODULES = ("skeleton", "trial", "encounter", "watch", "quest", "npc_memory")
+ENGINE_MODULES = ("skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work")
 CONTRACT_NAMES = (
     ("rs-layers", "Reverie Saga six internal layers"),
     ("rs-engines-independent", "Reverie Saga concrete engine modules are independent"),
@@ -102,6 +102,8 @@ PROBES = (
     Probe("quest-engine-reverse", (("engines/encounter.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
     Probe("memory-engine-forward", (("engines/npc_memory.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
     Probe("memory-engine-reverse", (("engines/quest.py", "import engines.npc_memory\n"),), 1, "rs-engines-independent"),
+    Probe("work-engine-forward", (("engines/npc_work.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
+    Probe("work-engine-reverse", (("engines/quest.py", "import engines.npc_work\n"),), 1, "rs-engines-independent"),
     Probe("indirect-engine", (("engines/skeleton.py", "import contracts.port\n"), ("contracts/port.py", "import engines.trial\n"),), 1, "rs-engines-independent"),
     Probe("type-only-reverse", (("domain/value.py", "from typing import TYPE_CHECKING\nif TYPE_CHECKING:\n    import app.entry\n"),), 1, "rs-layers"),
     Probe("core-indirect-io", (("engines/skeleton.py", "import contracts.port\n"), ("contracts/port.py", "import pathlib\n"),), 1, "rs-core-no-external-effects"),
@@ -209,6 +211,8 @@ def test_dependency_specified_probe(
             assert "engines.quest" in output and "engines.encounter" in output, output
         elif case.id in ("memory-engine-forward", "memory-engine-reverse"):
             assert "engines.npc_memory" in output and "engines.quest" in output, output
+        elif case.id in ("work-engine-forward", "work-engine-reverse"):
+            assert "engines.npc_work" in output and "engines.quest" in output, output
         else:
             assert "engines.skeleton" in output and "engines.trial" in output, output
     elif case.id == "core-indirect-io":
