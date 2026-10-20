@@ -58,6 +58,20 @@ def recent_evidence(record: NpcQuestMemoryRecord) -> tuple[QuestEvidence, ...]:
     return _ranked(record.entries, record.entity_id)[:1]
 
 
+def player_memory_recollection(record: NpcQuestMemoryRecord) -> tuple[str, ...]:
+    """Describe the latest heard statement;objective combat state is not an input."""
+    entries = recent_evidence(record)
+    if not entries:
+        return ("NPC 플레이어 기억 · 아직 기록된 의뢰 약속이나 완료 보고가 없습니다.",)
+    entry = entries[0]
+    statement = (
+        "의뢰를 맡겠다는 말을 직접 들었습니다. 아직 완료 보고는 받지 못했습니다."
+        if entry.kind == "accepted"
+        else "플레이어에게 완료 보고를 받았습니다. 처치를 직접 본 기억은 아닙니다."
+    )
+    return (f"NPC 플레이어 기억 · {entry.observed_at}초: {statement}",)
+
+
 def _ranked(entries: Iterable[QuestEvidence], npc_id: str) -> tuple[QuestEvidence, ...]:
     return tuple(
         sorted(

@@ -147,8 +147,11 @@ class EngineBridge:
         *,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
+        npc_work: bool = False,
     ) -> None:
-        self.worker = ClientWorker(path, layout, quest_content=quest_content, npc_memory=npc_memory)
+        self.worker = ClientWorker(
+            path, layout, quest_content=quest_content, npc_memory=npc_memory, npc_work=npc_work
+        )
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
         self.highest_request = 0
@@ -219,9 +222,15 @@ def serve(
     *,
     quest_content: QuestContent | None = None,
     npc_memory: bool = False,
+    npc_work: bool = False,
 ) -> int:
     bridge = EngineBridge(
-        path, narratives, layout, quest_content=quest_content, npc_memory=npc_memory
+        path,
+        narratives,
+        layout,
+        quest_content=quest_content,
+        npc_memory=npc_memory,
+        npc_work=npc_work,
     )
     try:
         write_frame(target, bridge.response("0"))
@@ -248,6 +257,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--quest-catalog", type=Path)
     parser.add_argument("--quest-sha256")
     parser.add_argument("--npc-memory", action="store_true")
+    parser.add_argument("--npc-work", action="store_true")
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
@@ -269,6 +279,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             choice.layout,
             quest_content=content,
             npc_memory=args.npc_memory,
+            npc_work=args.npc_work,
         )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)

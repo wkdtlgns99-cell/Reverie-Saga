@@ -21,6 +21,8 @@ namespace ReverieSaga
         string transportError="";
         Vector2 scroll;
         Vector2 controlsScroll;
+        bool dialogueFocused;
+        public bool DialogueFocused { get { return dialogueFocused; } }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public Rect ControlsViewport { get; private set; }
         public Rect HistoryViewport { get; private set; }
@@ -41,6 +43,8 @@ namespace ReverieSaga
         string scenario = "legacy";
         string questCatalog="",questSha256="";
         bool npcMemory;
+        bool npcWork;
+        public bool NpcWorkEnabled { get { return npcWork; } }
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
         public bool CanInspectMemory { get { return npcMemory&&latest!=null&&!Busy&&failure==""; } }
@@ -72,6 +76,10 @@ namespace ReverieSaga
                 root = Path.GetFullPath(Path.Combine(Application.dataPath,"..","..",".."));
                 string scenarioSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_SCENARIO");
                 string memorySelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_MEMORY");
+                string workSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_WORK");
+                if(!String.IsNullOrEmpty(workSelection)&&workSelection!="0"&&workSelection!="1")
+                    throw new IOException("NPC_WORK_SELECTION");
+                npcWork=workSelection=="1";
                 questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
                 questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
                 bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
@@ -89,6 +97,7 @@ namespace ReverieSaga
                     npcMemory=memorySelection=="1";
                 }
                 scenario=BrainConnection.SelectScenario(scenario);
+                if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
                 if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
                     questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
                     throw new IOException("NPC_MEMORY_CONTENT");
@@ -98,7 +107,7 @@ namespace ReverieSaga
                     Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
                 if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
                     Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
-                    working=npcMemory?Path.Combine(root,"tmp","unity-play","harbor-memory",questSha256,"game.sqlite"):
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
                         Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
@@ -107,6 +116,8 @@ namespace ReverieSaga
 
         void Update()
         {
+            bool focusedAtInput=dialogueFocused;
+            if(focusedAtInput&&Input.GetKeyDown(KeyCode.Escape))SetDialogueFocus(false);
             if (brain == null || connecting || failure != "") return;
             try {
                 if (brain.Poll(out WireResponse reply, out string error)) {
@@ -133,6 +144,7 @@ namespace ReverieSaga
                     if(messages.Count>200) messages.RemoveRange(0,messages.Count-200);
                     if(reply.update.messages.Length>0) scroll.y=float.MaxValue;
                 } else if(error!=null) throw new IOException(error);
+                if(focusedAtInput)return;
                 if (!Busy) {
                     if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow)) Send("up");
                     else if(Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.DownArrow)) Send("down");
@@ -238,13 +250,20 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
         }
 
         public void Reconnect() { Connect(); }
+
+        public void SetDialogueFocus(bool enabled)
+        {
+            if(dialogueFocused==enabled)return;
+            dialogueFocused=enabled;
+            scroll.y=float.MaxValue;
+        }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public int BrainProcessId { get { return brain.ProcessId; } }
         public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
@@ -279,21 +298,29 @@ namespace ReverieSaga
             GUI.Box(panel,GUIContent.none);
             float innerWidth=Mathf.Max(0,width-12);
             GUI.Label(new Rect(18,18,innerWidth,24),"Reverie Saga — 플레이테스트");
-            float available=Mathf.Max(0,height-72);
-            float controlsHeight=Mathf.Floor(available*.6f);
-            var controls=new Rect(18,48,innerWidth,controlsHeight);
+            // This button stays outside the scrollable controls and their busy gates.
+            if(GUI.Button(new Rect(18,48,innerWidth,24),dialogueFocused?"조작 화면으로":"대화 크게 보기"))
+                SetDialogueFocus(!dialogueFocused);
+            float available=Mathf.Max(0,height-102);
+            bool focusError=dialogueFocused&&(failure!=""||transportError!="");
+            float controlsHeight=dialogueFocused?(focusError?Mathf.Min(24,available):0):Mathf.Floor(available*.6f);
+            var controls=new Rect(18,78,innerWidth,controlsHeight);
             var history=new Rect(18,controls.yMax+30,innerWidth,available-controlsHeight);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ControlsViewport=controls;HistoryViewport=history;
 #endif
-            GUILayout.BeginArea(controls);
-            controlsScroll=GUILayout.BeginScrollView(controlsScroll,false,false);
-            DrawControls(innerWidth);
+            if(!dialogueFocused) {
+                GUILayout.BeginArea(controls);
+                controlsScroll=GUILayout.BeginScrollView(controlsScroll,false,false);
+                DrawControls(innerWidth);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
-            var end=GUILayoutUtility.GetRect(0,0);
-            if(Event.current.type==EventType.Repaint)ControlsContentHeight=end.yMax;
+                var end=GUILayoutUtility.GetRect(0,0);
+                if(Event.current.type==EventType.Repaint)ControlsContentHeight=end.yMax;
 #endif
-            GUILayout.EndScrollView();GUILayout.EndArea();
+                GUILayout.EndScrollView();GUILayout.EndArea();
+            } else if(focusError) {
+                GUI.Label(controls,failure!=""?"연결 오류: "+failure:"요청 거부: "+transportError);
+            }
             GUI.Label(new Rect(18,controls.yMax+6,innerWidth,24),"행동·대화 기록");
             GUILayout.BeginArea(history);
             scroll=GUILayout.BeginScrollView(scroll,false,false);

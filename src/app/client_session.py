@@ -8,6 +8,7 @@ from domain.scenario import resolve_selection, LEGACY, Scenario
 from types import MappingProxyType
 
 from pathlib import Path
+import logging
 
 from app.client_text import QUEST_STAGE_NAMES, npc_activity_text, status_text, turn_messages
 from app.durable import DurableSession, create_durable, resume_durable
@@ -17,13 +18,15 @@ from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import recent_evidence
-from app.npc_activity import recent_activity
+from app.npc_activity import recent_activity, return_recollection
+from app.npc_work import bootstrap_work, stock_text, work_bundle
+from domain.npc_work import ProvisionsRecord
 from contracts.dialogue import QuestContent
 from contracts.quest import QuestSpoken, QuestTalkCommand
 from contracts.client import ClientAction, ClientUpdate, ClientView
 from contracts.encounter import AttackCommand, InteractCommand, RestCommand
 from contracts.messages import CommandPayload
-from contracts.persistence import DurableCheckpoint
+from contracts.persistence import DurableCheckpoint, SaveError
 from contracts.trial import MoveCommand
 from contracts.turn import GameCommand, TurnCommitted, TurnPublication
 from contracts.watch import BellCommand, WaitCommand
@@ -85,6 +88,7 @@ class ClientSession:
         scenario: Scenario = LEGACY,
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
+        npc_work: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -100,6 +104,9 @@ class ClientSession:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
         self._npc_memory = npc_memory
+        if type(npc_work) is not bool or npc_work and not npc_memory:
+            raise ValueError("NPC_WORK_CONTENT")
+        self._npc_work = npc_work
         self._names = MappingProxyType(
             {
                 layout.actor_id: "플레이어",
@@ -111,6 +118,8 @@ class ClientSession:
         bundles = (
             watch_bundle(layout)
             if quest_content is None
+            else work_bundle(quest_content)
+            if npc_work
             else memory_bundle(quest_content)
             if npc_memory
             else quest_bundle(quest_content),
@@ -124,6 +133,8 @@ class ClientSession:
             initial = (
                 bootstrap_watch(spec, layout=layout)
                 if quest_content is None
+                else bootstrap_work(spec, quest_content)
+                if npc_work
                 else bootstrap_memory(spec, quest_content)
                 if npc_memory
                 else bootstrap_quest(spec, quest_content)
@@ -206,6 +217,7 @@ class ClientSession:
             self._layout.npc_id,
             content=self._quest_content,
             current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+            npc_work=self._npc_work,
         )
         return self.update(
             "ACTIVITY_INSPECTED",
@@ -265,6 +277,29 @@ class ClientSession:
             if update.view is None:
                 raise RuntimeError("committed NPC talk requires a client view")
             update = replace(update, messages=(*update.messages, npc_activity_text(update.view)))
+            if self._npc_work:
+                if self._quest_content is None:
+                    raise RuntimeError("committed work talk requires quest content")
+                stock = _record(self._owner.snapshot(), ProvisionsRecord, self._layout.npc_id).stock
+                spoken = next(
+                    event for event in publication.facts if isinstance(event.payload, QuestSpoken)
+                )
+                try:
+                    recollection = return_recollection(
+                        self._owner.retained_segment(),
+                        self._layout.npc_id,
+                        content=self._quest_content,
+                        current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+                        conversation_id=spoken.header.event_id,
+                    )
+                except (SaveError, OSError) as error:
+                    logging.getLogger(__name__).exception("committed NPC talk recollection failed")
+                    raise SaveError(
+                        "NPC_RECOLLECTION_SOURCE", "talk committed;recollection unavailable"
+                    ) from error
+                update = replace(
+                    update, messages=(*update.messages, *recollection, stock_text(stock))
+                )
         return update
 
     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
@@ -331,6 +366,9 @@ class ClientSession:
                 else "완료 보고를 받은 기억은 없습니다."
             )
             messages += (f"저장된 NPC 대화 기억: {len(memory.entries)}개 · {report_text}",)
+        if self._npc_work:
+            stock = _record(checkpoint.core, ProvisionsRecord, self._layout.npc_id).stock
+            messages += (stock_text(stock, saved=True),)
         return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str) -> ClientUpdate:

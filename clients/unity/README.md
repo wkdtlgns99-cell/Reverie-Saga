@@ -12,6 +12,44 @@ Current-host PASS and application-control failures are per-device evidence,not r
 
 ## Play
 
+QT-F32 adds **대화 크게 보기** above the scrollable controls. It expands the history in
+the same compact window;**조작 화면으로** or Escape returns. WASD/arrows do not move the
+player while reading. Pending responses still arrive;focus survives load/reconnect,while
+slot/wait selection and independent controls scroll stay intact. A new room starts with
+controls visible. Switching views opens the latest history without taking a turn.
+[Contract](../../docs/work_orders/QT-F32_DIALOGUE_FOCUS.md).
+
+QT-F28 opt-in work mode:before starting a new editor process,set
+`REVERIE_UNITY_NPC_WORK=1`. With no other selectors,the approved harbor-memory preset is
+used with work enabled and a separate default save at
+tmp/unity-play/harbor-work/<catalog-pin>/game.sqlite. Only unset/0/1 are accepted;explicit
+non-memory selections cannot enable work. An existing editor retains its environment;
+do not restart an editor merely for verification. Use an already selected mode or a later
+ordinary start. Explicit working paths must already have matching feature pins or be fresh.
+
+The NPC prepares communal supplies at logical seconds4/8/12,then stops at3. Talk shows
+current stock;NPC activity shows recent production with actual source times. Slot preview
+shows saved stock;load/reconnect use their own committed branch. This is not player inventory,
+trade or additional quest reward. The private wire fields remain unchanged.
+[Contract](../../docs/work_orders/QT-F28_NPC_PROVISIONS.md).
+
+QT-F29 adds factual work recollection to the same NPC talk button in work mode. It names
+only actual production since the last retained conversation,then shows current stock.
+If none is confirmed in that saved interval,the NPC says so. Loading/reconnecting uses that
+branch's conversation history. Busy/retry behavior is unchanged;no new selection is required.
+
+QT-F30 also recalls actual answered player calls since the previous retained conversation.
+The history shows the confirmed count and latest3request/response times;periodic bells cannot
+trim those call memories. Empty/truncated history is explicit. Work/call context uses one
+verified replay;load/reconnect follows that branch and retry emits no repeated recollection.
+[Contract](../../docs/work_orders/QT-F30_NPC_CALL_RECOLLECTION.md).
+
+QT-F31 work-mode return dialogue also displays the latest saved player promise/report and
+its original time. A received report is explicitly separate from witnessing a defeat.
+The existing persistent anchor survives truncation of old replay steps;newer branch reports
+do not leak through load/reconnect. No extra replay,turn,mode flag or save conversion.
+[Contract](../../docs/work_orders/QT-F31_NPC_PLAYER_MEMORY.md).
+
 Open C:/ReverieSaga/clients/unity with the installed editor,open
 Assets/Reverie/Scenes/PlayRoom.unity and press Play. Use WASD/arrows or Korean buttons.
 QT-F24 adds **대기 시간** presets1/4/8/16seconds(default1) in the controls scroll area.
@@ -147,6 +185,10 @@ selected positions,combat,load/retry,NPC and loaded-branch reconnect and records
 final response and120-frame sample in that working directory's evidence subdirectory.
 Run legacy separately for the retained full boundary/fault matrix. Verify does not build;
 BuildAndVerify/Build still own release-build and hook-absence qualification.
+For that qualification without restarting the open editor,stop Play and use
+Reverie → **Build Windows Player (Keep Editor Open)**. It runs the same build/check logic
+into a fresh tmp/unity-builds/<GUID>/ReverieSaga.exe and logs ENGINE_BUILD_OUTPUT;
+the existing CLI Build destination remains unchanged. This local build does not publish.
 Build-only automation:
 
 ```powershell
