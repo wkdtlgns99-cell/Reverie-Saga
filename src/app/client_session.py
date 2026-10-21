@@ -18,7 +18,7 @@ from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import recent_evidence
-from app.npc_activity import recent_activity, return_recollection
+from app.npc_activity import activity_messages, return_recollection
 from app.npc_work import bootstrap_work, stock_text, work_bundle
 from domain.npc_work import ProvisionsRecord
 from contracts.dialogue import QuestContent
@@ -212,17 +212,22 @@ class ClientSession:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
         if self._quest_content is None:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
-        entries = recent_activity(
-            self._owner.retained_segment(),
-            self._layout.npc_id,
-            content=self._quest_content,
-            current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
-            npc_work=self._npc_work,
-        )
+        try:
+            messages = activity_messages(
+                self._owner.retained_segment(),
+                self._layout.npc_id,
+                content=self._quest_content,
+                current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+                npc_work=self._npc_work,
+            )
+        except (SaveError, OSError) as error:
+            logging.getLogger(__name__).exception("NPC activity inspection failed")
+            if isinstance(error, SaveError):
+                raise
+            raise SaveError("NPC_ACTIVITY_SOURCE", "activity source could not be read") from error
         return self.update(
             "ACTIVITY_INSPECTED",
-            messages=tuple(entry.text() for entry in reversed(entries))
-            or ("현재 저장 구간에 남은 NPC 자기 활동이 없습니다.",),
+            messages=messages,
         )
 
     def _inspect_memory(self, *, recent: bool) -> ClientUpdate:

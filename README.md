@@ -103,6 +103,13 @@ header button or Escape restores controls;movement keys are suppressed while rea
 This is local presentation only,preserving turns/save data and ongoing response polling.
 [Contract](docs/work_orders/QT-F32_DIALOGUE_FOCUS.md).
 
+QT-F33 work-mode **NPC 활동 기록** keeps a separate retained production section after
+the unchanged mixed recent8activities. Repeated bells cannot hide verified work4/8/12;
+the final line shows current committed stock. A compacted checkpoint may retain stock
+without old work events:the display states that limit instead of inventing history.
+Inspection shares one isolated replay,advances no time,and preserves saves/retry identity.
+[Contract](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md).
+
 Use the applicable order for affected tests;shared CORE changes require full regression.
 The environment setup below applies to all commands,including both import checks.
 ```powershell

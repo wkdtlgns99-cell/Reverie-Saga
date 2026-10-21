@@ -686,11 +686,49 @@ namespace ReverieSaga
                 FileHash(room.Latest.update.working_path)==bytes,"focus_restore_readonly");
         }
 
+        IEnumerator InspectWorkActivity(string label,string[] ticks,int stock,bool capture=false)
+        {
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),bytes=FileHash(before.working_path);
+            float started=Time.realtimeSinceStartup;
+            room.InspectActivity();
+            Check(room.Busy&&!room.CanInspectMemory,label+"_busy_gate");
+            room.InspectActivity();
+            yield return Ready();if(failed)yield break;
+            var after=room.Latest.update;
+            Check(after.status=="ACTIVITY_INSPECTED"&&JsonUtility.ToJson(after.view)==view&&
+                after.attachment_id==before.attachment_id&&after.working_path==before.working_path&&
+                after.quest_stage==before.quest_stage&&after.quest_reward==before.quest_reward&&
+                !after.reset_log&&FileHash(after.working_path)==bytes,label+"_read_only");
+            var work=new System.Collections.Generic.List<string>();
+            foreach(string message in after.messages)
+                if(message.StartsWith("NPC 비축 작업 · ",StringComparison.Ordinal)&&message.Contains("초:"))work.Add(message);
+            bool exact=work.Count==ticks.Length&&Array.IndexOf(after.messages,
+                "NPC 비축 작업 · 0초 이후 저장 기록에서 확인했습니다.")>=0;
+            for(int i=0;i<ticks.Length&&exact;i++) {
+                string line="NPC 비축 작업 · "+ticks[i]+"초: +1개 (당시 "+(i+1)+"/3개)";
+                exact=work[i]==line&&room.HistoryForVerification.Contains(line);
+            }
+            string final="NPC 공동 비축: 물자 "+stock+"/3개 · "+
+                (stock==3?"가득 차 작업을 멈췄습니다.":"4초마다 물자 1개를 준비합니다.");
+            Check(exact&&after.messages[after.messages.Length-1]==final&&
+                (ticks.Length!=0||Array.IndexOf(after.messages,
+                "현재 저장 구간에 남은 비축 작업 기록이 없습니다. 재고로 과거 작업을 추정하지 않습니다.")>=0),label+"_exact_work");
+            Debug.Log("NPC_WORK_INSPECTION_LATENCY_MS "+label+" "+
+                ((Time.realtimeSinceStartup-started)*1000).ToString(CultureInfo.InvariantCulture));
+            if(capture) {
+                room.SetDialogueFocus(true);
+                yield return CaptureActivity(label);
+                room.SetDialogueFocus(false);
+            }
+        }
+
         IEnumerator WorkFlow()
         {
             yield return Ready();if(failed){Exit(1);yield break;}
             Check(room.NpcWorkEnabled&&room.NpcMemoryEnabled,"work_selected_memory_mode");
             Check(room.Latest.update.view.tick=="0"&&room.Latest.update.quest_stage=="0","work_genesis");
+            yield return InspectWorkActivity("work_inspect_empty",new string[0],0);
             yield return Intent("talk");
             Check(room.Latest.update.status=="OUT_OF_RANGE"&&room.Latest.update.view.tick=="0","work_rejected_talk_no_time");
             yield return Intent("down");yield return Intent("talk");
@@ -725,6 +763,7 @@ namespace ReverieSaga
             Check(production&&room.Latest.update.status=="ACTIVITY_INSPECTED"&&
                 room.Latest.update.view.tick==tick&&FileHash(working)==bytes,"work_activity_source_readonly");
             yield return CaptureActivity("work-activity");
+            yield return InspectWorkActivity("work_inspect_full",new [] {"4","8","12"},3);
             room.InspectSlot();yield return Ready();
             Check(Array.IndexOf(room.Latest.update.messages,
                 "저장된 NPC 공동 비축: 물자 1/3개 · 4초마다 물자 1개를 준비합니다.")>=0&&
@@ -733,6 +772,7 @@ namespace ReverieSaga
             CheckWork("NPC 공동 비축: 물자 1/3개 · 4초마다 물자 1개를 준비합니다.","work_load_rewinds1");
             CheckRecollection(new [] {"4"},"NPC 작업 회상 · 지난 대화(2초) 뒤에 끝낸 작업입니다.","recall_load_branch");
             Check(room.Latest.update.view.tick=="7","work_load_time_rewinds");
+            yield return InspectWorkActivity("work_inspect_loaded",new [] {"4"},1);
             room.SelectWaitDuration(0);yield return Intent("wait");yield return Intent("talk");
             CheckWork("NPC 공동 비축: 물자 2/3개 · 4초마다 물자 1개를 준비합니다.","work_resumed_production2");
             CheckRecollection(new [] {"8"},"NPC 작업 회상 · 지난 대화(7초) 뒤에 끝낸 작업입니다.","recall_resumed");
@@ -742,10 +782,12 @@ namespace ReverieSaga
             Check(room.Latest.update.quest_stage=="1"&&room.Latest.update.quest_reward=="0","work_no_player_reward_grant");
             yield return CaptureActivity("work-reconnected");
             CheckCallRecollection(new string[0],"NPC 호출 회상 · 지난 대화(9초) 뒤에 끝낸 응답입니다.","","call_initial_empty");
+            yield return InspectWorkActivity("work_inspect_reconnected",new [] {"4","8"},2);
             yield return Intent("bell");
             Check(room.Latest.update.view.npc_replies=="1","call_actual_response");
             room.SelectWaitDuration(3);yield return Intent("wait");yield return Intent("save");
             Check(room.Latest.update.view.tick=="27","call_saved_before_return");
+            yield return InspectWorkActivity("work-inspect-late",new [] {"4","8","12"},3,true);
             yield return Intent("talk");
             CheckCallRecollection(new [] {"11"},"NPC 호출 회상 · 지난 대화(10초) 뒤에 끝낸 응답입니다.",
                 "확인한 호출 응답 1건 중 최근 1건입니다.","call_old_return");

@@ -134,6 +134,12 @@ the real screen. [Current acceptance](../../docs/reviews/QT-F17_EXECUTION_2026-1
 
 ## Generate / verify / build
 
+QT-F33 work mode extends the existing **NPC 활동 기록** button with a separate verified
+production section and current stock. Mixed recent8records remain unchanged. Use
+**대화 크게 보기** to read the source boundary,production times and historical/current stock.
+No turn is submitted;load/reconnect follows the selected save's retained source. Stock
+alone never reconstructs missing events. [Contract](../../docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md).
+
 ### Reuse the editor — director preference 2026-10-16
 
 QT-F26 current-host2026-10-18:[native NPC-activity acceptance](../../docs/reviews/QT-F26_EXECUTION_2026-10-18.md).
