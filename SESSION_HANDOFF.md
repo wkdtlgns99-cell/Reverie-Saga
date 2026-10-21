@@ -2,7 +2,7 @@
 
 Updated:2026-10-21 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
+Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -14,31 +14,35 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-Director2026-10-21requests one next increment and all tests until ready for main publication.
-Selected QT-F33:retain a separate verified work section in existing NPC activity inspection.
-[Order](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md),[evidence](docs/reviews/QT-F33_EXECUTION_2026-10-21.md).
-QT-F33 LOCAL_ACCEPTED;full local verification complete,ready for commit/PR preparation.
-Director2026-10-21now authorizes commit,push and PR creation only. Do not merge main or
-enable auto-merge;director will continue at home. Do not wait for remote CI before delivery.
-Use Git/GitHub for current commit/PR/check state;local acceptance does not imply remote CI/release acceptance.
-Primary4retrieval support;related5/6/7. No new authoritative NPC action;D2OPEN,CP06held.
-No external Claude review/agents authorized. This explicit PR-only request supersedes the
-previous preparation-only scope for F33;main merge remains outside this request.
+Director2026-10-21requests the next implementation across5/6/7;earlier QT-R34–36patch
+rereview remains DEFERRED,not accepted. QT-F39 LOCAL_ACCEPTED:Unity save-manager screen,
+explicit current/previous preview and previous-save private restore,including corrupt latest
+refusal,source preservation and new-process continuation. Primary7전체 연결;participants
+5화면·연출 and6저장. No whole-category/final art/release completion claim.
+[Order](docs/work_orders/QT-F39_SAVE_MANAGER_RECOVERY.md),[receipt](docs/reviews/QT-F39_EXECUTION_2026-10-21.md).
 
-- Entry clean main/origin/main c00a2ad(PR11merged);current local branch codex/npc-work-inspection-20261021.
-- F28–32already integrated by PR11;their receipts retain original local scope/limits.
-- Preserve earlier5-edit stash and tmp/sync-main-backup-20261020-085716;excluded from F33.
-- Python3.13.12/Tk8.6/editor6000.3.25f1reused. No editor at entry;one launch18656retained,
-  same-editor final133native PASS/0FAIL(no restart),compact source/work/current stock readable.
-- New22Python/static/type190/imports PASS;fresh full2101PASS778.80s,exact CI31boundary
-  PASS10.46s,all7managed saves validate/replay/query/byte guards PASS. Windows build
-  89,483,696bytes/release-hook exclusion PASS on46byte-verified Unity inputs in a fresh
-  isolated copy;one temporary build-only process exited0,original editor never restarted.
-  Original scene byte-exact restored;qualified source/save hashes unchanged. Final document
-  guards10PASS/exact11path scope/diff whitespace PASS;owned native Brain0. See receipt.
-- Only app query/session,one new integration test,native verification and task/progress/docs
-  may change. Preserve canonical scene entry bytes after normalized-equality verification.
-- Use Git for actual branch/head/dirty files;use linked current receipt for exact evidence.
+- F39entry main d7f3217with12modified/14new paths from F34–38/repair;all preserved.
+  Director2026-10-21now authorizes F34–39/repair commit/push/PR,CI validation and ordinary
+  main merge. Git/GitHub own actual publication status;earlier snapshot-only restrictions
+  are superseded for this scope. No release/checkpoint waiver or new reviewer call.
+- New33Python cases;full2090PASS/82Git-ownership nonpasses801.93s. Exact process-only
+  safe.directory repair qualified all82in117PASS161.48s;combined2172distinct cases pass.
+  No global Git/test/security change. Early progress misidentified E-clusters as possible
+  Tk errors;final logs show Git provenance only. Static/type193/import3+1/pip PASS.
+- Reused editor3652without restart:170native PASS0FAIL,result/retained/idle0. Actual
+  642x500manager/actions/load captures inspected. Actual W blocked at16with unchanged
+  bytes;Escape+W commits17/cell0. Real previous-info click/scroll shows saved35/current17.
+- All12owned saves validate/replay/compare/byte guards PASS. Same-editor Windows build
+  89,488,672bytes/release hook absent PASS;tmp/unity-builds/996f895c87c44606a97800b9d34bf3fd.
+  Scene restored byte-exact. Prior code,CORE/content and frozen ZIPs hash-preserved.
+- New private request names slot_previous_inspect/load_previous;fields/version1unchanged,
+  canonical schema hash regenerated in Wire.Generated.cs. Save format/pins/export retention
+  unchanged. No silent fallback or source replacement;missing backup has explicit error.
+- QT-F38memory comparison remains accepted/preserved;[receipt](docs/reviews/QT-F38_EXECUTION_2026-10-21.md).
+  Earlier scoped F34–37/repair receipts and Linux/physical-keypad limits remain historical.
+- Repair ZIP tmp/reviews/CLAUDE_QT-R34-36_20261021T125433Z.zip and original F34–36ZIP
+  preserved. No new reviewer/provider call. CP06held;no final UX/device/standalone release
+  qualification,agents,remote administration/external send or automatic next task.
 
 ## Resume Constraints
 

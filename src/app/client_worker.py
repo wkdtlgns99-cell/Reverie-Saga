@@ -64,9 +64,14 @@ class ClientWorker:
     def inspect_slot(self, slot_id: str = "slot01") -> Future[ClientUpdate]:
         return self._inspect("slot_inspect", slot_id)
 
+    def inspect_previous_slot(self, slot_id: str = "slot01") -> Future[ClientUpdate]:
+        return self._inspect("slot_previous_inspect", slot_id)
+
     def _inspect(
         self,
-        request: Literal["memory", "memory_recent", "activity", "slot_inspect"],
+        request: Literal[
+            "memory", "memory_recent", "activity", "slot_inspect", "slot_previous_inspect"
+        ],
         slot_id: str = "slot01",
     ) -> Future[ClientUpdate]:
         if self._closing:
@@ -75,7 +80,8 @@ class ClientWorker:
 
     def _run(
         self,
-        request: ClientRequest | Literal["memory", "memory_recent", "activity", "slot_inspect"],
+        request: ClientRequest
+        | Literal["memory", "memory_recent", "activity", "slot_inspect", "slot_previous_inspect"],
         seconds: int,
         slot_id: str,
     ) -> ClientUpdate:
@@ -83,7 +89,7 @@ class ClientWorker:
             # Inspection must never create a game or open an unattached save.
             if request in ("memory", "memory_recent", "activity") and self._owner is None:
                 raise ValueError("NPC_MEMORY_UNAVAILABLE")
-            if request == "slot_inspect" and self._owner is None:
+            if request in ("slot_inspect", "slot_previous_inspect") and self._owner is None:
                 raise ValueError("SLOT_INSPECTION_UNAVAILABLE")
             if self._owner is None:
                 self._owner = (
@@ -105,6 +111,8 @@ class ClientWorker:
                     update = owner.save(slot_id)
                 case "load":
                     update = owner.load(slot_id)
+                case "load_previous":
+                    update = owner.load(slot_id, previous=True)
                 case "retry":
                     update = owner.retry()
                 case "recover":
@@ -117,6 +125,8 @@ class ClientWorker:
                     update = owner.inspect_activity()
                 case "slot_inspect":
                     update = owner.inspect_slot(slot_id)
+                case "slot_previous_inspect":
+                    update = owner.inspect_slot(slot_id, previous=True)
                 case _:
                     update = owner.act(request, seconds=seconds)
             self._last = update

@@ -12,6 +12,18 @@ Current-host PASS and application-control failures are per-device evidence,not r
 
 ## Play
 
+QT-F39 adds the fixed **저장 관리** toggle beside dialogue focus. Its scrollable panel
+selects slot01–08,inspects current/previous save metadata and memory comparisons,saves the
+current progress,and explicitly loads either version. Saving over a valid slot retains
+one previous version;an empty previous slot reports that fact. A damaged current save is
+not silently replaced or loaded from a fallback. Choose **이전 저장 불러오기** to create
+a private working branch from a validated backup;both source files remain unchanged.
+Further saves use the selected slot,so choose another slot to preserve a damaged source.
+Movement keys are suppressed while the panel is open;pending replies still arrive.
+Escape closes it;opening dialogue focus closes it. The selected slot and manager mode
+survive load/reconnect in the same room. This is local recovery,not cloud/version history
+or deletion. [Contract](../../docs/work_orders/QT-F39_SAVE_MANAGER_RECOVERY.md).
+
 QT-F32 adds **대화 크게 보기** above the scrollable controls. It expands the history in
 the same compact window;**조작 화면으로** or Escape returns. WASD/arrows do not move the
 player while reading. Pending responses still arrive;focus survives load/reconnect,while
@@ -74,6 +86,11 @@ Saved time,quest progress and registered NPC-memory count appear in the history,
 stats and attachment stay unchanged. The slot is validated without loading a new branch;an empty
 or unusable slot reports an error. Full/recent memory controls share one row to retain history
 space. Slot selection does not identify retained working clones or permit deletion.
+QT-F38 extends the same selected-slot action in memory modes:the history shows current/saved
+times and shared/current-only/saved-only NPC conversation memories. Comparison uses exact
+source identities,so distinct report events remain separate even when their kind matches.
+This is read-only;it does not load the slot,consume a turn or imply forgetting/eyewitness
+combat knowledge. Use **대화 크게 보기** to read the whole comparison.
 [Preview acceptance](../../docs/reviews/QT-F20_EXECUTION_2026-10-15.md),
 [slot selection](../../docs/reviews/QT-F23_EXECUTION_2026-10-16.md).
 

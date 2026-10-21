@@ -22,7 +22,10 @@ namespace ReverieSaga
         Vector2 scroll;
         Vector2 controlsScroll;
         bool dialogueFocused;
+        bool saveManagerOpen;
         public bool DialogueFocused { get { return dialogueFocused; } }
+        public bool SaveManagerOpen { get { return saveManagerOpen; } }
+        public bool GameplayInputEnabled { get { return !dialogueFocused&&!saveManagerOpen&&!Busy&&failure==""; } }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public Rect ControlsViewport { get; private set; }
         public Rect HistoryViewport { get; private set; }
@@ -116,8 +119,10 @@ namespace ReverieSaga
 
         void Update()
         {
-            bool focusedAtInput=dialogueFocused;
-            if(focusedAtInput&&Input.GetKeyDown(KeyCode.Escape))SetDialogueFocus(false);
+            bool focusedAtInput=dialogueFocused||saveManagerOpen;
+            if(focusedAtInput&&Input.GetKeyDown(KeyCode.Escape)) {
+                if(saveManagerOpen)SetSaveManager(false);else SetDialogueFocus(false);
+            }
             if (brain == null || connecting || failure != "") return;
             try {
                 if (brain.Poll(out WireResponse reply, out string error)) {
@@ -145,7 +150,7 @@ namespace ReverieSaga
                     if(reply.update.messages.Length>0) scroll.y=float.MaxValue;
                 } else if(error!=null) throw new IOException(error);
                 if(focusedAtInput)return;
-                if (!Busy) {
+                if (GameplayInputEnabled) {
                     if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow)) Send("up");
                     else if(Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.DownArrow)) Send("down");
                     else if(Input.GetKeyDown(KeyCode.A)||Input.GetKeyDown(KeyCode.LeftArrow)) Send("left");
@@ -233,6 +238,8 @@ namespace ReverieSaga
         public void InspectRecentMemory() { if(CanInspectMemory)Send("memory_recent"); }
         public void InspectActivity() { if(CanInspectMemory)Send("activity"); }
         public void InspectSlot() { if(CanInspectSlot)Send("slot_inspect"); }
+        public void InspectPreviousSlot() { if(CanInspectSlot)Send("slot_previous_inspect"); }
+        public void LoadPreviousSlot() { if(CanInspectSlot)Send("load_previous"); }
 
         void Connect()
         {
@@ -262,7 +269,15 @@ namespace ReverieSaga
         {
             if(dialogueFocused==enabled)return;
             dialogueFocused=enabled;
+            if(enabled)saveManagerOpen=false;
             scroll.y=float.MaxValue;
+        }
+        public void SetSaveManager(bool enabled)
+        {
+            if(saveManagerOpen==enabled)return;
+            saveManagerOpen=enabled;
+            if(enabled)dialogueFocused=false;
+            controlsScroll=Vector2.zero;
         }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public int BrainProcessId { get { return brain.ProcessId; } }
@@ -299,8 +314,11 @@ namespace ReverieSaga
             float innerWidth=Mathf.Max(0,width-12);
             GUI.Label(new Rect(18,18,innerWidth,24),"Reverie Saga — 플레이테스트");
             // This button stays outside the scrollable controls and their busy gates.
-            if(GUI.Button(new Rect(18,48,innerWidth,24),dialogueFocused?"조작 화면으로":"대화 크게 보기"))
+            float toggleWidth=Mathf.Max(0,(innerWidth-6)*.5f);
+            if(GUI.Button(new Rect(18,48,toggleWidth,24),dialogueFocused?"조작 화면으로":"대화 크게 보기"))
                 SetDialogueFocus(!dialogueFocused);
+            if(GUI.Button(new Rect(24+toggleWidth,48,toggleWidth,24),saveManagerOpen?"저장 관리 닫기":"저장 관리"))
+                SetSaveManager(!saveManagerOpen);
             float available=Mathf.Max(0,height-102);
             bool focusError=dialogueFocused&&(failure!=""||transportError!="");
             float controlsHeight=dialogueFocused?(focusError?Mathf.Min(24,available):0):Mathf.Floor(available*.6f);
@@ -312,7 +330,7 @@ namespace ReverieSaga
             if(!dialogueFocused) {
                 GUILayout.BeginArea(controls);
                 controlsScroll=GUILayout.BeginScrollView(controlsScroll,false,false);
-                DrawControls(innerWidth);
+                if(saveManagerOpen)DrawSaveManager();else DrawControls(innerWidth);
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
                 var end=GUILayoutUtility.GetRect(0,0);
                 if(Event.current.type==EventType.Repaint)ControlsContentHeight=end.yMax;
@@ -326,6 +344,33 @@ namespace ReverieSaga
             scroll=GUILayout.BeginScrollView(scroll,false,false);
             foreach(string message in messages) GUILayout.Label(message);
             GUILayout.EndScrollView();GUILayout.EndArea();
+        }
+
+        void DrawSaveManager()
+        {
+            GUILayout.Label("저장 관리 · "+SelectedSlot);
+            if(latest!=null)GUILayout.Label("현재 진행 "+latest.update.view.tick+"초");
+            if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
+            if(failure!="") {
+                GUILayout.Label("연결 오류: "+failure);
+                if(GUILayout.Button("다시 연결"))Reconnect();
+            }
+            GUI.enabled=CanSelectSlot;
+            int nextSlot=GUILayout.SelectionGrid(slotIndex,SlotLabels,4);
+            if(nextSlot!=slotIndex)SelectSlot(nextSlot);
+            GUI.enabled=CanInspectSlot;
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("현재 저장 정보"))InspectSlot();
+            if(GUILayout.Button("이전 저장 정보"))InspectPreviousSlot();
+            GUILayout.EndHorizontal();
+            GUILayout.BeginHorizontal();
+            if(GUILayout.Button("현재 진행 저장"))Send("save");
+            if(GUILayout.Button("현재 저장 불러오기"))Send("load");
+            GUILayout.EndHorizontal();
+            if(GUILayout.Button("이전 저장 불러오기"))LoadPreviousSlot();
+            GUI.enabled=true;
+            GUILayout.Label("불러오기는 원본을 바꾸지 않고 별도 진행에서 이어집니다.");
+            GUILayout.Label("덮어쓰기 전 저장 하나를 이전 저장으로 보관합니다.");
         }
 
         void DrawControls(float width)

@@ -162,35 +162,56 @@ class SqliteSlots:
             self._cleanup(tuple(temporaries))
             self._busy = False
 
-    def inspect(self, slot_id: str) -> DurableCheckpoint:
-        current, _ = self._paths(slot_id)
+    def _source(self, slot_id: str, previous: bool) -> Path:
+        if type(previous) is not bool:
+            raise SaveError("INVALID_SLOT_VERSION", "slot version must be exact bool")
+        current, backup = self._paths(slot_id)
+        return backup if previous else current
+
+    def _validate_source(self, path: Path, previous: bool) -> DurableCheckpoint:
+        try:
+            return validate_save(path, io=self._io)
+        except SaveError as error:
+            if previous and error.code == "SAVE_NOT_FOUND":
+                raise SaveError(
+                    "PREVIOUS_SAVE_NOT_FOUND", "selected slot has no previous save"
+                ) from error
+            raise
+
+    def inspect(self, slot_id: str, *, previous: bool = False) -> DurableCheckpoint:
+        current = self._source(slot_id, previous)
         if self._busy:
             raise SaveError("SAVE_BUSY", "slot operation active")
         self._busy = True
         try:
             self._store.load()
-            return validate_save(current, io=self._io)
+            return self._validate_source(current, previous)
         except (sqlite3.Error, OSError) as error:
             raise SaveError("SAVE_INSPECT_FAILED", str(error)) from error
         finally:
             self._busy = False
 
-    def stage_load(self, slot_id: str) -> SqliteCommitStore:
-        current, _ = self._paths(slot_id)
+    def stage_load(self, slot_id: str, *, previous: bool = False) -> SqliteCommitStore:
+        current = self._source(slot_id, previous)
         if self._busy:
             raise SaveError("SAVE_BUSY", "slot operation active")
         self._busy = True
         path: Path | None = None
         try:
             self._store.load()
-            validate_save(current, io=self._io)
+            self._validate_source(current, previous)
             root = self._store.path.parent
             # Count working clones, not their SQLite lock sidecars or unrelated entries.
-            if sum(
-                1 for child in root.glob(".loaded-*.sqlite")
-                if re.fullmatch(r"\.loaded-[0-9a-f]{32}\.sqlite", child.name)
-                and child.is_file() and not child.is_symlink()
-            ) >= 8:
+            if (
+                sum(
+                    1
+                    for child in root.glob(".loaded-*.sqlite")
+                    if re.fullmatch(r"\.loaded-[0-9a-f]{32}\.sqlite", child.name)
+                    and child.is_file()
+                    and not child.is_symlink()
+                )
+                >= 8
+            ):
                 raise SaveError("SAVE_LIMIT", "managed working clone count")
             path = self._reserve(root, ".loaded-")
             _backup_file_reserved(current, path, io=self._io)

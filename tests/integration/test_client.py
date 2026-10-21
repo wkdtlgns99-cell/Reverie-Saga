@@ -8,6 +8,7 @@ import sqlite3
 import threading
 import time
 import tkinter as tk
+from tkinter import ttk
 
 import pytest
 
@@ -377,6 +378,187 @@ def test_real_tk_history_is_bounded_and_invalid_wait_is_explained(window: PlayWi
     window.buttons["wait"].invoke()
     assert window.view == before
     assert "정수를 입력" in window.log_text.get("1.0", "end-1c")
+
+
+@pytest.mark.parametrize("count,extra,top", ((80, 1, 40), (200, 2, 40), (200, 2, 1)))
+def test_real_tk_new_log_preserves_reading_record(
+    window: PlayWindow, count: int, extra: int, top: int
+) -> None:
+    window.root.geometry("900x950")
+    window.root.deiconify()
+    window.root.update()
+    window.history.clear()
+    window._append_messages(tuple(f"읽는 기록 {index}" for index in range(count)))
+    window.root.update()
+    window.log_text.yview(f"{top}.0")
+    window.root.update()
+    before = window.log_text.get("@0,0 linestart", "@0,0 lineend")
+    if count == 200 and top == 1:
+        before = window.log_text.get("3.0", "3.end")  # First two records will be evicted.
+    view = window.view
+    saved = window.worker.request("save").result(timeout=15)
+    data = Path(saved.working_path).read_bytes()
+    window._append_messages(tuple(f"새 기록 {index}" for index in range(extra)))
+    window.root.update()
+    assert window.log_text.get("@0,0 linestart", "@0,0 lineend") == before
+    assert window.log_text.yview()[1] < 1
+    assert window.view == view and Path(saved.working_path).read_bytes() == data
+    window._append_messages(())
+    window.root.update()
+    assert window.log_text.get("@0,0 linestart", "@0,0 lineend") == before
+
+
+def test_real_tk_log_follows_tail_and_load_resets_reading(window: PlayWindow) -> None:
+    window.root.geometry("900x950")
+    window.root.deiconify()
+    window.root.update()
+    _click(window, "save")
+    window._append_messages(tuple(f"기록 {index}" for index in range(80)))
+    window.root.update()
+    window.log_text.see("end")
+    window._append_messages(("마지막 기록",))
+    window.root.update()
+    assert window.log_text.yview()[1] == 1
+    window.log_text.yview("20.0")
+    window.root.update()
+    assert window.log_text.yview()[1] < 1
+    _click(window, "load")
+    window.root.update()
+    assert window.status.get() == "LOADED"
+    assert window.log_text.yview()[1] == 1
+    assert "마지막 기록" not in window.log_text.get("1.0", "end")
+
+
+def _focus_wait_field(window: PlayWindow) -> None:
+    window.root.geometry("1000x1000")
+    window.root.deiconify()
+    window.wait_input.focus_force()
+    window.root.update()
+    assert window.root.focus_get() is window.wait_input
+
+
+def test_real_tk_latest_button_is_readonly_and_resumes_following(window: PlayWindow) -> None:
+    _focus_wait_field(window)
+    window._append_messages(tuple(f"과거 기록 {index}" for index in range(80)))
+    window.root.update()
+    window.log_text.yview("20.0")
+    window.root.update()
+    assert window.log_text.yview()[1] < 1
+    assert window.last_update is not None
+    path = Path(window.last_update.working_path)
+    before = (window.view, window.last_update, tuple(window.history), path.read_bytes())
+    for _ in range(2):
+        window.log_latest_button.invoke()
+    window.root.update()
+    assert window.log_text.yview()[1] == 1
+    assert (window.view, window.last_update, tuple(window.history), path.read_bytes()) == before
+    window._send("wait")
+    pending = window._pending
+    assert pending is not None and window.log_latest_button.instate(["!disabled"])
+    window.log_latest_button.invoke()
+    assert window._pending is pending
+    _pump(window.root, lambda: not window.busy)
+    window.root.update()
+    assert window.view is not None and window.view.tick == 1
+    assert window.log_text.yview()[1] == 1
+
+
+def test_real_tk_latest_button_preserves_history_heading_height(window: PlayWindow) -> None:
+    _focus_wait_field(window)
+    heading = window.log_latest_button.master
+    label = next(child for child in heading.winfo_children() if isinstance(child, ttk.Label))
+    assert window.log_latest_button.winfo_ismapped()
+    assert heading.winfo_reqheight() == label.winfo_reqheight()
+
+
+@pytest.mark.parametrize("seconds", (1, 4, 16))
+def test_real_tk_wait_enter_submits_once(window: PlayWindow, seconds: int) -> None:
+    _focus_wait_field(window)
+    window.wait_seconds.set(str(seconds))
+    window.wait_input.event_generate("<Return>")
+    pending = window._pending
+    assert pending is not None
+    window.wait_input.event_generate("<Return>")
+    assert window._pending is pending
+    _pump(window.root, lambda: not window.busy)
+    assert window.status.get() == "COMMITTED"
+    assert window.view is not None and window.view.tick == seconds
+
+
+def test_real_tk_keypad_enter_binding_submits_once(window: PlayWindow) -> None:
+    _focus_wait_field(window)
+    window.wait_seconds.set("4")
+    binding = window.wait_input.bind("<KP_Enter>")
+    assert binding
+    if window.root.tk.call("tk", "windowingsystem") == "win32":
+        # Windows Tk has no synthetic keycode for KP_Enter;invoke its registered callback.
+        command = binding.split("[", 1)[1].split(" ", 1)[0]
+        window.root.tk.call(command, "")
+        pending = window._pending
+        window.root.tk.call(command, "")
+    else:
+        window.wait_input.event_generate("<KP_Enter>")
+        pending = window._pending
+        window.wait_input.event_generate("<KP_Enter>")
+    assert pending is not None and window._pending is pending
+    _pump(window.root, lambda: not window.busy)
+    assert window.status.get() == "COMMITTED"
+    assert window.view is not None and window.view.tick == 4
+
+
+@pytest.mark.parametrize(
+    "value,code",
+    (
+        ("", "INVALID_INPUT"),
+        ("abc", "INVALID_INPUT"),
+        ("0", "INVALID_COMMAND"),
+        ("-1", "INVALID_COMMAND"),
+        ("17", "INVALID_COMMAND"),
+    ),
+)
+def test_real_tk_wait_enter_rejection_preserves_input_and_save(
+    window: PlayWindow, value: str, code: str
+) -> None:
+    _focus_wait_field(window)
+    assert window.last_update is not None
+    path = Path(window.last_update.working_path)
+    before = (window.view, path.read_bytes())
+    window.wait_seconds.set(value)
+    window.wait_input.event_generate("<Return>")
+    _pump(window.root, lambda: not window.busy)
+    assert window.status.get().startswith(code)
+    assert (window.view, path.read_bytes()) == before
+    assert window.wait_seconds.get() == value
+
+
+def test_real_tk_return_outside_wait_field_does_not_act(window: PlayWindow) -> None:
+    _focus_wait_field(window)
+    before = window.view
+    for widget in (window.log_text, window.slot_input):
+        widget.focus_force()
+        window.root.update()
+        widget.event_generate("<Return>")
+        window.root.update()
+        assert window._pending is None and window.view == before
+
+
+def test_real_tk_repeated_invalid_return_retains_gameplay_log(window: PlayWindow) -> None:
+    _focus_wait_field(window)
+    _click(window, "wait")
+    gameplay = tuple(window.history)
+    window.wait_seconds.set("")
+    for _ in range(205):
+        window.wait_input.event_generate("<Return>")
+    assert tuple(window.history)[:-1] == gameplay
+    assert len(window.history) == len(gameplay) + 1
+    assert window.status.get().startswith("INVALID_INPUT")
+    error = window.history[-1].split("] ", 1)[-1]
+    window.wait_seconds.set("1")
+    _click(window, "wait")
+    window.wait_seconds.set("")
+    window.wait_input.event_generate("<Return>")
+    assert window.history[-1].endswith(error)
+    assert sum(line.endswith(error) for line in window.history) == 2
 
 
 def test_finishing_attack_message_has_no_counter(client: ClientSession) -> None:
