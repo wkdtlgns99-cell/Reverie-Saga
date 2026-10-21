@@ -1,8 +1,8 @@
 # Reverie Saga — Session Handoff
 
-Updated:2026-10-20 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-10-21 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual checkout.
+Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -14,68 +14,31 @@ Observed checkout for this repair:`C:\Reverie Saga`;run commands in the actual c
 
 ## Checkout and Local Work
 
-Director2026-10-20now explicitly authorizes publishing this session's QT-F28–32,finishing
-verification and ordinary main merge after required PR checks. This supersedes the earlier
-local-only publication limits for this batch;CP06release remains held,no agents authorized.
-Use Git/GitHub for the current checkout,PR/check/merge SHA and remote status. Preserve the
-earlier5-edit stash and tmp/sync-main-backup-20261020-085716;they are outside this delivery.
+Director2026-10-21requests one next increment and all tests until ready for main publication.
+Selected QT-F33:retain a separate verified work section in existing NPC activity inspection.
+[Order](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md),[evidence](docs/reviews/QT-F33_EXECUTION_2026-10-21.md).
+QT-F33 LOCAL_ACCEPTED;full local verification complete,ready for commit/PR preparation.
+Director2026-10-21now authorizes commit,push and PR creation only. Do not merge main or
+enable auto-merge;director will continue at home. Do not wait for remote CI before delivery.
+Use Git/GitHub for current commit/PR/check state;local acceptance does not imply remote CI/release acceptance.
+Primary4retrieval support;related5/6/7. No new authoritative NPC action;D2OPEN,CP06held.
+No external Claude review/agents authorized. This explicit PR-only request supersedes the
+previous preparation-only scope for F33;main merge remains outside this request.
 
-Latest director request2026-10-20:autonomously select/implement/verify one more D2increment;
-write an order only when useful. QT-F32dialogue focus LOCAL_ACCEPTED;[receipt](docs/reviews/QT-F32_EXECUTION_2026-10-20.md).
-Final116native PASS/0FAIL at547x376,full memory/error readable;real buttons/W/Escape verify
-reading17unchanged versus normal18movement. Seven exact save/replay/byte guards PASS.
-Fresh Windows build89,487,648bytes/release-hook absence PASS in separate GUID output.
-Same editor8336reused,0restart;static/type189/imports/doc guards PASS. Python unchanged;
-F31affected206/F28full evidence reused,no fresh full. Actual branch unchanged;all35entry dirty
-paths backed up in tmp/qt-f32/baseline. Original scene bytes restored,editor open in Edit mode.
-Current delivery scope is F28–32sources/tests/docs. Publication now authorized as above.
-
-Current director request2026-10-20:choose one D2 NPC action,author its work order,implement
-and verify it. Actual checkout C:/ReverieSaga;main synchronized467e6cd before creating
-codex/npc-provision-20261020. QT-F28communal provisions is LOCAL_ACCEPTED;[order](docs/work_orders/QT-F28_NPC_PROVISIONS.md).
-Preserve all current edits. Earlier5local CI/doc edits remain separately backed up in Git stash
-and tmp/sync-main-backup-20261020-085716;do not apply them to this feature. Current task has
-publication authorization as stated above. Old publication instructions below describe prior tasks.
-Python3.13.12/Tk8.6/pip and installed editor6000.3.25f1 reused;no editor running at entry.
-Full2029cases qualified across restricted2014PASS/15environment failures and permitted reruns
-covering all15failures. Native27PASS/0FAIL,3captures/3save-readback/replay byte guards PASS;
-activity127–207ms. Single editor8336retained,result/retained/idle0;reuse it,do not restart.
-Scene content-normalized equality proved and entry bytes restored. Current default remains
-old memory mode;explicit REVERIE_UNITY_NPC_WORK=1 uses separate harbor-work save. D2OPEN,CP06held.
-[Receipt](docs/reviews/QT-F28_EXECUTION_2026-10-20.md).
-
-Latest director request2026-10-19:finish final Unity validation,create PR,pass checks and
-merge main;retain Unity. QT-F27now LOCAL_ACCEPTED:169native/0FAIL,actual chronological display
-inspected,5save/activity/readback/replay byte-preservation guards PASS;fresh17Python/static PASS.
-[Receipt](docs/reviews/QT-F27_EXECUTION_2026-10-18.md). No editor was running at entry;one launch
-PID30672retained after result/retained/idle0,no restart. No runtime change since published a0c9217.
-Main merge is now explicitly authorized after CI passes;CP06release remains held,D2OPEN.
-This supersedes the interrupted/local-only publication statements in historical context below.
-
-Current director request2026-10-18:Unity closed;execute next task. QT-F26native Unity activity
-qualification LOCAL_ACCEPTED:143native/28Python/static,2actual captures/5save readbacks+replays
-PASS. [Receipt](docs/reviews/QT-F26_EXECUTION_2026-10-18.md). One launch,editor5088left open in
-Edit mode;result/retained/idle0. Initial runner path rejection was repaired through the same
-editor's menu,no restart. Logs must stay outside the empty working-save parent.
-Prior director request2026-10-16:repair intermittent Tk errors,then execute one next task.
-PR8merge/local synchronization completed at main b2876a7. Current local repair branch:
-codex/tk-lifecycle-village-20261016;HEAD b2876a7 with uncommitted authorized work.
-RS-TK-001121affected checks/static PASS;QT-F25NPC activity presentation implemented,
-18targeted/strict177files/static/imports PASS. Combined full1971PASS1092.70s/exit0,
-tmp/tk-f25-full.log. Both LOCAL_ACCEPTED;[QT-F25receipt](docs/reviews/QT-F25_EXECUTION_2026-10-16.md).
-Publication is now explicitly authorized by the latest request above.
-PR8and maincec6869 are integrated using current shared engines,original courtyard selectors/save pins and current quest/memory clients. Checkout-ending repair and
-[receipt](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) preserve existing raw G07hashes.
-Previous no-merge publication constraint is superseded for PR8by this explicit request.
-
-| Item | Last observed state;recheck Git before edits |
-|---|---|
-| Source branch / base | codex/npc-provision-20261020,base467e6cd;inspect Git for current checkout/head |
-| Prior main baseline |467e6cd,PR10merged;new main identity follows this delivery's GitHub PR |
-| Delivery scope | QT-F28–32sources/tests/client/docs;separate earlier backups remain private |
-| Current request | Publish/qualify QT-F28–32and ordinary main merge;D2OPEN,no automatic next feature |
-| Publication | Explicitly authorized2026-10-20;required PR checks gate ordinary merge;CP06release held |
-| Verification | QT-F32native116/real input/build/7saves PASS;unchanged-Python F31affected206/F28full evidence reused;see receipts |
+- Entry clean main/origin/main c00a2ad(PR11merged);current local branch codex/npc-work-inspection-20261021.
+- F28–32already integrated by PR11;their receipts retain original local scope/limits.
+- Preserve earlier5-edit stash and tmp/sync-main-backup-20261020-085716;excluded from F33.
+- Python3.13.12/Tk8.6/editor6000.3.25f1reused. No editor at entry;one launch18656retained,
+  same-editor final133native PASS/0FAIL(no restart),compact source/work/current stock readable.
+- New22Python/static/type190/imports PASS;fresh full2101PASS778.80s,exact CI31boundary
+  PASS10.46s,all7managed saves validate/replay/query/byte guards PASS. Windows build
+  89,483,696bytes/release-hook exclusion PASS on46byte-verified Unity inputs in a fresh
+  isolated copy;one temporary build-only process exited0,original editor never restarted.
+  Original scene byte-exact restored;qualified source/save hashes unchanged. Final document
+  guards10PASS/exact11path scope/diff whitespace PASS;owned native Brain0. See receipt.
+- Only app query/session,one new integration test,native verification and task/progress/docs
+  may change. Preserve canonical scene entry bytes after normalized-equality verification.
+- Use Git for actual branch/head/dirty files;use linked current receipt for exact evidence.
 
 ## Resume Constraints
 

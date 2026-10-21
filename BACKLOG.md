@@ -1,16 +1,29 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-20 | Current task/status/dependency SSOT.
+Updated:2026-10-21 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
 
-Director2026-10-20authorizes publishing QT-F28–32and ordinary main merge after required
-checks. The linked local receipts retain their actual host/scope evidence;GitHub PR/checks
-and Git record the delivered head and merge state. Earlier5-edit stash/backups excluded.
-This is integration/publication support for categories2–7;D2OPEN and CP06release held.
+Director2026-10-21now authorizes publishing QT-F33and creating a PR only;no main merge/
+auto-merge or remote-CI wait. Director will continue at home. Git/GitHub own actual PR/check state.
+QT-F33 LOCAL_ACCEPTED:existing activity inspection keeps separate retained production4/8/12and
+current stock despite mixed8bell eviction. One verified replay,read-only/no inferred lost
+history;empty/truncated sources explicit. New22Python/static/type190/imports PASS;final
+133native PASS/0FAIL,small-view source/work/stock readable,same editor18656retained.
+Fresh full2101PASS778.80s,exact CI boundary31PASS10.46s,all7managed saves validate/replay/
+query/byte guards PASS. Windows build89,483,696bytes/release-hook exclusion PASS on46byte-
+verified Unity inputs in an isolated copy;original editor retained,temporary build process
+exited0. Original scene bytes restored;final document10/scope11paths/whitespace PASS.
+Full local acceptance retained;current commit/PR/check state follows Git/GitHub. No main merge authorized.
+[Order](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md),[receipt](docs/reviews/QT-F33_EXECUTION_2026-10-21.md).
+Primary4retrieval support;related5/6/7,D2OPEN. PR-only publication is now explicitly authorized;
+no agents or release acceptance. Earlier5-edit backups preserved.
+
+Previous delivery:QT-F28–32merged by PR11at main c00a2ad;below are its historical local
+receipts,not the current F33test results. Git/GitHub own current commit/check state.
 
 QT-F32 LOCAL_ACCEPTED2026-10-20:Unity dialogue focus expands existing547x376history to250px,
 actual full memory/transport error readable;button/Escape return,reading suppresses movement,
@@ -90,7 +103,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | QT-F28–32PR/checks/ordinary main merge authorized2026-10-20 | Latest session batch;merge only after final-head required checks pass. Previous PR10already integrated. CP06release held |
+| Publication / CI | QT-F28–32merged PR11;QT-F33push/PR authorized | Current request:publish F33/create PR only,no main merge/auto-merge or CI wait. GitHub records actual PR/check state. CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
@@ -110,7 +123,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
-| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported. Regional cognition/relationships/economy remain open |
+| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection accepted. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |
 | RS-ARCH-002 / D6 | IN_PROGRESS | B02–08 design DONE;B09 READY_FOR_REVIEW,#6/#34 later-order readiness PARTIAL;[BLOCK09](architecture/BLOCK_09.md). Design completion does not qualify runtime |

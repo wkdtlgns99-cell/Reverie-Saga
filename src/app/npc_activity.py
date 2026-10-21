@@ -6,7 +6,7 @@ from typing import Literal
 from app.headless import HeadlessSession, restore_checkpoint, state_io
 from app.npc_memory import memory_bundle
 from app.npc_memory_query import player_memory_recollection
-from app.npc_work import work_bundle
+from app.npc_work import stock_text, work_bundle
 from contracts.npc_work import ProvisionPrepared
 from contracts.messages import WorldEvent
 from contracts.quest import QuestSpoken
@@ -17,7 +17,7 @@ from contracts.replay import ReplaySession
 from contracts.turn import ProtocolSnapshot, TurnDriver, TurnPublication
 from contracts.watch import NpcActed, WatchEcho, WatchReplied, WatchRequested
 from domain.state_types import CoreSnapshot
-from domain.npc_work import STOCK_CAP
+from domain.npc_work import STOCK_CAP, ProvisionsRecord
 from domain.npc_memory import NpcQuestMemoryRecord
 from domain.watch import ECHO_DEPTH
 from orchestration.replay import Runner
@@ -183,6 +183,57 @@ def recent_activity(
         error_code="NPC_ACTIVITY_SOURCE",
     )
     return tuple(factory.entries)
+
+
+def activity_messages(
+    segment: SaveSegment,
+    npc_id: str,
+    *,
+    content: QuestContent,
+    current: DurableCheckpoint,
+    npc_work: bool = False,
+) -> tuple[str, ...]:
+    """Keep retained work separate from frequent bells;never infer lost events."""
+    if npc_id != content.definition.layout.npc_id:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "activity owner differs from selected NPC")
+    try:
+        factory = _verified_activity(
+            segment,
+            npc_id,
+            content=content,
+            current=current,
+            npc_work=npc_work,
+            error_code="NPC_ACTIVITY_SOURCE",
+        )
+    except ReplayFormatError as error:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "retained activity format mismatch") from error
+    messages = tuple(entry.text() for entry in reversed(factory.entries)) or (
+        "현재 저장 구간에 남은 NPC 자기 활동이 없습니다.",
+    )
+    if not npc_work:
+        return messages
+    stocks = tuple(
+        record
+        for record in current.core.components
+        if isinstance(record, ProvisionsRecord) and record.entity_id == npc_id
+    )
+    if len(stocks) != 1:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "activity requires selected NPC provisions")
+    return (
+        *messages,
+        f"NPC 비축 작업 · {segment.checkpoint.core.tick}초 이후 저장 기록에서 확인했습니다.",
+        *(
+            tuple(
+                f"NPC 비축 작업 · {entry.tick}초: +1개 (당시 {entry.count}/{STOCK_CAP}개)"
+                for entry in factory.work_entries
+            )
+            or (
+                "현재 저장 구간에 남은 비축 작업 기록이 없습니다. "
+                "재고로 과거 작업을 추정하지 않습니다.",
+            )
+        ),
+        stock_text(stocks[0].stock),
+    )
 
 
 def _verified_activity(
