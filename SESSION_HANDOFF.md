@@ -14,6 +14,13 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+Publication [PR13](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/13):first20minute
+CI budget interrupted full1796PASS/1FAIL after static/type/imports and31boundary PASS.
+Low-height unmapped Text caused a test's stale wait-field focus;locally reproduced/fixed
+without production change. Real focus/mapping and unchanged-byte/history assertions added;
+client+rulebook66PASS22.43s. Only CI timeout20→30changed;full selection2174. Updated-head
+CI must pass before ordinary merge;GitHub owns final state. [Repair](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
+
 Director2026-10-21requests the next implementation across5/6/7;earlier QT-R34–36patch
 rereview remains DEFERRED,not accepted. QT-F39 LOCAL_ACCEPTED:Unity save-manager screen,
 explicit current/previous preview and previous-save private restore,including corrupt latest

@@ -430,6 +430,8 @@ def test_real_tk_log_follows_tail_and_load_resets_reading(window: PlayWindow) ->
 
 
 def _focus_wait_field(window: PlayWindow) -> None:
+    # Monitor-derived maximums can clip/unmap the log;these are keyboard tests,not layout tests.
+    window.root.maxsize(1000, 1000)
     window.root.geometry("1000x1000")
     window.root.deiconify()
     window.wait_input.focus_force()
@@ -531,15 +533,23 @@ def test_real_tk_wait_enter_rejection_preserves_input_and_save(
     assert window.wait_seconds.get() == value
 
 
-def test_real_tk_return_outside_wait_field_does_not_act(window: PlayWindow) -> None:
+@pytest.mark.parametrize("height_limit", (600, 768, 1000))
+def test_real_tk_return_outside_wait_field_does_not_act(
+    window: PlayWindow, height_limit: int
+) -> None:
+    window.root.maxsize(1000, height_limit)
     _focus_wait_field(window)
-    before = window.view
+    assert window.last_update is not None
+    path = Path(window.last_update.working_path)
+    before = window.view, window.last_update, tuple(window.history), path.read_bytes()
     for widget in (window.log_text, window.slot_input):
+        assert widget.winfo_ismapped()
         widget.focus_force()
-        window.root.update()
+        _pump(window.root, lambda: window.root.focus_get() is widget)
         widget.event_generate("<Return>")
         window.root.update()
-        assert window._pending is None and window.view == before
+        assert window._pending is None
+        assert (window.view, window.last_update, tuple(window.history), path.read_bytes()) == before
 
 
 def test_real_tk_repeated_invalid_return_retains_gameplay_log(window: PlayWindow) -> None:

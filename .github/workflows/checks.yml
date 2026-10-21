@@ -8,7 +8,7 @@ permissions:
 jobs:
   checks:
     runs-on: windows-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     env:
       PYTHONHASHSEED: "0"
       PYTHONUTF8: "1"

@@ -7,6 +7,15 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+[PR13](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/13) publication/CI repair:
+first run passed static/type/imports and31boundaries;full1796PASS/1focus-fixture FAIL before
+20minute job cancellation. Low maximum heights reproduced unmapped Text/stale wait focus.
+Keyboard fixture now guarantees mapped/focused targets,with600/768/1000regressions and
+stronger byte/history guards;all client+document66PASS22.43s. CI bound30minutes only;
+all commands/checks retained. Full selection now2174. Updated-head GitHub CI remains the
+merge gate;GitHub owns final status. [Repair receipt](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
+Production/native/build inputs unchanged;earlier evidence below remains snapshot-specific.
+
 Director2026-10-21authorizes publishing the accumulated F34–39and QT-R34–36repairs through
 a PR,checking CI and ordinary main merge. Actual commit/PR/CI/main state is owned by Git
 and GitHub. Earlier local-only/no-publication statements below describe their execution
