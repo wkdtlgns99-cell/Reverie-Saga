@@ -287,10 +287,10 @@ namespace ReverieSaga
                 ",\"restored_tick\":"+room.Latest.update.view.tick+"}");
         }
 
-        IEnumerator InspectMemory(string label,int count)
+        IEnumerator InspectMemory(string label,int count,int acceptedAt=2,int reportedAt=12)
         {
-            yield return InspectMemorySelection(label,count,false);
-            yield return InspectMemorySelection(label+"_recent",count==0?0:1,true);
+            yield return InspectMemorySelection(label,count,false,acceptedAt,reportedAt);
+            yield return InspectMemorySelection(label+"_recent",count==0?0:1,true,acceptedAt,reportedAt);
         }
 
         IEnumerator InspectActivity(string label,int tick)
@@ -321,7 +321,7 @@ namespace ReverieSaga
                       ((Time.realtimeSinceStartup-start)*1000).ToString(CultureInfo.InvariantCulture));
         }
 
-        IEnumerator InspectMemorySelection(string label,int count,bool recent)
+        IEnumerator InspectMemorySelection(string label,int count,bool recent,int acceptedAt=2,int reportedAt=12)
         {
             if(failed||!room.NpcMemoryEnabled)yield break;
             var before=room.Latest.update;
@@ -338,17 +338,17 @@ namespace ReverieSaga
                   !after.reset_log&&FileHash(after.working_path)==bytes,label+"_read_only");
             string text=String.Join("\n",after.messages);
             bool expected=count==0?after.messages.Length==1&&text.Contains("아직 기록된"):
-                after.messages.Length==count&&after.messages[0].Contains("2초:")&&
+                after.messages.Length==count&&after.messages[0].Contains(acceptedAt.ToString(CultureInfo.InvariantCulture)+"초:")&&
                 after.messages[0].Contains("직접 들었습니다")&&
-                (count==1||after.messages[1].Contains("12초:")&&
+                (count==1||after.messages[1].Contains(reportedAt.ToString(CultureInfo.InvariantCulture)+"초:")&&
                  after.messages[1].Contains("완료 보고를 받았습니다")&&
                  after.messages[1].Contains("직접 본 기억은 아닙니다"));
             if(recent&&count!=0) {
                 bool reported=before.quest_stage=="3";
                 expected=after.messages.Length==1&&text.StartsWith("최근 NPC 대화 기억")&&
-                    (reported?text.Contains("12초:")&&text.Contains("완료 보고를 받았습니다")&&
+                    (reported?text.Contains(reportedAt.ToString(CultureInfo.InvariantCulture)+"초:")&&text.Contains("완료 보고를 받았습니다")&&
                               text.Contains("직접 본 기억은 아닙니다"):
-                              text.Contains("2초:")&&text.Contains("직접 들었습니다"));
+                              text.Contains(acceptedAt.ToString(CultureInfo.InvariantCulture)+"초:")&&text.Contains("직접 들었습니다"));
             }
             Check(expected&&room.HistoryForVerification.Contains(after.messages[0])&&
                   room.CanInspectMemory,label+"_display");
@@ -748,6 +748,7 @@ namespace ReverieSaga
         IEnumerator SaveManagerFlow()
         {
             if(failed)yield break;
+            bool workMode=room.NpcWorkEnabled,cycleMode=room.NpcCycleEnabled;
             room.SetSaveManager(true);
             Check(room.SaveManagerOpen&&!room.DialogueFocused&&!room.GameplayInputEnabled,
                 "manager_input_mode");
@@ -802,7 +803,7 @@ namespace ReverieSaga
             int pid=room.BrainProcessId;
             room.Reconnect();yield return Ready();
             Check(room.BrainProcessId!=pid&&room.SaveManagerOpen&&room.SelectedSlot=="slot08"&&
-                JsonUtility.ToJson(room.Latest.update.view)==resumedView&&room.NpcMemoryEnabled&&room.NpcWorkEnabled,
+                JsonUtility.ToJson(room.Latest.update.view)==resumedView&&room.NpcMemoryEnabled&&room.NpcWorkEnabled==workMode&&room.NpcCycleEnabled==cycleMode,
                 "manager_new_process_resume_pins_selection");
             yield return Intent("load");
             Check(room.SaveManagerOpen&&room.SelectedSlot=="slot08"&&
@@ -819,6 +820,74 @@ namespace ReverieSaga
                 "manager_continue_did_not_repair_sources");
             // Restore only this verification run's deliberately damaged fixture after preservation checks.
             File.WriteAllBytes(current,originalCurrent);
+        }
+
+        IEnumerator CycleActivity(string summary,string[] expected)
+        {
+            string view=JsonUtility.ToJson(room.Latest.update.view);
+            string bytes=FileHash(room.Latest.update.working_path);
+            room.InspectActivity();
+            Check(room.Busy&&!room.CanInspectMemory,"cycle_activity_pending_guard");
+            room.InspectActivity();yield return Ready();
+            var update=room.Latest.update;
+            Check(update.status=="ACTIVITY_INSPECTED"&&update.messages[0]==summary,
+                "cycle_activity_counters");
+            Check(update.messages.Length==expected.Length+2,"cycle_memory_bounded_count");
+            for(int index=0;index<expected.Length;index++)
+                Check(update.messages[index+2]==expected[index],"cycle_memory_anchor_"+index);
+            Check(JsonUtility.ToJson(update.view)==view&&FileHash(update.working_path)==bytes,
+                "cycle_activity_readonly");
+        }
+
+        IEnumerator CycleFlow()
+        {
+            Check(room.NpcCycleEnabled&&!room.NpcWorkEnabled&&room.NpcMemoryEnabled&&
+                room.NpcModeLabel=="NPC 반복 작업·기억 모드","cycle_mode_badge_and_selection");
+            Check(room.Latest.update.view.tick=="0","cycle_genesis");
+            yield return CycleActivity("NPC 반복 작업: 물자 0/3개 · 준비 0회 · 사용 0회.",new string[0]);
+            yield return Intent("save");
+            yield return Intent("talk");
+            Check(room.Latest.update.status=="OUT_OF_RANGE"&&room.Latest.update.view.tick=="0",
+                "cycle_rejected_talk_preserves_time");
+            room.SelectWaitDuration(3);yield return Intent("wait");
+            room.SelectWaitDuration(1);yield return Intent("wait");
+            string[] at20={
+                "NPC 작업 기억 · 12초: 공동 물자 1개를 준비했습니다 · 물자 2/3개.",
+                "NPC 작업 기억 · 16초: 공동 물자 1개를 준비했습니다 · 물자 3/3개.",
+                "NPC 작업 기억 · 20초: 공동 물자 1개를 사용했습니다 · 물자 2/3개.",
+                "NPC 작업 기억 · 20초: 공동 물자 1개를 준비했습니다 · 물자 3/3개."};
+            string bytes=FileHash(room.Latest.update.working_path);
+            yield return Intent("retry");
+            Check(room.Latest.update.messages.Length==1&&room.Latest.update.messages[0]==
+                "이미 처리된 명령의 결과를 확인했습니다. 행동은 다시 실행하지 않았습니다."&&
+                FileHash(room.Latest.update.working_path)==bytes,
+                "cycle_retry_no_duplicate_memory_or_write");
+            yield return CycleActivity("NPC 반복 작업: 물자 3/3개 · 준비 5회 · 사용 2회.",at20);
+            room.SetDialogueFocus(true);yield return CaptureActivity("cycle-tie-memory");room.SetDialogueFocus(false);
+            yield return Intent("save");
+            room.SelectWaitDuration(2);yield return Intent("wait");
+            room.SelectWaitDuration(0);yield return Intent("wait");yield return Intent("wait");
+            Check(room.Latest.update.view.tick=="30"&&room.Latest.update.quest_reward=="0",
+                "cycle_offscreen_consumption_no_player_reward");
+            yield return Intent("load");
+            Check(room.Latest.update.view.tick=="20","cycle_load_rewinds_clock");
+            yield return CycleActivity("NPC 반복 작업: 물자 3/3개 · 준비 5회 · 사용 2회.",at20);
+            int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.BrainProcessId!=pid&&room.NpcCycleEnabled&&room.Latest.update.view.tick=="20",
+                "cycle_new_process_retains_mode_time");
+            yield return CycleActivity("NPC 반복 작업: 물자 3/3개 · 준비 5회 · 사용 2회.",at20);
+            foreach(string action in new [] {"down","talk","open","right","down","attack","attack","rest","attack"})
+                yield return Intent(action);
+            yield return Intent("left");yield return Intent("talk");
+            Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1",
+                "cycle_quest_combat_report_reward_independent");
+            Check(String.Join("\n",room.Latest.update.messages).Contains("NPC 작업 기억 · 30초: 공동 물자 1개를 사용"),
+                "cycle_talk_uses_own_persisted_memory");
+            yield return InspectMemory("cycle_player_conversation_separate",2,22,31);
+            room.SetDialogueFocus(true);room.InspectActivity();yield return Ready();
+            yield return CaptureActivity("cycle-after-report");room.SetDialogueFocus(false);
+            yield return SaveManagerFlow();
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }
 
         IEnumerator WorkFlow()
@@ -981,6 +1050,7 @@ namespace ReverieSaga
                 yield return InspectSlot("initial_slot_missing",null);
             }
             if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
+                if(room.NpcCycleEnabled){yield return CycleFlow();yield break;}
                 if(room.NpcWorkEnabled){yield return WorkFlow();yield break;}
                 if(Environment.GetEnvironmentVariable("REVERIE_UNITY_EXPECT_MEMORY")=="1")
                     Check(room.NpcMemoryEnabled,"quest_memory_mode_forwarded");

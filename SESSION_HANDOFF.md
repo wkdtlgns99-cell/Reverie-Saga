@@ -1,8 +1,9 @@
 # Reverie Saga — Session Handoff
 
-Updated:2026-10-21 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+
+Updated:2026-10-22 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
+Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -14,49 +15,49 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-Publication [PR13](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/13):first20minute
-CI budget interrupted full1796PASS/1FAIL after static/type/imports and31boundary PASS.
-Low-height unmapped Text caused a test's stale wait-field focus;locally reproduced/fixed
-without production change. Real focus/mapping and unchanged-byte/history assertions added;
-client+rulebook66PASS22.43s. Only CI timeout20→30changed;full selection2174. Updated-head
-CI must pass before ordinary merge;GitHub owns final state. [Repair](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
+QT-F45 LOCAL_ACCEPTED2026-10-22:current/previous saved-slot comparison of retained own
+supply memories,distinct causal-source+sequence identities,common/current-only/saved-only
+rows and explicit latest4/cumulative scope. Primary4retrieval support;related5/6/7.
+New22tests;affected238PASS82.85s,exact boundary31PASS9.81s,static/type203/import3+1/pip
+PASS. Same editor9524native76PASS0FAIL;actual547x376summary/actions inspected;all9owned
+save readbacks/replays/byte guards PASS. CORE/all Unity sources unchanged;reuse prior full
+2216PASS/build evidence. No new local full/rebuild claim. Mean slot87.065ms/max97.813ms.
+[Order](docs/work_orders/QT-F45_CYCLE_SLOT_MEMORY_COMPARISON.md),[receipt](docs/reviews/QT-F45_EXECUTION_2026-10-22.md).
+F40–44 posted at6bc8b54,[PR14](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/14),
+PR CI39733797530full2216PASS756.80s/boundary31/static/type/imports PASS. F45commit/push
+updates the same PR under director authorization;Git/GitHub own final head/check state.
+No agents/main merge/checkpoint waiver or automatic further task. D2OPEN,CP06held.
 
-Director2026-10-21requests the next implementation across5/6/7;earlier QT-R34–36patch
-rereview remains DEFERRED,not accepted. QT-F39 LOCAL_ACCEPTED:Unity save-manager screen,
-explicit current/previous preview and previous-save private restore,including corrupt latest
-refusal,source preservation and new-process continuation. Primary7전체 연결;participants
-5화면·연출 and6저장. No whole-category/final art/release completion claim.
-[Order](docs/work_orders/QT-F39_SAVE_MANAGER_RECOVERY.md),[receipt](docs/reviews/QT-F39_EXECUTION_2026-10-21.md).
+QT-F40–44 LOCAL_ACCEPTED2026-10-22:two small(mode badge,canonical stock text) and three
+large(NPC supply cycle,persistent last4 own memories,ordinary client/save recovery wiring).
+Primary2internal calculation;related4retrieval support/5screen/6save/7integration.
+[Order](docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md),[receipt](docs/reviews/QT-F40_44_EXECUTION_2026-10-22.md).
 
-- F39entry main d7f3217with12modified/14new paths from F34–38/repair;all preserved.
-  Director2026-10-21now authorizes F34–39/repair commit/push/PR,CI validation and ordinary
-  main merge. Git/GitHub own actual publication status;earlier snapshot-only restrictions
-  are superseded for this scope. No release/checkpoint waiver or new reviewer call.
-- New33Python cases;full2090PASS/82Git-ownership nonpasses801.93s. Exact process-only
-  safe.directory repair qualified all82in117PASS161.48s;combined2172distinct cases pass.
-  No global Git/test/security change. Early progress misidentified E-clusters as possible
-  Tk errors;final logs show Git provenance only. Static/type193/import3+1/pip PASS.
-- Reused editor3652without restart:170native PASS0FAIL,result/retained/idle0. Actual
-  642x500manager/actions/load captures inspected. Actual W blocked at16with unchanged
-  bytes;Escape+W commits17/cell0. Real previous-info click/scroll shows saved35/current17.
-- All12owned saves validate/replay/compare/byte guards PASS. Same-editor Windows build
-  89,488,672bytes/release hook absent PASS;tmp/unity-builds/996f895c87c44606a97800b9d34bf3fd.
-  Scene restored byte-exact. Prior code,CORE/content and frozen ZIPs hash-preserved.
-- New private request names slot_previous_inspect/load_previous;fields/version1unchanged,
-  canonical schema hash regenerated in Wire.Generated.cs. Save format/pins/export retention
-  unchanged. No silent fallback or source replacement;missing backup has explicit error.
-- QT-F38memory comparison remains accepted/preserved;[receipt](docs/reviews/QT-F38_EXECUTION_2026-10-21.md).
-  Earlier scoped F34–37/repair receipts and Linux/physical-keypad limits remain historical.
-- Repair ZIP tmp/reviews/CLAUDE_QT-R34-36_20261021T125433Z.zip and original F34–36ZIP
-  preserved. No new reviewer/provider call. CP06held;no final UX/device/standalone release
-  qualification,agents,remote administration/external send or automatic next task.
+- Baseline main bd8e9c7(clean),branch codex/npc-cycle-batch-20261022. Director2026-10-22
+  now authorizes batch commit/push/PR and the next implementation;Git/GitHub own actual
+  remote state. No new main merge or checkpoint waiver. PR13 is already merged at
+  bd8e9c710591a0c3eeebeb1d132d840177ccb9ea;head a9cc338c CI2174PASS/boundary31PASS.
+- Opt-in Python --npc-cycle with --npc-memory;Unity REVERIE_UNITY_NPC_CYCLE=1 with old
+  work mode unset/0. Approved preset reused;new default harbor-cycle/catalog-pin directory.
+  Existing work/memory pins unchanged;old incompatible saves reject without overwrite.
+- Prepare4/use10/cap3,consume before prepare on ties. One atomic owner stores supply and
+  last4 real causal action anchors. Talk/activity read persisted facts;no inferred history
+  or live LLM. Quest conversation memories/player reward remain separate.
+- Full2216PASS836.87s,exact CI boundary31PASS8.53s;static/type200/import3+1/pip PASS.
+  Native76PASS0FAIL;one installed Unity editor9524launched/reused and left open,idle.
+  Actual547x376captures/mode label checked;Windows build89,489,696bytes/release hook absent.
+- All9owned saves validate/replay/query/source-byte guards PASS;zero-trace checkpoint-only
+  memory restore/continuation PASS. Entry scene byte-exact restored;qualified source hashes
+  unchanged through full regression. Early fixture/oracle failures remain in the receipt/log.
+- Older5-edit stash and tmp/sync-main-backup-20261020-085716/manifest.json preserved.
+  CP06 held,D2 OPEN,QT-R34–36 patch rereview DEFERRED. No agents,external send or new reviewer.
 
 ## Resume Constraints
 
 - Director2026-10-16:ordinary Unity verification leaves the editor open;reuse its menu for later runs.
   [Workflow](clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16);explicit automated process-exit mode remains available.
 
-- Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,prepared approved dialogue,recent/full memory and saved-slot inspection.
+- Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,optional last4supply-action memories,prepared approved dialogue,recent/full memory and saved-slot inspection.
 - Truth:deterministic COMMIT-owned facts;ordinary play/replay requires no live LLM. Received completion reports are not witnessed enemy defeats. Existing saves retain original feature/catalog pins.
 - Director2026-10-16stops additional Claude V3review at PARTIAL;[final dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md). No continuation requested. Any future resume needs current snapshot/scope refresh;old2f591f7request is historical. CP06remains held.
 - Adopted audit direction is recorded in [BACKLOG](BACKLOG.md):deterministic authoritative rules,exact event-driven off-screen state,optional shared LLM/RAG context,measured Unity HD-2D,and a bounded categories2–7village slice. This is direction only,not an active order.

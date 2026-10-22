@@ -67,14 +67,31 @@ class PlayWindow:
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
         npc_work: bool = False,
+        npc_cycle: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         self.root = root
         self.worker = ClientWorker(
-            path, layout, quest_content=quest_content, npc_memory=npc_memory, npc_work=npc_work
+            path,
+            layout,
+            quest_content=quest_content,
+            npc_memory=npc_memory,
+            npc_work=npc_work,
+            npc_cycle=npc_cycle,
         )
         self._quest_content = quest_content
         self._npc_memory = npc_memory
+        self.mode_label = (
+            "NPC 반복 작업·기억 모드"
+            if npc_cycle
+            else (
+                "NPC 비축·기억 모드"
+                if npc_work
+                else "NPC 대화 기억 모드"
+                if npc_memory
+                else "기본 모드"
+            )
+        )
         self.memory_button: ttk.Button | None = None
         self.recent_memory_button: ttk.Button | None = None
         self.activity_button: ttk.Button | None = None
@@ -122,7 +139,7 @@ class PlayWindow:
         ttk.Label(panel, text="REVERIE SAGA", font=("Segoe UI", 21, "bold")).grid(
             row=0, column=0, columnspan=2, sticky="w"
         )
-        ttk.Label(panel, text="작은 코어 연결 테스트 · 임시 2D 화면").grid(
+        ttk.Label(panel, text="작은 코어 연결 테스트 · " + self.mode_label).grid(
             row=1, column=0, columnspan=2, sticky="w", pady=(0, 14)
         )
         self.canvas = tk.Canvas(
@@ -450,6 +467,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--quest-sha256")
     parser.add_argument("--npc-memory", action="store_true")
     parser.add_argument("--npc-work", action="store_true")
+    parser.add_argument("--npc-cycle", action="store_true")
     args = parser.parse_args(argv)
     layout = select_scenario(args.scenario).layout
     content = client_quest(layout, args.quest_catalog, args.quest_sha256)
@@ -457,6 +475,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise ValueError("NPC_MEMORY_CONTENT")
     if args.npc_work and not args.npc_memory:
         raise ValueError("NPC_WORK_CONTENT")
+    if args.npc_cycle and (not args.npc_memory or args.npc_work):
+        raise ValueError("NPC_CYCLE_CONTENT")
     root = tk.Tk()
     window = PlayWindow(
         root,
@@ -465,6 +485,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         quest_content=content,
         npc_memory=args.npc_memory,
         npc_work=args.npc_work,
+        npc_cycle=args.npc_cycle,
     )
     try:
         root.mainloop()

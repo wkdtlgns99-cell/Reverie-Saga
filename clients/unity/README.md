@@ -270,3 +270,15 @@ The private pipe adds `activity`;Wire.Generated.cs has the corresponding regener
 Final native acceptance2026-10-19:169checks/0failures,actual display and5save/replay readbacks PASS;
 see the [receipt](../../docs/reviews/QT-F27_EXECUTION_2026-10-18.md). Editor retained after Play stopped.
 Long-save latency is unqualified.
+
+## Optional supply-cycle mode (F40–44)
+
+Before launching the editor set `$env:REVERIE_UNITY_NPC_CYCLE='1'` and leave NPC_WORK
+unset/0. The approved no-selector harbor-memory preset supplies the required content.
+Explicit selections require NPC_MEMORY=1 and the approved harbor catalog/pin. Other values
+than unset/0/1 reject;cycle and work are mutually exclusive. The selected mode appears next
+to the scenario. Default saves use `tmp/unity-play/harbor-cycle/<catalog-pin>/game.sqlite`;
+explicit old-mode saves reject without conversion. Prepare4s/use10s,capacity3,consume before
+prepare on ties;four own action memories persist. Existing activity,talk,and current/previous
+slot controls inspect or restore them. No live API calls or extra player rewards.
+[Contract](../../docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md).

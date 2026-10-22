@@ -20,6 +20,9 @@ from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import recent_evidence
 from app.npc_memory_compare import slot_memory_messages
 from app.npc_activity import activity_messages, return_recollection
+from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
+from app.npc_cycle_compare import cycle_slot_messages
+from domain.npc_cycle import CycleRecord
 from app.npc_work import bootstrap_work, stock_text, work_bundle
 from domain.npc_work import ProvisionsRecord
 from contracts.dialogue import GenerationError, QuestContent
@@ -90,6 +93,7 @@ class ClientSession:
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
         npc_work: bool = False,
+        npc_cycle: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -107,6 +111,9 @@ class ClientSession:
         self._npc_memory = npc_memory
         if type(npc_work) is not bool or npc_work and not npc_memory:
             raise ValueError("NPC_WORK_CONTENT")
+        if type(npc_cycle) is not bool or npc_cycle and (not npc_memory or npc_work):
+            raise ValueError("NPC_CYCLE_CONTENT")
+        self._npc_cycle = npc_cycle
         self._npc_work = npc_work
         self._names = MappingProxyType(
             {
@@ -119,6 +126,8 @@ class ClientSession:
         bundles = (
             watch_bundle(layout)
             if quest_content is None
+            else cycle_bundle(quest_content)
+            if npc_cycle
             else work_bundle(quest_content)
             if npc_work
             else memory_bundle(quest_content)
@@ -134,6 +143,8 @@ class ClientSession:
             initial = (
                 bootstrap_watch(spec, layout=layout)
                 if quest_content is None
+                else bootstrap_cycle(spec, quest_content)
+                if npc_cycle
                 else bootstrap_work(spec, quest_content)
                 if npc_work
                 else bootstrap_memory(spec, quest_content)
@@ -213,6 +224,13 @@ class ClientSession:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
         if self._quest_content is None:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
+        if self._npc_cycle:
+            return self.update(
+                "ACTIVITY_INSPECTED",
+                messages=cycle_messages(
+                    _record(self._owner.snapshot(), CycleRecord, self._layout.npc_id)
+                ),
+            )
         try:
             messages = activity_messages(
                 self._owner.retained_segment(),
@@ -283,6 +301,16 @@ class ClientSession:
             if update.view is None:
                 raise RuntimeError("committed NPC talk requires a client view")
             update = replace(update, messages=(*update.messages, npc_activity_text(update.view)))
+            if self._npc_cycle:
+                update = replace(
+                    update,
+                    messages=(
+                        *update.messages,
+                        *cycle_messages(
+                            _record(self._owner.snapshot(), CycleRecord, self._layout.npc_id)
+                        ),
+                    ),
+                )
             if self._npc_work:
                 if self._quest_content is None:
                     raise RuntimeError("committed work talk requires quest content")
@@ -385,6 +413,19 @@ class ClientSession:
         if self._npc_work:
             stock = _record(checkpoint.core, ProvisionsRecord, self._layout.npc_id).stock
             messages += (stock_text(stock, saved=True),)
+        if self._npc_cycle:
+            messages += cycle_messages(
+                _record(checkpoint.core, CycleRecord, self._layout.npc_id), saved=True
+            )
+            try:
+                messages += cycle_slot_messages(
+                    checkpoint,
+                    DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+                    self._layout.npc_id,
+                )
+            except GenerationError as error:
+                logging.getLogger(__name__).exception("NPC cycle slot memory comparison failed")
+                raise SaveError("SAVE_INSPECT_FAILED", error.code) from error
         return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:

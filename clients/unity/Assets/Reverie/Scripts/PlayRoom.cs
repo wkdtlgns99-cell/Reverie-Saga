@@ -47,6 +47,9 @@ namespace ReverieSaga
         string questCatalog="",questSha256="";
         bool npcMemory;
         bool npcWork;
+        bool npcCycle;
+        public bool NpcCycleEnabled { get { return npcCycle; } }
+        public string NpcModeLabel { get { return npcCycle?"NPC 반복 작업·기억 모드":npcWork?"NPC 비축·기억 모드":npcMemory?"NPC 대화 기억 모드":"기본 모드"; } }
         public bool NpcWorkEnabled { get { return npcWork; } }
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
@@ -83,6 +86,10 @@ namespace ReverieSaga
                 if(!String.IsNullOrEmpty(workSelection)&&workSelection!="0"&&workSelection!="1")
                     throw new IOException("NPC_WORK_SELECTION");
                 npcWork=workSelection=="1";
+                string cycleSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_CYCLE");
+                if(!String.IsNullOrEmpty(cycleSelection)&&cycleSelection!="0"&&cycleSelection!="1")
+                    throw new IOException("NPC_CYCLE_SELECTION");
+                npcCycle=cycleSelection=="1";
                 questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
                 questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
                 bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
@@ -100,6 +107,7 @@ namespace ReverieSaga
                     npcMemory=memorySelection=="1";
                 }
                 scenario=BrainConnection.SelectScenario(scenario);
+                if(npcCycle&&(!npcMemory||npcWork))throw new IOException("NPC_CYCLE_CONTENT");
                 if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
                 if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
                     questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
@@ -110,7 +118,7 @@ namespace ReverieSaga
                     Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
                 if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
                     Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
-                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcCycle?"harbor-cycle":npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
                         Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
@@ -257,7 +265,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork,npcCycle);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
@@ -375,7 +383,7 @@ namespace ReverieSaga
 
         void DrawControls(float width)
         {
-            if(latest!=null)GUILayout.Label(latest.update.scenario_name);
+            if(latest!=null)GUILayout.Label(latest.update.scenario_name+" · "+NpcModeLabel);
             if(transportError!="")GUILayout.Label("요청 거부: "+transportError);
             if(failure!="") {
                 GUILayout.Label("연결 오류: "+failure);
