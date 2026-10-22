@@ -15,6 +15,19 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+QT-F45 LOCAL_ACCEPTED2026-10-22:current/previous saved-slot comparison of retained own
+supply memories,distinct causal-source+sequence identities,common/current-only/saved-only
+rows and explicit latest4/cumulative scope. Primary4retrieval support;related5/6/7.
+New22tests;affected238PASS82.85s,exact boundary31PASS9.81s,static/type203/import3+1/pip
+PASS. Same editor9524native76PASS0FAIL;actual547x376summary/actions inspected;all9owned
+save readbacks/replays/byte guards PASS. CORE/all Unity sources unchanged;reuse prior full
+2216PASS/build evidence. No new local full/rebuild claim. Mean slot87.065ms/max97.813ms.
+[Order](docs/work_orders/QT-F45_CYCLE_SLOT_MEMORY_COMPARISON.md),[receipt](docs/reviews/QT-F45_EXECUTION_2026-10-22.md).
+F40–44 posted at6bc8b54,[PR14](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/14),
+PR CI39733797530full2216PASS756.80s/boundary31/static/type/imports PASS. F45commit/push
+updates the same PR under director authorization;Git/GitHub own final head/check state.
+No agents/main merge/checkpoint waiver or automatic further task. D2OPEN,CP06held.
+
 QT-F40–44 LOCAL_ACCEPTED2026-10-22:two small(mode badge,canonical stock text) and three
 large(NPC supply cycle,persistent last4 own memories,ordinary client/save recovery wiring).
 Primary2internal calculation;related4retrieval support/5screen/6save/7integration.
@@ -44,7 +57,7 @@ Primary2internal calculation;related4retrieval support/5screen/6save/7integratio
 - Director2026-10-16:ordinary Unity verification leaves the editor open;reuse its menu for later runs.
   [Workflow](clients/unity/README.md#reuse-the-editor--director-preference-2026-10-16);explicit automated process-exit mode remains available.
 
-- Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,prepared approved dialogue,recent/full memory and saved-slot inspection.
+- Implemented:representative Python Brain,3x3scenarios,Tk/Unity,one harbor quest/single favor,two persisted NPC conversation records,optional last4supply-action memories,prepared approved dialogue,recent/full memory and saved-slot inspection.
 - Truth:deterministic COMMIT-owned facts;ordinary play/replay requires no live LLM. Received completion reports are not witnessed enemy defeats. Existing saves retain original feature/catalog pins.
 - Director2026-10-16stops additional Claude V3review at PARTIAL;[final dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md). No continuation requested. Any future resume needs current snapshot/scope refresh;old2f591f7request is historical. CP06remains held.
 - Adopted audit direction is recorded in [BACKLOG](BACKLOG.md):deterministic authoritative rules,exact event-driven off-screen state,optional shared LLM/RAG context,measured Unity HD-2D,and a bounded categories2–7village slice. This is direction only,not an active order.

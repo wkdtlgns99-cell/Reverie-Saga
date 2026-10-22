@@ -112,6 +112,13 @@ Talk/activity show those stored anchors;slot previews explicitly label saved mem
 The header shows the selected mode. Old work/memory saves retain their original identities;
 cycle mode rejects them unchanged. [Batch contract](docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md).
 
+QT-F45 cycle-mode slot previews also compare current/saved own work memories by actual
+causal source and within-wake sequence. Common/current-only/saved-only groups preserve both
+consume/prepare actions at a tied second. Each snapshot retains only its latest four own
+actions;the view labels that scope and cumulative totals. Missing entries do not prove an
+action never occurred or that the NPC forgot. Current/previous previews remain read-only.
+[Comparison contract](docs/work_orders/QT-F45_CYCLE_SLOT_MEMORY_COMPARISON.md).
+
 QT-F29 work-mode dialogue also recalls the NPC's verified production since the previous
 retained conversation. Work is collected separately from frequent bell events,so those
 events do not hide production. Only actual retained facts are recalled;missing earlier

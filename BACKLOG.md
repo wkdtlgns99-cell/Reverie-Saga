@@ -8,6 +8,19 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+QT-F45 LOCAL_ACCEPTED2026-10-22:current/previous saved-slot comparison of retained own
+supply memories,distinct causal-source+sequence identities,common/current-only/saved-only
+rows and explicit latest4/cumulative scope. Primary4retrieval support;related5/6/7.
+New22tests;affected238PASS82.85s,exact boundary31PASS9.81s,static/type203/import3+1/pip
+PASS. Same editor9524native76PASS0FAIL;actual547x376summary/actions inspected;all9owned
+save readbacks/replays/byte guards PASS. CORE/all Unity sources unchanged;reuse prior full
+2216PASS/build evidence. No new local full/rebuild claim. Mean slot87.065ms/max97.813ms.
+[Order](docs/work_orders/QT-F45_CYCLE_SLOT_MEMORY_COMPARISON.md),[receipt](docs/reviews/QT-F45_EXECUTION_2026-10-22.md).
+F40–44 posted at6bc8b54,[PR14](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/14),
+PR CI39733797530full2216PASS756.80s/boundary31/static/type/imports PASS. F45commit/push
+updates the same PR under director authorization;Git/GitHub own final head/check state.
+No agents/main merge/checkpoint waiver or automatic further task. D2OPEN,CP06held.
+
 QT-F40–44 LOCAL_ACCEPTED2026-10-22:all five requested tasks completed locally.
 
 | ID | Size | Accepted behavior | Primary;related |
@@ -211,7 +224,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
-| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond two conversation records;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection accepted. Regional cognition/relationships/economy remain open |
+| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond bounded quest/supply anchors;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection and F40–44supply cycle/persistent own memory/client recovery accepted;F45saved/current own-memory comparison accepted. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |
 | RS-ARCH-002 / D6 | IN_PROGRESS | B02–08 design DONE;B09 READY_FOR_REVIEW,#6/#34 later-order readiness PARTIAL;[BLOCK09](architecture/BLOCK_09.md). Design completion does not qualify runtime |

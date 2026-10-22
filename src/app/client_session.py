@@ -21,6 +21,7 @@ from app.npc_memory_query import recent_evidence
 from app.npc_memory_compare import slot_memory_messages
 from app.npc_activity import activity_messages, return_recollection
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
+from app.npc_cycle_compare import cycle_slot_messages
 from domain.npc_cycle import CycleRecord
 from app.npc_work import bootstrap_work, stock_text, work_bundle
 from domain.npc_work import ProvisionsRecord
@@ -416,6 +417,15 @@ class ClientSession:
             messages += cycle_messages(
                 _record(checkpoint.core, CycleRecord, self._layout.npc_id), saved=True
             )
+            try:
+                messages += cycle_slot_messages(
+                    checkpoint,
+                    DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+                    self._layout.npc_id,
+                )
+            except GenerationError as error:
+                logging.getLogger(__name__).exception("NPC cycle slot memory comparison failed")
+                raise SaveError("SAVE_INSPECT_FAILED", error.code) from error
         return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:
