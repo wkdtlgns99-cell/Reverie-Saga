@@ -37,7 +37,7 @@ NAMES = {ACTOR_ID: "플레이어", ENEMY_ID: "적", NPC_ID: "NPC", GATE_ID: "문
 QUEST_STAGE_NAMES = ("미수락", "진행 중", "보고 가능", "완료")
 STATUS_TEXT = {
     "ACTIVITY_INSPECTED": (
-        "저장에 남은 최근 NPC 자기 활동을 최대 8개 확인했습니다. 게임 시간은 흐르지 않습니다."
+        "저장에 남은 NPC 활동 기록을 확인했습니다. 게임 시간은 흐르지 않습니다."
     ),
     "NPC_ACTIVITY_SOURCE": "NPC 활동의 저장 근거를 읽지 못했습니다. 현재 진행은 유지됩니다.",
     "SLOT_INSPECTED": "저장 슬롯의 진행 정보를 확인했습니다. 현재 게임은 바뀌지 않습니다.",
@@ -62,6 +62,8 @@ STATUS_TEXT = {
     "INVALID_TARGET": "이 행동의 대상이 올바르지 않습니다.",
     "INVALID_ATTACK_PROFILE": "사용할 수 없는 공격 방식입니다.",
     "INVALID_SLOT": "저장 슬롯이 올바르지 않습니다. slot01~slot08을 선택하세요.",
+    "INVALID_SLOT_VERSION": "저장 버전 선택이 올바르지 않습니다.",
+    "PREVIOUS_SAVE_NOT_FOUND": "선택한 슬롯에는 아직 이전 저장이 없습니다.",
     "SAVE_NOT_FOUND": "저장 파일을 찾지 못했습니다.",
     "SLOT_NOT_FOUND": "선택한 슬롯에 저장된 진행 상황이 없습니다.",
     "NO_RETRY": "재전송할 명령이 없습니다. 불러온 뒤에는 새 행동을 선택하세요.",
@@ -112,6 +114,7 @@ def status_text(code: str) -> str:
         "LOADED",
         "MEMORY_INSPECTED",
         "SLOT_INSPECTED",
+        "ACTIVITY_INSPECTED",
     }:
         return message
     return f"{message} ({code})"

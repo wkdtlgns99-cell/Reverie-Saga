@@ -164,6 +164,27 @@ namespace ReverieSaga
             }
         }
 
+        IEnumerator InspectComparedSlot(string label,string tick,int shared,int currentOnly,int savedOnly,bool capture=false)
+        {
+            yield return InspectSlot(label,tick,shared+savedOnly);
+            if(failed)yield break;
+            var after=room.Latest.update;
+            string heading="NPC 기억 비교 · 현재 "+after.view.tick+"초 / 선택 저장 "+tick+"초";
+            string counts="공통 "+shared+"개 · 현재에만 "+currentOnly+"개 · 저장에만 "+savedOnly+"개";
+            string body=String.Join("\n",after.messages);
+            Check(Array.IndexOf(after.messages,heading)>=0&&Array.IndexOf(after.messages,counts)>=0&&
+                body.Contains("NPC가 기억을 잊었다는 뜻은 아닙니다")&&
+                room.HistoryForVerification.Contains(counts),label+"_comparison");
+            if(currentOnly>0)Check(body.Contains("현재에만 있는 기억")&&
+                body.Contains("처치를 직접 본 기억은 아닙니다"),label+"_report_not_eyewitness");
+            if(capture) {
+                bool focused=room.DialogueFocused;
+                room.SetDialogueFocus(true);
+                yield return CaptureActivity(label);
+                room.SetDialogueFocus(focused);
+            }
+        }
+
         IEnumerator SelectSlots(string output)
         {
             if(failed)yield break;
@@ -515,6 +536,7 @@ namespace ReverieSaga
             yield return InspectMemory("memory_branch_report",2);
             yield return InspectActivity("self_branch_report",12);
             yield return InspectSlot("quest_saved_slot","10");
+            if(room.NpcMemoryEnabled)yield return InspectComparedSlot("slot-memory-comparison","10",1,1,0,true);
             Check(room.Latest.update.quest_reward=="1"&&
                   String.Join("\n",room.Latest.update.messages).Contains("저장된 임무: 보고 가능 · 포구의 호의 0"),
                   "slot_preview_does_not_replace_current_progress");
@@ -723,6 +745,82 @@ namespace ReverieSaga
             }
         }
 
+        IEnumerator SaveManagerFlow()
+        {
+            if(failed)yield break;
+            room.SetSaveManager(true);
+            Check(room.SaveManagerOpen&&!room.DialogueFocused&&!room.GameplayInputEnabled,
+                "manager_input_mode");
+            Check(room.SelectSlot(6)&&room.SelectedSlot=="slot07","manager_selected_07");
+            string root=Path.GetDirectoryName(room.Latest.update.working_path);
+            string current=Path.Combine(root,"slots","slot07.sqlite");
+            string previous=Path.Combine(root,"slots","slot07.previous.sqlite");
+            room.InspectPreviousSlot();yield return Ready();
+            Check(room.Latest.update.status=="PREVIOUS_SAVE_NOT_FOUND"&&room.SaveManagerOpen,
+                "manager_missing_previous_explicit");
+            int tick=PlayRoom.Number(room.Latest.update.view.tick);
+            yield return Intent("save");
+            room.SelectWaitDuration(0);yield return Intent("wait");yield return Intent("save");
+            yield return Intent("wait");
+            var before=room.Latest.update;
+            string view=JsonUtility.ToJson(before.view),workingHash=FileHash(before.working_path);
+            byte[] originalCurrent=File.ReadAllBytes(current);
+            string previousHash=FileHash(previous);
+            room.InspectPreviousSlot();
+            Check(room.Busy&&!room.CanInspectSlot&&!room.CanSelectSlot&&!room.SelectSlot(0),
+                "manager_pending_guards");
+            room.LoadPreviousSlot();yield return Ready();
+            Check(room.Latest.update.status=="SLOT_INSPECTED"&&
+                room.Latest.update.messages[0].StartsWith("slot07 이전 저장 정보 · "+tick+"초",StringComparison.Ordinal)&&
+                room.Latest.update.attachment_id==before.attachment_id&&
+                JsonUtility.ToJson(room.Latest.update.view)==view&&FileHash(before.working_path)==workingHash,
+                "manager_previous_preview_readonly_no_duplicate");
+            yield return CaptureActivity("save-manager-preview");
+            room.ControlsScrollForVerification=float.MaxValue;
+            yield return CaptureActivity("save-manager-actions");
+            room.ControlsScrollForVerification=0;
+            File.WriteAllText(current,"F39 owned latest-slot corruption witness");
+            string corruptHash=FileHash(current);
+            yield return Intent("load");
+            Check(room.Latest.update.status=="SAVE_CORRUPT"&&
+                room.Latest.update.attachment_id==before.attachment_id&&
+                JsonUtility.ToJson(room.Latest.update.view)==view,"manager_latest_corrupt_no_fallback");
+            room.LoadPreviousSlot();yield return Ready();
+            var loaded=room.Latest.update;
+            Check(loaded.status=="LOADED"&&loaded.reset_log&&loaded.view.tick==tick.ToString(CultureInfo.InvariantCulture)&&
+                loaded.attachment_id!=before.attachment_id&&loaded.working_path!=before.working_path&&
+                Path.GetFileName(loaded.working_path).StartsWith(".loaded-",StringComparison.Ordinal)&&
+                room.SaveManagerOpen&&room.SelectedSlot=="slot07","manager_previous_private_branch");
+            Check(FileHash(current)==corruptHash&&FileHash(previous)==previousHash&&
+                FileHash(before.working_path)==workingHash,"manager_restore_sources_preserved");
+            yield return Intent("retry");
+            Check(room.Latest.update.status=="NO_RETRY"&&room.Latest.update.view.tick==loaded.view.tick,
+                "manager_restore_retry_cleared");
+            yield return Intent("wait");
+            Check(room.SelectSlot(7),"manager_select_08");yield return Intent("save");
+            string resumedView=JsonUtility.ToJson(room.Latest.update.view);
+            int pid=room.BrainProcessId;
+            room.Reconnect();yield return Ready();
+            Check(room.BrainProcessId!=pid&&room.SaveManagerOpen&&room.SelectedSlot=="slot08"&&
+                JsonUtility.ToJson(room.Latest.update.view)==resumedView&&room.NpcMemoryEnabled&&room.NpcWorkEnabled,
+                "manager_new_process_resume_pins_selection");
+            yield return Intent("load");
+            Check(room.SaveManagerOpen&&room.SelectedSlot=="slot08"&&
+                JsonUtility.ToJson(room.Latest.update.view)==resumedView,"manager_current_load_after_recovery");
+            room.ControlsScrollForVerification=0;
+            yield return CaptureActivity("save-manager-restored");
+            room.SetDialogueFocus(true);
+            Check(!room.SaveManagerOpen&&room.DialogueFocused,"manager_dialogue_mutual_exclusion");
+            room.SetSaveManager(true);
+            Check(room.SaveManagerOpen&&!room.DialogueFocused,"manager_reopen_from_dialogue");
+            room.SetSaveManager(false);
+            Check(!room.SaveManagerOpen&&room.GameplayInputEnabled,"manager_close_restores_input");
+            Check(FileHash(current)==corruptHash&&FileHash(previous)==previousHash,
+                "manager_continue_did_not_repair_sources");
+            // Restore only this verification run's deliberately damaged fixture after preservation checks.
+            File.WriteAllBytes(current,originalCurrent);
+        }
+
         IEnumerator WorkFlow()
         {
             yield return Ready();if(failed){Exit(1);yield break;}
@@ -768,6 +866,7 @@ namespace ReverieSaga
             Check(Array.IndexOf(room.Latest.update.messages,
                 "저장된 NPC 공동 비축: 물자 1/3개 · 4초마다 물자 1개를 준비합니다.")>=0&&
                 FileHash(working)==bytes,"work_slot_preview_readonly_stock1");
+            yield return InspectComparedSlot("work_slot_same_memory","6",1,0,0);
             yield return Intent("load");yield return Intent("talk");
             CheckWork("NPC 공동 비축: 물자 1/3개 · 4초마다 물자 1개를 준비합니다.","work_load_rewinds1");
             CheckRecollection(new [] {"4"},"NPC 작업 회상 · 지난 대화(2초) 뒤에 끝낸 작업입니다.","recall_load_branch");
@@ -823,6 +922,7 @@ namespace ReverieSaga
             yield return Intent("talk");
             CheckPlayerMemory("37",true,"player_report_original_tick");
             yield return CaptureActivity("player-reported");
+            yield return InspectComparedSlot("work-slot-memory-comparison","35",1,1,0,true);
             yield return InspectDialogueFocus();
             string playerBytes=FileHash(room.Latest.update.working_path);
             yield return Intent("retry");
@@ -858,6 +958,7 @@ namespace ReverieSaga
             yield return CaptureActivity("focus-error");
             room.SetDialogueFocus(false);
             Check(!room.DialogueFocused,"focus_can_return_after_reconnect");
+            yield return SaveManagerFlow();
             Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }
 

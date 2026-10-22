@@ -29,6 +29,10 @@ A new path creates a game;an existing path resumes it. WASD/arrows/buttons move;
 doors/enemies/NPCs to interact. Rest restores stamina,not HP. Add `--scenario harbor` or
 `--scenario grove` with a separate working path for the other embedded rooms.
 
+In Tk,press Return or keypad Enter while editing the wait-time field to run the existing wait action.
+The accepted range remains1–16game seconds;invalid input keeps the current progress.
+Repeated identical invalid-text errors occupy one adjacent log entry,so they do not evict gameplay history.
+
 Approved harbor quest+NPC memory:
 ```powershell
 $taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha256 -Raw).Trim()
@@ -43,6 +47,16 @@ $taskDialoguePin=(Get-Content -LiteralPath content/dialogue/harbor-memory-v1.sha
 | Save/load | slot01..slot08;load creates a private branch and clears later display history. Resume using displayed working path and original scenario/catalog/memory selectors |
 | History/retry | Latest200lines,not persisted display history;exact retry does not repeat gameplay or narration |
 | Close | Drains accepted work;SQLite/session remains owned by worker thread |
+
+Tk history follows new output while at the bottom. Scroll up to keep reading the same
+retained record as messages arrive;evicted records yield to the oldest remaining record.
+Click `최신 기록으로` beside the history heading to return to the bottom and follow new output.
+Loading a save resets history and returns to the latest output.
+
+In NPC-memory modes,selected-slot information also compares that slot's memories with
+the current game:shared,current-only and saved-only conversations,with their actual times.
+Differences describe save/branch history,not NPC forgetting;received reports remain distinct
+from witnessed events. Inspection does not load a branch or advance the game.
 
 Successful harbor NPC conversations include committed activity counts in the action log.
 They use the restored save's current state;exact command retries do not repeat the line.
@@ -65,6 +79,15 @@ Normal play needs no key/network. New generated content stays NEEDS_REVIEW until
 existing games retain their content pins. [Current qualification limits](BACKLOG.md#qt-f07-deferred-qualification).
 
 ## Verification
+
+Unity **저장 관리** opens a dedicated slot01–08 panel with current/previous save
+inspection and explicit previous-save loading. Overwriting a valid slot retains one
+previous save. Loading either version continues in a private working branch and preserves
+both source files;corrupt latest saves never trigger automatic fallback. Inspect the
+previous version,then choose **이전 저장 불러오기** when recovery is wanted. Missing or
+invalid backups report their own errors. The panel blocks movement keys while polling
+continues;Escape closes it. Selection and panel mode survive load/reconnect.
+[Contract](docs/work_orders/QT-F39_SAVE_MANAGER_RECOVERY.md).
 
 QT-F28 adds an explicit harbor NPC work mode. It prepares one communal supply at logical
 seconds4/8/12,then stops at capacity3. Travel/combat time counts;wall time does not.

@@ -41,8 +41,10 @@ REQUEST_NAMES = (
     "memory_recent",
     "activity",
     "slot_inspect",
+    "slot_previous_inspect",
     "save",
     "load",
+    "load_previous",
     "retry",
     "recover",
     "quit",
@@ -202,6 +204,8 @@ class EngineBridge:
             pending = self.worker.inspect_activity()
         elif d["request"] == "slot_inspect":
             pending = self.worker.inspect_slot(d["slot_id"])
+        elif d["request"] == "slot_previous_inspect":
+            pending = self.worker.inspect_previous_slot(d["slot_id"])
         else:
             pending = self.worker.request(
                 cast(ClientRequest, d["request"]), seconds=seconds, slot_id=d["slot_id"]

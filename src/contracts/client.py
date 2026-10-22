@@ -8,7 +8,9 @@ from typing import Literal
 type ClientAction = Literal[
     "up", "down", "left", "right", "open", "close", "attack", "rest", "wait", "bell", "talk"
 ]
-type ClientRequest = ClientAction | Literal["attach", "save", "load", "retry", "recover"]
+type ClientRequest = (
+    ClientAction | Literal["attach", "save", "load", "load_previous", "retry", "recover"]
+)
 
 
 @dataclass(frozen=True, slots=True)

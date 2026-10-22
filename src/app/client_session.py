@@ -18,10 +18,11 @@ from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import recent_evidence
+from app.npc_memory_compare import slot_memory_messages
 from app.npc_activity import activity_messages, return_recollection
 from app.npc_work import bootstrap_work, stock_text, work_bundle
 from domain.npc_work import ProvisionsRecord
-from contracts.dialogue import QuestContent
+from contracts.dialogue import GenerationError, QuestContent
 from contracts.quest import QuestSpoken, QuestTalkCommand
 from contracts.client import ClientAction, ClientUpdate, ClientView
 from contracts.encounter import AttackCommand, InteractCommand, RestCommand
@@ -349,10 +350,11 @@ class ClientSession:
             messages=(f"{receipt.slot_id}에 진행 상황을 저장했습니다.",),
         )
 
-    def inspect_slot(self, slot_id: str) -> ClientUpdate:
-        checkpoint = self._owner.inspect_slot(slot_id)
+    def inspect_slot(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:
+        checkpoint = self._owner.inspect_slot(slot_id, previous=previous)
+        source = "이전 저장 정보" if previous else "저장 정보"
         messages: tuple[str, ...] = (
-            f"{slot_id} 저장 정보 · {checkpoint.core.tick}초 · 진행 {checkpoint.protocol.revision}",
+            f"{slot_id} {source} · {checkpoint.core.tick}초 · 진행 {checkpoint.protocol.revision}",
         )
         if self._quest_content is not None:
             quest = _record(
@@ -371,15 +373,24 @@ class ClientSession:
                 else "완료 보고를 받은 기억은 없습니다."
             )
             messages += (f"저장된 NPC 대화 기억: {len(memory.entries)}개 · {report_text}",)
+            try:
+                messages += slot_memory_messages(
+                    checkpoint,
+                    DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
+                    self._layout.npc_id,
+                )
+            except GenerationError as error:
+                logging.getLogger(__name__).exception("NPC slot memory comparison failed")
+                raise SaveError("SAVE_INSPECT_FAILED", error.code) from error
         if self._npc_work:
             stock = _record(checkpoint.core, ProvisionsRecord, self._layout.npc_id).stock
             messages += (stock_text(stock, saved=True),)
         return self.update("SLOT_INSPECTED", messages=messages)
 
-    def load(self, slot_id: str) -> ClientUpdate:
+    def load(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:
         previous_token = self._owner.attachment_id
         try:
-            receipt = self._owner.load(slot_id)
+            receipt = self._owner.load(slot_id, previous=previous)
         finally:
             # A cleanup failure after the swap cannot preserve an old-attachment retry.
             if self._owner.attachment_id != previous_token:
@@ -389,7 +400,12 @@ class ClientSession:
             (receipt.slot_id,),
             reset_log=True,
             messages=(
-                f"{receipt.slot_id}을 불러왔습니다. 이후 표시 기록을 초기화했습니다.",
+                (
+                    f"{receipt.slot_id}의 이전 저장을 불러왔습니다. "
+                    "이후 표시 기록을 초기화했습니다."
+                    if previous
+                    else f"{receipt.slot_id}을 불러왔습니다. 이후 표시 기록을 초기화했습니다."
+                ),
                 "별도 진행 파일에서 이어갑니다. 현재 진행 파일 경로를 확인하세요.",
             ),
         )

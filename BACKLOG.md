@@ -7,8 +7,83 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-Director2026-10-21now authorizes publishing QT-F33and creating a PR only;no main merge/
-auto-merge or remote-CI wait. Director will continue at home. Git/GitHub own actual PR/check state.
+[PR13](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/13) publication/CI repair:
+first run passed static/type/imports and31boundaries;full1796PASS/1focus-fixture FAIL before
+20minute job cancellation. Low maximum heights reproduced unmapped Text/stale wait focus.
+Keyboard fixture now guarantees mapped/focused targets,with600/768/1000regressions and
+stronger byte/history guards;all client+document66PASS22.43s. CI bound30minutes only;
+all commands/checks retained. Full selection now2174. Updated-head GitHub CI remains the
+merge gate;GitHub owns final status. [Repair receipt](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
+Production/native/build inputs unchanged;earlier evidence below remains snapshot-specific.
+
+Director2026-10-21authorizes publishing the accumulated F34–39and QT-R34–36repairs through
+a PR,checking CI and ordinary main merge. Actual commit/PR/CI/main state is owned by Git
+and GitHub. Earlier local-only/no-publication statements below describe their execution
+snapshots and are superseded for this publication scope. Patch rereview remains DEFERRED;
+CP06release hold and other-device/final engine limits are unchanged.
+
+QT-F39 LOCAL_ACCEPTED2026-10-21:connected Unity save management(current/previous info,
+slot01–08,save/both loads),explicit valid previous-save private restore despite corrupt
+latest,source preservation and new-process continuation. Primary7전체 연결;participants
+5화면·연출 and6저장. New33tests;full2090PASS/82Git-ownership nonpasses then117PASS
+with process-only exact safe.directory(all82plus35overlaps):2172distinct qualified.
+Static/type193/import3+1/pip PASS. Same editor3652retained/no restart,170native PASS0FAIL,
+actual642x500screens plus W16blocked→Escape/W17,12save replay/compare/byte guards PASS.
+Same-editor Windows build89,488,672bytes/release hook absent PASS. Scene/prior work/frozen
+ZIPs preserved. [Order](docs/work_orders/QT-F39_SAVE_MANAGER_RECOVERY.md),[receipt](docs/reviews/QT-F39_EXECUTION_2026-10-21.md).
+Director's5/6/7request authorizes this bounded integration,not whole categories or release.
+Earlier patch rereview remains DEFERRED. Local only;no commit/push/PR/merge/agents.
+
+QT-F38 LOCAL_ACCEPTED2026-10-21:selected-slot inspection now compares current/saved NPC
+memories by exact source identity:shared/current-only/saved-only,actual times and explicit
+branch difference rather than forgetting. Existing offline comparison reused;no new rules,
+wire/save format or extra IO/replay. Primary4retrieval support;related5/6/7,D2OPEN.
+New21cases;fresh permitted affected173PASS97.91s,static/type192/import3+1/pip PASS;
+offline JSON5byte comparisons unchanged,slot latency103.158ms. Native memory+work148PASS/
+0FAIL,actual642x500capture inspected,7save replay/query/byte guards PASS;one editor3652
+retained,result/retained/idle0. Entry scene/earlier code restored or hash-preserved.
+[Order](docs/work_orders/QT-F38_SLOT_MEMORY_COMPARISON.md),[receipt](docs/reviews/QT-F38_EXECUTION_2026-10-21.md).
+Director explicitly defers QT-R34–36patch rereview and authorizes this next task;deferral
+is not acceptance or a CP06waiver. All changes local;no new publication/full/release claim.
+
+QT-R34–36 LOCAL_ACCEPTED2026-10-21:received Claude's scoped F34–36feedback(no P0/P1,
+P2coverage/P3keypad/log flood/header). Added13tracked Tk regressions,keypad binding,
+adjacent invalid-text dedup,compact history button and explicit game-seconds label.
+Native focused13PASS;affected120PASS51.60s;static/type190/import3+1PASS. Fresh packet
+includes missing F07JSON and full baselines;packet selection79PASS22.59s after documented
+pytest-parent setup repair. Primary5support;related2/4/6. Independent patch rereview DEFERRED by director2026-10-21;not accepted.
+[Order](docs/work_orders/QT-R34_36_CLAUDE_REPAIR.md),[dispositions](docs/reviews/QT-R34_36_CLAUDE_DISPOSITIONS_2026-10-21.md).
+
+QT-F37 LOCAL_ACCEPTED2026-10-21:NPC activity success notice no longer caps the whole
+inspection at8records or appends its internal code;debug/error codes and actual results
+unchanged. Primary5screen support;related4. Mapped memory/work smoke at0/32PASS,affected
+95PASS40.15s,static/type190/import3+1PASS. F34–36preserved;local only.
+[Order](docs/work_orders/QT-F37_ACTIVITY_STATUS.md),[receipt](docs/reviews/QT-F37_EXECUTION_2026-10-21.md).
+Director returned scoped Claude F34–36feedback;original frozen ZIP is recorded in
+the F37receipt. Findings/repairs are above;F37was outside that original review.
+
+QT-F36 LOCAL_ACCEPTED2026-10-21:Enter in the Tk wait field submits existing wait action,
+with a visible label hint. Primary5input support;related2. Actual focused Tk smoke verifies
+1/4/16seconds,invalid/empty/range rejection,busy duplicate guard and outside-field no-op;
+affected66PASS17.15s,static/type190/import3+1PASS. F34/F35preserved;local changes only.
+[Order](docs/work_orders/QT-F36_TK_WAIT_ENTER.md),[receipt](docs/reviews/QT-F36_EXECUTION_2026-10-21.md).
+
+QT-F35 LOCAL_ACCEPTED2026-10-21:Tk latest-record button returns to the tail and resumes
+following new output. Primary5screen support;related4. Actual mapped native smoke verifies
+read-only scrolling,repeated clicks,busy Future identity and real wait output;affected66PASS
+17.05s,static/type190/import3+1PASS. F34dirty work preserved;local changes only.
+[Order](docs/work_orders/QT-F35_TK_LOG_LATEST.md),[receipt](docs/reviews/QT-F35_EXECUTION_2026-10-21.md).
+
+QT-F34 LOCAL_ACCEPTED2026-10-21:Tk history preserves the record being read during new
+output,including bounded eviction;tail following and actual load reset retained. Primary5
+screen support;related4/6. Actual mapped Tk baseline2FAIL,affected65PASS plus final4new
+cases(3overlap,66distinct qualified);static/type190/import3+1PASS. Local changes only.
+[Order](docs/work_orders/QT-F34_TK_LOG_READING.md),[receipt](docs/reviews/QT-F34_EXECUTION_2026-10-21.md).
+
+PR12merged by explicit director request at d7f3217;local main/origin/main synchronized.
+Its published head27dff3d CI success,42local affected tests/lint/pip/diff PASS in the preceding
+turn. Earlier PR-only restrictions below are historical and superseded for PR12only.
+
 QT-F33 LOCAL_ACCEPTED:existing activity inspection keeps separate retained production4/8/12and
 current stock despite mixed8bell eviction. One verified replay,read-only/no inferred lost
 history;empty/truncated sources explicit. New22Python/static/type190/imports PASS;final
@@ -17,9 +92,9 @@ Fresh full2101PASS778.80s,exact CI boundary31PASS10.46s,all7managed saves valida
 query/byte guards PASS. Windows build89,483,696bytes/release-hook exclusion PASS on46byte-
 verified Unity inputs in an isolated copy;original editor retained,temporary build process
 exited0. Original scene bytes restored;final document10/scope11paths/whitespace PASS.
-Full local acceptance retained;current commit/PR/check state follows Git/GitHub. No main merge authorized.
+Full local acceptance retained;merged by PR12at d7f3217after the later explicit merge request.
 [Order](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md),[receipt](docs/reviews/QT-F33_EXECUTION_2026-10-21.md).
-Primary4retrieval support;related5/6/7,D2OPEN. PR-only publication is now explicitly authorized;
+Primary4retrieval support;related5/6/7,D2OPEN. PR12publication complete;
 no agents or release acceptance. Earlier5-edit backups preserved.
 
 Previous delivery:QT-F28–32merged by PR11at main c00a2ad;below are its historical local
@@ -103,7 +178,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | QT-F28–32merged PR11;QT-F33push/PR authorized | Current request:publish F33/create PR only,no main merge/auto-merge or CI wait. GitHub records actual PR/check state. CP06release held |
+| Publication / CI | QT-F28–32merged PR11;QT-F33merged PR12 | Main synchronized d7f3217after explicit merge request. QT-F34–39/repair local only;no new publication. CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 

@@ -7,6 +7,7 @@ from dataclasses import asdict, dataclass
 import logging
 from pathlib import Path
 import secrets
+import sqlite3
 import sys
 
 from adapters.save_slots import SqliteSlots, cleanup_owned_clone
@@ -114,34 +115,40 @@ class DurableSession:
         with self._operation():
             return self._attachment.slots.export(slot_id)
 
-    def inspect_slot(self, slot_id: str) -> DurableCheckpoint:
+    def inspect_slot(self, slot_id: str, *, previous: bool = False) -> DurableCheckpoint:
         with self._operation():
-            return self._attachment.slots.inspect(slot_id)
+            return self._attachment.slots.inspect(slot_id, previous=previous)
 
-    def load(self, slot_id: str) -> SaveLoadReceipt:
+    def load(self, slot_id: str, *, previous: bool = False) -> SaveLoadReceipt:
         with self._operation():
-            previous = self._attachment
-            store = previous.slots.stage_load(slot_id)
+            former = self._attachment
+            store = former.slots.stage_load(slot_id, previous=previous)
             try:
-                prepared = _Attachment(_owner(store, self._bundles, self._io), store,
-                                       SqliteSlots(store, previous.slots.root, io=self._io),
-                                       secrets.token_hex(16))
+                prepared = _Attachment(
+                    _owner(store, self._bundles, self._io),
+                    store,
+                    SqliteSlots(store, former.slots.root, io=self._io),
+                    secrets.token_hex(16),
+                )
                 checkpoint = store.load()
-                receipt = SaveLoadReceipt(slot_id, checkpoint.protocol.revision,
-                                          self._io.hash_core(checkpoint.core),
-                                          hash_document("protocol/v1", self._io.encode_protocol(checkpoint.protocol)),
-                                          prepared.token)
-            except (ValueError, TypeError, RuntimeError, OSError) as error:
+                receipt = SaveLoadReceipt(
+                    slot_id,
+                    checkpoint.protocol.revision,
+                    self._io.hash_core(checkpoint.core),
+                    hash_document("protocol/v1", self._io.encode_protocol(checkpoint.protocol)),
+                    prepared.token,
+                )
+            except (ValueError, TypeError, RuntimeError, OSError, sqlite3.Error) as error:
                 store.close()
-                cleanup_owned_clone(store.path, previous.store.path.parent)
+                cleanup_owned_clone(store.path, former.store.path.parent)
                 raise SaveError("SAVE_LOAD_FAILED", "prepared attachment failed") from error
             self._attachment = prepared  # Single app owner/token/driver/store swap.
             self._owned_clones.add(store.path)
-            self._retired_stores.append(previous.store)
-            previous.owner._driver.detach()
-            previous.store.close()
-            self._retired_stores.remove(previous.store)
-            self._cleanup_superseded(previous.store)
+            self._retired_stores.append(former.store)
+            former.owner._driver.detach()
+            former.store.close()
+            self._retired_stores.remove(former.store)
+            self._cleanup_superseded(former.store)
             return receipt
 
     def _cleanup_superseded(self, store: SqliteCommitStore) -> None:

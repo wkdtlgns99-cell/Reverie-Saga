@@ -114,6 +114,7 @@ class PlayWindow:
         style.configure("TFrame", background=BACKGROUND)
         style.configure("TLabel", background=BACKGROUND, foreground="#e3eaf5")
         style.configure("TButton", font=("맑은 고딕", 10), padding=8)
+        style.configure("History.TButton", font="TkDefaultFont", padding=0, borderwidth=0)
         panel = ttk.Frame(root, padding=18)
         panel.pack(fill="both", expand=True)
         panel.columnconfigure(0, weight=1)
@@ -160,11 +161,15 @@ class PlayWindow:
             )
             self.activity_button.grid(row=10, column=0, columnspan=2, sticky="ew", padx=3, pady=3)
         wait_row = 11 if self._npc_memory else 9
-        ttk.Label(controls, text="대기 시간(게임 초)").grid(row=wait_row, column=0, sticky="w")
+        ttk.Label(controls, text="대기 시간(게임 초 · Enter)").grid(
+            row=wait_row, column=0, sticky="w"
+        )
         self.wait_input = ttk.Spinbox(
             controls, from_=1, to=WAIT_MAX, textvariable=self.wait_seconds, width=10
         )
         self.wait_input.grid(row=wait_row, column=1, sticky="ew", pady=6)
+        self.wait_input.bind("<Return>", lambda _event: self._send("wait"))
+        self.wait_input.bind("<KP_Enter>", lambda _event: self._send("wait"))
         ttk.Label(controls, text="저장 슬롯").grid(row=wait_row + 1, column=0, sticky="w")
         self.slot_input = ttk.Combobox(
             controls,
@@ -196,9 +201,16 @@ class PlayWindow:
         ttk.Label(panel, textvariable=self.path_text, wraplength=740).grid(
             row=9, column=0, columnspan=2, sticky="w", pady=(6, 0)
         )
-        ttk.Label(panel, text=f"행동·대화 기록 · 최근 {LOG_LINE_LIMIT}줄").grid(
-            row=7, column=0, columnspan=2, sticky="w", pady=(8, 4)
+        log_heading = ttk.Frame(panel)
+        log_heading.grid(row=7, column=0, columnspan=2, sticky="ew", pady=(8, 4))
+        ttk.Label(log_heading, text=f"행동·대화 기록 · 최근 {LOG_LINE_LIMIT}줄").pack(side="left")
+        self.log_latest_button = ttk.Button(
+            log_heading,
+            text="최신 기록으로",
+            style="History.TButton",
+            command=lambda: self.log_text.see("end"),
         )
+        self.log_latest_button.pack(side="right")
         log_panel = ttk.Frame(panel)
         log_panel.grid(row=8, column=0, columnspan=2, sticky="nsew")
         self.log_text = tk.Text(
@@ -223,6 +235,9 @@ class PlayWindow:
             self.debug_details.grid(row=10, column=0, columnspan=2, sticky="w")
 
     def _append_messages(self, messages: tuple[str, ...]) -> None:
+        follow_tail = not self.history or self.log_text.yview()[1] >= 1.0
+        top_line = int(self.log_text.index("@0,0").split(".")[0])
+        discarded = max(0, len(self.history) + len(messages) - LOG_LINE_LIMIT)
         prefix = "" if self.view is None else f"[{self.view.tick}초 · 턴 {self.view.revision}] "
         for message in messages:
             line = prefix + message.replace("\r", " ").replace("\n", " ")
@@ -231,7 +246,11 @@ class PlayWindow:
         self.log_text.delete("1.0", "end")
         self.log_text.insert("end", "\n".join(self.history))
         self.log_text.configure(state="disabled")
-        self.log_text.see("end")
+        if follow_tail:
+            self.log_text.see("end")
+        else:
+            # Eviction shifts the retained record's logical line toward the top.
+            self.log_text.yview(f"{max(1, top_line - discarded)}.0")
 
     def _key(self, event: tk.Event[tk.Misc]) -> None:
         if isinstance(event.widget, (ttk.Entry, ttk.Spinbox, ttk.Combobox, tk.Text)):
@@ -260,8 +279,10 @@ class PlayWindow:
             seconds = int(self.wait_seconds.get()) if request == "wait" else 1
         except ValueError:
             self.status.set("INVALID_INPUT · 대기 시간에 정수를 입력하세요.")
-            self.status_text.set(status_text("INVALID_INPUT"))
-            self._append_messages((status_text("INVALID_INPUT"),))
+            message = status_text("INVALID_INPUT")
+            self.status_text.set(message)
+            if not self.history or not self.history[-1].endswith(message):
+                self._append_messages((message,))
             return
         self._begin_request(self.worker.request(request, seconds=seconds, slot_id=self.slot.get()))
 
