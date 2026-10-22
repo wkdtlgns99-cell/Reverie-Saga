@@ -26,6 +26,7 @@ class ClientWorker:
         quest_content: QuestContent | None = None,
         npc_memory: bool = False,
         npc_work: bool = False,
+        npc_cycle: bool = False,
     ) -> None:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
@@ -36,6 +37,9 @@ class ClientWorker:
         self._layout = layout
         self._quest_content = quest_content
         self._npc_memory = npc_memory
+        if type(npc_cycle) is not bool or npc_cycle and (not npc_memory or npc_work):
+            raise ValueError("NPC_CYCLE_CONTENT")
+        self._npc_cycle = npc_cycle
         self._npc_work = npc_work
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
@@ -101,6 +105,7 @@ class ClientWorker:
                         quest_content=self._quest_content,
                         npc_memory=self._npc_memory,
                         npc_work=self._npc_work,
+                        npc_cycle=self._npc_cycle,
                     )
                 )
             owner = self._owner

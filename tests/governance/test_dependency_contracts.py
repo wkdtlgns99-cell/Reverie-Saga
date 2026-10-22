@@ -14,7 +14,7 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG = PROJECT_ROOT / "pyproject.toml"
 RUNTIME_CONFIG = PROJECT_ROOT / ".importlinter-runtime.toml"
 ROOTS = ("app", "adapters", "orchestration", "engines", "contracts", "domain")
-ENGINE_MODULES = ("skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work")
+ENGINE_MODULES = ("skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work", "npc_cycle")
 CONTRACT_NAMES = (
     ("rs-layers", "Reverie Saga six internal layers"),
     ("rs-engines-independent", "Reverie Saga concrete engine modules are independent"),
@@ -102,6 +102,8 @@ PROBES = (
     Probe("quest-engine-reverse", (("engines/encounter.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
     Probe("memory-engine-forward", (("engines/npc_memory.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
     Probe("memory-engine-reverse", (("engines/quest.py", "import engines.npc_memory\n"),), 1, "rs-engines-independent"),
+    Probe("cycle-engine-forward", (("engines/npc_cycle.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
+    Probe("cycle-engine-reverse", (("engines/quest.py", "import engines.npc_cycle\n"),), 1, "rs-engines-independent"),
     Probe("work-engine-forward", (("engines/npc_work.py", "import engines.quest\n"),), 1, "rs-engines-independent"),
     Probe("work-engine-reverse", (("engines/quest.py", "import engines.npc_work\n"),), 1, "rs-engines-independent"),
     Probe("indirect-engine", (("engines/skeleton.py", "import contracts.port\n"), ("contracts/port.py", "import engines.trial\n"),), 1, "rs-engines-independent"),
@@ -213,6 +215,8 @@ def test_dependency_specified_probe(
             assert "engines.npc_memory" in output and "engines.quest" in output, output
         elif case.id in ("work-engine-forward", "work-engine-reverse"):
             assert "engines.npc_work" in output and "engines.quest" in output, output
+        elif case.id in ("cycle-engine-forward", "cycle-engine-reverse"):
+            assert "engines.npc_cycle" in output and "engines.quest" in output, output
         else:
             assert "engines.skeleton" in output and "engines.trial" in output, output
     elif case.id == "core-indirect-io":

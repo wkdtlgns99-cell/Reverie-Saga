@@ -32,7 +32,7 @@ namespace ReverieSaga
 
         public BrainConnection(string root, string workingFile, string scenario = "legacy",
             string questCatalog = "", string questSha256 = "", bool npcMemory = false,
-            bool npcWork = false)
+            bool npcWork = false, bool npcCycle = false)
         {
             scenario=SelectScenario(scenario);
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
@@ -40,6 +40,7 @@ namespace ReverieSaga
             if (!File.Exists(python) || !File.Exists(catalog))
                 throw new IOException("Python runtime or accepted catalog is missing");
             string questArgs="";
+            if(npcCycle&&(!npcMemory||npcWork))throw new IOException("NPC_CYCLE_CONTENT");
             if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
             if(npcMemory&&(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256)))
                 throw new IOException("NPC_MEMORY_CONTENT");
@@ -53,7 +54,7 @@ namespace ReverieSaga
                 Arguments = "-m app.engine_bridge --working " + Quote(workingFile) +
                     " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash +
                     " --scenario " + Quote(scenario) + questArgs + (npcMemory?" --npc-memory":"") +
-                    (npcWork?" --npc-work":""),
+                    (npcWork?" --npc-work":"") + (npcCycle?" --npc-cycle":""),
                 UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardInput = true, RedirectStandardOutput = true,
                 RedirectStandardError = true

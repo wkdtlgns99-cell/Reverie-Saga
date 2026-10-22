@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.npc_cycle import evidence_text
+from contracts.npc_cycle import CycleChanged
 from contracts.npc_work import ProvisionPrepared
 from domain.npc_work import STOCK_CAP
 
@@ -155,6 +157,8 @@ def fact_messages(
     quest_content: QuestContent | None = None,
 ) -> tuple[str, ...]:
     match payload:
+        case CycleChanged():
+            return (evidence_text(payload.evidence),)
         case ProvisionPrepared():
             return (
                 f"NPC가 공동 비축 물자 1개를 준비했습니다. (재고 {payload.after}/{STOCK_CAP}개)",

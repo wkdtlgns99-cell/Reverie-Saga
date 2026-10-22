@@ -186,5 +186,9 @@ def bootstrap_work(spec: WatchBootstrapSpec, content: QuestContent) -> HeadlessS
 
 def stock_text(stock: int, *, saved: bool = False) -> str:
     label = "저장된 NPC 공동 비축" if saved else "NPC 공동 비축"
-    state = "가득 차 작업을 멈췄습니다" if stock == STOCK_CAP else "4초마다 물자 1개를 준비합니다"
+    state = (
+        "가득 차 작업을 멈췄습니다"
+        if stock == STOCK_CAP
+        else f"{WORK_PERIOD}초마다 물자 1개를 준비합니다"
+    )
     return f"{label}: 물자 {stock}/{STOCK_CAP}개 · {state}."

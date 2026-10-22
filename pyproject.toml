@@ -63,7 +63,7 @@ layers = ["app", "adapters", "orchestration", "engines", "contracts", "domain"]
 id = "rs-engines-independent"
 name = "Reverie Saga concrete engine modules are independent"
 type = "independence"
-modules = ["engines.skeleton", "engines.trial", "engines.encounter", "engines.watch", "engines.quest", "engines.npc_memory", "engines.npc_work"]
+modules = ["engines.skeleton", "engines.trial", "engines.encounter", "engines.watch", "engines.quest", "engines.npc_memory", "engines.npc_work", "engines.npc_cycle"]
 
 [[tool.importlinter.contracts]]
 id = "rs-core-no-external-effects"

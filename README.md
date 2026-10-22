@@ -103,6 +103,15 @@ $env:PYTHONPATH = "$PWD/src"
 Use a fresh work path;an older memory save intentionally rejects with UNSUPPORTED_RULESET.
 [Work contract](docs/work_orders/QT-F28_NPC_PROVISIONS.md).
 
+QT-F40–44 adds a separate optional supply-cycle mode. In the command above use a fresh
+`tmp/npc-cycle/game.sqlite` and replace `--npc-work` with `--npc-cycle` (keep `--npc-memory`).
+The NPC uses one communal supply every10 logical seconds and prepares one every4 up to3;
+at a tie it uses before preparing. Player rewards are unchanged. The latest four actual own
+work memories and cumulative counts persist across checkpoint,save/load and reconnect.
+Talk/activity show those stored anchors;slot previews explicitly label saved memories.
+The header shows the selected mode. Old work/memory saves retain their original identities;
+cycle mode rejects them unchanged. [Batch contract](docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md).
+
 QT-F29 work-mode dialogue also recalls the NPC's verified production since the previous
 retained conversation. Work is collected separately from frequent bell events,so those
 events do not hide production. Only actual retained facts are recalled;missing earlier

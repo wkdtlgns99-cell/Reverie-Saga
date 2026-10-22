@@ -1,26 +1,39 @@
 # Reverie Saga — Backlog
 
-Updated:2026-10-21 | Current task/status/dependency SSOT.
+
+Updated:2026-10-22 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
 
-[PR13](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/13) publication/CI repair:
-first run passed static/type/imports and31boundaries;full1796PASS/1focus-fixture FAIL before
-20minute job cancellation. Low maximum heights reproduced unmapped Text/stale wait focus.
-Keyboard fixture now guarantees mapped/focused targets,with600/768/1000regressions and
-stronger byte/history guards;all client+document66PASS22.43s. CI bound30minutes only;
-all commands/checks retained. Full selection now2174. Updated-head GitHub CI remains the
-merge gate;GitHub owns final status. [Repair receipt](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
-Production/native/build inputs unchanged;earlier evidence below remains snapshot-specific.
+QT-F40–44 LOCAL_ACCEPTED2026-10-22:all five requested tasks completed locally.
 
-Director2026-10-21authorizes publishing the accumulated F34–39and QT-R34–36repairs through
-a PR,checking CI and ordinary main merge. Actual commit/PR/CI/main state is owned by Git
-and GitHub. Earlier local-only/no-publication statements below describe their execution
-snapshots and are superseded for this publication scope. Patch rereview remains DEFERRED;
-CP06release hold and other-device/final engine limits are unchanged.
+| ID | Size | Accepted behavior | Primary;related |
+|---|---|---|---|
+| F40 | Small | Tk/Unity selected NPC mode shown |5 support |
+| F41 | Small | Stock text uses canonical work period |5 support |
+| F42 | Large | Off-screen prepare4/use10/cap3,consume before prepare |2 |
+| F43 | Large | Last4 actual own supply memories persist atomically |2;6,4 support |
+| F44 | Large | Client/talk/activity/slot/current+previous recovery/reconnect |7;5,6 |
+
+Full2216PASS836.87s;exact CI boundary31PASS8.53s;Ruff/format21/mypy200/import3+1/pip
+PASS. Native76PASS0FAIL,actual547x376captures and selected-mode screen checked;one editor
+9524retained. Same-editor Windows build89,489,696bytes/release hook absent PASS. All9owned
+saves validate/replay/query/byte guards PASS;checkpoint-only/no retained trace remembers
+four real anchors and continues. Scene byte-exact;source/test hashes fixed through full run.
+[Order](docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md),[receipt](docs/reviews/QT-F40_44_EXECUTION_2026-10-22.md).
+Branch codex/npc-cycle-batch-20261022. Director2026-10-22now authorizes commit/push/PR
+publication of this batch and the next implementation. Git/GitHub own actual remote state;
+no main merge,agents or checkpoint waiver is inferred. Earlier local-only scope is superseded.
+D2 remains OPEN;CP06 held;earlier QT-R34–36 independent patch rereview DEFERRED.
+
+PR13 publication complete:merged to main bd8e9c710591a0c3eeebeb1d132d840177ccb9ea;
+head a9cc338c CI full2174PASS/boundary31PASS/static/type/imports PASS. This-host affected
+127PASS before this batch;main was clean/synchronized at entry. Initial CI failure/cancellation
+and its fixture repair remain historical in [repair receipt](docs/reviews/PR13_CI_REPAIR_2026-10-21.md).
+Older local-only statements below describe their execution snapshots,not current PR13 status.
 
 QT-F39 LOCAL_ACCEPTED2026-10-21:connected Unity save management(current/previous info,
 slot01–08,save/both loads),explicit valid previous-save private restore despite corrupt
