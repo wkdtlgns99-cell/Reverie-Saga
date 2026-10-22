@@ -832,9 +832,22 @@ namespace ReverieSaga
             var update=room.Latest.update;
             Check(update.status=="ACTIVITY_INSPECTED"&&update.messages[0]==summary,
                 "cycle_activity_counters");
-            Check(update.messages.Length==expected.Length+2,"cycle_memory_bounded_count");
+            int activityCount=Math.Min(8,int.Parse(update.view.tick,CultureInfo.InvariantCulture)/2);
+            Check(update.messages.Length==expected.Length+3+Math.Max(1,activityCount),"cycle_memory_and_activity_bounded_count");
             for(int index=0;index<expected.Length;index++)
                 Check(update.messages[index+2]==expected[index],"cycle_memory_anchor_"+index);
+            Check(update.messages[expected.Length+2].StartsWith("NPC 종·호출 활동 · ",StringComparison.Ordinal)&&
+                update.messages[expected.Length+2].Contains("최근 최대 8개"),"cycle_activity_source_boundary");
+            if(activityCount==0)Check(update.messages[update.messages.Length-1].Contains(
+                "누적 횟수로 과거 활동을 추정하지 않습니다"),"cycle_activity_empty_no_inference");
+            else {
+                int latest=int.Parse(update.view.tick,CultureInfo.InvariantCulture)/2*2;
+                for(int index=0;index<activityCount;index++) {
+                    int tick=latest-(activityCount-1-index)*2;
+                    Check(update.messages[expected.Length+3+index]=="NPC 활동 기록 · "+tick+
+                        "초: 종을 울렸습니다. (누적 "+(tick/2)+"회)","cycle_bell_activity_"+tick);
+                }
+            }
             Check(JsonUtility.ToJson(update.view)==view&&FileHash(update.working_path)==bytes,
                 "cycle_activity_readonly");
         }
@@ -877,12 +890,17 @@ namespace ReverieSaga
                 "cycle_new_process_retains_mode_time");
             yield return CycleActivity("NPC 반복 작업: 물자 3/3개 · 준비 5회 · 사용 2회.",at20);
             foreach(string action in new [] {"down","talk","open","right","down","attack","attack","rest","attack"})
+            {
                 yield return Intent(action);
+                if(action=="talk")CheckPlayerMemory("22",false,"cycle_player_promise_committed");
+            }
             yield return Intent("left");yield return Intent("talk");
             Check(room.Latest.update.quest_stage=="3"&&room.Latest.update.quest_reward=="1",
                 "cycle_quest_combat_report_reward_independent");
             Check(String.Join("\n",room.Latest.update.messages).Contains("NPC 작업 기억 · 30초: 공동 물자 1개를 사용"),
                 "cycle_talk_uses_own_persisted_memory");
+            CheckPlayerMemory("31",true,"cycle_player_report_not_eyewitness");
+            room.SetDialogueFocus(true);yield return CaptureActivity("cycle-player-report");room.SetDialogueFocus(false);
             yield return InspectMemory("cycle_player_conversation_separate",2,22,31);
             room.SetDialogueFocus(true);room.InspectActivity();yield return Ready();
             yield return CaptureActivity("cycle-after-report");room.SetDialogueFocus(false);

@@ -119,6 +119,19 @@ actions;the view labels that scope and cumulative totals. Missing entries do not
 action never occurred or that the NPC forgot. Current/previous previews remain read-only.
 [Comparison contract](docs/work_orders/QT-F45_CYCLE_SLOT_MEMORY_COMPARISON.md).
 
+QT-F46 cycle-mode conversations also recall the newest persistent player quest statement:
+the heard promise or received completion report,with its original game time. Enemy defeat
+alone does not become a received report or eyewitness memory. Restoring an older save
+selects that branch's memories;retry adds no duplicate context. This reuses existing
+committed anchors without another replay or live API call.
+[Recall contract](docs/work_orders/QT-F46_CYCLE_PLAYER_MEMORY.md).
+
+QT-F47 cycle-mode **NPC 활동 기록** keeps those persistent supply memories and also shows
+the selected save segment's latest eight bell/reply events,verified through one isolated
+replay. It labels the source checkpoint boundary;missing retained events are never rebuilt
+from cumulative counters. Inspection advances no time and preserves source files/retry.
+[Activity contract](docs/work_orders/QT-F47_CYCLE_SELF_ACTIVITY.md).
+
 QT-F29 work-mode dialogue also recalls the NPC's verified production since the previous
 retained conversation. Work is collected separately from frequent bell events,so those
 events do not hide production. Only actual retained facts are recalled;missing earlier

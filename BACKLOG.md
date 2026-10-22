@@ -1,12 +1,44 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-10-22 | Current task/status/dependency SSOT.
+Updated:2026-10-23 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
+
+Director2026-10-23authorizes immediate commit/push of accepted F46–47 on
+codex/npc-cycle-recall-activity-20261023. Git owns actual publication state;prior local-only
+statements below describe execution snapshots. No main merge/release/agent authorization.
+
+QT-F47 LOCAL_ACCEPTED2026-10-23:cycle-mode activity inspection now preserves latest4own
+supply memories and separately shows verified retained8bell/reply events with source
+checkpoint boundary;no inference from counters after trace truncation. One isolated replay,
+unchanged CORE/pins/save/wire. Primary4retrieval support;related5/6/7,D2OPEN.
+New13cases;affected161PASS261.72s,exact CI31PASS23.01s,static/type205/import3+1/pip PASS.
+Original editor34400retained;UI unavailable and unexecuted temporary trigger removed.
+156byte-identical input files qualified in isolated pinned editor:109native PASS0FAIL,
+actual642x500capture inspected,waited exit0(second run closes first missed OS-exit capture).
+All18owned saves across2runs validate/replay/query/byte guards PASS;original scene/input
+hashes unchanged. Saved-query mean812.758ms/max1550.763ms. No fresh full/release rebuild.
+[Order](docs/work_orders/QT-F47_CYCLE_SELF_ACTIVITY.md),[receipt](docs/reviews/QT-F47_EXECUTION_2026-10-23.md).
+F46preserved;combined13dirty paths,local only,no commit/push/PR/merge/agents. CP06held,
+prior patch rereview DEFERRED;no automatic next task.
+
+QT-F46 LOCAL_ACCEPTED2026-10-23:cycle-mode committed talk recalls the latest persistent
+player promise/report with original time,explicitly distinguishing received reports from
+eyewitness knowledge. Reuses F31 selector;no new facts/replay/IO/schema/pins/save/wire.
+Primary4retrieval support;related5/6/7. New8cases;affected198PASS/2hardlink-permission
+failures267.86s,then the same2PASS1.86s on permitted execution:200distinct qualified.
+Exact CI boundaries31PASS20.02s,static/type204/import3+1/pip PASS. One installed Unity
+editor34400started(no editor running),80native PASS0FAIL,actual642x500dialogue inspected,
+9owned saves validate/replay/byte guards PASS;scene restored byte-exact,editor retained.
+Selector9000samples mean0.008217ms/max0.234ms. No fresh full/rebuild;unchanged authoritative
+and Unity production sources reuse historical F40–44evidence. D2OPEN,CP06held.
+[Order](docs/work_orders/QT-F46_CYCLE_PLAYER_MEMORY.md),[receipt](docs/reviews/QT-F46_EXECUTION_2026-10-23.md).
+Local only;no commit/push/PR/merge/agents. No automatic next task. Entry main/origin/main
+6dc918e includes merged PR14/F40–45;following publication limits describe prior snapshots.
 
 QT-F45 LOCAL_ACCEPTED2026-10-22:current/previous saved-slot comparison of retained own
 supply memories,distinct causal-source+sequence identities,common/current-only/saved-only
@@ -204,7 +236,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | QT-F28–32merged PR11;QT-F33merged PR12 | Main synchronized d7f3217after explicit merge request. QT-F34–39/repair local only;no new publication. CP06release held |
+| Publication / CI | Through QT-F45 merged PR14 | Entry main/origin/main6dc918e synchronized2026-10-23. F46local only;no new publication. Earlier CI receipts remain revision-specific;CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
@@ -224,7 +256,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
-| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond bounded quest/supply anchors;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection and F40–44supply cycle/persistent own memory/client recovery accepted;F45saved/current own-memory comparison accepted. Regional cognition/relationships/economy remain open |
+| D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond bounded quest/supply anchors;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection and F40–44supply cycle/persistent own memory/client recovery accepted;F45saved/current own-memory comparison,F46cycle player recall and F47cycle self-activity retrieval accepted. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |
 | RS-ARCH-002 / D6 | IN_PROGRESS | B02–08 design DONE;B09 READY_FOR_REVIEW,#6/#34 later-order readiness PARTIAL;[BLOCK09](architecture/BLOCK_09.md). Design completion does not qualify runtime |
