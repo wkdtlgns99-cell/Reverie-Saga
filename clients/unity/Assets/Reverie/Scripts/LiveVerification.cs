@@ -833,12 +833,15 @@ namespace ReverieSaga
             Check(update.status=="ACTIVITY_INSPECTED"&&update.messages[0]==summary,
                 "cycle_activity_counters");
             int activityCount=Math.Min(8,int.Parse(update.view.tick,CultureInfo.InvariantCulture)/2);
-            Check(update.messages.Length==expected.Length+3+Math.Max(1,activityCount),"cycle_memory_and_activity_bounded_count");
+            Check(update.messages.Length==expected.Length+5+Math.Max(1,activityCount),"cycle_memory_and_activity_bounded_count");
+            Check(update.messages[update.messages.Length-2]=="NPC 호출 회상 · 현재 저장 구간에서 확인한 응답입니다."&&
+                update.messages[update.messages.Length-1]=="현재 저장 구간에 새로 확인된 호출 응답이 없습니다.",
+                "cycle_empty_causal_calls_explicit");
             for(int index=0;index<expected.Length;index++)
                 Check(update.messages[index+2]==expected[index],"cycle_memory_anchor_"+index);
             Check(update.messages[expected.Length+2].StartsWith("NPC 종·호출 활동 · ",StringComparison.Ordinal)&&
                 update.messages[expected.Length+2].Contains("최근 최대 8개"),"cycle_activity_source_boundary");
-            if(activityCount==0)Check(update.messages[update.messages.Length-1].Contains(
+            if(activityCount==0)Check(update.messages[expected.Length+3].Contains(
                 "누적 횟수로 과거 활동을 추정하지 않습니다"),"cycle_activity_empty_no_inference");
             else {
                 int latest=int.Parse(update.view.tick,CultureInfo.InvariantCulture)/2*2;
@@ -904,6 +907,23 @@ namespace ReverieSaga
             yield return InspectMemory("cycle_player_conversation_separate",2,22,31);
             room.SetDialogueFocus(true);room.InspectActivity();yield return Ready();
             yield return CaptureActivity("cycle-after-report");room.SetDialogueFocus(false);
+            for(int index=0;index<5;index++)yield return Intent("bell");
+            yield return Intent("talk");
+            string callTick=room.Latest.update.view.tick,callBytes=FileHash(room.Latest.update.working_path);
+            room.SetDialogueFocus(true);room.InspectActivity();yield return Ready();
+            string callText=String.Join("\n",room.Latest.update.messages);
+            Check(callText.Contains("확인한 호출 응답 5건 중 최근 3건입니다."),"cycle_causal_call_count_and_cap");
+            for(int tick=34;tick<=36;tick++)Check(callText.Contains("NPC 호출 회상 · "+tick+
+                "초의 플레이어 호출에 "+tick+"초에 응답했습니다."),"cycle_causal_call_"+tick);
+            Check(!callText.Contains("32초의 플레이어 호출에")&&!callText.Contains("33초의 플레이어 호출에"),
+                "cycle_causal_calls_keep_latest_three");
+            Check(callText.Contains("NPC 작업 기억 · ")&&callText.Contains("NPC 활동 기록 · "),
+                "cycle_call_supply_and_mixed_sections_separate");
+            Check(room.Latest.update.view.tick==callTick&&FileHash(room.Latest.update.working_path)==callBytes,
+                "cycle_call_inspection_readonly");
+            yield return CaptureActivity("cycle-causal-calls");room.SetDialogueFocus(false);
+            room.Reconnect();yield return Ready();room.InspectActivity();yield return Ready();
+            Check(String.Join("\n",room.Latest.update.messages)==callText,"cycle_causal_calls_reconnect");
             yield return SaveManagerFlow();
             Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }

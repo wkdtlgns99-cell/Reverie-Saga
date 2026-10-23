@@ -10,4 +10,6 @@
 - Execution/repair authority: [turn rulebook](ENGINEERING_RULES.md); architecture/product contracts retain authority. This file is the entry router, not another checklist.
 - Use [work-order template](docs/prompts/SOL_CODING_WORK_ORDER.md) for concrete scope/contracts/acceptance; [README](README.md#verification) owns actual commands, [enforcement map](docs/ENGINEERING_ENFORCEMENT.md) owns active/deferred control routing.
 
-No automatic next task,agent launch,publication or remote administration is authorized by these routes.
+These routes alone authorize no automatic next task,agent launch,publication or remote administration.
+Explicitly requested automatic work follows the [execution policy](docs/AUTONOMOUS_EXECUTION.md);
+reading it does not activate or resume a paused goal.

@@ -70,6 +70,11 @@ G01–G11 gate or a second full heavy suite.
 
 ## Judgment / deferred controls
 
+- Director2026-10-23:[authorized continuation and useful engineering](AUTONOMOUS_EXECUTION.md)
+  requires explicit supported cross-turn goal state,immediate pause handling and product-led
+  structure/efficiency review before delivery. Existing checks do not prove scheduler state,
+  user intent,architectural usefulness or absence of all test overfitting;no new automatic
+  enforcement or review checkpoint is claimed.
 - Contract completeness,oracle independence,appropriate scope/reuse/architecture quality,
   exception rationale,review independence and truthful reporting remain review obligations.
   Passing lint/tests cannot prove these;review actual diff/callers/evidence.

@@ -132,6 +132,13 @@ replay. It labels the source checkpoint boundary;missing retained events are nev
 from cumulative counters. Inspection advances no time and preserves source files/retry.
 [Activity contract](docs/work_orders/QT-F47_CYCLE_SELF_ACTIVITY.md).
 
+QT-F48 extends cycle-mode activity inspection with the actual player-call/response links:
+the total verified responses in the retained segment and their latest three request/reply
+times. These details survive eviction from the mixed eight-event list and are not reset
+by a conversation. Checkpoint-only history never reconstructs missing calls from counters.
+The same single isolated replay verifies all activity sections;inspection remains read-only.
+[Call-link contract](docs/work_orders/QT-F48_CYCLE_CALL_LINKS.md).
+
 QT-F29 work-mode dialogue also recalls the NPC's verified production since the previous
 retained conversation. Work is collected separately from frequent bell events,so those
 events do not hide production. Only actual retained facts are recalled;missing earlier
