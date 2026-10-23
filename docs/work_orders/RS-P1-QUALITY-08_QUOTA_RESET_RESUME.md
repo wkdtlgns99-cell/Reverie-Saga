@@ -34,3 +34,6 @@ exit0,10PASS0.99s. Rulebook545words/five stages;≤550bound retained without cha
 Root progress trio synchronized. Final scope/UTF-8/local-link/whitespace and document checks
 are recorded under tmp/quality08/. Required published-head CI/main results remain owned
 by actual Git/GitHub state,not inferred from prior revision evidence.
+
+Final ledger review also corrected the stale PR15/F48-local-only publication row to the
+already-completed PR16/main926cfcb facts,consistent with the handoff and Korean progress.

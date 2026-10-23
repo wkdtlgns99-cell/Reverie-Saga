@@ -274,7 +274,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | Through QT-F47 merged PR15 | Entry main/origin/main e782fa5 synchronized2026-10-23. Exact-head push/PR full2259PASS/boundary31/static PASS. F48local only;CP06release held |
+| Publication / CI | Through QT-F48 and QUALITY-07 merged PR16 | Entry main/origin/main926cfcb synchronized2026-10-23. Final02e1b9a push/PR full2267PASS/boundary31/static PASS. QUALITY-08publication follows this entry;CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
