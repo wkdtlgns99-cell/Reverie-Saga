@@ -7,6 +7,7 @@ from app.headless import HeadlessSession, restore_checkpoint, state_io
 from app.npc_memory import memory_bundle
 from app.npc_memory_query import player_memory_recollection
 from app.npc_work import stock_text, work_bundle
+from app.npc_cycle import cycle_bundle, cycle_messages
 from contracts.npc_work import ProvisionPrepared
 from contracts.messages import WorldEvent
 from contracts.quest import QuestSpoken
@@ -18,6 +19,7 @@ from contracts.turn import ProtocolSnapshot, TurnDriver, TurnPublication
 from contracts.watch import NpcActed, WatchEcho, WatchReplied, WatchRequested
 from domain.state_types import CoreSnapshot
 from domain.npc_work import STOCK_CAP, ProvisionsRecord
+from domain.npc_cycle import CycleRecord
 from domain.npc_memory import NpcQuestMemoryRecord
 from domain.watch import ECHO_DEPTH
 from orchestration.replay import Runner
@@ -142,9 +144,21 @@ class _ActivitySession:
 
 class _ActivityFactory:
     def __init__(
-        self, content: QuestContent, npc_id: str, *, npc_work: bool, collect_calls: bool = False
+        self,
+        content: QuestContent,
+        npc_id: str,
+        *,
+        npc_work: bool,
+        collect_calls: bool = False,
+        npc_cycle: bool = False,
     ) -> None:
-        self.bundles = (work_bundle(content) if npc_work else memory_bundle(content),)
+        self.bundles = (
+            cycle_bundle(content)
+            if npc_cycle
+            else work_bundle(content)
+            if npc_work
+            else memory_bundle(content),
+        )
         self.npc_id = npc_id
         self.actor_id = content.definition.layout.actor_id
         self.collect_calls = collect_calls
@@ -245,8 +259,11 @@ def _verified_activity(
     npc_work: bool,
     error_code: str,
     collect_calls: bool = False,
+    npc_cycle: bool = False,
 ) -> _ActivityFactory:
-    factory = _ActivityFactory(content, npc_id, npc_work=npc_work, collect_calls=collect_calls)
+    factory = _ActivityFactory(
+        content, npc_id, npc_work=npc_work, collect_calls=collect_calls, npc_cycle=npc_cycle
+    )
     runner = Runner(
         segment.checkpoint.core,
         segment.checkpoint.protocol,
@@ -261,6 +278,48 @@ def _verified_activity(
     ):
         raise SaveError(error_code, "activity source differs from live attachment")
     return factory
+
+
+def cycle_activity_messages(
+    segment: SaveSegment,
+    npc_id: str,
+    *,
+    content: QuestContent,
+    current: DurableCheckpoint,
+) -> tuple[str, ...]:
+    """Keep persistent own work apart from the bounded retained bell/reply history."""
+    if npc_id != content.definition.layout.npc_id:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "activity owner differs from selected NPC")
+    records = tuple(
+        record
+        for record in current.core.components
+        if type(record) is CycleRecord and record.entity_id == npc_id
+    )
+    if len(records) != 1:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "activity requires selected NPC cycle")
+    try:
+        factory = _verified_activity(
+            segment,
+            npc_id,
+            content=content,
+            current=current,
+            npc_work=False,
+            npc_cycle=True,
+            error_code="NPC_ACTIVITY_SOURCE",
+        )
+    except ReplayFormatError as error:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "retained activity format mismatch") from error
+    return (
+        *cycle_messages(records[0]),
+        f"NPC 종·호출 활동 · {segment.checkpoint.core.tick}초 이후 저장 구간의 최근 최대 8개입니다.",
+        *(
+            tuple(entry.text() for entry in reversed(factory.entries))
+            or (
+                "현재 저장 구간에 남은 종 울림·호출 응답 기록이 없습니다. "
+                "누적 횟수로 과거 활동을 추정하지 않습니다.",
+            )
+        ),
+    )
 
 
 def work_recollection(

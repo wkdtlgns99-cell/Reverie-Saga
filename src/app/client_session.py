@@ -17,9 +17,9 @@ from app.watch_registry import watch_bundle
 from app.quest import bootstrap_quest, harbor_definition
 from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
-from app.npc_memory_query import recent_evidence
+from app.npc_memory_query import player_memory_recollection, recent_evidence
 from app.npc_memory_compare import slot_memory_messages
-from app.npc_activity import activity_messages, return_recollection
+from app.npc_activity import activity_messages, cycle_activity_messages, return_recollection
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
 from domain.npc_cycle import CycleRecord
@@ -224,20 +224,24 @@ class ClientSession:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
         if self._quest_content is None:
             raise ValueError("NPC_MEMORY_UNAVAILABLE")
-        if self._npc_cycle:
-            return self.update(
-                "ACTIVITY_INSPECTED",
-                messages=cycle_messages(
-                    _record(self._owner.snapshot(), CycleRecord, self._layout.npc_id)
-                ),
-            )
         try:
-            messages = activity_messages(
-                self._owner.retained_segment(),
-                self._layout.npc_id,
-                content=self._quest_content,
-                current=DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
-                npc_work=self._npc_work,
+            source = self._owner.retained_segment()
+            current = DurableCheckpoint(self._owner.snapshot(), self._owner.protocol())
+            messages = (
+                cycle_activity_messages(
+                    source,
+                    self._layout.npc_id,
+                    content=self._quest_content,
+                    current=current,
+                )
+                if self._npc_cycle
+                else activity_messages(
+                    source,
+                    self._layout.npc_id,
+                    content=self._quest_content,
+                    current=current,
+                    npc_work=self._npc_work,
+                )
             )
         except (SaveError, OSError) as error:
             logging.getLogger(__name__).exception("NPC activity inspection failed")
@@ -302,13 +306,24 @@ class ClientSession:
                 raise RuntimeError("committed NPC talk requires a client view")
             update = replace(update, messages=(*update.messages, npc_activity_text(update.view)))
             if self._npc_cycle:
+                core = self._owner.snapshot()
+                try:
+                    recollection = player_memory_recollection(
+                        _record(core, NpcQuestMemoryRecord, self._layout.npc_id)
+                    )
+                except GenerationError as error:
+                    logging.getLogger(__name__).exception(
+                        "committed cycle player recollection failed"
+                    )
+                    raise SaveError(
+                        "NPC_RECOLLECTION_SOURCE", "talk committed;recollection unavailable"
+                    ) from error
                 update = replace(
                     update,
                     messages=(
                         *update.messages,
-                        *cycle_messages(
-                            _record(self._owner.snapshot(), CycleRecord, self._layout.npc_id)
-                        ),
+                        *cycle_messages(_record(core, CycleRecord, self._layout.npc_id)),
+                        *recollection,
                     ),
                 )
             if self._npc_work:

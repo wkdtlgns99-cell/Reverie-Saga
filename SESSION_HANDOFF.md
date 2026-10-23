@@ -1,9 +1,9 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-10-22 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-10-23 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
+Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -14,6 +14,38 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 5. Latest user request governs scope. No automatic next task,agent,publication,remote administration or checkpoint waiver.
 
 ## Checkout and Local Work
+
+Director2026-10-23requests immediate Git publication of F46–47. Authorized branch:
+codex/npc-cycle-recall-activity-20261023;commit/push only,Git owns actual remote state.
+Earlier local-only notes retain their execution scope;no main merge/release/agents.
+
+QT-F47 LOCAL_ACCEPTED2026-10-23:cycle activity now uses canonical verified replay for
+recent8bell/reply events alongside separate latest4persistent supply memories. Source
+checkpoint boundary/empty retained history explicit;no counter-based reconstruction.
+Primary4retrieval support;related5/6/7,no new authority/save/pins/wire. New13cases,
+affected161PASS/exact CI31PASS/static/type205/import3+1/pip PASS. Actual pinned Unity
+109PASS0FAIL,642x500capture inspected;18owned saves across2runs replay/query/bytes PASS.
+Saved-query mean812.758ms/max1550.763ms;original156input/scene hashes unchanged.
+UI unavailable for editor34400;temporary menu trigger never refreshed/ran and was removed.
+Isolated byte-identical project verification completed,second run captured actual exit0;
+original editor remains open with zero restart,both isolated processes exited.
+[Order](docs/work_orders/QT-F47_CYCLE_SELF_ACTIVITY.md),[receipt](docs/reviews/QT-F47_EXECUTION_2026-10-23.md).
+F46preserved;combined13dirty paths,local only,no publication/agents/automatic next task.
+D2OPEN,CP06held,QT-R34–36patch rereview DEFERRED;no fresh full/release build.
+
+QT-F46 LOCAL_ACCEPTED2026-10-23:cycle-mode talk now uses F31's existing persistent
+player statement selector,original promise/report tick and explicit non-eyewitness wording.
+Primary4retrieval support;related5/6/7. No new authority/replay/IO/save/pins/wire/LLM.
+New8tests;affected198PASS/2sandbox hardlink failures then same2PASS permitted:200distinct
+qualified. CI boundaries31PASS,static/type204/import3+1/pip PASS. Actual Unity80PASS0FAIL,
+642x500dialogue inspected;9owned save validations/replays/byte guards PASS. Scene restored
+byte-exact;one editor34400launched because none was running,left open/idle,zero restart.
+9000selector samples mean0.008217ms/max0.234ms. No fresh full/build;historical F40–44
+evidence reused only for unchanged authoritative/Unity production inputs.
+[Order](docs/work_orders/QT-F46_CYCLE_PLAYER_MEMORY.md),[receipt](docs/reviews/QT-F46_EXECUTION_2026-10-23.md).
+Entry main/origin/main6dc918e includes PR14/F40–45;earlier publication restrictions below
+retain their historical scopes. F46local only,no commit/push/PR/merge/agents or automatic
+next task. D2OPEN,CP06held,QT-R34–36patch rereview DEFERRED.
 
 QT-F45 LOCAL_ACCEPTED2026-10-22:current/previous saved-slot comparison of retained own
 supply memories,distinct causal-source+sequence identities,common/current-only/saved-only
@@ -64,7 +96,7 @@ Primary2internal calculation;related4retrieval support/5screen/6save/7integratio
 - CP01–05closed for bounded scopes;CP06holds release. GOV-03manual command accepted;CI/hooks NOT_ACTIVE. D2/D3/D4/D6/D7remain open;see backlog.
 - Historical GOV03full qualification used an identical Tcl copy;preserve that evidence. RS-TK-001 now reproduces descriptor-capture interference and uses canonical sys capture with the original installation;[receipt](docs/reviews/RS-TK-001_EXECUTION_2026-10-16.md). Do not use the historical copy workaround. Windows symlink qualification remains separate.
 - Images/modeling/camera are excluded from current closure. Final HD-2D/engine/human UX/device/MIN-SPEC/standalone release qualification remains separate.
-- Current-host Python3.13.12/Tk8.6/editor6000.3.25f1 reused;director reported prior editor closed,QT-F26started one editor5088and retained it. Recheck live process before reuse;other-device readiness is not inferred here.
+- Current-host Python3.13.12/Tk8.6/editor6000.3.25f1 reused;F46started editor34400and F47preserved it. Its Windows UI/refresh was unavailable for F47,so native verification used isolated byte-identical inputs. Recheck process/window readiness on resume;other-device qualification is not inferred.
 - Credentials:`C:/ReverieSaga/.env` is ignored;primary GEMINI_API_KEY plus two manual spares. Old tmp/gemini-api-key.txt was removed. Never print/copy keys;[loading/approval workflow](docs/CLI_WORKFLOWS.md).
 - Preserve frozen CP02/CP04/other review witnesses,ZIPs,accepted content and private saves. Original failures/mixed CI/partial review limits remain in linked receipts/history.
 - On a future implementation request,select one bounded current order;do not infer a new feature from an archived NEXT. Further gameplay/product constraints remain in [MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
