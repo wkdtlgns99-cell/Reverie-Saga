@@ -8,15 +8,25 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-Entry main/origin/main e782fa5:PR15/F46–47 merged2026-10-23under the director's
-explicit merge/sync request. Push and PR CI both full2259PASS/boundary31/static PASS.
+Entry main/origin/main926cfcb:PR16/F48+QUALITY-07merged2026-10-23under the director's
+explicit publication/main request. Final02e1b9a push/PR CI both full2267PASS/boundary31/
+static PASS;local main synchronized. Older acceptance snapshots below remain historical.
 Director2026-10-23requested automatic next-turn continuation and efficient related-task
 batching,then explicitly paused it. Actual cross-turn goal remains PAUSED;no timed automation
-was created. Current follow-up authorizes QUALITY-07rule clarification and publication of
-all current F48+rule changes through required CI and ordinary main merge/sync. This bounded
-publication does not resume the broader development loop. No agents,checkpoint waiver,
+was created. Current follow-up authorizes QUALITY-08quota-reset policy and its Git
+publication through the established PR/CI/main path. No quota interruption is currently
+being recovered and no wake-up is registered;this bounded rule/publication task does not
+resume the broader development loop. No agents,checkpoint waiver,
 force push or protection changes. Git/GitHub own actual final head/check/merge state.
 Earlier local-only/publication statements describe their historical execution scope.
+
+QUALITY-08 LOCAL_ACCEPTED2026-10-23:authorized automatic work interrupted specifically
+by the five-hour quota resumes at the actual reported reset,using supported verified
+same-chat wake-up capability and fresh eligibility/state checks. Manual user pause wins;
+no now+5h guess,fixed30minute polling,duplicate commands or unverified recovery claims.
+This is policy only,no scheduler/runtime change or current goal resume. Existing10document/
+standard-guard cases PASS0.99s;rulebook545words/five stages. Actual goal PAUSED.
+[Order/evidence](docs/work_orders/RS-P1-QUALITY-08_QUOTA_RESET_RESUME.md).
 
 QUALITY-07 LOCAL_ACCEPTED2026-10-23:explicit supported cross-turn continuation without
 reprompting,immediate pause handling,related PR batching,and useful maintainable/measured
@@ -264,7 +274,7 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 | RS-DOC-005 | LOCAL_ACCEPTED | Compact entry/navigation;[receipt](docs/reviews/RS-DOC-005_EXECUTION_2026-10-16.md). Documentation support;runtime unchanged |
 | QT-F21 | LOCAL_ACCEPTED,published4257d4f | Compact Unity controls/history;307 native checks,51 Python tests/build/static PASS. [Receipt](docs/reviews/QT-F21_EXECUTION_2026-10-16.md) |
 | QT-F18–20 | LOCAL_ACCEPTED,published at 0e06577 | Saved-memory comparison,recent inspection,slot preview;[F18](docs/reviews/QT-F18_EXECUTION_2026-10-15.md),[F19](docs/reviews/QT-F19_EXECUTION_2026-10-15.md),[F20](docs/reviews/QT-F20_EXECUTION_2026-10-15.md). F20 full:1741 PASS,historical evidence |
-| Publication / CI | Through QT-F47 merged PR15 | Entry main/origin/main e782fa5 synchronized2026-10-23. Exact-head push/PR full2259PASS/boundary31/static PASS. F48local only;CP06release held |
+| Publication / CI | Through QT-F48 and QUALITY-07 merged PR16 | Entry main/origin/main926cfcb synchronized2026-10-23. Final02e1b9a push/PR full2267PASS/boundary31/static PASS. QUALITY-08publication follows this entry;CP06release held |
 | V3 additional independent review | STOPPED / PARTIAL by director2026-10-16 | Latest supplied [feedback/dispositions](docs/reviews/OPEN_WORK_V3_FINAL_DISPOSITIONS_2026-10-16.md);clone-cap defect withdrawn,R1locally repaired. No further Claude request;whole-review coverage remains incomplete |
 | A1–A3 / D5 bounded repair | LOCAL_ACCEPTED | Approved harbor prose,ordinary memory client,reconciliation;[closure ledger](docs/reviews/OPEN_WORK_CLOSURE_2026-10-14.md),[D5receipt](docs/reviews/RS-STRUCT-001_EXECUTION_2026-10-14.md). Broader closure remains open |
 
