@@ -15,15 +15,25 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-Entry main/origin/main e782fa5:PR15/F46–47 merged2026-10-23under the director's
-explicit merge/sync request. Push and PR CI both full2259PASS/boundary31/static PASS.
+Entry main/origin/main926cfcb:PR16/F48+QUALITY-07merged2026-10-23under the director's
+explicit publication/main request. Final02e1b9a push/PR CI both full2267PASS/boundary31/
+static PASS;local main synchronized. Older acceptance snapshots below remain historical.
 Director2026-10-23requested automatic next-turn continuation and efficient related-task
 batching,then explicitly paused it. Actual cross-turn goal remains PAUSED;no timed automation
-was created. Current follow-up authorizes QUALITY-07rule clarification and publication of
-all current F48+rule changes through required CI and ordinary main merge/sync. This bounded
-publication does not resume the broader development loop. No agents,checkpoint waiver,
+was created. Current follow-up authorizes QUALITY-08quota-reset policy and its Git
+publication through the established PR/CI/main path. No quota interruption is currently
+being recovered and no wake-up is registered;this bounded rule/publication task does not
+resume the broader development loop. No agents,checkpoint waiver,
 force push or protection changes. Git/GitHub own actual final head/check/merge state.
 Earlier local-only/publication statements describe their historical execution scope.
+
+QUALITY-08 LOCAL_ACCEPTED2026-10-23:authorized automatic work interrupted specifically
+by the five-hour quota resumes at the actual reported reset,using supported verified
+same-chat wake-up capability and fresh eligibility/state checks. Manual user pause wins;
+no now+5h guess,fixed30minute polling,duplicate commands or unverified recovery claims.
+This is policy only,no scheduler/runtime change or current goal resume. Existing10document/
+standard-guard cases PASS0.99s;rulebook545words/five stages. Actual goal PAUSED.
+[Order/evidence](docs/work_orders/RS-P1-QUALITY-08_QUOTA_RESET_RESUME.md).
 
 QUALITY-07 LOCAL_ACCEPTED2026-10-23:explicit supported cross-turn continuation without
 reprompting,immediate pause handling,related PR batching,and useful maintainable/measured
