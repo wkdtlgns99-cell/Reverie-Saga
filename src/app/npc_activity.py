@@ -305,10 +305,11 @@ def cycle_activity_messages(
             current=current,
             npc_work=False,
             npc_cycle=True,
+            collect_calls=True,
             error_code="NPC_ACTIVITY_SOURCE",
         )
-    except ReplayFormatError as error:
-        raise SaveError("NPC_ACTIVITY_SOURCE", "retained activity format mismatch") from error
+    except (ReplayFormatError, SaveError) as error:
+        raise SaveError("NPC_ACTIVITY_SOURCE", "retained activity source mismatch") from error
     return (
         *cycle_messages(records[0]),
         f"NPC 종·호출 활동 · {segment.checkpoint.core.tick}초 이후 저장 구간의 최근 최대 8개입니다.",
@@ -319,6 +320,7 @@ def cycle_activity_messages(
                 "누적 횟수로 과거 활동을 추정하지 않습니다.",
             )
         ),
+        *_call_messages(factory, segment.checkpoint.core.tick),
     )
 
 
@@ -359,9 +361,6 @@ def return_recollection(
         collect_calls=True,
     )
     previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
-    lower_bound = segment.checkpoint.core.tick if previous is None else previous
-    count = factory.call_count - (factory.conversation_counts[-2] if previous is not None else 0)
-    calls = tuple(call for call in factory.calls if call.reply.due_tick > lower_bound)
     session = factory.session
     if session is None:
         raise RuntimeError("verified recollection requires a restored session")
@@ -372,13 +371,25 @@ def return_recollection(
     )
     if len(memories) != 1:
         raise SaveError("NPC_RECOLLECTION_SOURCE", "recollection requires selected NPC memory")
+    return (
+        *_work_lines(factory, segment, current),
+        *_call_messages(factory, segment.checkpoint.core.tick, previous=previous),
+        *player_memory_recollection(memories[0]),
+    )
+
+
+def _call_messages(
+    factory: _ActivityFactory, checkpoint_tick: int, *, previous: int | None = None
+) -> tuple[str, ...]:
+    lower_bound = checkpoint_tick if previous is None else previous
+    count = factory.call_count - (factory.conversation_counts[-2] if previous is not None else 0)
+    calls = tuple(call for call in factory.calls if call.reply.due_tick > lower_bound)
     heading = (
         "NPC 호출 회상 · 현재 저장 구간에서 확인한 응답입니다."
         if previous is None
         else f"NPC 호출 회상 · 지난 대화({previous}초) 뒤에 끝낸 응답입니다."
     )
     return (
-        *_work_lines(factory, segment, current),
         heading,
         *(
             (
@@ -392,7 +403,6 @@ def return_recollection(
             if calls
             else ("현재 저장 구간에 새로 확인된 호출 응답이 없습니다.",)
         ),
-        *player_memory_recollection(memories[0]),
     )
 
 

@@ -122,7 +122,8 @@ def test_cycle_checkpoint_only_has_supply_but_never_fabricates_old_bells(tmp_pat
         assert update.messages[:6] == supply
         assert not activity_rows(update)
         assert any("16초 이후" in m for m in update.messages)
-        assert "누적 횟수로 과거 활동을 추정하지 않습니다." in update.messages[-1]
+        assert "누적 횟수로 과거 활동을 추정하지 않습니다." in update.messages[-3]
+        assert update.messages[-1] == "현재 저장 구간에 새로 확인된 호출 응답이 없습니다."
         assert update.view is not None and update.view.npc_bells == 8
         assert (
             compacted.owner.snapshot(),
