@@ -7,6 +7,8 @@ import hashlib
 from typing import Literal, cast
 
 from contracts.errors import CandidateError, ReadOnlyViolation, SchemaError
+from contracts.dialogue import QuestContent
+from contracts.npc_gate_aid import GateAidCue, GateAssisted
 from contracts.encounter import (
     GATE, HIT_POINTS, STAMINA, GateRead, HitPointsRead, StaminaRead,
     InteractCommand, AttackCommand, RestCommand, GateDelta, HitPointsDelta, StaminaDelta,
@@ -31,8 +33,10 @@ from domain.primitives import (
 )
 from domain.state_types import ComponentRecord, CoreSnapshot, StoredRoot
 from domain.trial import CellPositionRecord, TrialMapRecord, cell_coordinates
+from domain.watch import WAKE_PERIOD
 from orchestration.serialization import key_document
 from orchestration.trial import CellReducer, CellPositionAdapter, TrialMapAdapter, TrialPayloadCodec
+from orchestration.npc_gate_aid import GateAidPayloadCodec
 
 
 def _free(cell: int, layout: Scenario = LEGACY) -> None:
@@ -838,12 +842,62 @@ class EncounterCheckpointPolicy(ScenarioBound):
 
 
 class EncounterPresenter(ScenarioBound):
+    def __init__(self, layout: Scenario = LEGACY, *, aid_content: QuestContent | None = None, npc_call_aid: bool = False) -> None:
+        super().__init__(layout)
+        if aid_content is not None and (type(aid_content) is not QuestContent or aid_content.definition.layout != layout):
+            raise ValueError("NPC_AID_CONTENT")
+        if type(npc_call_aid) is not bool or npc_call_aid and aid_content is None:
+            raise ValueError("NPC_CALL_AID_CONTENT")
+        self._npc_call_aid = npc_call_aid
+        self._aid_content = aid_content
+
+    def _aid_gate_chain(self, facts: tuple[WorldEvent, ...], final_open: int,
+                        receipt: CommitReceipt) -> set[EventId]:
+        gates = tuple(e for e in facts if isinstance(e.payload, (GateChanged, GateAssisted)))
+        current = final_open
+        if gates:
+            first = gates[0].payload
+            current = first.before_open if isinstance(first, GateChanged) else 0
+        blocked: set[EventId] = set()
+        previous: tuple[int, int] | None = None
+        for event in facts:
+            fact, header = event.payload, event.header
+            if isinstance(fact, (GateChanged, GateAssisted)):
+                expected_phase = Phase.RESOLVE if isinstance(fact, GateChanged) else Phase.POST_TICK
+                order = (header.occurred_at, tuple(Phase).index(header.phase))
+                if (header.producer_id != "encounter.actions" or header.phase != expected_phase
+                        or header.type_key != fact.schema
+                        or header.wave != 0 or header.sequence != 0
+                        or event.due_tick != header.occurred_at or header.occurred_at > receipt.tick
+                        or previous is not None and order <= previous
+                        or isinstance(fact, GateChanged) and header.caused_by):
+                    raise ValueError("NPC_AID_SOURCE")
+                previous = order
+                before, after = (fact.before_open, fact.after_open) if isinstance(fact, GateChanged) else (0, 1)
+                if isinstance(fact, GateAssisted) and (len(header.caused_by) != 1 or header.occurred_at <= 0 or not self._npc_call_aid and header.occurred_at % WAKE_PERIOD):
+                    raise ValueError("NPC_AID_SOURCE")
+                if current != before:
+                    raise ValueError("NPC_AID_GATE_CHAIN")
+                current = after
+            elif isinstance(fact, EncounterMoveBlocked) and fact.reason == "door":
+                if current != 0:
+                    raise ValueError("NPC_AID_GATE_CHAIN")
+                blocked.add(header.event_id)
+        if current != final_open:
+            raise ValueError("NPC_AID_GATE_CHAIN")
+        return blocked
+
     def map(self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt,
             committed: ReadPort) -> tuple[PresentationEvent, ...]:
         cues: list[PresentationEvent] = []
+        closed_door_blocks = (self._aid_gate_chain(facts, committed.component(GATE, self._layout.gate_id).is_open, receipt)
+                              if self._aid_content is not None else set())
         for event in facts:
             fact = event.payload
-            EncounterPayloadCodec(fact.schema, layout=self._layout).encode(fact)
+            if self._aid_content is not None and isinstance(fact, GateAssisted):
+                GateAidPayloadCodec(GateAssisted.SCHEMA, self._aid_content, npc_call_aid=self._npc_call_aid).encode(fact)
+            else:
+                EncounterPayloadCodec(fact.schema, layout=self._layout).encode(fact)
             actor = committed.component(CELL_POSITION, self._layout.actor_id)
             enemy = committed.component(CELL_POSITION, self._layout.enemy_id)
             gate = committed.component(GATE, self._layout.gate_id)
@@ -870,7 +924,7 @@ class EncounterPresenter(ScenarioBound):
                 if isinstance(fact, EncounterMoveBlocked):
                     proposed = (fact.from_cell // 3 + fact.dz) * 3 + fact.from_cell % 3 + fact.dx
                     if (fact.reason == "wall" and not grid.is_blocked(proposed) or
-                        fact.reason == "door" and gate_open != 0 or
+                        fact.reason == "door" and gate_open != 0 and event.header.event_id not in closed_door_blocks or
                         fact.reason == "occupied" and enemy_hp == 0):
                         raise ValueError("presenter dynamic blockage")
                 fx, fz = cell_coordinates(fact.from_cell)
@@ -878,11 +932,13 @@ class EncounterPresenter(ScenarioBound):
                 payload = EncounterMoveCue(self._layout.actor_id, space, fact.from_cell, target,
                                            fx, fz, tx, tz, result)
             elif isinstance(fact, GateChanged):
-                if gate_open != fact.after_open or not adjacent_cells(cell, gate_cell) or actor_hp == 0:
+                if (gate_open != fact.after_open and self._aid_content is None) or not adjacent_cells(cell, gate_cell) or actor_hp == 0:
                     raise ValueError("presenter gate state")
                 x, z = cell_coordinates(gate_cell)
                 payload = GateCue(self._layout.actor_id, self._layout.gate_id, gate_cell, x, z,
                                   fact.before_open, fact.after_open)
+            elif isinstance(fact, GateAssisted) and self._aid_content is not None:
+                payload = GateAidCue(self._layout.npc_id, self._layout.gate_id, event.header.occurred_at)
             elif isinstance(fact, AttackResolved):
                 if ((actor_hp, enemy_hp, stamina) !=
                     (fact.actor_hp_after, fact.target_hp_after, fact.stamina_after) or
@@ -907,7 +963,10 @@ class EncounterPresenter(ScenarioBound):
                 payload = DefeatCue(fact.entity_id, fact.killer_id, defeat_cell, x, z)
             else:
                 raise SchemaError("UNSUPPORTED_SCHEMA", "encounter presenter fact")
-            EncounterPayloadCodec(payload.schema, layout=self._layout).encode(payload)
+            if isinstance(payload, GateAidCue) and self._aid_content is not None:
+                GateAidPayloadCodec(GateAidCue.SCHEMA, self._aid_content, npc_call_aid=self._npc_call_aid).encode(payload)
+            else:
+                EncounterPayloadCodec(payload.schema, layout=self._layout).encode(payload)
             identifier = "p1-" + hashlib.sha256(pack(("cue-id/v1", event.header.event_id,
                                                      "encounter.presenter", str(len(cues))))).hexdigest()
             header = EventHeader(EventId(identifier), payload.schema, "encounter.presenter",

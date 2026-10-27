@@ -5,6 +5,7 @@ from typing import Protocol
 from contracts.messages import CommandPayload, FactPayload, PresentationPayload, StateDelta
 from contracts.read_views import ComponentKey, ComponentPatch
 from domain.primitives import EntityId, FieldAddress, FieldFamily, Tick, TypeKey
+from domain.watch import LANTERN_SCHEMA, REPLY_SCHEMA, WATCH_NPC_SCHEMA
 
 
 class WatchNpcRead(Protocol):
@@ -26,9 +27,9 @@ class ReplyRead(Protocol):
     def count(self) -> int: ...
 
 
-WATCH_NPC = ComponentKey[WatchNpcRead](TypeKey("watch.npc", 1))
-LANTERN = ComponentKey[LanternRead](TypeKey("watch.lantern", 1))
-REPLY = ComponentKey[ReplyRead](TypeKey("watch.reply", 1))
+WATCH_NPC = ComponentKey[WatchNpcRead](WATCH_NPC_SCHEMA)
+LANTERN = ComponentKey[LanternRead](LANTERN_SCHEMA)
+REPLY = ComponentKey[ReplyRead](REPLY_SCHEMA)
 
 
 @dataclass(frozen=True, slots=True)

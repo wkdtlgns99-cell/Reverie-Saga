@@ -68,6 +68,13 @@ class PlayWindow:
         npc_memory: bool = False,
         npc_work: bool = False,
         npc_cycle: bool = False,
+        npc_aid: bool = False,
+        npc_supply_aid: bool = False,
+        npc_call_aid: bool = False,
+        npc_patrol: bool = False,
+        npc_talk_pause: bool = False,
+        npc_quest_patrol: bool = False,
+        npc_call_pause: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         self.root = root
@@ -78,11 +85,32 @@ class PlayWindow:
             npc_memory=npc_memory,
             npc_work=npc_work,
             npc_cycle=npc_cycle,
+            npc_aid=npc_aid,
+            npc_supply_aid=npc_supply_aid,
+            npc_call_aid=npc_call_aid,
+            npc_patrol=npc_patrol,
+            npc_talk_pause=npc_talk_pause,
+            npc_quest_patrol=npc_quest_patrol,
+            npc_call_pause=npc_call_pause,
         )
         self._quest_content = quest_content
         self._npc_memory = npc_memory
         self.mode_label = (
-            "NPC 반복 작업·기억 모드"
+            "NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드"
+            if npc_call_pause
+            else "NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드"
+            if npc_quest_patrol
+            else "NPC 대화 대기·순찰·호출 지원·물자·반복 작업·기억 모드"
+            if npc_talk_pause
+            else "NPC 순찰·호출 지원·물자·반복 작업·기억 모드"
+            if npc_patrol
+            else "NPC 호출 지원·물자·반복 작업·기억 모드"
+            if npc_call_aid
+            else "NPC 물자 2개 확보 후 지원·반복 작업·기억 모드"
+            if npc_supply_aid
+            else "NPC 의뢰 지원·반복 작업·기억 모드"
+            if npc_aid
+            else "NPC 반복 작업·기억 모드"
             if npc_cycle
             else (
                 "NPC 비축·기억 모드"
@@ -468,6 +496,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-memory", action="store_true")
     parser.add_argument("--npc-work", action="store_true")
     parser.add_argument("--npc-cycle", action="store_true")
+    parser.add_argument("--npc-aid", action="store_true")
+    parser.add_argument("--npc-supply-aid", action="store_true")
+    parser.add_argument("--npc-call-aid", action="store_true")
+    parser.add_argument("--npc-patrol", action="store_true")
+    parser.add_argument("--npc-talk-pause", action="store_true")
+    parser.add_argument("--npc-quest-patrol", action="store_true")
+    parser.add_argument("--npc-call-pause", action="store_true")
     args = parser.parse_args(argv)
     layout = select_scenario(args.scenario).layout
     content = client_quest(layout, args.quest_catalog, args.quest_sha256)
@@ -477,6 +512,20 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise ValueError("NPC_WORK_CONTENT")
     if args.npc_cycle and (not args.npc_memory or args.npc_work):
         raise ValueError("NPC_CYCLE_CONTENT")
+    if args.npc_aid and not args.npc_cycle:
+        raise ValueError("NPC_AID_CONTENT")
+    if args.npc_supply_aid and not args.npc_aid:
+        raise ValueError("NPC_SUPPLY_AID_CONTENT")
+    if args.npc_call_aid and not args.npc_supply_aid:
+        raise ValueError("NPC_CALL_AID_CONTENT")
+    if args.npc_patrol and not args.npc_call_aid:
+        raise ValueError("NPC_PATROL_CONTENT")
+    if args.npc_talk_pause and not args.npc_patrol:
+        raise ValueError("NPC_TALK_PAUSE_CONTENT")
+    if args.npc_quest_patrol and not args.npc_talk_pause:
+        raise ValueError("NPC_QUEST_PATROL_CONTENT")
+    if args.npc_call_pause and not args.npc_quest_patrol:
+        raise ValueError("NPC_CALL_PAUSE_CONTENT")
     root = tk.Tk()
     window = PlayWindow(
         root,
@@ -486,6 +535,13 @@ def main(argv: Sequence[str] | None = None) -> int:
         npc_memory=args.npc_memory,
         npc_work=args.npc_work,
         npc_cycle=args.npc_cycle,
+        npc_aid=args.npc_aid,
+        npc_supply_aid=args.npc_supply_aid,
+        npc_call_aid=args.npc_call_aid,
+        npc_patrol=args.npc_patrol,
+        npc_talk_pause=args.npc_talk_pause,
+        npc_quest_patrol=args.npc_quest_patrol,
+        npc_call_pause=args.npc_call_pause,
     )
     try:
         root.mainloop()

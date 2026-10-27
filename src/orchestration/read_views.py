@@ -192,11 +192,16 @@ class ObservedReadViewFactory:
         self._wrappers: dict[ComponentAddress, object] = {}
 
     def register[ReadT](self, adapter: ReadAdapter[ReadT]) -> None:
-        if self._frozen or adapter.key.schema in self._registry:
+        if self._frozen:
             raise ValueError("registry frozen or duplicate schema")
-        self._registry[adapter.key.schema] = (adapter.key, adapter)
+        # Only this call's immutable metadata is reused;record validation stays fresh.
+        key = adapter.key
+        schema = key.schema
+        if schema in self._registry:
+            raise ValueError("registry frozen or duplicate schema")
+        self._registry[schema] = (key, adapter)
         for record in self._root.components:
-            if record.schema == adapter.key.schema:
+            if record.schema == schema:
                 adapter.validate(record)
 
     def open(self, epoch: ViewEpoch) -> ReadPort:

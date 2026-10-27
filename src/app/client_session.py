@@ -19,10 +19,18 @@ from app.quest_registry import quest_bundle
 from app.npc_memory import bootstrap_memory, memory_bundle
 from app.npc_memory_query import player_memory_recollection, recent_evidence
 from app.npc_memory_compare import slot_memory_messages
-from app.npc_activity import activity_messages, cycle_activity_messages, return_recollection
+from app.npc_activity import (
+    activity_messages,
+    cycle_activity_messages,
+    cycle_return_recollection,
+    return_recollection,
+)
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
+from app.npc_support_status import support_slot_messages
+from app.npc_patrol_status import quest_patrol_slot_messages
 from domain.npc_cycle import CycleRecord
+from domain.npc_patrol import patrol_cells
 from app.npc_work import bootstrap_work, stock_text, work_bundle
 from domain.npc_work import ProvisionsRecord
 from contracts.dialogue import GenerationError, QuestContent
@@ -53,6 +61,30 @@ def _record[T: ComponentRecord](core: CoreSnapshot, kind: type[T], entity: Entit
     if len(records) != 1:
         raise ValueError(f"client projection requires one {kind.__name__} for {entity}")
     return records[0]
+
+
+def _patrol_slot_messages(
+    saved: CoreSnapshot, current: CoreSnapshot, layout: Scenario
+) -> tuple[str, ...]:
+    cells = patrol_cells(layout, True)
+    labels: list[str] = []
+    for core in (current, saved):
+        records = tuple(
+            record
+            for record in core.components
+            if type(record) is WatchNpcRecord and record.entity_id == layout.npc_id
+        )
+        if len(records) != 1:
+            raise SaveError("SAVE_INSPECT_FAILED", "patrol preview requires one selected NPC")
+        npc = records[0]
+        if npc.space_id != layout.space_id or type(npc.cell) is not int or npc.cell not in cells:
+            raise SaveError("SAVE_INSPECT_FAILED", "patrol preview NPC binding differs")
+        labels.append("원래 작업 지점입니다." if npc.cell == cells[0] else "옆 작업 지점입니다.")
+    return (
+        f"NPC 순찰 위치 비교 · 현재 {current.tick}초 / 선택 저장 {saved.tick}초",
+        "현재 NPC 위치 · " + labels[0],
+        "선택 저장 NPC 위치 · " + labels[1],
+    )
 
 
 def _payload(action: ClientAction, seconds: int, layout: Scenario = LEGACY) -> CommandPayload:
@@ -94,6 +126,13 @@ class ClientSession:
         npc_memory: bool = False,
         npc_work: bool = False,
         npc_cycle: bool = False,
+        npc_aid: bool = False,
+        npc_supply_aid: bool = False,
+        npc_call_aid: bool = False,
+        npc_patrol: bool = False,
+        npc_talk_pause: bool = False,
+        npc_quest_patrol: bool = False,
+        npc_call_pause: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -114,6 +153,27 @@ class ClientSession:
         if type(npc_cycle) is not bool or npc_cycle and (not npc_memory or npc_work):
             raise ValueError("NPC_CYCLE_CONTENT")
         self._npc_cycle = npc_cycle
+        if type(npc_aid) is not bool or npc_aid and not npc_cycle:
+            raise ValueError("NPC_AID_CONTENT")
+        self._npc_aid = npc_aid
+        if type(npc_supply_aid) is not bool or npc_supply_aid and not npc_aid:
+            raise ValueError("NPC_SUPPLY_AID_CONTENT")
+        self._npc_supply_aid = npc_supply_aid
+        if type(npc_call_aid) is not bool or npc_call_aid and not npc_supply_aid:
+            raise ValueError("NPC_CALL_AID_CONTENT")
+        self._npc_call_aid = npc_call_aid
+        if type(npc_patrol) is not bool or npc_patrol and not npc_call_aid:
+            raise ValueError("NPC_PATROL_CONTENT")
+        if type(npc_talk_pause) is not bool or npc_talk_pause and not npc_patrol:
+            raise ValueError("NPC_TALK_PAUSE_CONTENT")
+        if type(npc_quest_patrol) is not bool or npc_quest_patrol and not npc_talk_pause:
+            raise ValueError("NPC_QUEST_PATROL_CONTENT")
+        if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
+            raise ValueError("NPC_CALL_PAUSE_CONTENT")
+        self._npc_patrol = npc_patrol
+        self._npc_talk_pause = npc_talk_pause
+        self._npc_quest_patrol = npc_quest_patrol
+        self._npc_call_pause = npc_call_pause
         self._npc_work = npc_work
         self._names = MappingProxyType(
             {
@@ -126,7 +186,16 @@ class ClientSession:
         bundles = (
             watch_bundle(layout)
             if quest_content is None
-            else cycle_bundle(quest_content)
+            else cycle_bundle(
+                quest_content,
+                npc_aid=npc_aid,
+                npc_supply_aid=npc_supply_aid,
+                npc_call_aid=npc_call_aid,
+                npc_patrol=npc_patrol,
+                npc_talk_pause=npc_talk_pause,
+                npc_quest_patrol=npc_quest_patrol,
+                npc_call_pause=npc_call_pause,
+            )
             if npc_cycle
             else work_bundle(quest_content)
             if npc_work
@@ -143,7 +212,17 @@ class ClientSession:
             initial = (
                 bootstrap_watch(spec, layout=layout)
                 if quest_content is None
-                else bootstrap_cycle(spec, quest_content)
+                else bootstrap_cycle(
+                    spec,
+                    quest_content,
+                    npc_aid=npc_aid,
+                    npc_supply_aid=npc_supply_aid,
+                    npc_call_aid=npc_call_aid,
+                    npc_patrol=npc_patrol,
+                    npc_talk_pause=npc_talk_pause,
+                    npc_quest_patrol=npc_quest_patrol,
+                    npc_call_pause=npc_call_pause,
+                )
                 if npc_cycle
                 else bootstrap_work(spec, quest_content)
                 if npc_work
@@ -233,6 +312,13 @@ class ClientSession:
                     self._layout.npc_id,
                     content=self._quest_content,
                     current=current,
+                    npc_aid=self._npc_aid,
+                    npc_supply_aid=self._npc_supply_aid,
+                    npc_call_aid=self._npc_call_aid,
+                    npc_patrol=self._npc_patrol,
+                    npc_talk_pause=self._npc_talk_pause,
+                    npc_quest_patrol=self._npc_quest_patrol,
+                    npc_call_pause=self._npc_call_pause,
                 )
                 if self._npc_cycle
                 else activity_messages(
@@ -318,12 +404,40 @@ class ClientSession:
                     raise SaveError(
                         "NPC_RECOLLECTION_SOURCE", "talk committed;recollection unavailable"
                     ) from error
+                if self._quest_content is None:
+                    raise RuntimeError("committed cycle talk requires quest content")
+                spoken = next(
+                    event for event in publication.facts if isinstance(event.payload, QuestSpoken)
+                )
+                try:
+                    cycle_context = cycle_return_recollection(
+                        self._owner.retained_segment(),
+                        self._layout.npc_id,
+                        content=self._quest_content,
+                        current=DurableCheckpoint(core, self._owner.protocol()),
+                        conversation_id=spoken.header.event_id,
+                        npc_aid=self._npc_aid,
+                        npc_supply_aid=self._npc_supply_aid,
+                        npc_call_aid=self._npc_call_aid,
+                        npc_patrol=self._npc_patrol,
+                        npc_talk_pause=self._npc_talk_pause,
+                        npc_quest_patrol=self._npc_quest_patrol,
+                        npc_call_pause=self._npc_call_pause,
+                    )
+                except (SaveError, OSError) as error:
+                    logging.getLogger(__name__).exception(
+                        "committed cycle call recollection failed"
+                    )
+                    raise SaveError(
+                        "NPC_RECOLLECTION_SOURCE", "talk committed;recollection unavailable"
+                    ) from error
                 update = replace(
                     update,
                     messages=(
                         *update.messages,
                         *cycle_messages(_record(core, CycleRecord, self._layout.npc_id)),
                         *recollection,
+                        *cycle_context,
                     ),
                 )
             if self._npc_work:
@@ -433,14 +547,37 @@ class ClientSession:
                 _record(checkpoint.core, CycleRecord, self._layout.npc_id), saved=True
             )
             try:
-                messages += cycle_slot_messages(
-                    checkpoint,
-                    DurableCheckpoint(self._owner.snapshot(), self._owner.protocol()),
-                    self._layout.npc_id,
-                )
+                current = DurableCheckpoint(self._owner.snapshot(), self._owner.protocol())
+                messages += cycle_slot_messages(checkpoint, current, self._layout.npc_id)
             except GenerationError as error:
                 logging.getLogger(__name__).exception("NPC cycle slot memory comparison failed")
                 raise SaveError("SAVE_INSPECT_FAILED", error.code) from error
+            if self._npc_supply_aid:
+                try:
+                    messages += support_slot_messages(
+                        checkpoint.core, current.core, self._layout, npc_call_aid=self._npc_call_aid
+                    )
+                except SaveError:
+                    logging.getLogger(__name__).exception("NPC support slot plan comparison failed")
+                    raise
+            if self._npc_quest_patrol:
+                try:
+                    messages += quest_patrol_slot_messages(
+                        checkpoint.core, current.core, self._layout
+                    )
+                except SaveError:
+                    logging.getLogger(__name__).exception(
+                        "NPC quest patrol slot plan comparison failed"
+                    )
+                    raise
+            if self._npc_patrol:
+                try:
+                    messages += _patrol_slot_messages(checkpoint.core, current.core, self._layout)
+                except SaveError:
+                    logging.getLogger(__name__).exception(
+                        "NPC patrol slot position comparison failed"
+                    )
+                    raise
         return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:

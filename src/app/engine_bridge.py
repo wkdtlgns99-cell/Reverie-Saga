@@ -151,6 +151,13 @@ class EngineBridge:
         npc_memory: bool = False,
         npc_work: bool = False,
         npc_cycle: bool = False,
+        npc_aid: bool = False,
+        npc_supply_aid: bool = False,
+        npc_call_aid: bool = False,
+        npc_patrol: bool = False,
+        npc_talk_pause: bool = False,
+        npc_quest_patrol: bool = False,
+        npc_call_pause: bool = False,
     ) -> None:
         self.worker = ClientWorker(
             path,
@@ -159,6 +166,13 @@ class EngineBridge:
             npc_memory=npc_memory,
             npc_work=npc_work,
             npc_cycle=npc_cycle,
+            npc_aid=npc_aid,
+            npc_supply_aid=npc_supply_aid,
+            npc_call_aid=npc_call_aid,
+            npc_patrol=npc_patrol,
+            npc_talk_pause=npc_talk_pause,
+            npc_quest_patrol=npc_quest_patrol,
+            npc_call_pause=npc_call_pause,
         )
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
@@ -234,6 +248,13 @@ def serve(
     npc_memory: bool = False,
     npc_work: bool = False,
     npc_cycle: bool = False,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
 ) -> int:
     bridge = EngineBridge(
         path,
@@ -243,6 +264,13 @@ def serve(
         npc_memory=npc_memory,
         npc_work=npc_work,
         npc_cycle=npc_cycle,
+        npc_aid=npc_aid,
+        npc_supply_aid=npc_supply_aid,
+        npc_call_aid=npc_call_aid,
+        npc_patrol=npc_patrol,
+        npc_talk_pause=npc_talk_pause,
+        npc_quest_patrol=npc_quest_patrol,
+        npc_call_pause=npc_call_pause,
     )
     try:
         write_frame(target, bridge.response("0"))
@@ -271,6 +299,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-memory", action="store_true")
     parser.add_argument("--npc-work", action="store_true")
     parser.add_argument("--npc-cycle", action="store_true")
+    parser.add_argument("--npc-aid", action="store_true")
+    parser.add_argument("--npc-supply-aid", action="store_true")
+    parser.add_argument("--npc-call-aid", action="store_true")
+    parser.add_argument("--npc-patrol", action="store_true")
+    parser.add_argument("--npc-talk-pause", action="store_true")
+    parser.add_argument("--npc-quest-patrol", action="store_true")
+    parser.add_argument("--npc-call-pause", action="store_true")
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
@@ -294,6 +329,13 @@ def main(argv: Sequence[str] | None = None) -> int:
             npc_memory=args.npc_memory,
             npc_work=args.npc_work,
             npc_cycle=args.npc_cycle,
+            npc_aid=args.npc_aid,
+            npc_supply_aid=args.npc_supply_aid,
+            npc_call_aid=args.npc_call_aid,
+            npc_patrol=args.npc_patrol,
+            npc_talk_pause=args.npc_talk_pause,
+            npc_quest_patrol=args.npc_quest_patrol,
+            npc_call_pause=args.npc_call_pause,
         )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)

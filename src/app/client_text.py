@@ -4,6 +4,7 @@ from __future__ import annotations
 
 from app.npc_cycle import evidence_text
 from contracts.npc_cycle import CycleChanged
+from contracts.npc_gate_aid import GateAssisted
 from contracts.npc_work import ProvisionPrepared
 from domain.npc_work import STOCK_CAP
 
@@ -22,6 +23,7 @@ from contracts.messages import FactPayload
 from contracts.dialogue import QuestContent
 from contracts.quest import GoalMet, QuestAccepted, QuestCompleted, QuestSpoken
 from contracts.turn import TurnCommitted, TurnPublication
+from contracts.npc_patrol import NpcPatrolled
 from contracts.watch import (
     BellRung,
     NpcActed,
@@ -157,6 +159,8 @@ def fact_messages(
     quest_content: QuestContent | None = None,
 ) -> tuple[str, ...]:
     match payload:
+        case GateAssisted():
+            return (f"{_name(payload.npc_id, names)}가 의뢰를 돕기 위해 통행문을 열었습니다.",)
         case CycleChanged():
             return (evidence_text(payload.evidence),)
         case ProvisionPrepared():
@@ -213,6 +217,8 @@ def fact_messages(
                 f"{_name(payload.entity_id, names)}이 쓰러졌습니다. "
                 f"처치한 대상: {_name(payload.killer_id, names)}.",
             )
+        case NpcPatrolled():
+            return ("NPC가 공동 작업 구역을 순찰했습니다.",)
         case NpcActed():
             return (
                 f"{_name(payload.npc_id, names)}가 종을 울렸습니다. (누적 {payload.after_bells}회)",

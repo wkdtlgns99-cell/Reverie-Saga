@@ -6,6 +6,8 @@ from dataclasses import asdict, replace
 import hashlib
 from typing import cast
 
+from domain.npc_patrol import patrol_cells
+
 from contracts.dialogue import INTENTS, QuestBound, QuestContent
 from contracts.encounter import HIT_POINTS
 from contracts.errors import CandidateError, ReadOnlyViolation, SchemaError
@@ -295,6 +297,11 @@ class QuestPatchRoute(QuestBound):
 
 
 class QuestAdmission(QuestBound):
+    def __init__(self, content: QuestContent, *, npc_patrol: bool = False) -> None:
+        super().__init__(content)
+        self._npc_cells = patrol_cells(content.definition.layout, npc_patrol)
+        self._npc_patrol = npc_patrol
+
     @property
     def schema(self) -> TypeKey:
         return QuestTalkCommand.SCHEMA
@@ -328,7 +335,7 @@ class QuestAdmission(QuestBound):
             state.component(CELL_POSITION, layout.actor_id),
             state.component(WATCH_NPC, layout.npc_id),
         )
-        if npc.space_id != layout.space_id or npc.cell != layout.npc_cell:
+        if npc.space_id != layout.space_id or npc.cell not in self._npc_cells:
             raise CandidateError("INVALID_ACTION", "quest giver reference")
         cell = actor.cell
         if (
@@ -354,6 +361,11 @@ class QuestAdmission(QuestBound):
 
 
 class QuestCheckpointPolicy(QuestBound):
+    def __init__(self, content: QuestContent, *, npc_patrol: bool = False) -> None:
+        super().__init__(content)
+        self._npc_cells = patrol_cells(content.definition.layout, npc_patrol)
+        self._npc_patrol = npc_patrol
+
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         content = self.quest_content
         matches = tuple(r for r in core.components if r.schema == QUEST.schema)
@@ -366,7 +378,7 @@ class QuestCheckpointPolicy(QuestBound):
         ):
             raise ValueError("QUEST_CHECKPOINT_ORDER")
         remaining = tuple(r for r in core.components if r is not record)
-        WatchCheckpointPolicy(content.definition.layout).validate(
+        WatchCheckpointPolicy(content.definition.layout, npc_patrol=self._npc_patrol).validate(
             replace(core, components=remaining), protocol
         )
         targets = tuple(

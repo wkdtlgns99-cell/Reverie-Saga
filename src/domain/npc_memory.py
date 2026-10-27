@@ -53,6 +53,12 @@ class NpcQuestMemoryRecord(ComponentRecord):
     def schema(self) -> TypeKey:
         return MEMORY_SCHEMA
 
+    @property
+    def known_phase(self) -> Literal["available", "accepted", "reported"]:
+        if not self.entries:
+            return "available"
+        return "reported" if self.entries[-1].kind == "completion_reported" else "accepted"
+
     def __post_init__(self) -> None:
         if type(self.entity_id) is not str or not self.entity_id.startswith("actor:"):
             raise ValueError("NPC_MEMORY_OWNER")

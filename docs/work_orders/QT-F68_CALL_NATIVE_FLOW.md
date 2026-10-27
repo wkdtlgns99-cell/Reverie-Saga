@@ -1,0 +1,40 @@
+# QT-F68 — Route answered-call native verification to its own scenario
+
+Status:LOCAL_SOURCE_ACCEPTED2026-10-26. Executor:current Codex;self-review,not independent.
+Authority:explicit human `더 해`,actual goal ACTIVE. Primary7end-to-end verification
+support;related2/5/6. Existing Computer Use STOPPED/AWAY-001 remains authoritative.
+
+| Field | Contract |
+|---|---|
+| goal/non_goals | Correct the development-only Unity verifier's call-aid dispatch and prepare an actual answered-call scenario. Existing call mode currently reaches SupplyAidFlow and fails its old mode label. Add invalid call selection checks before Brain/save creation. This is verification support,not a new gameplay ability or native acceptance. No patrol implementation in this order |
+| baseline | HEAD72c2d588d7f64c3e113cf462af35fb673bf82582,branch codex/cycle-call-recall-20261024. All99F67delivery hashes verified;entry/baseline tmp/qtf68. Staged empty,index0e05744b90eb694a97901c60b41da40dcc2bd4b8e63c0b36268559fe37b82574. No live jobs |
+| prerequisites/read_files | ENGINEERING_RULES,handoff/backlog/Korean companion,Sol template,AUTONOMOUS_EXECUTION,WORKSTATION_SETUP,MASTER,numbered structure,v2.6B4/B5/checkpoints,F65order/receipt,F66ready plans,F67delivery. Actual LiveVerification.Run/SupplyAidFlow/CycleActivity/CheckAidReturn/CheckAidActivity;PlayRoom public mode/intent/slot/reconnect/render interfaces;BrainConnection call selection;ClientSession/engine_bridge and existing call_aid integration tests/PipeClient |
+| MODIFY absolute paths | C:/Reverie Saga/clients/unity/Assets/Reverie/Scripts/LiveVerification.cs;C:/Reverie Saga/clients/unity/README.md;C:/Reverie Saga/BACKLOG.md;C:/Reverie Saga/SESSION_HANDOFF.md;C:/Reverie Saga/GAME_SYSTEM_SUMMARY_KO.md;C:/Reverie Saga/docs/DEFERRED_USER_DECISIONS.md;this order |
+| NEW absolute paths | C:/Reverie Saga/tests/integration/test_call_native_scenario.py;C:/Reverie Saga/docs/reviews/QT-F68_EXECUTION_2026-10-26.md;owned ignored C:/Reverie Saga/tmp/qtf68 evidence/scripts/saves |
+| forbidden_paths | All gameplay production Python/CORE/contracts/pins/save/wire;all other C#/scene/editor/startup/assets;existing tests/receipts/orders/goldens/inventory;reference C:/Quilltale;credentials/governance/dependencies. No agents/publication/native launch/window input |
+| public_contract | Existing APIs unchanged. Native Run selects NpcCallAidEnabled before its prerequisite NpcSupplyAidEnabled. Dedicated CallAidFlow uses existing public PlayRoom commands and current Wire update. New REVERIE_UNITY_CASE=invalid-call-aid expects NPC_CALL_AID_CONTENT;invalid-call-aid-selection expects NPC_CALL_AID_SELECTION. Existing4invalid aid/supply checks retain behavior. These are development verification selectors,not game commands |
+| behavior/ownership | Verify actual tick8prior stock1does not open despite new stock2;tick9answered call opens once without stock spend;retry has same view/file and no duplicated opening. Save at8and9,load_previous restores8closed and reconnect preserves call mode;new actual bell9opens again in that branch. Reach10stock1,close11,bell12cannot use same-step preparation,bell13opens on prior stock2. Talk14recalls only actual9/13help. Existing movement/combat/report route finishes23,close24andbell25cannot reopen after report. Query counters/retained causal call rows/aid records through read-only actual updates;do not use CycleActivity helper's old empty-call assumption |
+| edge_policy | Empty call selection uses existing mode dispatch. Unknown verification selector retains existing handling. Invalid bool spellings/prerequisite omissions fail visibly before child/save creation. Exactly one opening message on successful call,zero on failed call/retry/report. Read-only operations preserve complete view and working file hash. Save/load and reconnect preserve selected slot/mode/pins. No inferred historical aid from gate/count. Native test failure remains explicit and terminates with Exit1;no fallback/skip |
+| examples | down1/talk2/waitx5→7,bell8→closed stock2,bell9→open stock2. Restored8+bell9→same actual aid9;wait10→stock1,close11,bell12→closed stock2,bell13→open stock2. talk14→retained openings9,13;report23thenclose24+bell25→closed. Timing follows actual existing clock rules,not test-specific production branches |
+| algorithm_steps/wiring | First baseline actual Python direct/framed scenario tests and retain outputs. Add dedicated C#coroutine and a cohesive exact selection-error mapping;route call before supply. Retain old SupplyAidFlow/AidFlow/CycleFlow and old assertions unchanged. Add truthful native qualification recipe/hold. Review source diff and compare real scenario oracle/output;record native compile/run/build NOT_RUN |
+| performance | No gameplay path/performance change. Measure actual scenario/direct+framed operations;existing10srequest deadline retained;record slow operations,do not claim global2sclosure. No native duration claim |
+| baseline_commands | Host Git/index/all99hashes PASS. Current F67Python full2726PASS/271inputs reused only if unchanged. New direct/framed scenario tests are characterization tests expected PASS before C#fix;baseline C#dispatch defect established from actual source,not fabricated runtime failure |
+| verification_commands | Canonical pytest capture=sys new scenario plus existing F65call/F66plan integration;Ruffboth/format new test/strict source mypy/import3+1/pip/exactCI31/document10. Verify all original Python full271inputs unchanged,all non-scope paths/index/scene preserved;self-review C#source/dispatch/old methods and updated docs. No current native compile claim;no Unity relaunch |
+| test_responsibilities | NEW tests/integration/test_call_native_scenario.py:public direct+real framed tick8/9/12/13 source/state/counters/stock;save previous/future preview/read-only/restart/report/retry and actual retained help/call messages. Test independent exact tick/state/string contracts;no source-text tests mirroring C#implementation/no custom checker |
+| acceptance | Dedicated C#flow reachable before supply,invalid call cases visible before child/save,old flow bodies preserved;baseline/current actual direct/framed scenario and affected checks pass;current immutable source hash evidence/docs/root trio/deferred memo synchronized. LOCAL_SOURCE_ACCEPTED only;native compile/run/build remain UNVERIFIED/NOT_RUN under AWAY-001 |
+| claude_checkpoints | CP01–05not newly triggered:verification-only correction to existing integrated call/client/save boundary,no new engine/schema/contract/import. CP06held before release. D2/independent patch rereview/MIN-SPEC/global2s/standalone remain OPEN;self-review is not Claude feedback |
+| stop_conditions | Overlapping user changes/unresolved accepted semantics/new authority stops dependent work;record decision-dependent work and choose safe alternative while user away. No CU/native restart without actual resumption. At quota interruption retain exact state/reset and follow supported reset-only policy |
+| delivery | English order/receipt,frozen evidence and Korean progress with category7support/limits. No commit/push/PR/merge. Original unfinished automatic objective stays ACTIVE;ordinary goal continuation,not periodic wake-ups |
+
+
+## Actual qualification
+
+New public scenario characterization:2PASS19.49s before C#fix. Initial test-only
+conversion/reconnect/checkpoint-retention expectations failed and were repaired against
+actual existing contracts;all first logs remain in tmp/qtf68. Production Python unchanged.
+Current affected37PASS56.16s;exactCI31PASS11.31s;Ruffboth/format34/strict233/import3+1/pip
+PASS. Both real scenarios independently repeated for per-operation timing:38operations
+per transport,direct max1.234942s,framed max1.233232s;all assertions/source guards pass.
+Old C#flow bodies and prefix exact;Run only adds call dispatch/error selection. All271
+F67full inputs unchanged;do not call that historical full a new2728test invocation.
+Fresh native compile/run/captures/build NOT_RUN;AWAY-001remains. Closure in delivery.json.

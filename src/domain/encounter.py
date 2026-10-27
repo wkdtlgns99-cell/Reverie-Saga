@@ -20,6 +20,11 @@ COUNTER_DAMAGE = 1
 ATTACK_COST = 1
 REST_RECOVERY = 1
 
+# Immutable schema metadata is shared by records and registered component keys.
+GATE_SCHEMA = TypeKey("encounter.gate", 1)
+HIT_POINTS_SCHEMA = TypeKey("encounter.hp", 1)
+STAMINA_SCHEMA = TypeKey("encounter.stamina", 1)
+
 
 @dataclass(frozen=True, slots=True)
 class GateRecord(ComponentRecord):
@@ -30,7 +35,7 @@ class GateRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.gate", 1)
+        return GATE_SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
@@ -40,7 +45,7 @@ class HitPointsRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.hp", 1)
+        return HIT_POINTS_SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
@@ -50,7 +55,7 @@ class StaminaRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("encounter.stamina", 1)
+        return STAMINA_SCHEMA
 
 
 def adjacent_cells(first: int, second: int) -> bool:

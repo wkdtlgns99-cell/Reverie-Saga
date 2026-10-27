@@ -91,7 +91,10 @@ def classify_file(path: Path) -> None:
         raise SaveError("SAVE_NOT_FOUND", "save missing")
     if path.stat().st_size > MAX_FILE:
         raise SaveError("SAVE_LIMIT", "file byte cap")
-    descriptor = os.open(path, os.O_RDONLY)
+    flags = os.O_RDONLY
+    if os.name == "nt":
+        flags |= os.O_BINARY
+    descriptor = os.open(path, flags)
     try:
         header = os.read(descriptor, 100)
     finally:

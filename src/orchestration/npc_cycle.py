@@ -4,6 +4,8 @@ from dataclasses import replace
 import hashlib
 from typing import cast
 
+from domain.npc_patrol import patrol_cells
+
 from contracts.dialogue import QuestBound, QuestContent
 from contracts.errors import CandidateError, ReadOnlyViolation
 from contracts.messages import EventHeader, PresentationEvent, StateDelta, WorldEvent
@@ -304,6 +306,11 @@ class CyclePatchRoute(QuestBound):
 
 
 class CycleCheckpointPolicy(QuestBound):
+    def __init__(self, content: QuestContent, *, npc_patrol: bool = False) -> None:
+        super().__init__(content)
+        self._npc_cells = patrol_cells(content.definition.layout, npc_patrol)
+        self._npc_patrol = npc_patrol
+
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         matches = tuple(r for r in core.components if r.schema == CYCLE.schema)
         if len(matches) != 1:
@@ -311,7 +318,7 @@ class CycleCheckpointPolicy(QuestBound):
         record = matches[0]
         CycleAdapter(self.quest_content).validate(record)
         validate_checkpoint(cast(CycleRecord, record), core.world_id, core.tick)
-        MemoryCheckpointPolicy(self.quest_content).validate(
+        MemoryCheckpointPolicy(self.quest_content, npc_patrol=self._npc_patrol).validate(
             replace(core, components=tuple(r for r in core.components if r is not record)), protocol
         )
 

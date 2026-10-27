@@ -27,6 +27,13 @@ class ClientWorker:
         npc_memory: bool = False,
         npc_work: bool = False,
         npc_cycle: bool = False,
+        npc_aid: bool = False,
+        npc_supply_aid: bool = False,
+        npc_call_aid: bool = False,
+        npc_patrol: bool = False,
+        npc_talk_pause: bool = False,
+        npc_quest_patrol: bool = False,
+        npc_call_pause: bool = False,
     ) -> None:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
@@ -40,6 +47,27 @@ class ClientWorker:
         if type(npc_cycle) is not bool or npc_cycle and (not npc_memory or npc_work):
             raise ValueError("NPC_CYCLE_CONTENT")
         self._npc_cycle = npc_cycle
+        if type(npc_aid) is not bool or npc_aid and not npc_cycle:
+            raise ValueError("NPC_AID_CONTENT")
+        self._npc_aid = npc_aid
+        if type(npc_supply_aid) is not bool or npc_supply_aid and not npc_aid:
+            raise ValueError("NPC_SUPPLY_AID_CONTENT")
+        self._npc_supply_aid = npc_supply_aid
+        if type(npc_call_aid) is not bool or npc_call_aid and not npc_supply_aid:
+            raise ValueError("NPC_CALL_AID_CONTENT")
+        self._npc_call_aid = npc_call_aid
+        if type(npc_patrol) is not bool or npc_patrol and not npc_call_aid:
+            raise ValueError("NPC_PATROL_CONTENT")
+        if type(npc_talk_pause) is not bool or npc_talk_pause and not npc_patrol:
+            raise ValueError("NPC_TALK_PAUSE_CONTENT")
+        if type(npc_quest_patrol) is not bool or npc_quest_patrol and not npc_talk_pause:
+            raise ValueError("NPC_QUEST_PATROL_CONTENT")
+        if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
+            raise ValueError("NPC_CALL_PAUSE_CONTENT")
+        self._npc_patrol = npc_patrol
+        self._npc_talk_pause = npc_talk_pause
+        self._npc_quest_patrol = npc_quest_patrol
+        self._npc_call_pause = npc_call_pause
         self._npc_work = npc_work
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
@@ -106,6 +134,13 @@ class ClientWorker:
                         npc_memory=self._npc_memory,
                         npc_work=self._npc_work,
                         npc_cycle=self._npc_cycle,
+                        npc_aid=self._npc_aid,
+                        npc_supply_aid=self._npc_supply_aid,
+                        npc_call_aid=self._npc_call_aid,
+                        npc_patrol=self._npc_patrol,
+                        npc_talk_pause=self._npc_talk_pause,
+                        npc_quest_patrol=self._npc_quest_patrol,
+                        npc_call_pause=self._npc_call_pause,
                     )
                 )
             owner = self._owner

@@ -5,6 +5,7 @@ from typing import ClassVar, Literal, Protocol
 
 from contracts.messages import CommandPayload, FactPayload, PresentationPayload, StateDelta
 from contracts.read_views import ComponentKey, ComponentPatch
+from domain.encounter import GATE_SCHEMA, HIT_POINTS_SCHEMA, STAMINA_SCHEMA
 from domain.primitives import EntityId, FieldAddress, FieldFamily, TypeKey
 
 
@@ -27,9 +28,9 @@ class StaminaRead(Protocol):
     def value(self) -> int: ...
 
 
-GATE = ComponentKey[GateRead](TypeKey("encounter.gate", 1))
-HIT_POINTS = ComponentKey[HitPointsRead](TypeKey("encounter.hp", 1))
-STAMINA = ComponentKey[StaminaRead](TypeKey("encounter.stamina", 1))
+GATE = ComponentKey[GateRead](GATE_SCHEMA)
+HIT_POINTS = ComponentKey[HitPointsRead](HIT_POINTS_SCHEMA)
+STAMINA = ComponentKey[StaminaRead](STAMINA_SCHEMA)
 
 
 @dataclass(frozen=True, slots=True)

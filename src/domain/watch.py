@@ -12,6 +12,10 @@ CHARGE_MAX = 3
 WAIT_MAX = 16
 ECHO_DEPTH = 1
 
+WATCH_NPC_SCHEMA = TypeKey("watch.npc", 1)
+LANTERN_SCHEMA = TypeKey("watch.lantern", 1)
+REPLY_SCHEMA = TypeKey("watch.reply", 1)
+
 
 def next_wake(tick: int) -> Tick:
     require_integer(tick)
@@ -42,7 +46,7 @@ class WatchNpcRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("watch.npc", 1)
+        return WATCH_NPC_SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
@@ -52,7 +56,7 @@ class LanternRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("watch.lantern", 1)
+        return LANTERN_SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
@@ -62,4 +66,4 @@ class ReplyRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("watch.reply", 1)
+        return REPLY_SCHEMA

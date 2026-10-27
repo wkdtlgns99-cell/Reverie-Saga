@@ -5,6 +5,8 @@ from __future__ import annotations
 from dataclasses import asdict, replace
 from typing import cast
 
+from domain.npc_patrol import patrol_cells
+
 from contracts.dialogue import QuestBound, QuestContent
 from contracts.messages import StateDelta
 from contracts.errors import CandidateError, ReadOnlyViolation
@@ -294,6 +296,11 @@ class MemoryPatchRoute(QuestBound):
 
 
 class MemoryCheckpointPolicy(QuestBound):
+    def __init__(self, content: QuestContent, *, npc_patrol: bool = False) -> None:
+        super().__init__(content)
+        self._npc_cells = patrol_cells(content.definition.layout, npc_patrol)
+        self._npc_patrol = npc_patrol
+
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         matches = tuple(record for record in core.components if record.schema == MEMORY.schema)
         if len(matches) != 1:
@@ -302,7 +309,7 @@ class MemoryCheckpointPolicy(QuestBound):
         MemoryAdapter(self.quest_content).validate(record)
         memory = cast(NpcQuestMemoryRecord, record)
         remaining = tuple(item for item in core.components if item is not record)
-        QuestCheckpointPolicy(self.quest_content).validate(
+        QuestCheckpointPolicy(self.quest_content, npc_patrol=self._npc_patrol).validate(
             replace(core, components=remaining), protocol
         )
         quest = next(item for item in remaining if type(item) is QuestRecord)

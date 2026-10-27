@@ -12,6 +12,9 @@ HEIGHT = 3
 CELL_MM = 1000
 BLOCKED_CELLS = (1,)
 
+TRIAL_MAP_SCHEMA = TypeKey("trial.map", 1)
+CELL_POSITION_SCHEMA = TypeKey("trial.position", 1)
+
 
 @dataclass(frozen=True, slots=True)
 class TrialMapRecord(ComponentRecord):
@@ -23,7 +26,7 @@ class TrialMapRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("trial.map", 1)
+        return TRIAL_MAP_SCHEMA
 
 
 @dataclass(frozen=True, slots=True)
@@ -34,7 +37,7 @@ class CellPositionRecord(ComponentRecord):
 
     @property
     def schema(self) -> TypeKey:
-        return TypeKey("trial.position", 1)
+        return CELL_POSITION_SCHEMA
 
 
 def cell_coordinates(cell: int) -> tuple[int, int]:

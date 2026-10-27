@@ -19,7 +19,7 @@ from contracts.turn import (CommitReceipt, CompiledSchedule, Failure, GameComman
     TurnPublication, TurnRejected)
 from domain.canonical import (JsonObject, JsonValue, array_value, canonical_json, decode_json, exact_fields,
     hash_document, int_value, object_value, pack, seal, text_value)
-from domain.primitives import (CommandId, ComponentAddress, EntityId, FieldAddress, FrozenPayload,
+from domain.primitives import (CommandId, ComponentAddress, EntityId, FieldAddress, FieldSpec, FrozenPayload,
     EventId, Phase, Tick, TypeKey, WorldRevision, require_integer, require_namespace)
 from domain.state_types import ComponentRecord, CoreSnapshot, PendingDocument, SimulationPins, StoredRoot
 from orchestration.read_views import ObservedReadViewFactory
@@ -134,8 +134,11 @@ def header_document(header: EventHeader) -> JsonObject:
 def _immutable(value: object, depth: int = 0) -> None:
     if depth > 32:
         raise ValueError("record nesting exceeds32")
-    if value is None or type(value) in (bool, int, str):
-        seal(value)
+    kind = type(value)
+    if value is None or kind in (bool, int, str):
+        # Preserve the legacy seal path for types with custom equality.
+        if value is not None and kind is not bool and kind is not int:
+            seal(value)
     elif isinstance(value, tuple):
         for child in value:
             _immutable(child, depth + 1)
@@ -286,6 +289,7 @@ class RegisteredStateIO:
             self._schema_document = object_value(seal(bundle.schema_document))
             self._rules_document = object_value(seal(bundle.rules_document))
             # Runtime registrations cannot silently change the behavior under unchanged pins.
+            component_specs: dict[str, tuple[FieldSpec, ...]] = {}
             descriptors: dict[TypeKey, JsonObject] = {}
             for item in array_value(self._schema_document["components"]):
                 child = exact_fields(item, ("schema", "fields"))
@@ -297,6 +301,7 @@ class RegisteredStateIO:
                 raise BootstrapError("DUPLICATE_SCHEMA", "descriptor/component registration differs")
             for schema, descriptor in descriptors.items():
                 specs = tuple(s for f, s in self._fields.items() if f.component == schema.kind)
+                component_specs[schema.kind] = specs
                 if set(descriptor) != {s.family.field for s in specs}:
                     raise BootstrapError("DUPLICATE_SCHEMA", "descriptor field coverage")
                 for spec in specs:
@@ -314,7 +319,11 @@ class RegisteredStateIO:
             raise
         except (ValueError, TypeError, KeyError) as error:
             raise BootstrapError("DUPLICATE_SCHEMA", "malformed pinned descriptor/rules") from error
+        self._component_specs = MappingProxyType(component_specs)
         self._configure_execution()
+        # These frozen declarations do not depend on the decoded event or component state.
+        a_nodes = (node for node in self._schedule.nodes if self._active[node].lane == "A")
+        self._a_node_ranks = MappingProxyType({node: rank for rank, node in enumerate(a_nodes)})
         self._pins = SimulationPins(hash_document("schema/v1", self._schema_document),
                                     hash_document("rules/v1", self._rules_document), schedule.fingerprint,
                                     "sha256-counter-v1", "sha256-core-tree-v1",
@@ -384,10 +393,10 @@ class RegisteredStateIO:
         except KeyError as error:
             raise ValueError("unknown event phase") from error
         node = NodeKey(phase, producer)
-        nodes = tuple(n for n in self.schedule.nodes if self._active[n].lane == "A")
+        nodes = self._a_node_ranks
         policy = self._events.get(schema)
         rank, wave, sequence = _number(h["producer_rank"]), _number(h["wave"]), _number(h["sequence"])
-        if not isinstance(payload, FactPayload) or policy is None or producer not in policy.producers or node not in nodes or schema not in self._manifests[producer].emits or rank != nodes.index(node):
+        if not isinstance(payload, FactPayload) or policy is None or producer not in policy.producers or node not in nodes or schema not in self._manifests[producer].emits or rank != nodes[node]:
             raise ValueError("unregistered event producer/rank")
         if (phase != Phase.CASCADE and wave != 0) or wave >= self._limits.cascade_waves or array_value(h["degraded"]):
             raise ValueError("event wave/degradation")
@@ -455,7 +464,7 @@ class RegisteredStateIO:
             require_namespace(record.entity_id)
             _immutable(record)
             data = object_value(seal(codec.encode(record)))
-            specs = tuple(s for f, s in self._fields.items() if f.component == record.schema.kind)
+            specs = self._component_specs.get(record.schema.kind, ())
             exact_fields(data, tuple(s.family.field for s in specs))
             for spec in specs:
                 value = data[spec.family.field]
@@ -471,7 +480,8 @@ class RegisteredStateIO:
             if type(decoded) is not type(record) or decoded.schema != record.schema or decoded.entity_id != record.entity_id:
                 raise ValueError("component codec type/identity")
             _immutable(decoded)
-            if canonical_json(object_value(seal(codec.encode(decoded)))) != canonical_json(data):
+            # The byte comparison validates and owns its JSON tree;no sealed temporary escapes.
+            if canonical_json(object_value(codec.encode(decoded))) != canonical_json(data):
                 raise ValueError("component codec is not lossless")
             self._factory((record,))
             return data
@@ -548,7 +558,7 @@ class RegisteredStateIO:
             owned = object_value(seal(data))
             payload = codec.decode(owned)
             _immutable(payload)
-            if payload.schema != schema or canonical_json(object_value(seal(codec.encode(payload)))) != canonical_json(owned):
+            if payload.schema != schema or canonical_json(object_value(codec.encode(payload))) != canonical_json(owned):
                 raise ValueError("payload codec identity/roundtrip")
             return payload
         except (ValueError, TypeError, AttributeError) as error:
@@ -641,7 +651,7 @@ class RegisteredStateIO:
         if self._limits.enable_simulation:
             self._enabled_effects(command, core, values)
         else:
-            a_nodes = tuple(n for n in self.schedule.nodes if self._active[n].lane == "A")
+            a_nodes = self._a_node_ranks
             sequences: dict[NodeKey, int] = {}
             last_order = (-1, -1)
             for item in values:
@@ -660,7 +670,7 @@ class RegisteredStateIO:
                 if not (active.every_tick or command.payload.schema in active.action_kinds):
                     raise ValueError("inactive fact producer")
                 rank, sequence = _number(h["producer_rank"]), _number(h["sequence"])
-                if rank != a_nodes.index(node) or sequence != sequences.get(node, 0) or (rank, sequence) <= last_order:
+                if rank != a_nodes[node] or sequence != sequences.get(node, 0) or (rank, sequence) <= last_order:
                     raise ValueError("fact rank/order/sequence")
                 sequences[node] = sequence + 1
                 last_order = (rank, sequence)
