@@ -32,7 +32,7 @@ namespace ReverieSaga
 
         public BrainConnection(string root, string workingFile, string scenario = "legacy",
             string questCatalog = "", string questSha256 = "", bool npcMemory = false,
-            bool npcWork = false, bool npcCycle = false, bool npcAid = false, bool npcSupplyAid = false, bool npcCallAid = false, bool npcPatrol = false, bool npcTalkPause = false, bool npcQuestPatrol = false, bool npcCallPause = false)
+            bool npcWork = false, bool npcCycle = false, bool npcAid = false, bool npcSupplyAid = false, bool npcCallAid = false, bool npcPatrol = false, bool npcTalkPause = false, bool npcQuestPatrol = false, bool npcCallPause = false, bool npcReadyPatrol = false)
         {
             scenario=SelectScenario(scenario);
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
@@ -48,6 +48,7 @@ namespace ReverieSaga
             if(npcTalkPause&&!npcPatrol)throw new IOException("NPC_TALK_PAUSE_CONTENT");
             if(npcQuestPatrol&&!npcTalkPause)throw new IOException("NPC_QUEST_PATROL_CONTENT");
             if(npcCallPause&&!npcQuestPatrol)throw new IOException("NPC_CALL_PAUSE_CONTENT");
+            if(npcReadyPatrol&&!npcCallPause)throw new IOException("NPC_READY_PATROL_CONTENT");
             if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
             if(npcMemory&&(String.IsNullOrEmpty(questCatalog)||String.IsNullOrEmpty(questSha256)))
                 throw new IOException("NPC_MEMORY_CONTENT");
@@ -62,7 +63,7 @@ namespace ReverieSaga
                     " --catalog " + Quote(catalog) + " --catalog-sha256 " + CatalogPin.Hash +
                     " --scenario " + Quote(scenario) + questArgs + (npcMemory?" --npc-memory":"") +
                     (npcWork?" --npc-work":"") + (npcCycle?" --npc-cycle":"") +
-                    (npcAid?" --npc-aid":"") + (npcSupplyAid?" --npc-supply-aid":"") + (npcCallAid?" --npc-call-aid":"") + (npcPatrol?" --npc-patrol":"") + (npcTalkPause?" --npc-talk-pause":"") + (npcQuestPatrol?" --npc-quest-patrol":"") + (npcCallPause?" --npc-call-pause":""),
+                    (npcAid?" --npc-aid":"") + (npcSupplyAid?" --npc-supply-aid":"") + (npcCallAid?" --npc-call-aid":"") + (npcPatrol?" --npc-patrol":"") + (npcTalkPause?" --npc-talk-pause":"") + (npcQuestPatrol?" --npc-quest-patrol":"") + (npcCallPause?" --npc-call-pause":"") + (npcReadyPatrol?" --npc-ready-patrol":""),
                 UseShellExecute = false, CreateNoWindow = true,
                 RedirectStandardInput = true, RedirectStandardOutput = true,
                 RedirectStandardError = true

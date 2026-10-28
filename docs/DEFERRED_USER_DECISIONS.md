@@ -1,13 +1,25 @@
-# Deferred user decisions — paused checkpoint
+# Deferred user decisions and operational holds
 
-Updated2026-10-27. User-directed operational memo,not engineering/governance authority.
+Latest2026-10-29:human explicitly authorizes current checkpoint commit/push/ordinary PR
+merge/main sync. Original automatic goal is not resumed by this publication request.
+Both expired one-time recovery checks were handled/deleted;historical registration notes
+below are snapshots,not active schedules. ENV001local trust/AWAY001native/CP06release/
+independent review holds remain. [Checkpoint](reviews/MAIN_INTEGRATION_2026-10-29.md).
+
+Updated2026-10-29. User-directed operational memo,not engineering/governance authority.
 Task status:[BACKLOG](../BACKLOG.md);continuation:[execution policy](AUTONOMOUS_EXECUTION.md).
 
-## Latest human pause and checkpoint upload
+## Latest human resume and preserved holds
 
-Human2026-10-27 requests current-task closure,memo and Git upload. Actual supported goal
-PAUSED;finish current branch checkpoint commit/push only. No automatic next feature.
-Computer Use STOPPED/AWAY-001 remains authoritative;no question sent or native launch.
+Human2026-10-29confirms the app goal Resume;actual goal ACTIVE and ordinary usage allowed.
+The earlier checkpoint was pushed,not a new publication grant. Computer Use remains
+STOPPED/AWAY-001;general code continuation does not resume that stopped interaction.
+No new question was sent during F80Python qualification. Its792/31/168checks,old10parity
+and actual new7/264source queries pass;required ENV001imports/full and AWAY001native
+remain unresolved. Continue useful authorized work without repeating unchanged blockers.
+F80native ready selector/forwarding/path/error cases/dedicated source flow are prepared;
+fresh C#compile/native/render/capture/build NOT_RUN. ENV-001required current imports/
+successful full and CP06/independent/release holds remain unresolved.
 
 ## Deferred items
 
@@ -92,3 +104,21 @@ forwarding/path/dedicated flow source is prepared,not compiled/run. ENV-001also 
 F77required imports/successful full;F77long-source latency is NOT_RUN. These remain
 explicit pending qualifications. Latest human authorized current branch checkpoint
 commit/push and PAUSED broader automatic work;no decision/policy bypass inferred.
+
+
+F81previous conversation-end plan display proceeds through existing Python verified replay
+only. No new question sent;native text/layout/compile/build remains NOT_RUN AWAY-001 and
+required ENV001imports/successful full unresolved. No public contract/security/dependency/
+agent/publication changes;original goal ACTIVE and existing03:10one-time wake retained.
+
+F81bounded qualification complete:362affected/35new/CI31/static260/old10parity/new11
+only-declared rows/original7and264source queries PASS. Required ENV001/AWAY001/independent/
+CP06release holds remain unresolved,no new question or waiver. Original goal ACTIVE.
+
+
+F82physical gate-aid core stage proceeds with13passing selected tests/strict262and source
+inventory review only. Full player/durable/query/native-source wiring and final qualification
+remain unfinished. No new question;ENV001/AWAY001/CP06/independent/release holds remain.
+At reported actual reset1793216985a distinct one-time quota wake reverie-saga-2was confirmed
+ACTIVE for2026-10-29at04:49:45KST;human03:10check retained. No actual recovery proof/manual
+pause resume/weekly-spend bypass. Resume unfinished F82before selecting another task.

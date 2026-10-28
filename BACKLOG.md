@@ -1,20 +1,144 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-10-27 | Current task/status/dependency SSOT.
+Updated:2026-10-29 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
 
-PAUSED2026-10-27:latest human requests finish current work,record a handoff and upload
-to Git. Actual supported goal PAUSED. Finish F77bounded verification and checkpoint
-commit/push on codex/cycle-call-recall-20261024only;no automatic next task or release.
-This explicit branch-publication authorization supersedes earlier no-publication notes
-for this checkpoint only. Computer Use STOPPED/AWAY-001;no agents/security/dependency change.
+MAIN-INTEGRATION2026-10-29:latest human explicitly authorizes checkpoint commit/push,
+ordinary PR verification/merge and local main synchronization. Scope includes current work
+through unfinished F82core;no new feature selection or general automatic-goal resume.
+Actual goal at reset was usageLimited even though ordinary usage allowed. Both one-time
+03:10and04:49checks were handled/deleted;do not recreate from historical stage snapshots.
+Current source/CI/publication state is tracked in [order](docs/work_orders/MAIN_INTEGRATION_2026-10-29.md)
+and [checkpoint](docs/reviews/MAIN_INTEGRATION_2026-10-29.md),then actual GitHub PR/head/run.
+No native/agent/security/dependency/release waiver;all existing holds retained.
 
-QT-F77 CHECKPOINT_PARTIALLY_QUALIFIED2026-10-27:actual answered-call patrol hold,
+CONTINUATION_RESUMED2026-10-29:human confirms app goal Resume;actual get_goal is
+ACTIVE and ordinaryUsageAllowed true(primary13percent/secondary4percent). This resolves
+the earlier blocked-mechanism observation,not ENV-001/AWAY-001or release holds. All14F78
+delivery hashes verified,all jobs terminal. Reuse completed645/31/168/static255/parity/
+performance evidence. F79prepared native source/actual direct-framed scenario qualification is complete.
+F82unfinished StageAcore is current priority;verify its stage-delivery/source hashes,
+finish this authorized publication,then full StageBplayer/query/native-source wiring
+and StageCqualification. No new task or native launch before finishing this order. Existing03:10human check and distinct actual-reset04:49:45quota recovery are registered;do not duplicate either.
+Computer Use STOPPED;no agents/publication/security/dependencies.
+
+RESUMED2026-10-28:latest human explicitly resumes original automatic development.
+At resume entry goal ACTIVE and ordinaryUsageAllowed true were verified. One same-chat follow-up
+registered for2026-10-29at03:10Asia/Seoul,id reverie-saga;recheck actual usage/latest
+instructions and avoid duplicate running work. Current clean checkpoint a973adf is
+already pushed. No new publication authority. F77short/long direct/framed performance qualification is now complete;reuse
+completed unchanged evidence before selecting the next bounded useful order.
+Computer Use STOPPED/AWAY-001;no agents/security/dependency changes. ENV-001and all
+independent/CP06/native/release holds retained;defer required decisions with a memo.
+
+QT-F82 IN_PROGRESS_STAGE_A_CORE2026-10-29:physical gate assistance,primary2internal
+calculation;related5/6/7. New exact npc_reach_aid child of ready mode is implemented only
+in engine/bundle/bootstrap stage. Prior POSTNPCpose must be adjacent through canonical
+adjacent_cells,with exact prior Supply/state_at(tick-1). No new state/goal/schema/wire/
+production/aid cost/reward/queue. Existing actual old9NPC6far/stock2then10gateopens recorded;
+new flag baseline2FAIL0.48s. Current core13PASS0.89s(including independent16turn numeric
+vector and exact flag/manifest/consumer guards):10NPC7gate0,12NPC6gate0,14NPC7gate0,
+16NPC6gate1stock3. Same-phase arrival cannot qualify;prior adjacent pose can help while
+moving away. Ruffboth/strict262PASS,current source inventory/ranges/hash/registry reviewed,
+all35/8/8/4retained;NOT actual current G07/replay/full acceptance. Exactly4production
+paths changed. Publication source/odd-call guards are now qualified;remaining StageB
+client/durable/query/native-source selection and StageCqualification. This is not a fully
+exposed player mode or task completion;do not select another feature.
+[Order](docs/work_orders/QT-F82_REACH_GATE_AID.md);[receipt](docs/reviews/QT-F82_EXECUTION_2026-10-29.md).
+ENV001required imports/successful full unresolved;AWAY001native NOT_RUN/CU_STOPPED;
+CP06/independent/release holds retained,goal ACTIVE,no agents/publication/dependencies/
+security. Both one-time wakes confirmed:human03:10reverie-saga and actual five-hour reset
+04:49:45KST(Unix1793216985)reverie-saga-2;distinct purposes,no periodic polling.
+
+QT-F81 IMPLEMENTED_ENV_BLOCKED2026-10-29:prior committed conversation-end patrol
+plan display,primary5presentation support for existing2/6/7. Only ready mode talk adds
+previous retained conversation projection;activity lists latest2conversation-end plans.
+One existing verified isolated replay shares the selected snapshot with supply capture,
+uses canonical next-step text and stores at most2tick/text pairs. No new goal/flag/state/
+schema/pin/wire/cache/IO/replay/engine/native change. Missing-row baseline2FAIL2.62s;
+new35included in362affectedPASS319.07s;CI31PASS8.00s;Ruffboth/
+format64/strict260PASS. First34PASS/1FAILwas an incorrect new retry-label oracle;exact
+COMMITTED/state/no-extra-context fixed,focused1PASS1.72s. New test typing12findings fixed,
+no product/old-test/golden/checker workaround. Old10whole outputs/state/raw stored bodies
+EXACT;new11whole46updates/core/protocol/source EXACT after removing only declared two
+new prefixes. Original F80actual7/264sources reused unchanged,12direct/framed queries/
+retry/replay/state/body/source PASS;All12samples below2s/10s. No overall speedup/global2sclaim.
+Unchanged F80engine/CORE/contracts/G07sources/goldens/checker retain168PASS/35/8/8/4,
+not a new G07run;current app query replays exercised. Only npc_activity.py production
+changed;110other production/257oldPython/28prior nonscope/index preserved. ENV001required
+current imports/successful full unresolved;AWAY001native/compile/render/build NOT_RUN.
+NOT LOCAL_ACCEPTED/DONE;CP06/independent/D2regional/standalone/release/MIN-SPEC/global2s
+OPEN. Runner6692terminal1at comparison-tool issue;recovery terminal0with all results/input
+hashes verified. Goal ACTIVE,no agents/publication/dependencies/security changes.
+[Order](docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md);[receipt](docs/reviews/QT-F81_EXECUTION_2026-10-29.md).
+
+QT-F80 IMPLEMENTED_ENV_BLOCKED2026-10-29:own supply-readiness patrol priority,
+primary2internal calculation;related5/6/7. New opt-in mode prioritizes home while own
+accepted quest/gate closed/prior_POSTstock<2;existing speech/reply/occupancy/phase rules
+retain priority. All Python client/worker/Tk/CLI/durable/restore/replay/query paths wired;
+current/saved displays use each snapshot's own current stock/gate/actor. New147cases
+included in792affectedPASS255.58s;exactCI31PASS8.09s;Ruffboth/
+format62/strict258PASS. Initial untouched legacy callback test1FAIL/791PASS exposed a
+new-keyword/default-mode regression;fixed old invocation shape,focused2PASS2.17s,then
+fresh whole792PASS. Old tests/goldens/checker unchanged. Old9whole153updates and tenth
+actual direct/framed56each preserve outputs/descriptors/pins/core/protocol/persisted
+bodies. New11mode actual7/264sources/direct-framed12query samples,retry,replay/source
+preservation PASS;All12samples below2s/10s. No global2s/speedup/MIN-SPECclaim.
+Current replay/G07168PASS184.09s,317frozen inputs/index preserved,all
+35/8/8/4obligations retained. Exactly10production files changed,101other production/
+245legacy nonscopePython/10prior nonscope/index preserved. Native source strict selector/
+path/forwarding/new45operation flow prepared and matched actual46updates including attach;
+fresh compile/native/render/build NOT_RUN AWAY001. ENV001required current imports/
+successful full unresolved;NOT LOCAL_ACCEPTED/DONE. CP06/independent/D2regional/standalone/
+release/global2sOPEN. All product checks terminal0;runner55884terminal1at post-check Path audit typo,then
+separate preserved-input audit terminal0. Goal ACTIVE,no new publication/agents.
+[Order](docs/work_orders/QT-F80_READY_PATROL.md);[receipt](docs/reviews/QT-F80_EXECUTION_2026-10-29.md).
+
+QT-F79 SOURCE_QUALIFIED_NATIVE_NOT_RUN2026-10-29:prepared native call-pause/next-step/
+saved-occupancy/full quest scenario,primary7verification support,related2/5/6;no new
+game behavior. Actual direct/framed each56operations end31with two replies/reward1/home6;
+new2scenario cases PASS23.48s,whole normalized outputs/core/protocol/persisted bodies
+EXACT,original6/loaded16/slot14/previous4preserved. Each measured operation<=0.957561s.
+Only CallPausePatrolFlow body extends55operations excluding initial attach and45check
+labels,all old labels and all outside-method bytes retained. Current Ruffboth/strict256
+PASS,format60and current document10PASS. All111production/old255Python/index/scene
+unchanged;13prior nonscope hashes preserved. Existing F78affected645/CI31/replay168
+evidence reused for unchanged inputs. Only declared native body differs;all old labels
+and all outside-method bytes exact. All96593/91087jobs terminal. Fresh C#compile/native/
+render/build NOT_RUN AWAY-001;not native acceptance.
+[Order](docs/work_orders/QT-F79_CALL_PAUSE_NATIVE_SCENARIO.md);[receipt](docs/reviews/QT-F79_EXECUTION_2026-10-29.md).
+Actual original goal ACTIVE after human app Resume;03:10follow-up retained,no new timer.
+
+QT-F78 IMPLEMENTED_ENV_BLOCKED2026-10-29:truthful next patrol action/blocked target,
+primary5presentation support for existing2calculation,related6/7. Existing quest target
+formula is now one pure domain helper shared by actual WatchNpc and projection;no new
+NPC behavior/flag/schema/pins/queue/wire. Only existing call-pause mode receives1talk/
+activity row and3labeled current/saved occupancy rows;each snapshot uses its own actor.
+Actual missing-row baseline2FAIL2.05s,current110new included in25file645PASS232.32s;
+exactCI31PASS7.79s,Ruffboth/format59/strict255PASS. Real report/blocked return/free wake/
+call hold/no latent pause/previous save/rewind/restart/read-only state/error logging/
+pipe/worker/withdrawn Tk verified. Old9whole153updates/descriptors/pins/core/protocol/
+persisted bodies EXACT;new tenth differs only declared1talk/1activity/3slot rows,all
+other outputs/state/persisted bytes exact. Actual retained7/263sources before samples
+reused,current4paths20samples;long talk1.313450/1.313432s,activity1.223115/1.209963s,
+slots0.089991/0.089409s. Current samples meet2s/10s;single samples/no overall gain or
+global2s/MIN-SPECclaim. Current replay/G07168PASS,370inputs/real index preserved,
+private reviewed Watch blob04f910a5ca49ecc3ccd30d9d31ab2ae0cb0d8a0d;all35/8/8/4obligations
+retained. Old domain/watch/client/activity ASTs exact after declared extraction/calls
+removed;106other production/prior nonscope/source save trees preserved. Initial17test
+import-position/2tuple-variable typing findings repaired,no suppression;no product/test/
+golden/checker workaround. Runner81444/G07PID35364TERMINAL0;all jobs terminal.
+Required imports/successful full ENV-001unresolved;fresh native/build NOT_RUN AWAY-001;
+NOT LOCAL_ACCEPTED/DONE. CP06/independent/D2regional/standalone/release/global2sOPEN.
+[Order](docs/work_orders/QT-F78_PATROL_NEXT_STEP.md);[receipt](docs/reviews/QT-F78_EXECUTION_2026-10-28.md).
+Historical F78final goal was BLOCKED;latest human app resume is now verified ACTIVE. No agents/publication/security/dependencies;03:10wake retained.
+
+QT-F77 CHECKPOINT_PARTIALLY_QUALIFIED2026-10-28:actual answered-call patrol hold,
 primary2internal calculation,related5/6/7. New npc_call_pause child of quest patrol holds
 only the actual answered turn;next actual wake follows own existing quest/occupancy goal.
 No saved pause/new queue/DTO/schema/wire/supply/reward change. All82new included in current
@@ -26,10 +150,17 @@ source exact after declared additions;103other production/127prior nonscope pres
 G07all35/8/8/4retained,actual source/ranges refreshed;existing checkout EOLpreflight passes.
 Native selectors/forwarding/isolated path/dedicated verifier source prepared;fresh compile/
 native/render/build NOT_RUN AWAY-001. ENV-001required imports/successful full unresolved;
-F77long-source performance NOT_RUN. This is a review/backup checkpoint,not LOCAL_ACCEPTED.
-Latest human PAUSED automatic development and authorizes current branch commit/push only.
+F77performance continuation2026-10-28PASS:actual new-mode7/263sources,direct/framed
+whole stable outputs/pins/core/protocol/persisted bodies EXACT;actual call holds and
+next wake resumes. Short talk0.238026/0.217931s,activity0.180624/0.170910s;long talk
+1.288938/1.298705s,activity1.220742/1.244969s. All20successful measurements below2s
+and10sdeadline;one sample/operation,not global2s/speedup/min-spec acceptance. All
+production/tests/content/native sources/index/older F74save trees preserved. Initial
+framed helper-argument failure and mismatched attach reset flag retained/repaired
+without product edits or replaying completed measurements. F77is still not LOCAL_ACCEPTED.
+Historical checkpoint publication completed;latest human now resumes development without new publication.
 [Order](docs/work_orders/QT-F77_CALL_PAUSE_PATROL.md);[receipt](docs/reviews/QT-F77_EXECUTION_2026-10-27.md).
-[Checkpoint memo](docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md). All jobs terminal,no next task.
+[Checkpoint memo](docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md). All jobs terminal;original goal ACTIVE. No new publication;resume evidence in tmp/qtf77/resume-20261028.
 
 QT-F76 IMPLEMENTED_ENV_BLOCKED2026-10-27:exact-literal immutable validation cost,
 primary2internal-calculation performance support,related6/7;no new NPC behavior. First
@@ -932,3 +1063,9 @@ Preserve the courtyard room and its V1 rules/save identity through the shared cu
 Original [room evidence](docs/reviews/QT-F02_ROOM_BINDINGS_2026-10-15.md) and
 [Unity evidence](docs/reviews/QT-F02_UNITY_SELECTION_2026-10-15.md) remain historical;
 [PR08 repair](docs/reviews/PR08_CI_REPAIR_2026-10-16.md) records current integration acceptance.
+
+
+F82additional StageAodd-call2026-10-29:actual bell11at adjacent7but stock1does not open;
+bell13at far6with stock2does not open;bell15at adjacent7with stock2opens. Each actual
+call replies exactly once. Three new cases PASS;strict262and focused RuffPASS. No
+production change. Source malformed-read guards and fullStageB/StageCstill pending.

@@ -75,6 +75,7 @@ class PlayWindow:
         npc_talk_pause: bool = False,
         npc_quest_patrol: bool = False,
         npc_call_pause: bool = False,
+        npc_ready_patrol: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         self.root = root
@@ -92,11 +93,17 @@ class PlayWindow:
             npc_talk_pause=npc_talk_pause,
             npc_quest_patrol=npc_quest_patrol,
             npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
         )
         self._quest_content = quest_content
         self._npc_memory = npc_memory
         self.mode_label = (
-            "NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드"
+            (
+                "NPC 지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·"
+                "호출 지원·물자·반복 작업·기억 모드"
+            )
+            if npc_ready_patrol
+            else "NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드"
             if npc_call_pause
             else "NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드"
             if npc_quest_patrol
@@ -503,6 +510,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-talk-pause", action="store_true")
     parser.add_argument("--npc-quest-patrol", action="store_true")
     parser.add_argument("--npc-call-pause", action="store_true")
+    parser.add_argument("--npc-ready-patrol", action="store_true")
     args = parser.parse_args(argv)
     layout = select_scenario(args.scenario).layout
     content = client_quest(layout, args.quest_catalog, args.quest_sha256)
@@ -526,6 +534,8 @@ def main(argv: Sequence[str] | None = None) -> int:
         raise ValueError("NPC_QUEST_PATROL_CONTENT")
     if args.npc_call_pause and not args.npc_quest_patrol:
         raise ValueError("NPC_CALL_PAUSE_CONTENT")
+    if args.npc_ready_patrol and not args.npc_call_pause:
+        raise ValueError("NPC_READY_PATROL_CONTENT")
     root = tk.Tk()
     window = PlayWindow(
         root,
@@ -542,6 +552,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         npc_talk_pause=args.npc_talk_pause,
         npc_quest_patrol=args.npc_quest_patrol,
         npc_call_pause=args.npc_call_pause,
+        npc_ready_patrol=args.npc_ready_patrol,
     )
     try:
         root.mainloop()

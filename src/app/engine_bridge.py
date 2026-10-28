@@ -158,6 +158,7 @@ class EngineBridge:
         npc_talk_pause: bool = False,
         npc_quest_patrol: bool = False,
         npc_call_pause: bool = False,
+        npc_ready_patrol: bool = False,
     ) -> None:
         self.worker = ClientWorker(
             path,
@@ -173,6 +174,7 @@ class EngineBridge:
             npc_talk_pause=npc_talk_pause,
             npc_quest_patrol=npc_quest_patrol,
             npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
         )
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
@@ -255,6 +257,7 @@ def serve(
     npc_talk_pause: bool = False,
     npc_quest_patrol: bool = False,
     npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
 ) -> int:
     bridge = EngineBridge(
         path,
@@ -271,6 +274,7 @@ def serve(
         npc_talk_pause=npc_talk_pause,
         npc_quest_patrol=npc_quest_patrol,
         npc_call_pause=npc_call_pause,
+        npc_ready_patrol=npc_ready_patrol,
     )
     try:
         write_frame(target, bridge.response("0"))
@@ -306,6 +310,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-talk-pause", action="store_true")
     parser.add_argument("--npc-quest-patrol", action="store_true")
     parser.add_argument("--npc-call-pause", action="store_true")
+    parser.add_argument("--npc-ready-patrol", action="store_true")
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
@@ -336,6 +341,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             npc_talk_pause=args.npc_talk_pause,
             npc_quest_patrol=args.npc_quest_patrol,
             npc_call_pause=args.npc_call_pause,
+            npc_ready_patrol=args.npc_ready_patrol,
         )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)

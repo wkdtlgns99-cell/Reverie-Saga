@@ -1,7 +1,7 @@
 # QT-F77 — Hold NPC patrol during an actual answered call
 
-Status:CHECKPOINT_PARTIALLY_QUALIFIED2026-10-27. Current Codex;local self-review,not independent/native acceptance.
-Authority:latest human authorizes current checkpoint commit/push;automatic goal PAUSED. Primary2
+Status:CHECKPOINT_PARTIALLY_QUALIFIED2026-10-28. Current Codex;local self-review,not independent/native acceptance.
+Authority:latest human resumes original automatic goal;ACTIVE verified. Prior checkpoint pushed;no new publication. Primary2
 internal calculation;related5/6/7. F76ENV-001acceptance remains deferred,not waived.
 
 | Field | Contract |
@@ -28,7 +28,7 @@ internal calculation;related5/6/7. F76ENV-001acceptance remains deferred,not wai
 | claude_checkpoints | CP01–05not newly triggered:existing watch engine/typed reply/read adapter/phase barriers and save/IPC envelopes reused,no new engine/pipeline/format. Updated source-bound G07scope records real changed body,not independent feedback. CP06held;D2/independent patch rereview/global2s/MIN-SPEC/standalone/release OPEN. No new checkpoint schedule/agent/provider/publication authority |
 | stop_conditions/delivery | Stop on semantic divergence/user overlap/missing actual source semantics;record required decisions while doing independent authorized work. English contracts/evidence and synchronized Korean primary2behavior progress;exact input/session/hash results and failures. No unrequested publication. Original unbounded goal ACTIVE,not complete after this task. ENV-001tool resolution and AWAY-001remain explicitly deferred |
 
-## Latest human checkpoint instruction
+## Historical human checkpoint instruction2026-10-27
 
 Director2026-10-27:finish current work,record handoff and upload to Git. Actual automatic
 goal PAUSED. This authorizes current branch checkpoint commit/push only and supersedes
@@ -37,7 +37,7 @@ retain ENV-001/AWAY-001/unrun gates explicitly,then stop. No new feature or prot
 merge/release/checkpoint waiver is included. Checkpoint memo is one additional authorized
 new file:docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md,total151paths at publication.
 
-## Terminal bounded checkpoint evidence
+## Historical terminal bounded checkpoint evidence2026-10-27
 
 Current82new in535relatedPASS357.30s,exactCI31PASS12.83s;Ruffboth/format57/strict253PASS.
 Old9whole stable outputs/descriptors/pins/core/protocol/persisted bodies EXACT,excluding
@@ -55,3 +55,62 @@ full qualification remains ENV-001unresolved,new-mode long-source latency NOT_RU
 fresh native/build NOT_RUN AWAY-001. Latest human PAUSED the original goal and requested
 current Git upload. Complete final docs/hash/scope151/staging/normal commit+push only;
 no further feature/agent/publication/release or automatic continuation.
+
+## Human-authorized resume2026-10-28
+
+Latest director instruction explicitly resumes original automatic development and requests
+one same-chat quota/usage follow-up at2026-10-29T03:10Asia/Seoul. Actual goal ACTIVE and
+ordinaryUsageAllowed true verified;this supersedes the historical paused execution boundary
+above. Previous a973adf checkpoint is pushed;no additional publication is authorized.
+This bounded continuation completes only outstanding F77performance evidence before
+choosing another order. Primary2internal-calculation verification support;related5/6/7.
+
+- Baseline:clean a973adfbdbc09f95991197fe4346870f0e755ef5,all151delivery hashes EXACT.
+  Reuse535affected/31boundary/168G07/static/old9parity;no unchanged reruns.
+- MODIFY only this order,its receipt,BACKLOG,SESSION_HANDOFF,GAME_SYSTEM_SUMMARY_KO.
+  NEW owned ignored tmp/qtf77/resume-20261028 scripts/logs/results/saves;no production,
+  test,config,dependency,security,scene,old evidence or frozen source changes.
+- Use actual session/bundle/call_pipe and state_io/replay registered paths. New feature
+  pins intentionally reject F74saves;preserve them. Prepare new-mode7/263second saves
+  once through actual down/talk then wait5 or16wait16+wait5,save slot01,close. Never
+  migrate/relabel old save pins. Copy each owned source for direct/framed measurements.
+- Measure talk,activity and slot separately with perf_counter on current host;retain
+  every sample and any2starget/10sdeadline misses. Only attachment_id/working_path are
+  excluded by established transport identity normalization. Compare whole stable
+  updates,actual persisted checkpoint/replay body bytes,core/protocol and pins.
+- Read-only activity/slot and exact retry preserve core/protocol/working bytes. On the
+  resulting even talk tick,wait1then bell on the following even tick:actual reply must
+  hold current pose;retry is exact/unchanged;wait2must reach the next free patrol cell.
+  Independently require reply+1,actual source tick7/263,talk tick8/264. Verify retained
+  replay and all source tree bytes before/after including both older F74source trees.
+- No duplicate source generation or measurement to cherry-pick timings. Owned child
+  errors propagate;close only owned resources. Missing semantics/output divergence
+  stops this batch with evidence. No source-level timing branch or cache added.
+- Acceptance:all4short/long direct/framed samples have exact stable outputs/state and
+  source preservation;record numerical results truthfully. Run document10checks and
+  final Git/scope/input/index checks after synchronized metadata. F77remains partially
+  qualified until required imports/successful full;ENV-001/AWAY-001and all existing
+  independent/release/global2s/MIN-SPECholds remain unresolved. No new checkpoint or
+  external-public-contract change;CP06still held. No agent/publication/native action.
+
+## Performance continuation terminal2026-10-28
+
+Actual new-mode source7/263prepared once;original F74source trees retained. Successful
+short direct/framed talk0.238026/0.217931s,activity0.180624/0.170910s,slot0.064448/
+0.059019s. Long talk1.288938/1.298705s,activity1.220742/1.244969s,slot0.092372/
+0.090585s. Actual even answered bell10/266holds6;next wake12/268resumes7;retry leaves
+reply count1and working bytes unchanged. All9stable updates/pins/core/protocol/actual
+persisted checkpoint/replay body bytes exact direct/framed. Only existing per-session
+attachment_id/working_path excluded.20successful timings all<2s/<10s;single samples,
+no speedup/global2s/MIN-SPEC/native inference. Earlier slow evidence remains historical.
+
+Initial short framed helper called send_seconds without intent;talk/activity/slot/bell
+samples and failure retained. Corrected actual signature send_seconds(pipe,'wait','2');
+only failed path rerun in separate pipe-repaired folder. Initial direct attach used
+update()while registered worker explicitly uses update(reset_log=True). Actual matching
+read-only attach captured on a separate source copy,all other fields exact;raw original
+outputs/timings retained,no completed measurement rerun. Comparator excludes no new field.
+Corrected future long direct call uses the exact worker argument. This is harness repair,
+not gameplay change. All production/tests/content/native/index/source bytes preserved.
+Runner42246terminal0;tmp/qtf77/resume-20261028/performance-result.json retains evidence.
+Imports/successful full ENV-001and native AWAY-001remain unresolved,F77not LOCAL_ACCEPTED.

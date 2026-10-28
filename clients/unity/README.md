@@ -504,4 +504,48 @@ and source preservation;selection error cases precede ordinary mode dispatch. So
 qualification retains all older method text after declared additions are removed.
 Fresh Unity compile/native/render/capture/build remains NOT_RUN AWAY-001. Current Python
 535related/31boundary/168replay-G07PASS does not establish native or human UX acceptance.
-Automatic development is PAUSED;[checkpoint](../../docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md).
+The historical checkpoint paused development;the human resumed it2026-10-29.
+[Checkpoint](../../docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md) remains historical.
+
+
+## F79prepared next-action/occupancy/completion scenario
+
+CallPausePatrolFlow now prepares F78next-target/reason checks on the existing message
+consumer:current/selected/latest/previous save each uses its own occupancy. The same
+flow preserves actual answer hold/retry/resume,loads/reconnects separate branches,
+then distinguishes unreported enemy defeat from a directly heard report/reward1and
+returns home. Final tick31/replies2/reward1;full saved history still starts at checkpoint0.
+Actual current ClientSession and binary framed Brain each execute56operations with
+whole stable output/state/persisted-byte equality and source preservation. Prepared
+source has55operations after initial attach;all older native method text/check labels
+are retained outside the declared body extension. This is source-only qualification,
+not C#compile/native/layout/render/capture/build or human UX acceptance. Fresh execution
+remains NOT_RUN AWAY-001;ENV-001/independent/CP06release holds remain unresolved.
+[Order](../../docs/work_orders/QT-F79_CALL_PAUSE_NATIVE_SCENARIO.md);
+[evidence](../../docs/reviews/QT-F79_EXECUTION_2026-10-29.md).
+
+
+## F80ready-priority patrol source selection
+
+`REVERIE_UNITY_NPC_READY_PATROL=1` requires `REVERIE_UNITY_NPC_CALL_PAUSE=1` and all
+existing parents. Absent/0 preserves old modes;other values reject NPC_READY_PATROL_SELECTION,
+missing parent rejects NPC_READY_PATROL_CONTENT before child/save creation. The isolated
+default is tmp/unity-play/harbor-ready-patrol/<catalog-pin>/game.sqlite;explicit paths are
+never repinned. Mode/reconnect forwarding and the dedicated ReadyPatrolFlow dispatch
+precede the parent call-pause verifier. Other existing flows remain unchanged.
+
+The prepared flow follows actual direct/framed supply-barrier holds4/6/8,answer10hold,
+next wake12,own latest/previous saved stock+gate plans,load/reconnect10and complete
+report/reward/return31. Source operation-vector comparison is not C#compile/native/
+render/layout/capture/build qualification. Fresh native/build remains NOT_RUN AWAY-001;
+Python current792affected/31boundary/168replay-G07/old10parity/new-mode source-query
+qualification passes. ENV-001required current imports/successful full remain unresolved;
+Python/source evidence does not close native or release gates.
+[Scope](../../docs/work_orders/QT-F80_READY_PATROL.md),
+[evidence](../../docs/reviews/QT-F80_EXECUTION_2026-10-29.md).
+
+
+F81adds Python ready-mode prior-conversation plan messages through the existing generic
+message consumer;native sources/selection/scene/wire remain unchanged. Current Python
+362affected/35new/CI31/old10parity/new11only-declared-row parity/query-source checks pass. Fresh text/layout/native/compile/build NOT_RUN AWAY-001;no historical native
+result qualifies these new rows. [Scope](../../docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md).

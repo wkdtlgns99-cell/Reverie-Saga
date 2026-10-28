@@ -28,7 +28,7 @@ from app.npc_activity import (
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
 from app.npc_support_status import support_slot_messages
-from app.npc_patrol_status import quest_patrol_slot_messages
+from app.npc_patrol_status import quest_patrol_slot_messages, quest_patrol_step_slot_messages
 from domain.npc_cycle import CycleRecord
 from domain.npc_patrol import patrol_cells
 from app.npc_work import bootstrap_work, stock_text, work_bundle
@@ -133,6 +133,7 @@ class ClientSession:
         npc_talk_pause: bool = False,
         npc_quest_patrol: bool = False,
         npc_call_pause: bool = False,
+        npc_ready_patrol: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -170,10 +171,13 @@ class ClientSession:
             raise ValueError("NPC_QUEST_PATROL_CONTENT")
         if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
             raise ValueError("NPC_CALL_PAUSE_CONTENT")
+        if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
+            raise ValueError("NPC_READY_PATROL_CONTENT")
         self._npc_patrol = npc_patrol
         self._npc_talk_pause = npc_talk_pause
         self._npc_quest_patrol = npc_quest_patrol
         self._npc_call_pause = npc_call_pause
+        self._npc_ready_patrol = npc_ready_patrol
         self._npc_work = npc_work
         self._names = MappingProxyType(
             {
@@ -195,6 +199,7 @@ class ClientSession:
                 npc_talk_pause=npc_talk_pause,
                 npc_quest_patrol=npc_quest_patrol,
                 npc_call_pause=npc_call_pause,
+                npc_ready_patrol=npc_ready_patrol,
             )
             if npc_cycle
             else work_bundle(quest_content)
@@ -222,6 +227,7 @@ class ClientSession:
                     npc_talk_pause=npc_talk_pause,
                     npc_quest_patrol=npc_quest_patrol,
                     npc_call_pause=npc_call_pause,
+                    npc_ready_patrol=npc_ready_patrol,
                 )
                 if npc_cycle
                 else bootstrap_work(spec, quest_content)
@@ -319,6 +325,7 @@ class ClientSession:
                     npc_talk_pause=self._npc_talk_pause,
                     npc_quest_patrol=self._npc_quest_patrol,
                     npc_call_pause=self._npc_call_pause,
+                    npc_ready_patrol=self._npc_ready_patrol,
                 )
                 if self._npc_cycle
                 else activity_messages(
@@ -423,6 +430,7 @@ class ClientSession:
                         npc_talk_pause=self._npc_talk_pause,
                         npc_quest_patrol=self._npc_quest_patrol,
                         npc_call_pause=self._npc_call_pause,
+                        npc_ready_patrol=self._npc_ready_patrol,
                     )
                 except (SaveError, OSError) as error:
                     logging.getLogger(__name__).exception(
@@ -568,6 +576,21 @@ class ClientSession:
                 except SaveError:
                     logging.getLogger(__name__).exception(
                         "NPC quest patrol slot plan comparison failed"
+                    )
+                    raise
+            if self._npc_call_pause:
+                try:
+                    if self._npc_ready_patrol:
+                        messages += quest_patrol_step_slot_messages(
+                            checkpoint.core, current.core, self._layout, npc_ready_patrol=True
+                        )
+                    else:
+                        messages += quest_patrol_step_slot_messages(
+                            checkpoint.core, current.core, self._layout
+                        )
+                except SaveError:
+                    logging.getLogger(__name__).exception(
+                        "NPC next patrol step slot comparison failed"
                     )
                     raise
             if self._npc_patrol:

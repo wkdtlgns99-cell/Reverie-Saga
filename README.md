@@ -364,7 +364,39 @@ Current82new in535related/31boundary/168replay-G07 and both Ruffconfigs/format57
 PASS;old9stable outputs/persisted bytes remain exact. Required import/successful full
 qualification remains ENV-001blocked;new-mode long-source performance is unverified.
 Unity selection/verifier source prepared only,fresh native/build NOT_RUN AWAY-001.
-Automatic development is PAUSED by the latest human;this branch is a partial checkpoint.
+The historical2026-10-27checkpoint paused development;the human resumed it2026-10-29.
 [Checkpoint memo](docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md),
 [scope](docs/work_orders/QT-F77_CALL_PAUSE_PATROL.md),
 [evidence](docs/reviews/QT-F77_EXECUTION_2026-10-27.md).
+
+
+### Supply readiness before NPC patrol (QT-F80)
+
+The explicit `--npc-ready-patrol` option requires `--npc-call-pause` and its entire
+existing parent chain. Use a new `tmp/npc-ready-patrol/game.sqlite` working path;
+older modes/saves keep their existing rules and intentionally reject cross-mode loading.
+After hearing acceptance,the NPC prefers its original work point while the selected
+gate is closed and its own support supplies are below the existing2-unit requirement.
+Actual talk/call holds and occupied targets still apply. Supply production/use,aid cost,
+quest rewards and logical time retain their existing rules. Newly prepared supplies in
+the same POSTphase affect the next action decision,not an earlier read in that phase.
+Talk/activity and saved/current next-action rows use each snapshot's own stock and gate.
+
+Python qualification passes current792affected/31boundary/168replay-G07cases,old10mode
+whole parity and actual new-mode7/264direct/framed query/source preservation. Native source
+is prepared;fresh native execution/build is NOT_RUN AWAY-001. ENV-001required imports/
+successful full remain unresolved,so status is IMPLEMENTED_ENV_BLOCKED.
+[Scope](docs/work_orders/QT-F80_READY_PATROL.md),[evidence](docs/reviews/QT-F80_EXECUTION_2026-10-29.md).
+
+
+### Previous conversation-end patrol plan (QT-F81)
+
+In existing ready-patrol mode,talk adds the prior retained conversation-end next-action
+projection beside the current one. Activity lists the latest two retained conversation-end
+projections. These use each verified snapshot's own stock/gate/occupancy,not the current
+state applied to history. They describe a committed conversation-end plan,not an executed
+past action. A compact checkpoint with no retained conversations explicitly has no older
+plan snapshots,even if its authoritative memory contains past talks. No new flag/save
+format/state/pins/extra replay/IO/cache. Current362affected/35new/CI31/old10parity/
+new11declared-row-only parity/actual original-source queries pass;native and ENV-001
+required current import/successful full gates remain held (IMPLEMENTED_ENV_BLOCKED). [Order](docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md).

@@ -5,6 +5,8 @@ from dataclasses import fields, replace
 from contracts.dialogue import QuestContent
 from contracts.messages import EventPolicy
 from contracts.npc_memory import MEMORY_FAMILY
+from contracts.npc_cycle import CYCLE_FAMILY
+from domain.npc_work import SUPPORT_STOCK_MIN
 from contracts.turn import ProtocolSnapshot
 from domain.npc_memory import NpcQuestMemoryRecord
 from domain.state_types import CoreSnapshot
@@ -38,6 +40,8 @@ def with_patrol(
     npc_talk_pause: bool = False,
     npc_quest_patrol: bool = False,
     npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+    npc_reach_aid: bool = False,
 ) -> FeatureBundle:
     if type(npc_talk_pause) is not bool:
         raise ValueError("NPC_TALK_PAUSE_CONTENT")
@@ -45,6 +49,10 @@ def with_patrol(
         raise ValueError("NPC_QUEST_PATROL_CONTENT")
     if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
         raise ValueError("NPC_CALL_PAUSE_CONTENT")
+    if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
+        raise ValueError("NPC_READY_PATROL_CONTENT")
+    if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
+        raise ValueError("NPC_REACH_AID_CONTENT")
     layout = content.definition.layout
     cells = patrol_cells(layout, True)
     bindings = tuple(
@@ -56,6 +64,7 @@ def with_patrol(
                 talk_pause_quest=content.definition.quest_id if npc_talk_pause else None,
                 quest_patrol=npc_quest_patrol,
                 call_pause=npc_call_pause,
+                ready_patrol=npc_ready_patrol,
             ),
             activations=(
                 *binding.activations,
@@ -109,6 +118,17 @@ def with_patrol(
         specs = tuple(
             replace(spec, consumers=(*spec.consumers, "watch.npc"))
             if spec.family == FieldFamily("watch.reply", "count")
+            else spec
+            for spec in specs
+        )
+    if npc_ready_patrol:
+        ready_reads = (
+            CYCLE_FAMILY,
+            *(FieldFamily("encounter.gate", field) for field in ("space_id", "cell", "is_open")),
+        )
+        specs = tuple(
+            replace(spec, consumers=(*spec.consumers, "watch.npc"))
+            if spec.family in ready_reads
             else spec
             for spec in specs
         )
@@ -184,6 +204,21 @@ def with_patrol(
             "persistent_state": False,
             "new_pending_events": False,
         }
+    if npc_ready_patrol:
+        rules["npc_ready_patrol"] = {
+            "version": 1,
+            "owner": layout.npc_id,
+            "gate_id": layout.gate_id,
+            "source": "own_accepted_memory_and_prior_POST_TICK_cycle_gate",
+            "stock_min": SUPPORT_STOCK_MIN,
+            "closed_gate_low_stock": "home_before_patrol",
+            "other": "existing_quest_patrol",
+            "same_phase_supply_or_gate_update": "not_visible_until_next_barrier",
+            "conversation_or_reply": "hold_actual_turn_only",
+            "occupied_target": "retry_next_actual_wake",
+            "persistent_goal": False,
+            "new_pending_events": False,
+        }
     rules["event_policies"] = tuple(
         {
             "schema": {"kind": p.schema.kind, "version": p.schema.version},
@@ -199,7 +234,11 @@ def with_patrol(
     )
     return replace(
         base,
-        feature_id="quest.harbor-call-pause-v1"
+        feature_id="quest.harbor-reach-aid-v1"
+        if npc_reach_aid
+        else "quest.harbor-ready-patrol-v1"
+        if npc_ready_patrol
+        else "quest.harbor-call-pause-v1"
         if npc_call_pause
         else "quest.harbor-quest-patrol-v1"
         if npc_quest_patrol

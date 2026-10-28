@@ -3,13 +3,15 @@ from __future__ import annotations
 from dataclasses import replace
 
 from domain.scenario import LEGACY, Scenario, ScenarioBound
-from domain.npc_patrol import NpcScope
+from domain.npc_patrol import NpcScope, quest_patrol_target, ready_patrol_target
+from domain.npc_cycle import Supply, state_at
+from contracts.npc_cycle import CYCLE, CYCLE_FAMILY
 from contracts.npc_patrol import NpcCellDelta, NpcPatrolled
 from contracts.quest import QuestSpoken
 from contracts.npc_memory import MEMORY, MEMORY_FAMILY, read_record
 
 from contracts.watch import (WATCH_NPC, LANTERN, REPLY, BellCommand, WatchWake, WatchRequested, WatchEcho, NpcActed, BellRung, WatchReplied, ChargeDelta, BellsDelta, ReplyDelta)
-from contracts.encounter import HIT_POINTS
+from contracts.encounter import HIT_POINTS, GATE
 from contracts.trial import CELL_POSITION
 from contracts.errors import CandidateError
 from contracts.messages import EmittedFact, StateDelta, WorldEvent
@@ -33,7 +35,7 @@ def _context(invocation: EngineInvocation, phase: Phase) -> None:
 class WatchNpc(NpcScope):
     def __init__(
         self, layout: Scenario = LEGACY, *, npc_patrol: bool = False,
-        talk_pause_quest: str | None = None, quest_patrol: bool = False, call_pause: bool = False,
+        talk_pause_quest: str | None = None, quest_patrol: bool = False, call_pause: bool = False, ready_patrol: bool = False,
     ) -> None:
         if talk_pause_quest is not None:
             if npc_patrol is not True or type(talk_pause_quest) is not str or not talk_pause_quest.startswith("quest:"):
@@ -46,10 +48,13 @@ class WatchNpc(NpcScope):
             raise ValueError("NPC_QUEST_PATROL_CONTENT")
         if type(call_pause) is not bool or call_pause and not quest_patrol:
             raise ValueError("NPC_CALL_PAUSE_CONTENT")
+        if type(ready_patrol) is not bool or ready_patrol and not call_pause:
+            raise ValueError("NPC_READY_PATROL_CONTENT")
         super().__init__(layout, npc_patrol=npc_patrol)
         self._talk_pause_quest = talk_pause_quest
         self._quest_patrol = quest_patrol
         self._call_pause = call_pause
+        self._ready_patrol = ready_patrol
 
     @property
     def manifest(self) -> CapabilityManifest:
@@ -71,6 +76,13 @@ class WatchNpc(NpcScope):
                 reads=(*post.reads, PhaseAccess(Phase.POST_TICK, FieldFamily("watch.reply", "count"))),
                 consumes=(*post.consumes, WatchReplied(self._layout.npc_id, 0, 1).schema),
             )
+        if self._ready_patrol:
+            post = replace(post, reads=(
+                *post.reads, PhaseAccess(Phase.POST_TICK, CYCLE_FAMILY),
+                PhaseAccess(Phase.POST_TICK, FieldFamily("encounter.gate", "space_id")),
+                PhaseAccess(Phase.POST_TICK, FieldFamily("encounter.gate", "cell")),
+                PhaseAccess(Phase.POST_TICK, FieldFamily("encounter.gate", "is_open")),
+            ))
         return replace(
             base,
             phases=(*base.phases, *post.phases),
@@ -219,12 +231,21 @@ class WatchNpc(NpcScope):
                 raise CandidateError("INVALID_FACT", "quest patrol memory") from error
             if any(entry.observed_at > tick for entry in memory.entries):
                 raise CandidateError("INVALID_FACT", "quest patrol future memory")
-            if memory.known_phase == "available":
-                if current != self._layout.npc_cell:
-                    raise CandidateError("INVALID_FACT", "quest patrol unheard position")
-                target = self._layout.npc_cell
-            elif memory.known_phase == "reported":
-                target = self._layout.npc_cell
+            if memory.known_phase == "available" and current != self._layout.npc_cell:
+                raise CandidateError("INVALID_FACT", "quest patrol unheard position")
+            target = quest_patrol_target(self._layout, current, memory.known_phase)
+            if self._ready_patrol:
+                supply = invocation.state.component(CYCLE, self._layout.npc_id).state
+                if type(supply) is not Supply or supply != state_at(tick - 1):
+                    raise CandidateError("INVALID_FACT", "ready patrol cycle source")
+                gate = invocation.state.component(GATE, self._layout.gate_id)
+                if (gate.space_id != self._layout.space_id or type(gate.cell) is not int
+                        or gate.cell != self._layout.gate_cell or type(gate.is_open) is not int
+                        or gate.is_open not in (0, 1)):
+                    raise CandidateError("INVALID_FACT", "ready patrol gate source")
+                target = ready_patrol_target(
+                    self._layout, current, memory.known_phase, supply.stock, gate.is_open,
+                )
             if target == current:
                 return EngineResult((), (), ())
         if pause or target == actor_cell:

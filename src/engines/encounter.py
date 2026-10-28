@@ -29,7 +29,7 @@ from contracts.npc_memory import MEMORY, MEMORY_FAMILY, read_record
 from contracts.messages import EmittedFact, FactPayload, StateDelta, WorldEvent
 from contracts.trial import CELL_POSITION, TRIAL_MAP, CellDelta, MoveCommand
 from contracts.turn import CapabilityManifest, EngineInvocation, EngineResult, PhaseAccess
-from contracts.watch import REPLY, NpcActed, WatchReplied
+from contracts.watch import REPLY, WATCH_NPC, NpcActed, WatchReplied
 from domain.encounter import (
     ATTACK_PROFILE_ID,
     REST_RECOVERY,
@@ -40,6 +40,8 @@ from domain.encounter import (
 from domain.primitives import EntityId, FieldFamily, Phase
 from domain.watch import ECHO_DEPTH, WAKE_PERIOD
 from domain.npc_work import SUPPORT_STOCK_MIN
+from domain.npc_cycle import Supply, state_at
+from domain.npc_patrol import patrol_cells
 
 
 _ACTIONS_MANIFEST = CapabilityManifest(
@@ -114,6 +116,7 @@ class EncounterActions:
     npc_aid: bool = False
     npc_supply_aid: bool = False
     npc_call_aid: bool = False
+    npc_reach_aid: bool = False
 
     def __post_init__(self) -> None:
         if type(self.layout) is not Scenario:
@@ -124,6 +127,8 @@ class EncounterActions:
             raise ValueError("NPC_SUPPLY_AID_CONTENT")
         if type(self.npc_call_aid) is not bool or self.npc_call_aid and not self.npc_supply_aid:
             raise ValueError("NPC_CALL_AID_CONTENT")
+        if type(self.npc_reach_aid) is not bool or self.npc_reach_aid and not self.npc_call_aid:
+            raise ValueError("NPC_REACH_AID_CONTENT")
 
     @property
     def scenario_layout(self) -> Scenario:
@@ -139,6 +144,14 @@ class EncounterActions:
             reads=(
                 *_ACTIONS_MANIFEST.reads,
                 PhaseAccess(Phase.POST_TICK, MEMORY_FAMILY),
+                *(
+                    (
+                        PhaseAccess(Phase.POST_TICK, FieldFamily("watch.npc", "cell")),
+                        PhaseAccess(Phase.POST_TICK, FieldFamily("watch.npc", "space_id")),
+                    )
+                    if self.npc_reach_aid
+                    else ()
+                ),
                 *((PhaseAccess(Phase.POST_TICK, CYCLE_FAMILY),) if self.npc_supply_aid else ()),
                 *(
                     (PhaseAccess(Phase.POST_TICK, FieldFamily(REPLY.schema.kind, "count")),)
@@ -199,12 +212,22 @@ class EncounterActions:
         if gate.is_open:
             return EngineResult((), (), ())
         # POST_TICK views contain prior-barrier stock,not this phase's preparation/use.
-        if (
-            self.npc_supply_aid
-            and invocation.state.component(CYCLE, self.layout.npc_id).state.stock
-            < SUPPORT_STOCK_MIN
-        ):
-            return EngineResult((), (), ())
+        if self.npc_supply_aid:
+            supply = invocation.state.component(CYCLE, self.layout.npc_id).state
+            if self.npc_reach_aid and (type(supply) is not Supply or supply != state_at(tick - 1)):
+                raise CandidateError("INVALID_FACT", "reach aid cycle source")
+            if supply.stock < SUPPORT_STOCK_MIN:
+                return EngineResult((), (), ())
+        if self.npc_reach_aid:
+            npc = invocation.state.component(WATCH_NPC, self.layout.npc_id)
+            if (
+                npc.space_id != self.layout.space_id
+                or type(npc.cell) is not int
+                or npc.cell not in patrol_cells(self.layout, True)
+            ):
+                raise CandidateError("INVALID_FACT", "reach aid NPC source")
+            if not adjacent_cells(npc.cell, gate.cell):
+                return EngineResult((), (), ())
         return EngineResult(
             (GateDelta(self.layout.gate_id, 0, 1),),
             (

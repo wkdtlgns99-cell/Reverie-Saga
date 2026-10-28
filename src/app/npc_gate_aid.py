@@ -25,6 +25,7 @@ def with_gate_aid(
     *,
     npc_supply_aid: bool = False,
     npc_call_aid: bool = False,
+    npc_reach_aid: bool = False,
 ) -> FeatureBundle:
     bindings = tuple(
         replace(
@@ -34,6 +35,7 @@ def with_gate_aid(
                 npc_aid=True,
                 npc_supply_aid=npc_supply_aid,
                 npc_call_aid=npc_call_aid,
+                npc_reach_aid=npc_reach_aid,
             ),
             activations=(
                 *binding.activations,
@@ -77,6 +79,9 @@ def with_gate_aid(
             and spec.family == CYCLE_FAMILY
             or npc_call_aid
             and spec.family == FieldFamily(REPLY.schema.kind, "count")
+            or npc_reach_aid
+            and spec.family
+            in (FieldFamily("watch.npc", "cell"), FieldFamily("watch.npc", "space_id"))
         )
         else spec
         for spec in base.field_specs
@@ -131,6 +136,17 @@ def with_gate_aid(
             "answered_call": "watch.echo/watch.replied/CASCADE",
             "source_priority": ("answered_call", "routine_wake"),
             "max_aid_per_tick": 1,
+        }
+    if npc_reach_aid:
+        rules["npc_gate_reach"] = {
+            "version": 1,
+            "owner": content.definition.layout.npc_id,
+            "target": content.definition.layout.gate_id,
+            "pose_source": "watch.npc.cell/space_id/prior_POST_TICK_barrier",
+            "range": "domain.encounter.adjacent_cells",
+            "same_phase_arrival": "not_visible_until_next_barrier",
+            "supply_source": "exact_Supply/state_at(tick-1)",
+            "new_pending_events": False,
         }
     rules["event_policies"] = tuple(
         {

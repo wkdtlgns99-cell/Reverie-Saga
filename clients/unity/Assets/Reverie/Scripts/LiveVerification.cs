@@ -972,12 +972,88 @@ namespace ReverieSaga
                 room.NpcPositionForVerification==new Vector3(value%3,.5f,-(value/3)),label);
         }
 
+        IEnumerator ReadyPatrolFlow()
+        {
+            const string policy="NPC 지원 준비 · 의뢰 진행 중 통행문이 닫혀 있고 공동 물자가 2개 미만이면 원래 작업 지점 복귀·대기를 우선합니다.";
+            const string nextNeighbor="NPC 다음 순찰 행동 · 다음 행동 시점에 옆 작업 지점으로 이동을 시도합니다. (현재 상태 기준)";
+            const string idle="NPC 다음 순찰 행동 · 현재 작업 지점에서 기다립니다. (현재 상태 기준)";
+            const string blockedHome="NPC 다음 순찰 행동 · 원래 작업 지점을 플레이어가 점유 중입니다. 현재 상태에서는 이동을 기다립니다.";
+            room.SelectWaitDuration(0);
+            Check(room.NpcReadyPatrolEnabled&&room.NpcCallPauseEnabled&&
+                room.NpcModeLabel=="NPC 지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드","ready_patrol_selection");
+            yield return Intent("down");yield return Intent("talk");
+            Check(Array.IndexOf(room.Latest.update.messages,idle)>=0&&
+                Array.FindAll(room.Latest.update.messages,m=>m==policy).Length==1,"ready_patrol_low_stock_talk_plan");
+            yield return Intent("up");yield return Intent("wait");CheckPatrolCell("6","ready_patrol_low_stock_holds4");
+            Check(room.Latest.update.view.tick=="4","ready_patrol_first_production_time");yield return Intent("save");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("6","ready_patrol_low_stock_holds6");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("6","ready_patrol_prior_barrier_holds8");
+            string bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(room.Latest.update.view.tick=="8"&&FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,nextNeighbor)>=0&&
+                Array.FindAll(room.Latest.update.messages,m=>m==policy).Length==1,"ready_patrol_new_stock_next_goal");
+            room.InspectSlot();yield return Ready();Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 8초 / 선택 저장 4초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextNeighbor)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+idle)>=0,"ready_patrol_saved_stock_own_goal");
+            yield return Intent("wait");yield return Intent("bell");CheckPatrolCell("6","ready_patrol_actual_answer_holds10");
+            Check(room.Latest.update.view.tick=="10"&&room.Latest.update.view.npc_replies=="1"&&
+                room.Latest.update.view.gate_open&&room.GateOpenForVerification,"ready_patrol_actual_aid_same_turn");
+            bytes=FileHash(room.Latest.update.working_path);yield return Intent("retry");
+            Check(FileHash(room.Latest.update.working_path)==bytes&&room.Latest.update.view.npc_replies=="1",
+                "ready_patrol_retry_no_extra_reply");yield return Intent("save");
+            room.InspectPreviousSlot();yield return Ready();Check(
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 10초 / 선택 저장 4초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextNeighbor)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+idle)>=0,"ready_patrol_saved_gate_own_goal");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","ready_patrol_next_wake_resumes12");
+            string original=room.Latest.update.working_path,originalBytes=FileHash(original);
+            yield return Intent("load");CheckPatrolCell("6","ready_patrol_load_no_latent_pause");
+            int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.NpcReadyPatrolEnabled&&room.BrainProcessId!=pid&&room.Latest.update.view.tick=="10",
+                "ready_patrol_reconnect_mode");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,nextNeighbor)>=0,"ready_patrol_open_gate_low_stock_patrol");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","ready_patrol_reconnected_resumes12");
+            yield return Intent("down");yield return Intent("down");CheckPatrolCell("7","ready_patrol_occupied_home14");
+            room.InspectActivity();yield return Ready();Check(room.Latest.update.view.tick=="14"&&
+                Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,"ready_patrol_occupied_reason");
+            yield return Intent("up");yield return Intent("wait");CheckPatrolCell("6","ready_patrol_free_home16");
+            yield return Intent("right");yield return Intent("down");yield return Intent("attack");
+            yield return Intent("attack");yield return Intent("rest");yield return Intent("attack");
+            Check(room.Latest.update.view.tick=="22"&&room.Latest.update.view.enemy_hp=="0"&&
+                room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0","ready_patrol_unreported_defeat");
+            yield return Intent("up");yield return Intent("left");CheckPatrolCell("7","ready_patrol_own_accepted_goal");
+            yield return Intent("down");yield return Intent("talk");CheckPatrolCell("7","ready_patrol_report_hold26");
+            Check(room.Latest.update.quest_reward=="1"&&Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,
+                "ready_patrol_report_reward_once");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","ready_patrol_reported_waits28");
+            yield return Intent("up");yield return Intent("wait");CheckPatrolCell("6","ready_patrol_reported_returns30");
+            yield return Intent("talk");Check(room.Latest.update.view.tick=="31"&&room.Latest.update.quest_reward=="1"&&
+                Array.IndexOf(room.Latest.update.messages,idle)>=0,"ready_patrol_final_idle_no_extra_reward");
+            room.InspectActivity();yield return Ready();Check(Array.FindAll(room.Latest.update.messages,m=>m==policy).Length==1,
+                "ready_patrol_policy_once");room.InspectSlot();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 31초 / 선택 저장 10초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+idle)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+nextNeighbor)>=0,"ready_patrol_reported_vs_saved_goal");
+            Check(FileHash(original)==originalBytes,"ready_patrol_original_source_preserved");
+            room.SetDialogueFocus(true);yield return CaptureActivity("npc-ready-patrol");room.SetDialogueFocus(false);
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
+        }
+
         IEnumerator CallPausePatrolFlow()
         {
             room.SelectWaitDuration(0);
+            const string nextNeighbor="NPC 다음 순찰 행동 · 다음 행동 시점에 옆 작업 지점으로 이동을 시도합니다. (현재 상태 기준)";
+            const string nextHome="NPC 다음 순찰 행동 · 다음 행동 시점에 원래 작업 지점으로 이동을 시도합니다. (현재 상태 기준)";
+            const string blockedHome="NPC 다음 순찰 행동 · 원래 작업 지점을 플레이어가 점유 중입니다. 현재 상태에서는 이동을 기다립니다.";
+            const string idle="NPC 다음 순찰 행동 · 현재 작업 지점에서 기다립니다. (현재 상태 기준)";
             Check(room.NpcCallPauseEnabled&&room.NpcQuestPatrolEnabled&&room.NpcTalkPauseEnabled&&
                 room.NpcModeLabel=="NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드","call_pause_selection");
-            yield return Intent("down");yield return Intent("talk");yield return Intent("up");
+            yield return Intent("down");yield return Intent("talk");
+            Check(Array.IndexOf(room.Latest.update.messages,nextNeighbor)>=0,"call_pause_talk_next_goal");
+            yield return Intent("up");
             yield return Intent("bell");CheckPatrolCell("6","call_pause_even_answer_holds");
             Check(room.Latest.update.view.tick=="4"&&room.Latest.update.view.npc_replies=="1"&&
                 Array.IndexOf(room.Latest.update.messages,"NPC가 공동 작업 구역을 순찰했습니다.")<0,"call_pause_actual_answer_no_move");
@@ -987,22 +1063,94 @@ namespace ReverieSaga
             Check(Array.IndexOf(room.Latest.update.messages,
                 "NPC 응답 대기 · 호출에 답한 턴에는 이동을 멈추고, 다음 행동 시점에 순찰 계획을 다시 따릅니다.")>=0&&
                 FileHash(savedPath)==bytes,"call_pause_policy_readonly");
+            Check(Array.IndexOf(room.Latest.update.messages,nextNeighbor)>=0,"call_pause_answer_no_future_pause");
             yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","call_pause_next_actual_wake");
             Check(room.Latest.update.view.tick=="6","call_pause_resume_time");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectSlot();yield return Ready();
+            Check(room.Latest.update.view.tick=="6"&&FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 6초 / 선택 저장 4초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextHome)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+nextNeighbor)>=0,"call_pause_slot_different_next_targets");
             string original=room.Latest.update.working_path,originalBytes=FileHash(original);
             yield return Intent("load");CheckPatrolCell("6","call_pause_load_current_cell");
             Check(room.Latest.update.view.tick=="4","call_pause_load_time");
             int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
             Check(room.NpcCallPauseEnabled&&room.BrainProcessId!=pid&&room.Latest.update.view.tick=="4",
                 "call_pause_reconnect_selection");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,nextNeighbor)>=0,"call_pause_reconnected_next_goal");
             yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","call_pause_no_saved_hold");
             yield return Intent("wait");yield return Intent("bell");CheckPatrolCell("7","call_pause_second_even_answer");
             Check(room.Latest.update.view.tick=="8"&&room.Latest.update.view.npc_replies=="2","call_pause_repeated_answer_count");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,nextHome)>=0,"call_pause_answer_at_neighbor_next_goal");
             bytes=FileHash(room.Latest.update.working_path);yield return Intent("retry");
             Check(FileHash(room.Latest.update.working_path)==bytes&&room.Latest.update.view.npc_replies=="2",
                 "call_pause_exact_retry_no_duplicate");
             yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("6","call_pause_resume_existing_goal");
             Check(room.Latest.update.view.tick=="10"&&FileHash(original)==originalBytes,"call_pause_branch_source_preserved");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","call_pause_occupancy_setup");
+            yield return Intent("down");yield return Intent("down");CheckPatrolCell("7","call_pause_blocked_home");
+            Check(room.Latest.update.view.tick=="14"&&room.Latest.update.view.actor_cell=="6","call_pause_blocked_home_time");
+            yield return Intent("save");bytes=FileHash(room.Latest.update.working_path);
+            room.InspectActivity();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,"call_pause_actual_blocked_reason");
+            yield return Intent("up");bytes=FileHash(room.Latest.update.working_path);
+            room.InspectSlot();yield return Ready();
+            Check(room.Latest.update.view.tick=="15"&&FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 15초 / 선택 저장 14초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextHome)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+blockedHome)>=0,"call_pause_slot_own_occupancy");
+            room.InspectPreviousSlot();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 15초 / 선택 저장 4초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextHome)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+nextNeighbor)>=0,"call_pause_previous_slot_own_goal");
+            yield return Intent("wait");CheckPatrolCell("6","call_pause_free_target_resumes");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectSlot();yield return Ready();
+            Check(room.Latest.update.view.tick=="16"&&FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+nextNeighbor)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+blockedHome)>=0,"call_pause_arrived_current_saved_blocked");
+            string blockedSource=room.Latest.update.working_path,blockedSourceBytes=FileHash(blockedSource);
+            yield return Intent("load");CheckPatrolCell("7","call_pause_load_blocked_branch");
+            Check(room.Latest.update.view.tick=="14"&&room.Latest.update.working_path!=blockedSource,
+                "call_pause_load_blocked_time");
+            pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.NpcCallPauseEnabled&&room.BrainProcessId!=pid&&room.Latest.update.view.tick=="14",
+                "call_pause_blocked_reconnect_selection");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(FileHash(room.Latest.update.working_path)==bytes&&
+                Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,"call_pause_reconnected_blocked_reason");
+            yield return Intent("up");yield return Intent("wait");CheckPatrolCell("6","call_pause_reconnected_target_freed");
+            yield return Intent("right");yield return Intent("down");yield return Intent("attack");
+            yield return Intent("attack");yield return Intent("rest");yield return Intent("attack");
+            Check(room.Latest.update.view.tick=="22"&&room.Latest.update.view.enemy_hp=="0"&&
+                room.Latest.update.quest_stage=="2"&&room.Latest.update.quest_reward=="0","call_pause_unreported_defeat");
+            yield return Intent("up");yield return Intent("left");CheckPatrolCell("7","call_pause_not_omniscient_patrol");
+            yield return Intent("down");yield return Intent("talk");CheckPatrolCell("7","call_pause_report_held");
+            Check(room.Latest.update.view.tick=="26"&&room.Latest.update.quest_stage=="3"&&
+                room.Latest.update.quest_reward=="1"&&Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,
+                "call_pause_report_reward_once");
+            yield return Intent("wait");yield return Intent("wait");CheckPatrolCell("7","call_pause_reported_occupied_home");
+            room.InspectActivity();yield return Ready();Check(room.Latest.update.view.tick=="28"&&
+                Array.IndexOf(room.Latest.update.messages,blockedHome)>=0,"call_pause_reported_wait_reason");
+            yield return Intent("up");room.InspectActivity();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,nextHome)>=0,"call_pause_reported_target_freed");
+            yield return Intent("wait");CheckPatrolCell("6","call_pause_reported_return_home");
+            yield return Intent("talk");Check(room.Latest.update.view.tick=="31"&&
+                room.Latest.update.quest_reward=="1"&&room.Latest.update.view.npc_replies=="2"&&
+                Array.IndexOf(room.Latest.update.messages,idle)>=0,"call_pause_gratitude_no_duplicate_reward");
+            room.InspectActivity();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,idle)>=0,"call_pause_final_idle_goal");
+            room.InspectSlot();yield return Ready();Check(
+                Array.IndexOf(room.Latest.update.messages,"NPC 다음 순찰 행동 비교 · 현재 31초 / 선택 저장 14초")>=0&&
+                Array.IndexOf(room.Latest.update.messages,"현재 "+idle)>=0&&
+                Array.IndexOf(room.Latest.update.messages,"선택 저장 "+blockedHome)>=0,"call_pause_reported_current_saved_accepted");
+            Check(FileHash(original)==originalBytes&&FileHash(blockedSource)==blockedSourceBytes,
+                "call_pause_all_branch_sources_preserved");
             room.SetDialogueFocus(true);yield return CaptureActivity("npc-call-pause");room.SetDialogueFocus(false);
             Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
         }
@@ -1583,6 +1731,8 @@ namespace ReverieSaga
                 case "invalid-supply-aid-selection":return "NPC_SUPPLY_AID_SELECTION";
                 case "invalid-call-pause":return "NPC_CALL_PAUSE_CONTENT";
                 case "invalid-call-pause-selection":return "NPC_CALL_PAUSE_SELECTION";
+                case "invalid-ready-patrol":return "NPC_READY_PATROL_CONTENT";
+                case "invalid-ready-patrol-selection":return "NPC_READY_PATROL_SELECTION";
                 case "invalid-quest-patrol":return "NPC_QUEST_PATROL_CONTENT";
                 case "invalid-quest-patrol-selection":return "NPC_QUEST_PATROL_SELECTION";
                 case "invalid-talk-pause":return "NPC_TALK_PAUSE_CONTENT";
@@ -1626,6 +1776,7 @@ namespace ReverieSaga
                 yield return InspectSlot("initial_slot_missing",null);
             }
             if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
+                if(room.NpcReadyPatrolEnabled){yield return ReadyPatrolFlow();yield break;}
                 if(room.NpcCallPauseEnabled){yield return CallPausePatrolFlow();yield break;}
                 if(room.NpcQuestPatrolEnabled){yield return QuestPatrolFlow();yield break;}
                 if(room.NpcTalkPauseEnabled){yield return TalkPausePatrolFlow();yield break;}

@@ -41,6 +41,8 @@ def cycle_bundle(
     npc_talk_pause: bool = False,
     npc_quest_patrol: bool = False,
     npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+    npc_reach_aid: bool = False,
 ) -> FeatureBundle:
     if type(npc_aid) is not bool:
         raise ValueError("NPC_AID_CONTENT")
@@ -56,6 +58,10 @@ def cycle_bundle(
         raise ValueError("NPC_QUEST_PATROL_CONTENT")
     if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
         raise ValueError("NPC_CALL_PAUSE_CONTENT")
+    if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
+        raise ValueError("NPC_READY_PATROL_CONTENT")
+    if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
+        raise ValueError("NPC_REACH_AID_CONTENT")
     base = memory_bundle(content)
     binding = EngineBinding(
         NpcSupplyCycle(content),
@@ -195,7 +201,13 @@ def cycle_bundle(
         rules_document=object_value(seal(rules)),
     )
     bundle = (
-        with_gate_aid(bundle, content, npc_supply_aid=npc_supply_aid, npc_call_aid=npc_call_aid)
+        with_gate_aid(
+            bundle,
+            content,
+            npc_supply_aid=npc_supply_aid,
+            npc_call_aid=npc_call_aid,
+            npc_reach_aid=npc_reach_aid,
+        )
         if npc_aid
         else bundle
     )
@@ -206,6 +218,8 @@ def cycle_bundle(
             npc_talk_pause=npc_talk_pause,
             npc_quest_patrol=npc_quest_patrol,
             npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
+            npc_reach_aid=npc_reach_aid,
         )
         if npc_patrol
         else bundle
@@ -223,6 +237,8 @@ def bootstrap_cycle(
     npc_talk_pause: bool = False,
     npc_quest_patrol: bool = False,
     npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+    npc_reach_aid: bool = False,
 ) -> HeadlessSession:
     return _bootstrap(
         spec,
@@ -237,6 +253,8 @@ def bootstrap_cycle(
             npc_talk_pause=npc_talk_pause,
             npc_quest_patrol=npc_quest_patrol,
             npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
+            npc_reach_aid=npc_reach_aid,
         ),
         extra_records=(
             QuestRecord(EntityId(content.definition.quest_id), 0),
