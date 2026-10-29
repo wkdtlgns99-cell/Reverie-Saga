@@ -7,6 +7,7 @@ from domain.state_types import ComponentRecord
 
 WORK_PERIOD = 4
 STOCK_CAP = 3
+SUPPORT_STOCK_MIN = 2
 STOCK_SCHEMA = TypeKey("quest.provisions", 1)
 
 

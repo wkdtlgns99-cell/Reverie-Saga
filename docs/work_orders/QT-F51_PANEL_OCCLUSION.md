@@ -1,0 +1,27 @@
+# QT-F51 — Keep world geometry out of readable UI panels
+
+Status:READY,2026-10-24. Executor:current Codex;self-review,not independent.
+Authority:director's automatic bounded development request. Baseline72c2d58plus14accepted
+F49/F50dirty paths,saved at tmp/qtf51/f50-entry.json and entry.diff;reuse current branch.
+Primary5screen/presentation support;related4memory display,6save UI,7live integration.
+
+| Field | Contract |
+|---|---|
+| goal/non_goals | Prevent 3D geometry/background from showing through dialogue/control/save panel text. No new art/camera system,layout/controls,input,Python/rules/save/wire/content/dependency/policy or release change |
+| prerequisites/reads | F32dialogue focus,F39save manager,F50actual642x500capture shows board through panel;ENGINEERING_RULES,handoff/backlog/Korean progress,MASTER UI responsibility,numbered guide,work-order template,WORKSTATION_SETUP,Unity README generate/verify/build/reuse;PlayRoom.OnGUI,LiveVerification.CycleFlow/CaptureActivity/SaveManagerFlow,PlaytestBuild.BuildInteractive |
+| MODIFY | C:/Reverie Saga/clients/unity/Assets/Reverie/Scripts/PlayRoom.cs;C:/Reverie Saga/clients/unity/Assets/Reverie/Scripts/LiveVerification.cs;C:/Reverie Saga/README.md;C:/Reverie Saga/clients/unity/README.md;C:/Reverie Saga/BACKLOG.md;C:/Reverie Saga/SESSION_HANDOFF.md;C:/Reverie Saga/GAME_SYSTEM_SUMMARY_KO.md;this order |
+| NEW | C:/Reverie Saga/docs/reviews/QT-F51_EXECUTION_2026-10-24.md;owned tmp/qtf51 artifacts |
+| temporary native harness | C:/Reverie Saga/clients/unity/Assets/Reverie/Editor/F51VerificationTrigger.cs and generated .meta. Public editor API/configuration only;reuse editor31168. SessionState once per baseline/final/build stage,read owned stage selector from tmp/qtf51/stage.txt. Explicit harbor/approved catalog SHA,memory1/work0/cycle1,retained0,fresh baseline/native working saves. Existing PlaytestBuild.Verify or BuildInteractive. Remove owned trigger/.meta after idle/build;restore scene bytes |
+| forbidden | Python/domain/contracts/engines/orchestration,assets/content/wire/settings,private user files/credentials,reference checkout,earlier frozen receipts/orders/tests,security policy |
+| public contract/wiring | No new public signature. Existing single panel rectangle in OnGUI remains identical for normal/dialogue/save-manager modes. Draw opaque dark backing before existing GUI.Box,then existing text/controls. Reuse Texture2D.whiteTexture,no owned texture/material. Save/restore caller GUI.color |
+| behavior/ownership | Backing RGB(.04,.05,.07),alpha1;one existing rectangle(max380width,12pixel margins,nonnegative clamps). No repaint-triggered command or state write. Existing skin,borders,font,scroll/layout/input/focus/poll/reconnect retained. Authoritative state/files cannot change from panel mode/rendering |
+| edge/errors | Very small viewport retains current nonnegative clamps;no new dimensions or invalid external input. Busy/error/focus/save modes share same backing;no new exception catch or resource. Rendering color restored before remaining widgets. Release must exclude verification hooks as before |
+| independent example | Under solid red then green camera clear colors,uncovered pixel outside panel changes by>0.2channel;blank panel gap pixel at(30,80)stays dark(<0.2each channel)and changes by<0.02sumRGB. Original translucent panel fails. UI samples use actual ReadPixels after end-of-frame in642x500view. Preserve view/history/save hash before/after probe |
+| algorithm/test steps | Extend native cycle probe before gameplay;capture red/green actual screen with state/file guards. Run baseline against unmodified production OnGUI,require actual failing opacity assertion,then add backing and rerun full cycle/save-manager flow. Inspect captures and source-byte guards;build Windows via same-editor existing menu and verify release hook absence. No Python source-string/unit tests for this small visual edit |
+| performance | TARGET O(1)one shared-white-texture draw per OnGUI,no per-frame texture/material allocation. Native probe measures screen pixels and frame progression;existing rendering/frame budget remains device-unqualified |
+| verification | Actual baseline failure and final native pixels/screens/state/input/save-manager/call/supply checks;9owned saves validation/replay/query/source bytes;fresh Windows build+release-hook exclusion because production C#changed. Reuse F50Python243affected/static/type/import evidence only for unchanged Python files. Final document/link/scope/UTF-8/whitespace and native source/scene/input hashes;editor stays open |
+| acceptance | Baseline translucent failure reproduced,final opaque/uncovered/state guards pass,readable real captures,ordinary dialogue/save modes and all retained native checks pass,owned save/build/hook checks pass,progress trio synchronized. Human UX/other device/MIN-SPEC/release acceptance remain separate |
+| checkpoints | NOT_APPLICABLE:bounded existing UI readability repair,no new authoritative/save/IPC/engine boundary;CP06release held and prior independent review deferred |
+| stop/delivery | Diagnose/repair authorized failures;escalate overlapping edits/unresolved semantics/unavailable validation after safe alternatives. Local changes only;no agents,unrequested publication,release or protection change. Continue next bounded work after acceptance |
+
+Execution:LOCAL_ACCEPTED2026-10-24;[receipt](../reviews/QT-F51_EXECUTION_2026-10-24.md).

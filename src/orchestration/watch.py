@@ -1,6 +1,8 @@
 from __future__ import annotations
 
 from domain.scenario import LEGACY, Scenario, ScenarioBound
+from domain.npc_patrol import NpcScope
+from contracts.npc_patrol import NpcCellDelta, NpcCellPatch, NpcPatrolled, NpcPatrolCue, PATROL_PAYLOADS
 
 from dataclasses import replace
 import hashlib
@@ -63,7 +65,7 @@ class _WatchNpcView(_View):
         return self._record.bells
 
 
-class WatchNpcAdapter(ScenarioBound):
+class WatchNpcAdapter(NpcScope):
     @property
     def key(self) -> ComponentKey[WatchNpcRead]:
         return WATCH_NPC
@@ -73,7 +75,7 @@ class WatchNpcAdapter(ScenarioBound):
             raise ValueError("invalid WatchNpc record")
         require_namespace(record.entity_id)
         require_namespace(record.space_id)
-        require_integer(record.cell, self._layout.npc_cell, self._layout.npc_cell)
+        _require_npc_cell(record.cell, self._npc_cells)
         require_integer(record.bells, 0, MAX_INT)
 
     def wrap(self, record: ComponentRecord, access: ViewAccess) -> WatchNpcRead:
@@ -82,7 +84,7 @@ class WatchNpcAdapter(ScenarioBound):
         return _WatchNpcView(record, access)
 
 
-class WatchNpcCodec(ScenarioBound):
+class WatchNpcCodec(NpcScope):
     @property
     def schema(self) -> TypeKey:
         return WATCH_NPC.schema
@@ -90,11 +92,11 @@ class WatchNpcCodec(ScenarioBound):
     def decode(self, entity_id: EntityId, fields: JsonObject) -> ComponentRecord:
         d = exact_fields(fields, ('space_id', 'cell', 'bells'))
         record = WatchNpcRecord(entity_id, EntityId(text_value(d["space_id"])), int_value(d["cell"]), int_value(d["bells"]))
-        WatchNpcAdapter(layout=self._layout).validate(record)
+        WatchNpcAdapter(layout=self._layout, npc_patrol=self._npc_patrol).validate(record)
         return record
 
     def encode(self, record: ComponentRecord) -> JsonObject:
-        WatchNpcAdapter(layout=self._layout).validate(record)
+        WatchNpcAdapter(layout=self._layout, npc_patrol=self._npc_patrol).validate(record)
         assert isinstance(record, WatchNpcRecord)
         return {"space_id": record.space_id, "cell": record.cell, "bells": record.bells}
 
@@ -187,7 +189,14 @@ class ReplyCodec(ScenarioBound):
         return {"count": record.count}
 
 
-def _validate_payload(payload: FrozenPayload, layout: Scenario = LEGACY) -> None:
+def _require_npc_cell(cell: int, cells: tuple[int, ...]) -> None:
+    require_integer(cell, cells[0], cells[-1])
+    if cell not in cells:
+        raise ValueError("invalid NPC cell")
+
+
+def _validate_payload(payload: FrozenPayload, layout: Scenario = LEGACY, *, npc_cells: tuple[int, ...] | None = None) -> None:
+    cells = (layout.npc_cell,) if npc_cells is None else npc_cells
     if isinstance(payload, WaitCommand):
         require_integer(payload.seconds, 1, 16)
     elif isinstance(payload, BellCommand):
@@ -238,8 +247,8 @@ def _validate_payload(payload: FrozenPayload, layout: Scenario = LEGACY) -> None
         require_integer(payload.logical_tick, 1, MAX_INT)
         require_integer(payload.before_bells, 0, MAX_INT)
         require_integer(payload.after_bells, 0, MAX_INT)
-        require_integer(payload.cell, layout.npc_cell, layout.npc_cell)
-        x, z = cell_coordinates(layout.npc_cell)
+        _require_npc_cell(payload.cell, cells)
+        x, z = cell_coordinates(payload.cell)
         require_integer(payload.x_mm, x, x)
         require_integer(payload.z_mm, z, z)
         if payload.after_bells != payload.before_bells + 1:
@@ -287,14 +296,40 @@ def _validate_payload(payload: FrozenPayload, layout: Scenario = LEGACY) -> None
         require_integer(payload.after_count, 0, MAX_INT)
     elif isinstance(payload, ReplyPatch):
         require_integer(payload.count, 0, MAX_INT)
+    elif isinstance(payload, NpcCellDelta):
+        if len(cells) != 2 or payload.entity_id != layout.npc_id:
+            raise ValueError("invalid patrol delta subject/mode")
+        _require_npc_cell(payload.before_cell, cells)
+        _require_npc_cell(payload.after_cell, cells)
+    elif isinstance(payload, NpcCellPatch):
+        if len(cells) != 2:
+            raise ValueError("invalid patrol patch mode")
+        _require_npc_cell(payload.cell, cells)
+    elif isinstance(payload, (NpcPatrolled, NpcPatrolCue)):
+        if len(cells) != 2 or payload.npc_id != layout.npc_id:
+            raise ValueError("invalid patrol subject/mode")
+        _require_npc_cell(payload.before_cell, cells)
+        _require_npc_cell(payload.after_cell, cells)
+        if payload.before_cell == payload.after_cell:
+            raise ValueError("patrol movement must change cell")
+        if isinstance(payload, NpcPatrolled):
+            if payload.space_id != layout.space_id:
+                raise ValueError("invalid patrol space")
+        else:
+            require_integer(payload.logical_tick, 2, MAX_INT)
+            if payload.logical_tick % 2:
+                raise ValueError("invalid patrol cue time")
+            x, z = cell_coordinates(payload.after_cell)
+            require_integer(payload.x_mm, x, x)
+            require_integer(payload.z_mm, z, z)
     else:
         raise SchemaError("UNSUPPORTED_SCHEMA", "watch payload class")
 
 
-class WatchPayloadCodec(ScenarioBound):
-    def __init__(self, schema: TypeKey, layout: Scenario = LEGACY) -> None:
-        super().__init__(layout)
-        if schema not in tuple(TypeKey("watch." + k, 1) for k in ('wait', 'bell', 'wake', 'requested', 'echo', 'npc-acted', 'bell-rung', 'replied', 'npc-cue', 'bell-cue', 'reply-cue', 'charge-delta', 'charge-patch', 'bells-delta', 'bells-patch', 'reply-delta', 'reply-patch')):
+class WatchPayloadCodec(NpcScope):
+    def __init__(self, schema: TypeKey, layout: Scenario = LEGACY, *, npc_patrol: bool = False) -> None:
+        super().__init__(layout, npc_patrol=npc_patrol)
+        if schema not in (*tuple(TypeKey("watch." + k, 1) for k in ('wait', 'bell', 'wake', 'requested', 'echo', 'npc-acted', 'bell-rung', 'replied', 'npc-cue', 'bell-cue', 'reply-cue', 'charge-delta', 'charge-patch', 'bells-delta', 'bells-patch', 'reply-delta', 'reply-patch')), *(kind.SCHEMA for kind in PATROL_PAYLOADS if npc_patrol)):
             raise SchemaError("UNSUPPORTED_SCHEMA", "watch codec")
         self._schema = schema
 
@@ -306,56 +341,68 @@ class WatchPayloadCodec(ScenarioBound):
         if payload.schema != self.schema:
             raise SchemaError("UNSUPPORTED_SCHEMA", "watch payload schema")
         if type(payload) is WaitCommand:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"seconds": payload.seconds}
         if type(payload) is BellCommand:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id}
         if type(payload) is WatchWake:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id}
         if type(payload) is WatchRequested:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id}
         if type(payload) is WatchEcho:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id, "remaining": payload.remaining}
         if type(payload) is NpcActed:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id, "before_bells": payload.before_bells, "after_bells": payload.after_bells}
         if type(payload) is BellRung:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id}
         if type(payload) is WatchReplied:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id, "before_count": payload.before_count, "after_count": payload.after_count}
         if type(payload) is NpcCue:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id, "logical_tick": payload.logical_tick, "before_bells": payload.before_bells, "after_bells": payload.after_bells, "cell": payload.cell, "x_mm": payload.x_mm, "z_mm": payload.z_mm}
         if type(payload) is BellCue:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"actor_id": payload.actor_id, "npc_id": payload.npc_id, "logical_tick": payload.logical_tick}
         if type(payload) is ReplyCue:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"npc_id": payload.npc_id, "logical_tick": payload.logical_tick, "before_count": payload.before_count, "after_count": payload.after_count}
         if type(payload) is ChargeDelta:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"entity_id": payload.entity_id, "before_charge": payload.before_charge, "after_charge": payload.after_charge}
         if type(payload) is ChargePatch:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"charge": payload.charge}
         if type(payload) is BellsDelta:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"entity_id": payload.entity_id, "before_bells": payload.before_bells, "after_bells": payload.after_bells}
         if type(payload) is BellsPatch:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"bells": payload.bells}
         if type(payload) is ReplyDelta:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"entity_id": payload.entity_id, "before_count": payload.before_count, "after_count": payload.after_count}
         if type(payload) is ReplyPatch:
-            _validate_payload(payload, layout=self._layout)
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
             return {"count": payload.count}
+        if type(payload) is NpcCellDelta:
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
+            return {"entity_id": payload.entity_id, "before_cell": payload.before_cell, "after_cell": payload.after_cell}
+        if type(payload) is NpcCellPatch:
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
+            return {"cell": payload.cell}
+        if type(payload) is NpcPatrolled:
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
+            return {"npc_id": payload.npc_id, "space_id": payload.space_id, "before_cell": payload.before_cell, "after_cell": payload.after_cell}
+        if type(payload) is NpcPatrolCue:
+            _validate_payload(payload, layout=self._layout, npc_cells=self._npc_cells)
+            return {"npc_id": payload.npc_id, "logical_tick": payload.logical_tick, "before_cell": payload.before_cell, "after_cell": payload.after_cell, "x_mm": payload.x_mm, "z_mm": payload.z_mm}
         raise SchemaError("UNSUPPORTED_SCHEMA", "watch payload class")
 
     def decode(self, data: JsonObject) -> FrozenPayload:
@@ -411,6 +458,18 @@ class WatchPayloadCodec(ScenarioBound):
         elif self.schema.kind == "watch.reply-patch":
             d = exact_fields(data, ('count',))
             value = ReplyPatch(int_value(d["count"]))
+        elif self.schema == NpcCellDelta.SCHEMA:
+            d = exact_fields(data, ("entity_id", "before_cell", "after_cell"))
+            value = NpcCellDelta(EntityId(text_value(d["entity_id"])), int_value(d["before_cell"]), int_value(d["after_cell"]))
+        elif self.schema == NpcCellPatch.SCHEMA:
+            d = exact_fields(data, ("cell",))
+            value = NpcCellPatch(int_value(d["cell"]))
+        elif self.schema == NpcPatrolled.SCHEMA:
+            d = exact_fields(data, ("npc_id", "space_id", "before_cell", "after_cell"))
+            value = NpcPatrolled(EntityId(text_value(d["npc_id"])), EntityId(text_value(d["space_id"])), int_value(d["before_cell"]), int_value(d["after_cell"]))
+        elif self.schema == NpcPatrolCue.SCHEMA:
+            d = exact_fields(data, ("npc_id", "logical_tick", "before_cell", "after_cell", "x_mm", "z_mm"))
+            value = NpcPatrolCue(EntityId(text_value(d["npc_id"])), Tick(int_value(d["logical_tick"])), int_value(d["before_cell"]), int_value(d["after_cell"]), int_value(d["x_mm"]), int_value(d["z_mm"]))
         else:
             raise SchemaError("UNSUPPORTED_SCHEMA", "watch decode")
         self.encode(value)
@@ -527,7 +586,7 @@ class BellsReducer(ScenarioBound):
             raise CandidateError("INVALID_DELTA", "watch net mismatch")
 
 
-class BellsPatchRoute(ScenarioBound):
+class BellsPatchRoute(NpcScope):
     @property
     def schema(self) -> TypeKey:
         return TypeKey("watch.bells-patch", 1)
@@ -541,7 +600,7 @@ class BellsPatchRoute(ScenarioBound):
         return FieldFamily("watch.npc", "bells")
 
     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
-        WatchNpcAdapter(layout=self._layout).validate(before)
+        WatchNpcAdapter(layout=self._layout, npc_patrol=self._npc_patrol).validate(before)
         WatchPayloadCodec(self.schema, layout=self._layout).encode(patch)
         assert isinstance(before, WatchNpcRecord) and isinstance(patch, BellsPatch)
         return replace(before, bells=patch.bells)
@@ -612,9 +671,9 @@ class ReplyPatchRoute(ScenarioBound):
         return replace(before, count=patch.count)
 
 
-class WatchAdmission(ScenarioBound):
-    def __init__(self, schema: TypeKey, layout: Scenario = LEGACY) -> None:
-        super().__init__(layout)
+class WatchAdmission(NpcScope):
+    def __init__(self, schema: TypeKey, layout: Scenario = LEGACY, *, npc_patrol: bool = False) -> None:
+        super().__init__(layout, npc_patrol=npc_patrol)
         if schema not in (TypeKey("watch.wait", 1), TypeKey("watch.bell", 1)):
             raise SchemaError("UNSUPPORTED_SCHEMA", "watch admission")
         self._schema = schema
@@ -633,13 +692,13 @@ class WatchAdmission(ScenarioBound):
     def admit(self, command: GameCommand, state: ReadPort, *, start_tick: Tick, world_id: str) -> AdmissionOutcome:
         if command.actor_id != self._layout.actor_id:
             return TurnRejected(failure("UNAUTHORIZED_ACTOR"), command.expected_revision)
-        body = WatchPayloadCodec(self.schema, layout=self._layout).encode(command.payload)
+        body = WatchPayloadCodec(self.schema, layout=self._layout, npc_patrol=self._npc_patrol).encode(command.payload)
         if state.component(HIT_POINTS, self._layout.actor_id).hp == 0:
             return TurnRejected(failure("ACTOR_DEFEATED"), command.expected_revision)
         payload = command.payload
         if type(payload) is BellCommand:
             npc = state.component(WATCH_NPC, self._layout.npc_id)
-            if npc.cell != self._layout.npc_cell or npc.space_id != self._layout.space_id or state.component(CELL_POSITION, self._layout.actor_id).space_id != self._layout.space_id:
+            if npc.cell not in self._npc_cells or npc.space_id != self._layout.space_id or state.component(CELL_POSITION, self._layout.actor_id).space_id != self._layout.space_id:
                 raise CandidateError("INVALID_ACTION", "watch references")
             if payload.npc_id != self._layout.npc_id:
                 return TurnRejected(failure("INVALID_TARGET"), command.expected_revision)
@@ -656,17 +715,17 @@ class WatchAdmission(ScenarioBound):
         return AdmittedCommand(TurnPlan(command, start_tick, target), AdmittedAction(command.actor_id, payload, key))
 
 
-class WatchCheckpointPolicy(ScenarioBound):
+class WatchCheckpointPolicy(NpcScope):
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         if len(core.components) != 10:
             raise ValueError("exact ten watch records required")
         EncounterCheckpointPolicy(layout=self._layout).validate(replace(core, components=core.components[:7], pending=()), protocol)
         lantern, npc, reply = core.components[7:]
         LanternAdapter(layout=self._layout).validate(lantern)
-        WatchNpcAdapter(layout=self._layout).validate(npc)
+        WatchNpcAdapter(layout=self._layout, npc_patrol=self._npc_patrol).validate(npc)
         ReplyAdapter(layout=self._layout).validate(reply)
         assert isinstance(lantern, LanternRecord) and isinstance(npc, WatchNpcRecord) and isinstance(reply, ReplyRecord)
-        if lantern.entity_id != self._layout.lantern_id or npc.entity_id != self._layout.npc_id or reply.entity_id != self._layout.npc_id or npc.space_id != self._layout.space_id or npc.cell != self._layout.npc_cell:
+        if lantern.entity_id != self._layout.lantern_id or npc.entity_id != self._layout.npc_id or reply.entity_id != self._layout.npc_id or npc.space_id != self._layout.space_id or npc.cell not in self._npc_cells:
             raise ValueError("watch identities/references")
         if npc.bells != core.tick // 2 or lantern.charge != min(3, core.tick) or len(core.pending) != 1:
             raise ValueError("watch clock/count/queue invariants")
@@ -683,7 +742,7 @@ class WatchCheckpointPolicy(ScenarioBound):
             raise ValueError("watch wake cause count")
 
 
-class WatchPresenter(ScenarioBound):
+class WatchPresenter(NpcScope):
     def map(self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt, committed: ReadPort) -> tuple[PresentationEvent, ...]:
         if not facts:
             return ()
@@ -691,15 +750,19 @@ class WatchPresenter(ScenarioBound):
         cell, space, bells = npc.cell, npc.space_id, npc.bells
         charge = committed.component(LANTERN, self._layout.lantern_id).charge
         replies = committed.component(REPLY, self._layout.npc_id).count
-        if cell != self._layout.npc_cell or space != self._layout.space_id or charge != min(3, receipt.tick):
+        if cell not in self._npc_cells or space != self._layout.space_id or charge != min(3, receipt.tick):
             raise ValueError("watch presentation references")
+        moves = tuple(event.payload for event in facts if type(event.payload) is NpcPatrolled)
+        position = moves[0].before_cell if moves else cell
+        _require_npc_cell(position, self._npc_cells)
+        last_acted: WorldEvent | None = None
         last_bells: int | None = None
         last_reply: int | None = None
         last_tick = -1
         cues: list[PresentationEvent] = []
         for event in facts:
             fact = event.payload
-            WatchPayloadCodec(fact.schema, layout=self._layout).encode(fact)
+            WatchPayloadCodec(fact.schema, layout=self._layout, npc_patrol=self._npc_patrol).encode(fact)
             tick = event.header.occurred_at
             if not 1 <= tick <= receipt.tick or tick < last_tick or event.due_tick != tick:
                 raise ValueError("watch source timing/order")
@@ -709,8 +772,23 @@ class WatchPresenter(ScenarioBound):
                 if tick % 2 or fact.after_bells != tick // 2 or last_bells is not None and fact.before_bells != last_bells:
                     raise ValueError("watch bell history")
                 last_bells = fact.after_bells
-                x, z = cell_coordinates(cell)
-                payload = NpcCue(self._layout.npc_id, tick, fact.before_bells, fact.after_bells, cell, x, z)
+                last_acted = event
+                x, z = cell_coordinates(position)
+                payload = NpcCue(self._layout.npc_id, tick, fact.before_bells, fact.after_bells, position, x, z)
+            elif type(fact) is NpcPatrolled:
+                if (not self._npc_patrol or fact.before_cell != position
+                        or event.header.producer_id != "watch.npc"
+                        or event.header.phase is not Phase.POST_TICK
+                        or type(event.header.wave) is not int or event.header.wave != 0
+                        or type(event.header.sequence) is not int or event.header.sequence != 0
+                        or last_acted is None or last_acted.header.phase is not Phase.PRE_TICK
+                        or last_acted.header.producer_id != "watch.npc"
+                        or last_acted.header.occurred_at != tick
+                        or event.header.caused_by != (last_acted.header.event_id,)):
+                    raise ValueError("patrol source/position history")
+                position = fact.after_cell
+                x, z = cell_coordinates(position)
+                payload = NpcPatrolCue(self._layout.npc_id, tick, fact.before_cell, position, x, z)
             elif type(fact) is BellRung:
                 payload = BellCue(self._layout.actor_id, self._layout.npc_id, tick)
             elif type(fact) is WatchReplied:
@@ -726,4 +804,70 @@ class WatchPresenter(ScenarioBound):
             cues.append(PresentationEvent(EventHeader(EventId(identifier), payload.schema, "watch.presenter", receipt.tick, Phase.PRESENT, 0, 0, index, (source,), ()), payload, "important", "keep_all", ""))
         if last_bells is not None and last_bells != bells or last_reply is not None and last_reply != replies:
             raise ValueError("watch presentation endpoint")
+        if position != cell:
+            raise ValueError("patrol presentation endpoint")
         return tuple(cues)
+
+
+class NpcCellReducer(NpcScope):
+    @property
+    def schema(self) -> TypeKey:
+        return NpcCellDelta.SCHEMA
+
+    @property
+    def owner_id(self) -> str:
+        return "watch.npc"
+
+    def _validate(self, delta: StateDelta) -> NpcCellDelta:
+        if type(delta) is not NpcCellDelta:
+            raise CandidateError("INVALID_DELTA", "patrol delta class")
+        try:
+            WatchPayloadCodec(self.schema, self._layout, npc_patrol=self._npc_patrol).encode(delta)
+        except ValueError as error:
+            raise CandidateError("INVALID_DELTA", "patrol delta payload") from error
+        return delta
+
+    def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
+        value = self._validate(delta)
+        if (value.before_cell == value.after_cell
+                or before.component(WATCH_NPC, value.entity_id).cell != value.before_cell):
+            raise CandidateError("INVALID_DELTA", "patrol old value/step")
+        editor.apply_patch(ComponentAddress(WATCH_NPC.schema, value.entity_id), NpcCellPatch(value.after_cell))
+
+    def compose(self, changes: tuple[StateDelta, ...]) -> StateDelta:
+        if not changes:
+            raise CandidateError("INVALID_DELTA", "empty patrol composition")
+        values = tuple(self._validate(delta) for delta in changes)
+        for first, second in zip(values, values[1:]):
+            if first.target != second.target or first.after_cell != second.before_cell:
+                raise CandidateError("INVALID_DELTA", "noncontiguous patrol composition")
+        return replace(values[0], after_cell=values[-1].after_cell)
+
+    def is_identity(self, delta: StateDelta) -> bool:
+        value = self._validate(delta)
+        return value.before_cell == value.after_cell
+
+    def validate_net(self, delta: StateDelta, after: ReadPort) -> None:
+        value = self._validate(delta)
+        if self.is_identity(value) or after.component(WATCH_NPC, value.entity_id).cell != value.after_cell:
+            raise CandidateError("INVALID_DELTA", "patrol net mismatch")
+
+
+class NpcCellPatchRoute(NpcScope):
+    @property
+    def schema(self) -> TypeKey:
+        return NpcCellPatch.SCHEMA
+
+    @property
+    def component_schema(self) -> TypeKey:
+        return WATCH_NPC.schema
+
+    @property
+    def family(self) -> FieldFamily:
+        return FieldFamily("watch.npc", "cell")
+
+    def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
+        WatchNpcAdapter(self._layout, npc_patrol=self._npc_patrol).validate(before)
+        WatchPayloadCodec(self.schema, self._layout, npc_patrol=self._npc_patrol).encode(patch)
+        assert isinstance(before, WatchNpcRecord) and isinstance(patch, NpcCellPatch)
+        return replace(before, cell=patch.cell)

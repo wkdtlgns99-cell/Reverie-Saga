@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from domain.scenario import LEGACY, Scenario
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal
 
 from contracts.encounter import (
@@ -23,9 +23,13 @@ from contracts.encounter import (
     StaminaDelta,
 )
 from contracts.errors import CandidateError
-from contracts.messages import EmittedFact, FactPayload, StateDelta
+from contracts.npc_gate_aid import GateAssisted
+from contracts.npc_cycle import CYCLE, CYCLE_FAMILY
+from contracts.npc_memory import MEMORY, MEMORY_FAMILY, read_record
+from contracts.messages import EmittedFact, FactPayload, StateDelta, WorldEvent
 from contracts.trial import CELL_POSITION, TRIAL_MAP, CellDelta, MoveCommand
 from contracts.turn import CapabilityManifest, EngineInvocation, EngineResult, PhaseAccess
+from contracts.watch import REPLY, WATCH_NPC, NpcActed, WatchReplied
 from domain.encounter import (
     ATTACK_PROFILE_ID,
     REST_RECOVERY,
@@ -34,6 +38,10 @@ from domain.encounter import (
     resolve_basic_attack,
 )
 from domain.primitives import EntityId, FieldFamily, Phase
+from domain.watch import ECHO_DEPTH, WAKE_PERIOD
+from domain.npc_work import SUPPORT_STOCK_MIN
+from domain.npc_cycle import Supply, state_at
+from domain.npc_patrol import patrol_cells
 
 
 _ACTIONS_MANIFEST = CapabilityManifest(
@@ -105,10 +113,22 @@ def _location(invocation: EngineInvocation, layout: Scenario = LEGACY) -> tuple[
 @dataclass(frozen=True, slots=True)
 class EncounterActions:
     layout: Scenario = LEGACY
+    npc_aid: bool = False
+    npc_supply_aid: bool = False
+    npc_call_aid: bool = False
+    npc_reach_aid: bool = False
 
     def __post_init__(self) -> None:
         if type(self.layout) is not Scenario:
             raise ValueError("SCENARIO_TYPE")
+        if type(self.npc_aid) is not bool:
+            raise ValueError("NPC_AID_CONTENT")
+        if type(self.npc_supply_aid) is not bool or self.npc_supply_aid and not self.npc_aid:
+            raise ValueError("NPC_SUPPLY_AID_CONTENT")
+        if type(self.npc_call_aid) is not bool or self.npc_call_aid and not self.npc_supply_aid:
+            raise ValueError("NPC_CALL_AID_CONTENT")
+        if type(self.npc_reach_aid) is not bool or self.npc_reach_aid and not self.npc_call_aid:
+            raise ValueError("NPC_REACH_AID_CONTENT")
 
     @property
     def scenario_layout(self) -> Scenario:
@@ -116,9 +136,47 @@ class EncounterActions:
 
     @property
     def manifest(self) -> CapabilityManifest:
-        return _ACTIONS_MANIFEST
+        if not self.npc_aid:
+            return _ACTIONS_MANIFEST
+        return replace(
+            _ACTIONS_MANIFEST,
+            phases=(*_ACTIONS_MANIFEST.phases, Phase.POST_TICK),
+            reads=(
+                *_ACTIONS_MANIFEST.reads,
+                PhaseAccess(Phase.POST_TICK, MEMORY_FAMILY),
+                *(
+                    (
+                        PhaseAccess(Phase.POST_TICK, FieldFamily("watch.npc", "cell")),
+                        PhaseAccess(Phase.POST_TICK, FieldFamily("watch.npc", "space_id")),
+                    )
+                    if self.npc_reach_aid
+                    else ()
+                ),
+                *((PhaseAccess(Phase.POST_TICK, CYCLE_FAMILY),) if self.npc_supply_aid else ()),
+                *(
+                    (PhaseAccess(Phase.POST_TICK, FieldFamily(REPLY.schema.kind, "count")),)
+                    if self.npc_call_aid
+                    else ()
+                ),
+                *(
+                    PhaseAccess(Phase.POST_TICK, FieldFamily(GATE.schema.kind, field))
+                    for field in ("is_open", "cell", "space_id")
+                ),
+            ),
+            writes=(
+                *_ACTIONS_MANIFEST.writes,
+                PhaseAccess(Phase.POST_TICK, FieldFamily(GATE.schema.kind, "is_open")),
+            ),
+            emits=(*_ACTIONS_MANIFEST.emits, GateAssisted.SCHEMA),
+            consumes=(
+                NpcActed(self.layout.npc_id, 0, 1).schema,
+                *((WatchReplied(self.layout.npc_id, 0, 1).schema,) if self.npc_call_aid else ()),
+            ),
+        )
 
     def evaluate(self, invocation: EngineInvocation) -> EngineResult:
+        if self.npc_aid and invocation.phase == Phase.POST_TICK:
+            return self._assist_gate(invocation)
         action = invocation.action
         if action is None or action.actor_id != self.layout.actor_id:
             raise CandidateError("INVALID_ACTION", "encounter actor")
@@ -134,6 +192,106 @@ class EncounterActions:
         if type(payload) is AttackCommand:
             return self._attack(invocation, payload, actor_hp)
         raise CandidateError("INVALID_ACTION", "encounter action payload")
+
+    def _assist_gate(self, invocation: EngineInvocation) -> EngineResult:
+        event = self._aid_source(invocation)
+        header, tick = event.header, invocation.logical_tick
+        try:
+            memory = read_record(
+                self.layout.npc_id, invocation.state.component(MEMORY, self.layout.npc_id)
+            )
+        except ValueError as error:
+            raise CandidateError("INVALID_FACT", "gate aid memory") from error
+        if any(entry.observed_at >= tick for entry in memory.entries):
+            raise CandidateError("INVALID_FACT", "gate aid memory timing")
+        if len(memory.entries) != 1:
+            return EngineResult((), (), ())
+        gate = invocation.state.component(GATE, self.layout.gate_id)
+        if gate.cell != self.layout.gate_cell or gate.space_id != self.layout.space_id:
+            raise CandidateError("INVALID_FACT", "gate aid passage binding")
+        if gate.is_open:
+            return EngineResult((), (), ())
+        # POST_TICK views contain prior-barrier stock,not this phase's preparation/use.
+        if self.npc_supply_aid:
+            supply = invocation.state.component(CYCLE, self.layout.npc_id).state
+            if self.npc_reach_aid and (type(supply) is not Supply or supply != state_at(tick - 1)):
+                raise CandidateError("INVALID_FACT", "reach aid cycle source")
+            if supply.stock < SUPPORT_STOCK_MIN:
+                return EngineResult((), (), ())
+        if self.npc_reach_aid:
+            npc = invocation.state.component(WATCH_NPC, self.layout.npc_id)
+            if (
+                npc.space_id != self.layout.space_id
+                or type(npc.cell) is not int
+                or npc.cell not in patrol_cells(self.layout, True)
+            ):
+                raise CandidateError("INVALID_FACT", "reach aid NPC source")
+            if not adjacent_cells(npc.cell, gate.cell):
+                return EngineResult((), (), ())
+        return EngineResult(
+            (GateDelta(self.layout.gate_id, 0, 1),),
+            (
+                EmittedFact(
+                    GateAssisted(self.layout.npc_id, self.layout.gate_id), tick, (header.event_id,)
+                ),
+            ),
+            (),
+        )
+
+    def _aid_source(self, invocation: EngineInvocation) -> WorldEvent:
+        incoming, tick = invocation.incoming, invocation.logical_tick
+        limit = 2 if self.npc_call_aid else 1
+        if invocation.wave != 0 or invocation.action is not None or not 1 <= len(incoming) <= limit:
+            raise CandidateError("INVALID_FACT", "gate aid invocation")
+        selected = incoming[0]
+        seen: set[type[FactPayload]] = set()
+        for event in incoming:
+            payload, header = event.payload, event.header
+            if (
+                type(payload) in seen
+                or header.type_key != payload.schema
+                or event.due_tick != tick
+                or header.occurred_at != tick
+                or type(tick) is not int
+                or tick <= 0
+                or header.sequence != 0
+            ):
+                raise CandidateError("INVALID_FACT", "gate aid source binding")
+            seen.add(type(payload))
+            if type(payload) is NpcActed:
+                if (
+                    payload.npc_id != self.layout.npc_id
+                    or header.producer_id != "watch.npc"
+                    or header.phase != Phase.PRE_TICK
+                    or header.wave != 0
+                    or tick % WAKE_PERIOD
+                    or type(payload.before_bells) is not int
+                    or type(payload.after_bells) is not int
+                    or (payload.before_bells, payload.after_bells)
+                    != (tick // WAKE_PERIOD - 1, tick // WAKE_PERIOD)
+                ):
+                    raise CandidateError("INVALID_FACT", "gate aid source binding")
+            elif self.npc_call_aid and type(payload) is WatchReplied:
+                if (
+                    payload.npc_id != self.layout.npc_id
+                    or header.producer_id != "watch.echo"
+                    or header.phase != Phase.CASCADE
+                    or type(header.wave) is not int
+                    or header.wave != ECHO_DEPTH
+                    or type(header.sequence) is not int
+                    or len(header.caused_by) != 1
+                    or type(payload.before_count) is not int
+                    or payload.before_count < 0
+                    or type(payload.after_count) is not int
+                    or payload.after_count != payload.before_count + 1
+                    or invocation.state.component(REPLY, self.layout.npc_id).count
+                    != payload.after_count
+                ):
+                    raise CandidateError("INVALID_FACT", "gate aid reply binding")
+                selected = event
+            else:
+                raise CandidateError("INVALID_FACT", "gate aid source binding")
+        return selected
 
     def _rest(self, invocation: EngineInvocation) -> EngineResult:
         old = invocation.state.component(STAMINA, self.layout.actor_id).value

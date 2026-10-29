@@ -1,0 +1,34 @@
+# QT-F58 — Recall actual NPC assistance during ordinary aid-mode talk
+
+Status:LOCAL_ACCEPTED2026-10-26. Executor:current Codex;self-review,not independent.
+Authority:active automatic NPC/world development. Primary4retrieval support;related2/5/6/7.
+
+| Field | Contract |
+|---|---|
+| goal/non_goals | Aid-mode ordinary talk recalls actual NPC gate openings since the previous retained talk(or checkpoint),through its existing one verified replay. Keep current supply/call/player memory and activity inspection. No new action,permanent NPC memory,component,save/pin/wire/CLI,LLM,cache,dependency or publication |
+| baseline | HEAD72c2d58,branch codex/cycle-call-recall-20261024;58accepted F49–57dirty paths,F57full2418PASS/native207/13sources/build accepted. No live jobs. Snapshot tmp/qtf57/delivery.json and npc_activity.py into tmp/qtf58 before edits. Previous goal turn progress:F57final docs/scope/cleanup accepted. Computer Use STOPPED by user;no window calls or native relaunch |
+| reads/prerequisites | ENGINEERING_RULES,handoff/backlog/Korean progress,AUTONOMOUS_EXECUTION,MASTER3/8/9/11,numbered guide,Sol template,README/WORKSTATION_SETUP;F54aid/F56activity/F57converter proofs;npc_activity _ActivitySession/_ActivityFactory/_conversation_activity/cycle_return_recollection;ClientSession._publication,worker/pipe/Tk consumers;GateAssisted canonical facts and aid save/replay/source guards |
+| MODIFY | C:/Reverie Saga/src/app/npc_activity.py;README.md;clients/unity/README.md;BACKLOG.md;SESSION_HANDOFF.md;GAME_SYSTEM_SUMMARY_KO.md;this order. LiveVerification.cs only for independently expected new aid-talk cue assertions/capture when entering native qualification |
+| NEW | C:/Reverie Saga/tests/integration/test_assistance_recollection.py;docs/reviews/QT-F58_EXECUTION_2026-10-26.md;owned ignored tmp/qtf58/.pytest_cache/qtf58-*;temporary F58VerificationTrigger.cs/.meta only after user resumes Computer Use,then remove and restore scene byte-exact |
+| forbidden | Other production/tests/goldens/CORE/engine/adapter/state/CI/governance/content/dependency/user files,prior frozen orders/receipts. No agents,external messaging,publication/release or window automation while stopped |
+| public_contract | Existing cycle_return_recollection signature/default preserved. Only npc_aid=True appends ordinary-talk assistance lines after unchanged supply/call prefix. False-mode output byte-identical. cycle_call_recollection and all activity output unchanged. Ordinary retry has only existing quiet acknowledgement |
+| exact_text | First retained talk header:'NPC 의뢰 지원 회상 · {checkpoint_tick}초 이후 저장 구간의 도움입니다.' Later:'NPC 의뢰 지원 회상 · 지난 대화({previous}초) 뒤에 도운 기록입니다.' Nonempty summary:'확인한 문 열기 {count}건 중 최근 {retained}건입니다.' Latest3rows oldest first:'NPC 의뢰 지원 회상 · {tick}초: 통행문을 열었습니다.' Empty:'현재 저장 구간에 새로 확인된 의뢰 지원 기록이 없습니다.' |
+| ownership/algorithm | Reuse F56query-local GateAssisted anchor collector and count;enable it for aid ordinary-return recollection through the existing verified conversation factory. Snapshot total assistance count at each QuestSpoken publication,keep2conversation totals. At current committed talk,count=currentTotal-previousTalkTotal(or0after checkpoint). Select latest3actual anchors with due_tick>previous/checkpoint. Same-tick assistance committed with current talk belongs to current return;previous-talk tick facts do not repeat. Publish only after existing replay/final core/protocol/source equality succeeds. No second replay or inferred gate-state history |
+| edges | No acceptance/manual player-open/already-open/zero actual fact→explicit empty. Repeated talk/reset,retry,report stop,bell eviction,cap/order/branch/restart/compacted checkpoint,wrong owner/trace/current core/protocol/mode use existing strict source rejection and no live/file mutation. No lost-history inference. Invalid numeric facts remain canonical replay responsibility |
+| examples | down1,talk2→empty;wait3/wait4opens→talk5recalls only4/count1;talk6→empty if no new help. From first help4,close5/wait6/close7/wait8/close9/wait10/close11/wait12→talk13count5/latest8,10,12. From help4,close5/talk6opens at current wake→current recall4,6/count2;talk7→empty. Compact at4with open gate/no retained trace→talk5empty(checkpoint4). Earlier slot at2restores empty branch;future help remains separate |
+| wiring | ClientSession._publication already calls cycle_return_recollection(...npc_aid=flag),then normal worker/Tk/binary pipe/Unity messages. No new endpoint. Native aid flow must independently expect empty acceptance and actual row4on report13,and capture the ordinary talk;keep old cycle153assertions |
+| performance | One Runner per talk,constant3anchors+2conversation totals,O(retained facts);no added simulation/IO writes. Measure owned short/long talk and actual framed response,existing2sTARGET/10sdeadline. F57some2s overruns remain OPEN unless independently closed |
+| verification | Baseline failing new real SQLite tests,then source/cap/same-tick/repeat/report/slot/restart/compact/retry/one-replay/invalid-source tests;real worker/Tk/pipe. README both Ruff/format/strict/import3+1/pip/exactCI31;affected activity/cycle/call/aid/client/save/replay regression. No shared CORE change:reuse unchanged F57full inputs,not a new full claim. Native/current-source save readbacks/build/hook exclusion required after C#oracle edit. Director explicitly resumed Unity verification2026-10-26;Python progress alone is not full acceptance |
+| acceptance/checkpoints | Actual ordinary aid talk shows only confirmed own assistance in correct conversation window,one replay,old outputs/pins/state/retry preserved,required Python/native/source/delivery evidence and synchronized roots. Existing private retrieval boundary,no new CP01–05authority. CP06held,D2/independent patch rereview deferred. Do not mark DONE with native pending |
+| stops/delivery | Stop on new authority/storage/schema,overlapping user changes or unavailable required verification after safe alternatives. Goal ACTIVE;no agents/publication/release. Preserve Computer Use stop;quota-reset wake-up may resume only eligible file/Python work,never UI. English evidence/Korean progress together |
+
+Execution update2026-10-26:the director explicitly replied “지금 Unity 검증도 진행”.
+Computer Use/native qualification is authorized again. The prior editor is unavailable
+(no Unity process or returned window);launch the existing installed6000.3.25f1once,
+then reuse it. Fresh owned F58stages preserve prior results and physical-input isolation.
+
+Local acceptance2026-10-26:new21/affected347/exactCI31/static PASS;native216/13current
+saved sources/fresh Windows build-hook exclusion PASS. Original scene/159inputs restored,
+editor28252retained after observed reload. Final documents/scope evidence:linked receipt
+and tmp/qtf58/delivery.json. Historical index bytes differ;staged delta empty,no restore.
+Self-review only;goal ACTIVE,no agents/publication/release,CP06held,D2OPEN.

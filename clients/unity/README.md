@@ -64,6 +64,40 @@ do not leak through load/reconnect. No extra replay,turn,mode flag or save conve
 
 Open C:/ReverieSaga/clients/unity with the installed editor,open
 Assets/Reverie/Scenes/PlayRoom.unity and press Play. Use WASD/arrows or Korean buttons.
+
+QT-F54:`REVERIE_UNITY_NPC_AID=1` with cycle+memory enables NPC passage support.
+Unset/0retains prior behavior;other values reject before starting a Brain or save.
+The approved no-selector harbor preset supplies memory;set `REVERIE_UNITY_NPC_CYCLE=1`
+and `REVERIE_UNITY_NPC_AID=1` before starting Play. With explicit selectors,provide the
+approved harbor catalog/hash and memory as usual. Default save is separately placed under
+tmp/unity-play/harbor-cycle-aid/<catalog-pin>/game.sqlite;old saves are never repinned.
+After hearing acceptance,the NPC opens the gate at its next wake while awaiting a report.
+It may reopen a player-closed gate;after hearing completion it stops. An earlier movement
+can still be blocked before the same tick's NPC opening;the player moves on the next input.
+The board and Korean opening line show committed facts. [Contract/status](../../docs/work_orders/QT-F54_NPC_GATE_ASSISTANCE.md).
+QT-F59 adds supply-prioritized aid with `--npc-supply-aid` in both Python clients.
+It requires `--npc-memory --npc-cycle --npc-aid` and the approved harbor content.
+The NPC waits for at least2communal items at its prior action barrier before opening
+the passage. This readiness condition spends no stock;the ordinary4/10supply cycle
+continues. In a fresh down1/talk2source,stock reaches2at8and the NPC opens at10;
+ordinary consumption at10leaves1. Same-barrier preparation is considered at the next
+wake. New mode/save identity;select a fresh working path rather than repinning saves.
+Unity accepts `REVERIE_UNITY_NPC_SUPPLY_AID=1` with the same parent flags;unset/0keeps
+prior modes,invalid values reject before creating a Brain/save. Its default path is
+`tmp/unity-play/harbor-cycle-supply-aid/<catalog-pin>/game.sqlite`.
+[Contract/status](../../docs/work_orders/QT-F59_NPC_SUPPLY_AID.md).
+
+QT-F56 aid-mode **NPC 활동 기록** also shows the selected retained segment's total
+confirmed NPC gate openings and latest3details. Player openings/current gate state do
+not invent history. Previous-load/reconnect follows its selected branch;an open compacted
+checkpoint without surviving events displays the explicit empty-history limit.
+[Contract/status](../../docs/work_orders/QT-F56_NPC_ASSISTANCE_HISTORY.md).
+
+QT-F58 aid-mode ordinary talk recalls only actual NPC openings after its previous retained
+conversation(or explicit checkpoint),with total and latest3details. Same-talk wake
+assistance is included;retry does not repeat it. Current local qualification:347affected Python checks,216native checks,13source-preserving
+save readbacks and a fresh Windows build pass;standalone/release acceptance stays held.
+[Contract/status](../../docs/work_orders/QT-F58_ASSISTANCE_RECOLLECTION.md).
 QT-F24 adds **대기 시간** presets1/4/8/16seconds(default1) in the controls scroll area.
 Choosing a preset changes only the next **대기** command;other actions keep their existing timing.
 Selection is disabled while busy/connecting/failed and retained across load/reconnect in this room.
@@ -133,6 +167,14 @@ That run used an offline automated-test-only receipt/catalog,not production cont
 or an actual Gemini response. Director deferred live preparation;setup instructions are in the root README.
 
 ## NPC Conversation Memories
+
+The controls,focused dialogue and save-manager panel use an opaque backing so board
+geometry does not reduce text contrast. Existing panel size,scrolling and controls remain.
+[Readability qualification](../../docs/work_orders/QT-F51_PANEL_OCCLUSION.md).
+
+Incoming responses preserve the retained history row being read,including bounded history
+eviction. At the bottom,new output is followed automatically;**최신 기록** in the history
+header returns to the bottom without a game command. Load resets to the selected branch.
 
 QT-F17 adds **NPC 대화 기억** to the ordinary approved memory preset and explicit memory mode.
 The button is available after attach and disabled during a pending request or connection failure.
@@ -282,3 +324,228 @@ explicit old-mode saves reject without conversion. Prepare4s/use10s,capacity3,co
 prepare on ties;four own action memories persist. Existing activity,talk,and current/previous
 slot controls inspect or restore them. No live API calls or extra player rewards.
 [Contract](../../docs/work_orders/QT-F40_44_NPC_CYCLE_BATCH.md).
+
+### Opt-in answered-call support (QT-F65)
+
+Add `--npc-call-aid` to the existing Python memory/cycle/aid/supply-aid flags.
+With the Unity approved harbor preset,set `REVERIE_UNITY_NPC_CYCLE=1`,
+`REVERIE_UNITY_NPC_AID=1`,`REVERIE_UNITY_NPC_SUPPLY_AID=1` and
+`REVERIE_UNITY_NPC_CALL_AID=1` (work mode unset/0). Invalid values reject before
+startup. The NPC may open the passage after an actual answered call,including odd
+seconds,when previously available communal stock is at least2and the NPC has heard
+acceptance without a completion report. Support spends no stock;routine supply
+preparation/consumption continues. The default Unity save directory is the distinct
+`tmp/unity-play/harbor-call-aid/<catalog-sha256>/game.sqlite`;older mode saves retain
+their pins and reject incompatible selection without overwrite. Existing bell action,
+save format and wire envelope are reused. Fresh native/build qualification is deferred
+under AWAY-001 while Computer Use remains stopped;Python verification is separate.
+
+
+### Answered-call native verification preparation (QT-F68)
+
+The development-only verifier now selects CallAidFlow before SupplyAidFlow when
+NpcCallAidEnabled is true. The old supply scenario remains specific to its old mode.
+With the approved harbor preset and all four cycle/aid/supply-aid/call-aid variables
+above set to1,use a fresh empty working directory and the existing PlaytestBuild.Verify
+entry point. The dedicated scenario checks calls8/9,exact retry,prior-save preview,
+loaded-branch reconnect,calls12/13,and report23followed by suppressed support25.
+Activity queries check actual retained call/aid rows and preserve view/save bytes.
+The previous slot restores head8with its original retained checkpoint0and call8.
+At13the retained total is4while recent rows are9/12/13;at25the total is5while
+recent rows are12/13/25. The three-row display cap does not discard older retained
+facts. QT-F71corrects these prepared-source expectations;ordinary slot backups and
+explicit checkpoint-only clones have different retained-history boundaries.
+[Source repair and evidence](../../docs/reviews/QT-F71_EXECUTION_2026-10-27.md).
+
+For negative cases,use a separate fresh working path per case:
+REVERIE_UNITY_CASE=invalid-call-aid with call-aid1and supply-aid0 expects
+NPC_CALL_AID_CONTENT;invalid-call-aid-selection with call-aid2expects
+NPC_CALL_AID_SELECTION. Both require no Brain child and no save. Clear the case selector
+and restore the valid flags for the positive scenario. Existing invalid aid/supply cases
+remain separate. Follow the editor reuse/input isolation/cleanup workflow above.
+
+This is prepared source and Python scenario evidence only. Fresh Unity compilation,
+native execution,captures and Windows build remain NOT_RUN under AWAY-001 while
+Computer Use is stopped. Do not treat the Python oracle as native acceptance.
+
+## Optional NPC patrol (QT-F69)
+
+Add `--npc-patrol` to the approved harbor memory/cycle/aid/supply-aid/call-aid
+Python client selection. All six older modes keep their existing behavior and save pins.
+The patrol variant has a distinct `quest.harbor-call-patrol-v1` identity;incompatible
+older selections reject its saves without overwriting them.
+
+The NPC walks between its station and the neighboring communal-work tile on ordinary
+NPC wakes. If the player occupies its destination,it stays until a later wake. The NPC
+remains nonblocking:the player may enter its current tile. Talk uses the actual current
+NPC position before that turn's movement. After it walks away,move nearby to talk again.
+Read-only activity/memory/slot inspection does not advance time or move the NPC.
+Saved positions restore exactly;within the retained save segment,long waits preserve
+actual intermediate movement even when the NPC ends where it began. Supply/call aid
+and directly heard quest memory retain their existing conditions and writers.
+
+With the approved Unity harbor preset,set `REVERIE_UNITY_NPC_PATROL=1` together with
+`REVERIE_UNITY_NPC_CYCLE=1`,`REVERIE_UNITY_NPC_AID=1`,
+`REVERIE_UNITY_NPC_SUPPLY_AID=1` and `REVERIE_UNITY_NPC_CALL_AID=1`;
+work mode stays unset/0. Patrol accepts only absent/0/1 and requires call aid before
+Brain/save creation. Its default working path is
+`tmp/unity-play/harbor-call-patrol/<catalog-sha256>/game.sqlite`.
+Existing public `npc_cell` updates drive both Tk markers and the Unity NPC transform;
+no wire field/envelope was added.
+
+The prepared development-only PatrolFlow is selected before CallAidFlow. Its positive
+scenario checks moving positions/talk range/player-blocked destinations/answered aid,
+loaded-branch reconnect and intermediate moves during a16second wait. It compares the
+actual NPC transform with the expected public position. Use the existing editor reuse/
+input-isolation/verification entry point and a fresh empty working path per case.
+For negative cases,`REVERIE_UNITY_CASE=invalid-patrol` with patrol1and call aid0expects
+`NPC_PATROL_CONTENT`;`invalid-patrol-selection` with patrol2expects
+`NPC_PATROL_SELECTION`. Both require no Brain child and no save. Restore valid flags
+and clear the case selector before the positive scenario.
+
+Fresh Unity compilation,native execution,captures and Windows build remain NOT_RUN
+under AWAY-001 while Computer Use is stopped. Prepared source and Python/hidden Tk/
+framed verification are separate evidence;they do not qualify the native renderer.
+
+
+### Actual patrol context (QT-F70)
+
+Patrol-mode activity inspection now shows the latest3actual retained moves and their
+retained total. Ordinary talk recalls only movements after the previous retained talk,
+or after the retained checkpoint when no earlier conversation remains. Same-turn movement
+is included once;blocked wakes do not count. Current pose,bells and stock never reconstruct
+missing history. A checkpoint-only moved pose explicitly has no older movement;ordinary
+slot backups retain their actual older trace. This is derived factual context,not new
+permanent memory or an LLM call. Existing message consumers need no new wire fields.
+Fresh Unity/native/layout/build qualification remains deferred under AWAY-001.
+
+
+### Saved patrol position comparison (QT-F72)
+
+Patrol-mode selected-slot preview appends current and saved NPC endpoint labels from
+each actual checkpoint. The original work point and neighboring work point are named
+without exposing raw cell IDs. Current/previous slots and saves later than a rewound
+branch keep their own positions;blocked movement is never inferred from clock parity.
+This is a read-only preview and adds no movement or history claim. The older six modes
+keep their existing messages. Existing client messages need no new wire fields.
+Fresh Unity/native/layout/build qualification remains NOT_RUN under AWAY-001;current
+Python/worker/real framed/withdrawn Tk results are separate evidence.
+[Scope and verification](../../docs/reviews/QT-F72_EXECUTION_2026-10-27.md).
+
+
+### Conversation-aware patrol preparation (QT-F73)
+
+Set `REVERIE_UNITY_NPC_TALK_PAUSE=1` with memory/cycle/aid/supply-aid/call-aid/patrol enabled.
+The approved harbor preset labels this NPC 대화 대기·순찰·호출 지원·물자·반복 작업·기억 모드
+and uses `harbor-talk-patrol/<catalog-pin>/game.sqlite`. Unset/0keeps the older mode;
+invalid selectors reject NPC_TALK_PAUSE_SELECTION and missing immediate patrol rejects
+NPC_TALK_PAUSE_CONTENT before starting a Brain or creating a working directory.
+
+Only an actual admitted conversation suppresses same-turn movement. A later non-talk
+wake resumes;no pause flag is saved. Existing messages/positions/history/slot comparisons
+work through the same wire fields. The prepared TalkPausePatrolFlow runs before PatrolFlow
+and covers repeated talk holds,real later movement,rejected talk read-only,answered-call
+aid,previous-load/reconnect and8actual moves during a16-second wait. Use separate fresh
+paths for invalid-talk-pause and invalid-talk-pause-selection negative cases.
+
+This is startup/verifier source preparation and current Python evidence. Fresh Unity
+compile/native/render/capture/Windows build remains NOT_RUN AWAY-001. Existing native
+flow bodies are preserved;current Python/runtime scope has one2950PASSfull run,not native acceptance.
+[Execution status](../../docs/reviews/QT-F73_EXECUTION_2026-10-27.md).
+
+
+### Own-knowledge quest patrol preparation (QT-F74)
+
+Set `REVERIE_UNITY_NPC_QUEST_PATROL=1` with the approved harbor memory/cycle/aid/
+supply-aid/call-aid/patrol/talk-pause selection. The label is
+NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드 and the default directory is
+`harbor-quest-patrol/<catalog-pin>/game.sqlite`. Unset/0keeps the prior selection;
+invalid selectors reject NPC_QUEST_PATROL_SELECTION and a missing immediate talk-pause
+parent rejects NPC_QUEST_PATROL_CONTENT before a Brain child or working-save IO.
+Use separate fresh paths for invalid-quest-patrol and invalid-quest-patrol-selection.
+
+The prepared QuestPatrolFlow runs before TalkPausePatrolFlow. It waits unheard through4,
+hears acceptance6,patrols8,retains the ordinary call aid10,and still patrols after the
+unreported enemy defeat16. Report20holds the neighbor position;the occupied home blocks
+return through22. Save/load/reconnect retains that physical position and derives the
+return from existing own memory. Leaving the home allows return24;wait16to40stays home.
+Current talk/activity plans describe intent,not inferred history or a promised deadline.
+
+Current Python/runtime/source scope has one3031PASSfull run;the2sactivity-target miss
+remains recorded/global2sOPEN. The startup/verifier sources are prepared
+only;fresh C#compile/native/render/capture/Windows build is NOT_RUN AWAY-001 while
+Computer Use remains STOPPED. Existing earlier flow bodies remain unchanged.
+[Contract](../../docs/work_orders/QT-F74_QUEST_PATROL.md);
+[execution](../../docs/reviews/QT-F74_EXECUTION_2026-10-27.md).
+
+
+### Saved/current quest patrol plan preview (QT-F75)
+
+In the existing quest-aware patrol mode,slot preview now labels the current plan and
+the selected save's plan before the physical-position comparison. Equal positions can
+have different heard quest knowledge;reported NPCs can still be waiting to return.
+Previous-save inspection and loaded-branch reconnect retain their actual selected times.
+The preview neither loads a save nor changes either source. Existing eight modes,
+authoritative rules,pins,save format and wire are unchanged. Current Python/query scope
+is locally accepted with42new in239affected plus static/CI31;unchanged F74engine full
+3031is reused,not a new F75whole run. Fresh Unity/layout/build remains NOT_RUN AWAY-001.
+[Contract](../../docs/work_orders/QT-F75_QUEST_PATROL_SLOT.md);[evidence](../../docs/reviews/QT-F75_EXECUTION_2026-10-27.md).
+
+
+## F77answered-call patrol hold source checkpoint
+
+`REVERIE_UNITY_NPC_CALL_PAUSE=1` requires `REVERIE_UNITY_NPC_QUEST_PATROL=1` and its
+existing parent selectors. Unset/0 preserves old modes;other strings reject with
+NPC_CALL_PAUSE_SELECTION before child/save creation. Missing parent rejects with
+NPC_CALL_PAUSE_CONTENT. Default isolated path:tmp/unity-play/harbor-call-pause/<catalog-pin>/
+game.sqlite unless an explicit working path is supplied. Reconnect forwards the mode.
+Prepared CallPausePatrolFlow checks actual answer/hold,next wake,retry,save/load/reconnect
+and source preservation;selection error cases precede ordinary mode dispatch. Source-only
+qualification retains all older method text after declared additions are removed.
+Fresh Unity compile/native/render/capture/build remains NOT_RUN AWAY-001. Current Python
+535related/31boundary/168replay-G07PASS does not establish native or human UX acceptance.
+The historical checkpoint paused development;the human resumed it2026-10-29.
+[Checkpoint](../../docs/reviews/DEVELOPMENT_CHECKPOINT_2026-10-27.md) remains historical.
+
+
+## F79prepared next-action/occupancy/completion scenario
+
+CallPausePatrolFlow now prepares F78next-target/reason checks on the existing message
+consumer:current/selected/latest/previous save each uses its own occupancy. The same
+flow preserves actual answer hold/retry/resume,loads/reconnects separate branches,
+then distinguishes unreported enemy defeat from a directly heard report/reward1and
+returns home. Final tick31/replies2/reward1;full saved history still starts at checkpoint0.
+Actual current ClientSession and binary framed Brain each execute56operations with
+whole stable output/state/persisted-byte equality and source preservation. Prepared
+source has55operations after initial attach;all older native method text/check labels
+are retained outside the declared body extension. This is source-only qualification,
+not C#compile/native/layout/render/capture/build or human UX acceptance. Fresh execution
+remains NOT_RUN AWAY-001;ENV-001/independent/CP06release holds remain unresolved.
+[Order](../../docs/work_orders/QT-F79_CALL_PAUSE_NATIVE_SCENARIO.md);
+[evidence](../../docs/reviews/QT-F79_EXECUTION_2026-10-29.md).
+
+
+## F80ready-priority patrol source selection
+
+`REVERIE_UNITY_NPC_READY_PATROL=1` requires `REVERIE_UNITY_NPC_CALL_PAUSE=1` and all
+existing parents. Absent/0 preserves old modes;other values reject NPC_READY_PATROL_SELECTION,
+missing parent rejects NPC_READY_PATROL_CONTENT before child/save creation. The isolated
+default is tmp/unity-play/harbor-ready-patrol/<catalog-pin>/game.sqlite;explicit paths are
+never repinned. Mode/reconnect forwarding and the dedicated ReadyPatrolFlow dispatch
+precede the parent call-pause verifier. Other existing flows remain unchanged.
+
+The prepared flow follows actual direct/framed supply-barrier holds4/6/8,answer10hold,
+next wake12,own latest/previous saved stock+gate plans,load/reconnect10and complete
+report/reward/return31. Source operation-vector comparison is not C#compile/native/
+render/layout/capture/build qualification. Fresh native/build remains NOT_RUN AWAY-001;
+Python current792affected/31boundary/168replay-G07/old10parity/new-mode source-query
+qualification passes. ENV-001required current imports/successful full remain unresolved;
+Python/source evidence does not close native or release gates.
+[Scope](../../docs/work_orders/QT-F80_READY_PATROL.md),
+[evidence](../../docs/reviews/QT-F80_EXECUTION_2026-10-29.md).
+
+
+F81adds Python ready-mode prior-conversation plan messages through the existing generic
+message consumer;native sources/selection/scene/wire remain unchanged. Current Python
+362affected/35new/CI31/old10parity/new11only-declared-row parity/query-source checks pass. Fresh text/layout/native/compile/build NOT_RUN AWAY-001;no historical native
+result qualifies these new rows. [Scope](../../docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md).

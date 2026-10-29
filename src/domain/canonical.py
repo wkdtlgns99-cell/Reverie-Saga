@@ -13,6 +13,11 @@ type JsonObject = Mapping[str, JsonValue]
 
 def seal(value: object, depth: int = 0) -> JsonValue:
     """Convert decoded I/O values immediately to owned immutable canonical DTOs."""
+    return cast(JsonValue, _convert(value, depth, immutable=True))
+
+
+def _convert(value: object, depth: int, *, immutable: bool) -> object:
+    """Validate once while building the owned representation needed by the caller."""
     if depth > 32:
         raise ValueError("JSON nesting exceeds32")
     if value is None or type(value) is bool or type(value) is int:
@@ -23,30 +28,31 @@ def seal(value: object, depth: int = 0) -> JsonValue:
         value.encode("utf-8", errors="strict")
         return value
     if isinstance(value, (list, tuple)):
-        return tuple(seal(v, depth + 1) for v in cast(list[object] | tuple[object, ...], value))
+        children = (
+            _convert(v, depth + 1, immutable=immutable)
+            for v in cast(list[object] | tuple[object, ...], value)
+        )
+        return tuple(children) if immutable else list(children)
     if isinstance(value, Mapping):
         pairs = cast(Mapping[object, object], value)
-        result: dict[str, JsonValue] = {}
+        result: dict[str, object] = {}
         for key, child in pairs.items():
             if not isinstance(key, str):
                 raise ValueError("JSON object keys must be strings")
-            seal(key, depth + 1)
-            result[key] = seal(child, depth + 1)
-        return MappingProxyType(result)
+            _convert(key, depth + 1, immutable=immutable)
+            result[key] = _convert(child, depth + 1, immutable=immutable)
+        return MappingProxyType(result) if immutable else result
     raise ValueError("unsupported canonical value")
 
 
-def _plain(value: JsonValue) -> object:
-    if isinstance(value, Mapping):
-        return {key: _plain(child) for key, child in value.items()}
-    if isinstance(value, tuple):
-        return [_plain(child) for child in value]
-    return value
-
-
 def canonical_json(value: JsonValue) -> bytes:
-    return json.dumps(_plain(seal(value)), ensure_ascii=False, sort_keys=True,
-                      separators=(",", ":"), allow_nan=False).encode("utf-8")
+    return json.dumps(
+        _convert(value, 0, immutable=False),
+        ensure_ascii=False,
+        sort_keys=True,
+        separators=(",", ":"),
+        allow_nan=False,
+    ).encode("utf-8")
 
 
 def pack(tokens: tuple[str, ...]) -> bytes:
@@ -84,8 +90,13 @@ def _nonfinite(value: str) -> None:
 
 
 def decode_json(body: bytes) -> JsonValue:
-    return seal(json.loads(body.decode("utf-8", errors="strict"),
-                           object_pairs_hook=_unique, parse_constant=_nonfinite))
+    return seal(
+        json.loads(
+            body.decode("utf-8", errors="strict"),
+            object_pairs_hook=_unique,
+            parse_constant=_nonfinite,
+        )
+    )
 
 
 def object_value(value: JsonValue) -> JsonObject:

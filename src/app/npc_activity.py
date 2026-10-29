@@ -6,10 +6,14 @@ from typing import Literal
 from app.headless import HeadlessSession, restore_checkpoint, state_io
 from app.npc_memory import memory_bundle
 from app.npc_memory_query import player_memory_recollection
+from app.npc_support_status import supply_support_plan
+from app.npc_patrol_status import quest_patrol_plan, quest_patrol_next_step, READY_PATROL_POLICY
 from app.npc_work import stock_text, work_bundle
 from app.npc_cycle import cycle_bundle, cycle_messages
 from contracts.npc_work import ProvisionPrepared
 from contracts.messages import WorldEvent
+from contracts.npc_gate_aid import GateAssisted
+from contracts.npc_patrol import NpcPatrolled
 from contracts.quest import QuestSpoken
 from contracts.errors import ReplayFormatError
 from contracts.dialogue import QuestContent
@@ -19,12 +23,18 @@ from contracts.turn import ProtocolSnapshot, TurnDriver, TurnPublication
 from contracts.watch import NpcActed, WatchEcho, WatchReplied, WatchRequested
 from domain.state_types import CoreSnapshot
 from domain.npc_work import STOCK_CAP, ProvisionsRecord
-from domain.npc_cycle import CycleRecord
+from domain.npc_cycle import CycleRecord, Supply
+from domain.npc_patrol import patrol_cells
 from domain.npc_memory import NpcQuestMemoryRecord
 from domain.watch import ECHO_DEPTH
 from orchestration.replay import Runner
 
 _CALL_LIMIT = 3
+_ASSIST_LIMIT = 3
+_PATROL_LIMIT = 3
+_PATROL_EMPTY = (
+    "현재 확인 범위에 남은 순찰 이동이 없습니다. 현재 위치로 과거 이동을 추정하지 않습니다."
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -93,6 +103,8 @@ class _ActivitySession:
 
     def last_publication(self) -> TurnPublication:
         publication = self._session.last_publication()
+        self._factory.observe_assistance(publication.facts)
+        self._factory.observe_patrol(publication.facts)
         entries = self._factory.entries
         if self._factory.collect_calls:
             for event in publication.facts:
@@ -114,6 +126,27 @@ class _ActivitySession:
                 del self._factory.conversations[:-2]
                 self._factory.conversation_counts.append(self._factory.call_count)
                 del self._factory.conversation_counts[:-2]
+                if self._factory.collect_assists:
+                    self._factory.conversation_assists.append(self._factory.assist_count)
+                    del self._factory.conversation_assists[:-2]
+                if self._factory.collect_patrol:
+                    self._factory.conversation_patrols.append(self._factory.patrol_count)
+                    del self._factory.conversation_patrols[:-2]
+                if self._factory.npc_cycle:
+                    conversation_core = self._session.snapshot()
+                    self._factory.conversation_supply.append(
+                        _cycle_state(conversation_core, self._factory.npc_id)
+                    )
+                    del self._factory.conversation_supply[:-2]
+                    if self._factory.ready_patrol:
+                        step = quest_patrol_next_step(
+                            conversation_core,
+                            self._factory.layout,
+                            error_code="NPC_RECOLLECTION_SOURCE",
+                            npc_ready_patrol=True,
+                        )[0]
+                        self._factory.conversation_plans.append((event.due_tick, step))
+                        del self._factory.conversation_plans[:-2]
             if (
                 isinstance(payload, (NpcActed, WatchReplied, ProvisionPrepared))
                 and payload.npc_id == self._factory.npc_id
@@ -151,27 +184,94 @@ class _ActivityFactory:
         npc_work: bool,
         collect_calls: bool = False,
         npc_cycle: bool = False,
+        npc_aid: bool = False,
+        npc_supply_aid: bool = False,
+        npc_call_aid: bool = False,
+        npc_patrol: bool = False,
+        npc_talk_pause: bool = False,
+        npc_quest_patrol: bool = False,
+        npc_call_pause: bool = False,
+        npc_ready_patrol: bool = False,
+        collect_assists: bool = False,
     ) -> None:
+        if type(npc_patrol) is not bool or npc_patrol and not (npc_call_aid and npc_cycle):
+            raise ValueError("NPC_PATROL_CONTENT")
+        if type(npc_talk_pause) is not bool or npc_talk_pause and not npc_patrol:
+            raise ValueError("NPC_TALK_PAUSE_CONTENT")
+        if type(npc_quest_patrol) is not bool or npc_quest_patrol and not npc_talk_pause:
+            raise ValueError("NPC_QUEST_PATROL_CONTENT")
+        if type(npc_call_pause) is not bool or npc_call_pause and not npc_quest_patrol:
+            raise ValueError("NPC_CALL_PAUSE_CONTENT")
+        if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
+            raise ValueError("NPC_READY_PATROL_CONTENT")
         self.bundles = (
-            cycle_bundle(content)
+            cycle_bundle(
+                content,
+                npc_aid=npc_aid,
+                npc_supply_aid=npc_supply_aid,
+                npc_call_aid=npc_call_aid,
+                npc_patrol=npc_patrol,
+                npc_talk_pause=npc_talk_pause,
+                npc_quest_patrol=npc_quest_patrol,
+                npc_call_pause=npc_call_pause,
+                npc_ready_patrol=npc_ready_patrol,
+            )
             if npc_cycle
             else work_bundle(content)
             if npc_work
             else memory_bundle(content),
         )
         self.npc_id = npc_id
+        self.layout = content.definition.layout
+        self.ready_patrol = npc_ready_patrol
+        self.conversation_plans: list[tuple[int, str]] = []
         self.actor_id = content.definition.layout.actor_id
         self.collect_calls = collect_calls
+        self.collect_assists = collect_assists and npc_aid
+        self.collect_patrol = npc_patrol
+        self.patrol_cells = patrol_cells(content.definition.layout, True) if npc_patrol else ()
+        self.patrol_space = content.definition.layout.space_id
+        self.patrols: list[WorldEvent] = []
+        self.patrol_count = 0
+        self.conversation_patrols: list[int] = []
+        self.assists: list[WorldEvent] = []
+        self.assist_count = 0
+        self.npc_cycle = npc_cycle
+        self.initial_supply: Supply | None = None
+        self.conversation_supply: list[Supply] = []
         self.calls: list[_AnsweredCall] = []
         self.call_count = 0
         self.conversation_counts: list[int] = []
+        self.conversation_assists: list[int] = []
         self.entries: list[NpcActivity] = []
         self.work_entries: list[NpcActivity] = []
         self.conversations: list[tuple[int, str]] = []
         self.session: HeadlessSession | None = None
 
+    def observe_assistance(self, facts: tuple[WorldEvent, ...]) -> None:
+        if not self.collect_assists:
+            return
+        for event in facts:
+            if isinstance(event.payload, GateAssisted) and event.payload.npc_id == self.npc_id:
+                self.assist_count += 1
+                self.assists.append(event)
+        self.assists.sort(key=lambda event: (event.due_tick, event.header.event_id))
+        del self.assists[:-_ASSIST_LIMIT]
+
+    def observe_patrol(self, facts: tuple[WorldEvent, ...]) -> None:
+        if not self.collect_patrol:
+            return
+        for event in facts:
+            if type(event.payload) is NpcPatrolled and event.payload.npc_id == self.npc_id:
+                self.patrol_count += 1
+                self.patrols.append(event)
+        self.patrols.sort(key=lambda event: (event.due_tick, event.header.event_id))
+        del self.patrols[:-_PATROL_LIMIT]
+
     def restore(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> ReplaySession:
         self.session = restore_checkpoint(core, protocol, bundles=self.bundles)
+        if self.npc_cycle:
+            self.initial_supply = _cycle_state(core, self.npc_id)
         return _ActivitySession(self.session, self)
 
 
@@ -260,9 +360,31 @@ def _verified_activity(
     error_code: str,
     collect_calls: bool = False,
     npc_cycle: bool = False,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+    collect_assists: bool = False,
 ) -> _ActivityFactory:
     factory = _ActivityFactory(
-        content, npc_id, npc_work=npc_work, collect_calls=collect_calls, npc_cycle=npc_cycle
+        content,
+        npc_id,
+        npc_work=npc_work,
+        collect_calls=collect_calls,
+        npc_cycle=npc_cycle,
+        npc_aid=npc_aid,
+        npc_supply_aid=npc_supply_aid,
+        npc_call_aid=npc_call_aid,
+        npc_patrol=npc_patrol,
+        npc_talk_pause=npc_talk_pause,
+        npc_quest_patrol=npc_quest_patrol,
+        npc_call_pause=npc_call_pause,
+        npc_ready_patrol=npc_ready_patrol,
+        collect_assists=collect_assists,
     )
     runner = Runner(
         segment.checkpoint.core,
@@ -286,6 +408,14 @@ def cycle_activity_messages(
     *,
     content: QuestContent,
     current: DurableCheckpoint,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
 ) -> tuple[str, ...]:
     """Keep persistent own work apart from the bounded retained bell/reply history."""
     if npc_id != content.definition.layout.npc_id:
@@ -305,7 +435,16 @@ def cycle_activity_messages(
             current=current,
             npc_work=False,
             npc_cycle=True,
+            npc_aid=npc_aid,
+            npc_supply_aid=npc_supply_aid,
+            npc_call_aid=npc_call_aid,
+            npc_patrol=npc_patrol,
+            npc_talk_pause=npc_talk_pause,
+            npc_quest_patrol=npc_quest_patrol,
+            npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
             collect_calls=True,
+            collect_assists=npc_aid,
             error_code="NPC_ACTIVITY_SOURCE",
         )
     except (ReplayFormatError, SaveError) as error:
@@ -321,6 +460,66 @@ def cycle_activity_messages(
             )
         ),
         *_call_messages(factory, segment.checkpoint.core.tick),
+        *_assistance_messages(factory, segment.checkpoint.core.tick),
+        *_patrol_messages(factory, segment.checkpoint.core.tick),
+        *_conversation_plan_messages(factory, segment.checkpoint.core.tick),
+        *(
+            quest_patrol_plan(
+                current.core, content.definition.layout, error_code="NPC_ACTIVITY_SOURCE"
+            )
+            if npc_quest_patrol
+            else ()
+        ),
+        *(
+            quest_patrol_next_step(
+                current.core,
+                content.definition.layout,
+                error_code="NPC_ACTIVITY_SOURCE",
+                npc_ready_patrol=npc_ready_patrol,
+            )
+            if npc_call_pause
+            else ()
+        ),
+        *(
+            (
+                "NPC 응답 대기 · 호출에 답한 턴에는 이동을 멈추고, 다음 행동 시점에 순찰 계획을 다시 따릅니다.",
+            )
+            if npc_call_pause
+            else ()
+        ),
+        *((READY_PATROL_POLICY,) if npc_ready_patrol else ()),
+        *(
+            supply_support_plan(
+                current.core,
+                content.definition.layout,
+                error_code="NPC_ACTIVITY_SOURCE",
+                npc_call_aid=npc_call_aid,
+            )
+            if npc_supply_aid
+            else ()
+        ),
+    )
+
+
+def _assistance_messages(factory: _ActivityFactory, checkpoint_tick: int) -> tuple[str, ...]:
+    if not factory.collect_assists:
+        return ()
+    return (
+        f"NPC 의뢰 지원 · {checkpoint_tick}초 이후 저장 구간의 최근 최대 3건입니다.",
+        *(
+            (
+                f"확인한 문 열기 {factory.assist_count}건 중 최근 {len(factory.assists)}건입니다.",
+                *(
+                    f"NPC 의뢰 지원 기록 · {event.due_tick}초: 통행문을 열었습니다."
+                    for event in factory.assists
+                ),
+            )
+            if factory.assists
+            else (
+                "현재 저장 구간에 남은 의뢰 지원 기록이 없습니다. "
+                "문 상태로 과거 도움을 추정하지 않습니다.",
+            )
+        ),
     )
 
 
@@ -378,6 +577,276 @@ def return_recollection(
     )
 
 
+def cycle_call_recollection(
+    segment: SaveSegment,
+    npc_id: str,
+    *,
+    content: QuestContent,
+    current: DurableCheckpoint,
+    conversation_id: str,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+) -> tuple[str, ...]:
+    """Recall verified replies since the previous retained cycle conversation."""
+    factory = _conversation_activity(
+        segment,
+        npc_id,
+        content=content,
+        current=current,
+        conversation_id=conversation_id,
+        collect_calls=True,
+        npc_cycle=True,
+        npc_aid=npc_aid,
+        npc_supply_aid=npc_supply_aid,
+        npc_call_aid=npc_call_aid,
+        npc_patrol=npc_patrol,
+        npc_talk_pause=npc_talk_pause,
+        npc_quest_patrol=npc_quest_patrol,
+        npc_call_pause=npc_call_pause,
+        npc_ready_patrol=npc_ready_patrol,
+    )
+    previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
+    return _call_messages(factory, segment.checkpoint.core.tick, previous=previous)
+
+
+def cycle_return_recollection(
+    segment: SaveSegment,
+    npc_id: str,
+    *,
+    content: QuestContent,
+    current: DurableCheckpoint,
+    conversation_id: str,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+) -> tuple[str, ...]:
+    """Compare exact committed supply states and recall calls through one replay."""
+    factory = _conversation_activity(
+        segment,
+        npc_id,
+        content=content,
+        current=current,
+        conversation_id=conversation_id,
+        collect_calls=True,
+        npc_cycle=True,
+        npc_aid=npc_aid,
+        npc_supply_aid=npc_supply_aid,
+        npc_call_aid=npc_call_aid,
+        npc_patrol=npc_patrol,
+        npc_talk_pause=npc_talk_pause,
+        npc_quest_patrol=npc_quest_patrol,
+        npc_call_pause=npc_call_pause,
+        npc_ready_patrol=npc_ready_patrol,
+        collect_assists=npc_aid,
+    )
+    previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
+    return (
+        *_cycle_supply_messages(factory, segment.checkpoint.core.tick),
+        *_call_messages(factory, segment.checkpoint.core.tick, previous=previous),
+        *_assistance_recollection(factory, segment.checkpoint.core.tick, previous),
+        *_patrol_messages(
+            factory, segment.checkpoint.core.tick, previous=previous, recollection=True
+        ),
+        *_conversation_plan_messages(factory, segment.checkpoint.core.tick, recollection=True),
+        *(
+            quest_patrol_plan(
+                current.core, content.definition.layout, error_code="NPC_RECOLLECTION_SOURCE"
+            )
+            if npc_quest_patrol
+            else ()
+        ),
+        *(
+            quest_patrol_next_step(
+                current.core,
+                content.definition.layout,
+                error_code="NPC_RECOLLECTION_SOURCE",
+                npc_ready_patrol=npc_ready_patrol,
+            )
+            if npc_call_pause
+            else ()
+        ),
+        *(
+            (
+                "NPC 응답 대기 · 호출에 답한 턴에는 이동을 멈추고, 다음 행동 시점에 순찰 계획을 다시 따릅니다.",
+            )
+            if npc_call_pause
+            else ()
+        ),
+        *((READY_PATROL_POLICY,) if npc_ready_patrol else ()),
+        *(
+            supply_support_plan(
+                current.core,
+                content.definition.layout,
+                error_code="NPC_RECOLLECTION_SOURCE",
+                npc_call_aid=npc_call_aid,
+            )
+            if npc_supply_aid
+            else ()
+        ),
+    )
+
+
+def _assistance_recollection(
+    factory: _ActivityFactory, checkpoint_tick: int, previous: int | None
+) -> tuple[str, ...]:
+    if not factory.collect_assists:
+        return ()
+    count = factory.assist_count - (factory.conversation_assists[-2] if previous is not None else 0)
+    lower = checkpoint_tick if previous is None else previous
+    assists = tuple(event for event in factory.assists if event.due_tick > lower)
+    return (
+        f"NPC 의뢰 지원 회상 · {checkpoint_tick}초 이후 저장 구간의 도움입니다."
+        if previous is None
+        else f"NPC 의뢰 지원 회상 · 지난 대화({previous}초) 뒤에 도운 기록입니다.",
+        *(
+            (
+                f"확인한 문 열기 {count}건 중 최근 {len(assists)}건입니다.",
+                *(
+                    f"NPC 의뢰 지원 회상 · {event.due_tick}초: 통행문을 열었습니다."
+                    for event in assists
+                ),
+            )
+            if assists
+            else ("현재 저장 구간에 새로 확인된 의뢰 지원 기록이 없습니다.",)
+        ),
+    )
+
+
+def _patrol_messages(
+    factory: _ActivityFactory,
+    checkpoint_tick: int,
+    *,
+    previous: int | None = None,
+    recollection: bool = False,
+) -> tuple[str, ...]:
+    if not factory.collect_patrol:
+        return ()
+    error_code = "NPC_RECOLLECTION_SOURCE" if recollection else "NPC_ACTIVITY_SOURCE"
+    if previous is not None and (not recollection or len(factory.conversation_patrols) < 2):
+        raise SaveError(error_code, "patrol conversation window unavailable")
+    count = factory.patrol_count - (factory.conversation_patrols[-2] if previous is not None else 0)
+    lower = checkpoint_tick if previous is None else previous
+    recent = tuple(event for event in factory.patrols if event.due_tick > lower)
+    if count < len(recent) or not recent and count:
+        raise SaveError(error_code, "patrol retained count/window mismatch")
+    heading = (
+        (
+            f"NPC 순찰 회상 · {checkpoint_tick}초 이후 저장 구간의 이동입니다."
+            if previous is None
+            else f"NPC 순찰 회상 · 지난 대화({previous}초) 뒤에 이동한 기록입니다."
+        )
+        if recollection
+        else f"NPC 순찰 활동 · {checkpoint_tick}초 이후 저장 구간의 최근 최대 3건입니다."
+    )
+    prefix = "NPC 순찰 회상" if recollection else "NPC 순찰 기록"
+    rows: list[str] = []
+    for event in recent:
+        payload = event.payload
+        if (
+            type(payload) is not NpcPatrolled
+            or payload.npc_id != factory.npc_id
+            or payload.space_id != factory.patrol_space
+        ):
+            raise SaveError(error_code, "patrol retained subject differs from selected NPC")
+        endpoints = payload.before_cell, payload.after_cell
+        if endpoints == factory.patrol_cells:
+            description = "옆 작업 지점으로 이동했습니다."
+        elif endpoints == factory.patrol_cells[::-1]:
+            description = "원래 자리로 돌아왔습니다."
+        else:
+            raise SaveError(error_code, "patrol retained endpoints differ from selected path")
+        rows.append(f"{prefix} · {event.due_tick}초: {description}")
+    return (
+        heading,
+        *(
+            (f"확인한 순찰 이동 {count}건 중 최근 {len(rows)}건입니다.", *rows)
+            if rows
+            else (_PATROL_EMPTY,)
+        ),
+    )
+
+
+def _conversation_plan_messages(
+    factory: _ActivityFactory, checkpoint_tick: int, *, recollection: bool = False
+) -> tuple[str, ...]:
+    """Recall a verified conversation-end projection,never an inferred past action."""
+    if not factory.ready_patrol:
+        return ()
+    plans = factory.conversation_plans
+    ticks = tuple(tick for tick, _ in plans)
+    if (
+        len(plans) != len(factory.conversations)
+        or len(plans) > 2
+        or ticks != tuple(tick for tick, _ in factory.conversations)
+        or any(tick <= checkpoint_tick for tick in ticks)
+        or any(first >= second for first, second in zip(ticks, ticks[1:]))
+    ):
+        code = "NPC_RECOLLECTION_SOURCE" if recollection else "NPC_ACTIVITY_SOURCE"
+        raise SaveError(code, "conversation patrol plan retained window differs")
+    if recollection:
+        return (
+            f"NPC 지난 대화 계획 · {plans[-2][0]}초 대화 종료 상태: {plans[-2][1]}"
+            if len(plans) == 2
+            else "NPC 지난 대화 계획 · 현재 저장 구간에 이전 대화 종료 상태가 없습니다. "
+            "현재 상태로 과거 계획을 추정하지 않습니다.",
+        )
+    return (
+        f"NPC 대화 계획 기록 · {checkpoint_tick}초 이후 저장 구간의 최근 최대 2회입니다.",
+        *(
+            tuple(f"NPC 대화 계획 기록 · {tick}초 대화 종료 상태: {step}" for tick, step in plans)
+            or (
+                "NPC 대화 계획 기록 · 현재 저장 구간에 대화 종료 상태가 없습니다. "
+                "현재 상태로 과거 계획을 추정하지 않습니다.",
+            )
+        ),
+    )
+
+
+def _cycle_state(core: CoreSnapshot, npc_id: str) -> Supply:
+    records = tuple(
+        record
+        for record in core.components
+        if type(record) is CycleRecord and record.entity_id == npc_id
+    )
+    if len(records) != 1:
+        raise SaveError("NPC_RECOLLECTION_SOURCE", "recollection requires selected NPC cycle")
+    return records[0].state
+
+
+def _cycle_supply_messages(factory: _ActivityFactory, checkpoint_tick: int) -> tuple[str, ...]:
+    states = factory.conversation_supply
+    if factory.initial_supply is None or not states:
+        raise SaveError("NPC_RECOLLECTION_SOURCE", "cycle conversation states unavailable")
+    previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
+    before = states[-2] if previous is not None else factory.initial_supply
+    after = states[-1]
+    prepared, used = after.produced - before.produced, after.consumed - before.consumed
+    if prepared < 0 or used < 0:
+        raise SaveError("NPC_RECOLLECTION_SOURCE", "cycle conversation counters decreased")
+    heading = (
+        f"NPC 반복 작업 회상 · {checkpoint_tick}초 이후 저장 구간의 변화입니다."
+        if previous is None
+        else f"NPC 반복 작업 회상 · 지난 대화({previous}초) 뒤의 변화입니다."
+    )
+    return (
+        heading,
+        f"확인한 물자 변화 · 준비 {prepared}회 · 사용 {used}회."
+        if prepared or used
+        else "현재 저장 구간에 새로 확인된 물자 변화가 없습니다.",
+    )
+
+
 def _call_messages(
     factory: _ActivityFactory, checkpoint_tick: int, *, previous: int | None = None
 ) -> tuple[str, ...]:
@@ -414,6 +883,16 @@ def _conversation_activity(
     current: DurableCheckpoint,
     conversation_id: str,
     collect_calls: bool = False,
+    npc_cycle: bool = False,
+    npc_aid: bool = False,
+    npc_supply_aid: bool = False,
+    npc_call_aid: bool = False,
+    npc_patrol: bool = False,
+    npc_talk_pause: bool = False,
+    npc_quest_patrol: bool = False,
+    npc_call_pause: bool = False,
+    npc_ready_patrol: bool = False,
+    collect_assists: bool = False,
 ) -> _ActivityFactory:
     if npc_id != content.definition.layout.npc_id:
         raise SaveError("NPC_RECOLLECTION_SOURCE", "recollection owner differs from selected NPC")
@@ -423,9 +902,19 @@ def _conversation_activity(
             npc_id,
             content=content,
             current=current,
-            npc_work=True,
+            npc_work=not npc_cycle,
+            npc_cycle=npc_cycle,
+            npc_aid=npc_aid,
+            npc_supply_aid=npc_supply_aid,
+            npc_call_aid=npc_call_aid,
+            npc_patrol=npc_patrol,
+            npc_talk_pause=npc_talk_pause,
+            npc_quest_patrol=npc_quest_patrol,
+            npc_call_pause=npc_call_pause,
+            npc_ready_patrol=npc_ready_patrol,
             error_code="NPC_RECOLLECTION_SOURCE",
             collect_calls=collect_calls,
+            collect_assists=collect_assists,
         )
     except ReplayFormatError as error:
         raise SaveError(

@@ -11,8 +11,11 @@ from app.durable import create_durable
 from app.npc_cycle import cycle_bundle
 from contracts.dialogue import GenerationError
 from contracts.persistence import DurableCheckpoint
+from contracts.replay import ReplaySession
+from contracts.turn import ProtocolSnapshot
 from domain.canonical import array_value, object_value, text_value
 from domain.npc_memory import NpcQuestMemoryRecord
+from domain.state_types import CoreSnapshot
 from tests.integration.test_client import _click, _pump, tk_host as tk_host
 from tests.integration.test_cycle_slot_comparison import inventory
 from tests.integration.test_memory_client_route import approved_content
@@ -49,7 +52,7 @@ def test_cycle_uses_original_heard_statement_not_objective_enemy_state(tmp_path:
 
 
 @pytest.mark.parametrize("reported", (False, True))
-def test_cycle_checkpoint_only_remembers_original_tick_without_retained_replay(
+def test_cycle_checkpoint_only_remembers_original_tick_with_one_call_replay(
     tmp_path: Path, reported: bool, monkeypatch: pytest.MonkeyPatch
 ) -> None:
     owner = session(tmp_path / "source/game.sqlite")
@@ -68,11 +71,21 @@ def test_cycle_checkpoint_only_remembers_original_tick_without_retained_replay(
     try:
         assert compacted.owner.retained_segment().trace.steps == ()
 
-        def forbidden_replay() -> None:
-            pytest.fail("cycle player recollection must not request a retained-segment replay")
+        import app.npc_activity as activity
 
-        monkeypatch.setattr(compacted.owner, "retained_segment", forbidden_replay)
-        update = compacted.act("talk")
+        restore = activity._ActivityFactory.restore
+        with monkeypatch.context() as scoped:
+            calls = []
+
+            def observed(
+                factory: activity._ActivityFactory, core: CoreSnapshot, protocol: ProtocolSnapshot
+            ) -> ReplaySession:
+                calls.append(1)
+                return restore(factory, core, protocol)
+
+            scoped.setattr(activity._ActivityFactory, "restore", observed)
+            update = compacted.act("talk")
+        assert calls == [1]
         assert remembered(update) == ((report(11),) if reported else (promise(2),))
         assert update.quest_reward == int(reported)
         assert cycle(compacted).state.produced > 0

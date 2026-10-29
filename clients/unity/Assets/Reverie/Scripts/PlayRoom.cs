@@ -20,6 +20,8 @@ namespace ReverieSaga
         string boardWalls;
         string transportError="";
         Vector2 scroll;
+        readonly List<float> historyRowStarts=new List<float>(200);
+        float historyContentHeight,historyViewportHeight;
         Vector2 controlsScroll;
         bool dialogueFocused;
         bool saveManagerOpen;
@@ -27,6 +29,7 @@ namespace ReverieSaga
         public bool SaveManagerOpen { get { return saveManagerOpen; } }
         public bool GameplayInputEnabled { get { return !dialogueFocused&&!saveManagerOpen&&!Busy&&failure==""; } }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
+        internal bool IsolatePhysicalInputForVerification;
         public Rect ControlsViewport { get; private set; }
         public Rect HistoryViewport { get; private set; }
         public float ControlsContentHeight { get; private set; }
@@ -48,8 +51,24 @@ namespace ReverieSaga
         bool npcMemory;
         bool npcWork;
         bool npcCycle;
+        bool npcAid;
+        bool npcReadyPatrol;
+        public bool NpcReadyPatrolEnabled { get { return npcReadyPatrol; } }
+        bool npcCallPause;
+        public bool NpcCallPauseEnabled { get { return npcCallPause; } }
+        bool npcQuestPatrol;
+        public bool NpcQuestPatrolEnabled { get { return npcQuestPatrol; } }
+        bool npcTalkPause;
+        public bool NpcTalkPauseEnabled { get { return npcTalkPause; } }
+        bool npcPatrol;
+        public bool NpcPatrolEnabled { get { return npcPatrol; } }
+        bool npcCallAid;
+        public bool NpcCallAidEnabled { get { return npcCallAid; } }
+        bool npcSupplyAid;
+        public bool NpcSupplyAidEnabled { get { return npcSupplyAid; } }
+        public bool NpcAidEnabled { get { return npcAid; } }
         public bool NpcCycleEnabled { get { return npcCycle; } }
-        public string NpcModeLabel { get { return npcCycle?"NPC 반복 작업·기억 모드":npcWork?"NPC 비축·기억 모드":npcMemory?"NPC 대화 기억 모드":"기본 모드"; } }
+        public string NpcModeLabel { get { return npcReadyPatrol?"NPC 지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcCallPause?"NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcQuestPatrol?"NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcTalkPause?"NPC 대화 대기·순찰·호출 지원·물자·반복 작업·기억 모드":npcPatrol?"NPC 순찰·호출 지원·물자·반복 작업·기억 모드":npcCallAid?"NPC 호출 지원·물자·반복 작업·기억 모드":npcSupplyAid?"NPC 물자 2개 확보 후 지원·반복 작업·기억 모드":npcAid?"NPC 의뢰 지원·반복 작업·기억 모드":npcCycle?"NPC 반복 작업·기억 모드":npcWork?"NPC 비축·기억 모드":npcMemory?"NPC 대화 기억 모드":"기본 모드"; } }
         public bool NpcWorkEnabled { get { return npcWork; } }
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
@@ -66,6 +85,8 @@ namespace ReverieSaga
         public string Failure { get { return failure; } }
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
         public bool HasBrainForVerification { get { return brain!=null; } }
+        public bool GateOpenForVerification { get { return gate!=null&&!gate.activeSelf; } }
+        public Vector3 NpcPositionForVerification { get { return npc.transform.position; } }
 #endif
 
         public static int Number(string value)
@@ -90,6 +111,38 @@ namespace ReverieSaga
                 if(!String.IsNullOrEmpty(cycleSelection)&&cycleSelection!="0"&&cycleSelection!="1")
                     throw new IOException("NPC_CYCLE_SELECTION");
                 npcCycle=cycleSelection=="1";
+                string aidSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_AID");
+                if(!String.IsNullOrEmpty(aidSelection)&&aidSelection!="0"&&aidSelection!="1")
+                    throw new IOException("NPC_AID_SELECTION");
+                npcAid=aidSelection=="1";
+                string supplyAidSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_SUPPLY_AID");
+                if(!String.IsNullOrEmpty(supplyAidSelection)&&supplyAidSelection!="0"&&supplyAidSelection!="1")
+                    throw new IOException("NPC_SUPPLY_AID_SELECTION");
+                npcSupplyAid=supplyAidSelection=="1";
+                string callAidSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_CALL_AID");
+                if(!String.IsNullOrEmpty(callAidSelection)&&callAidSelection!="0"&&callAidSelection!="1")
+                    throw new IOException("NPC_CALL_AID_SELECTION");
+                npcCallAid=callAidSelection=="1";
+                string patrolSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_PATROL");
+                if(!String.IsNullOrEmpty(patrolSelection)&&patrolSelection!="0"&&patrolSelection!="1")
+                    throw new IOException("NPC_PATROL_SELECTION");
+                npcPatrol=patrolSelection=="1";
+                string talkPauseSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_TALK_PAUSE");
+                if(!String.IsNullOrEmpty(talkPauseSelection)&&talkPauseSelection!="0"&&talkPauseSelection!="1")
+                    throw new IOException("NPC_TALK_PAUSE_SELECTION");
+                npcTalkPause=talkPauseSelection=="1";
+                string questPatrolSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_QUEST_PATROL");
+                if(!String.IsNullOrEmpty(questPatrolSelection)&&questPatrolSelection!="0"&&questPatrolSelection!="1")
+                    throw new IOException("NPC_QUEST_PATROL_SELECTION");
+                npcQuestPatrol=questPatrolSelection=="1";
+                string callPauseSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_CALL_PAUSE");
+                if(!String.IsNullOrEmpty(callPauseSelection)&&callPauseSelection!="0"&&callPauseSelection!="1")
+                    throw new IOException("NPC_CALL_PAUSE_SELECTION");
+                npcCallPause=callPauseSelection=="1";
+                string readyPatrolSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_READY_PATROL");
+                if(!String.IsNullOrEmpty(readyPatrolSelection)&&readyPatrolSelection!="0"&&readyPatrolSelection!="1")
+                    throw new IOException("NPC_READY_PATROL_SELECTION");
+                npcReadyPatrol=readyPatrolSelection=="1";
                 questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
                 questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
                 bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
@@ -108,6 +161,14 @@ namespace ReverieSaga
                 }
                 scenario=BrainConnection.SelectScenario(scenario);
                 if(npcCycle&&(!npcMemory||npcWork))throw new IOException("NPC_CYCLE_CONTENT");
+                if(npcAid&&!npcCycle)throw new IOException("NPC_AID_CONTENT");
+                if(npcSupplyAid&&!npcAid)throw new IOException("NPC_SUPPLY_AID_CONTENT");
+                if(npcCallAid&&!npcSupplyAid)throw new IOException("NPC_CALL_AID_CONTENT");
+                if(npcPatrol&&!npcCallAid)throw new IOException("NPC_PATROL_CONTENT");
+                if(npcTalkPause&&!npcPatrol)throw new IOException("NPC_TALK_PAUSE_CONTENT");
+                if(npcQuestPatrol&&!npcTalkPause)throw new IOException("NPC_QUEST_PATROL_CONTENT");
+                if(npcCallPause&&!npcQuestPatrol)throw new IOException("NPC_CALL_PAUSE_CONTENT");
+                if(npcReadyPatrol&&!npcCallPause)throw new IOException("NPC_READY_PATROL_CONTENT");
                 if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
                 if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
                     questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
@@ -118,7 +179,7 @@ namespace ReverieSaga
                     Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
                 if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
                     Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
-                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcCycle?"harbor-cycle":npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcReadyPatrol?"harbor-ready-patrol":npcCallPause?"harbor-call-pause":npcQuestPatrol?"harbor-quest-patrol":npcTalkPause?"harbor-talk-patrol":npcPatrol?"harbor-call-patrol":npcCallAid?"harbor-call-aid":npcSupplyAid?"harbor-cycle-supply-aid":npcAid?"harbor-cycle-aid":npcCycle?"harbor-cycle":npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
                         Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
@@ -127,8 +188,13 @@ namespace ReverieSaga
 
         void Update()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            bool physicalInput=!IsolatePhysicalInputForVerification;
+#else
+            const bool physicalInput=true;
+#endif
             bool focusedAtInput=dialogueFocused||saveManagerOpen;
-            if(focusedAtInput&&Input.GetKeyDown(KeyCode.Escape)) {
+            if(physicalInput&&focusedAtInput&&Input.GetKeyDown(KeyCode.Escape)) {
                 if(saveManagerOpen)SetSaveManager(false);else SetDialogueFocus(false);
             }
             if (brain == null || connecting || failure != "") return;
@@ -152,12 +218,9 @@ namespace ReverieSaga
                     latest=reply;
                     working=reply.update.working_path;
                     Apply(reply.update.view);
-                    if (reply.update.reset_log) messages.Clear();
-                    messages.AddRange(reply.update.messages);
-                    if(messages.Count>200) messages.RemoveRange(0,messages.Count-200);
-                    if(reply.update.messages.Length>0) scroll.y=float.MaxValue;
+                    AppendHistory(reply.update.messages,reply.update.reset_log);
                 } else if(error!=null) throw new IOException(error);
-                if(focusedAtInput)return;
+                if(focusedAtInput||!physicalInput)return;
                 if (GameplayInputEnabled) {
                     if(Input.GetKeyDown(KeyCode.W)||Input.GetKeyDown(KeyCode.UpArrow)) Send("up");
                     else if(Input.GetKeyDown(KeyCode.S)||Input.GetKeyDown(KeyCode.DownArrow)) Send("down");
@@ -166,6 +229,28 @@ namespace ReverieSaga
                 }
             } catch(Exception e) { Fail(e); }
         }
+
+        void AppendHistory(string[] incoming,bool reset)
+        {
+            if(reset) {
+                messages.Clear();historyRowStarts.Clear();historyContentHeight=0;
+                ShowLatestHistory();
+            }
+            if(incoming.Length==0)return;
+            bool follow=messages.Count==0||scroll.y+historyViewportHeight>=historyContentHeight-2;
+            int discarded=Math.Max(0,messages.Count+incoming.Length-200);
+            if(!follow&&discarded>0) {
+                float removed=discarded<historyRowStarts.Count?
+                    historyRowStarts[discarded]-historyRowStarts[0]:scroll.y;
+                scroll.y=Mathf.Max(0,scroll.y-removed);
+            }
+            messages.AddRange(incoming);
+            if(discarded>0)messages.RemoveRange(0,discarded);
+            historyRowStarts.Clear();
+            if(follow)ShowLatestHistory();
+        }
+
+        public void ShowLatestHistory() {scroll.y=float.MaxValue;}
 
         Vector3 Position(int cell, int width, float y=0.5f)
         { return new Vector3(cell%width,y,-(cell/width)); }
@@ -265,7 +350,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork,npcCycle);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork,npcCycle,npcAid,npcSupplyAid,npcCallAid,npcPatrol,npcTalkPause,npcQuestPatrol,npcCallPause,npcReadyPatrol);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}
@@ -278,7 +363,7 @@ namespace ReverieSaga
             if(dialogueFocused==enabled)return;
             dialogueFocused=enabled;
             if(enabled)saveManagerOpen=false;
-            scroll.y=float.MaxValue;
+            ShowLatestHistory();
         }
         public void SetSaveManager(bool enabled)
         {
@@ -292,6 +377,20 @@ namespace ReverieSaga
         public void SendMalformedForVerification() {brain.SendMalformedForVerification();}
         public void ApplyForVerification(WireView view) {Apply(view);}
         public string HistoryForVerification { get { return String.Join("\n",messages); } }
+        public float HistoryScrollForVerification { get { return scroll.y; } set {scroll.y=value;} }
+        public int HistoryCountForVerification { get { return messages.Count; } }
+        public float HistoryContentHeightForVerification { get { return historyContentHeight; } }
+        int HistoryRowForVerification {
+            get {
+                int index=0;
+                while(index+1<historyRowStarts.Count&&historyRowStarts[index+1]<=scroll.y)index++;
+                return index;
+            }
+        }
+        public string HistoryTopForVerification { get {return messages.Count==0?"":messages[HistoryRowForVerification];} }
+        public float HistoryRowOffsetForVerification {
+            get {return historyRowStarts.Count==0?0:scroll.y-historyRowStarts[HistoryRowForVerification];}
+        }
 #endif
         void Fail(Exception error) { failure=error.Message;Debug.LogException(error); }
 
@@ -313,11 +412,20 @@ namespace ReverieSaga
 
         void OnGUI()
         {
+#if UNITY_EDITOR || DEVELOPMENT_BUILD
+            if(IsolatePhysicalInputForVerification&&(Event.current.isKey||Event.current.isMouse||
+                Event.current.type==EventType.ScrollWheel))Event.current.Use();
+#endif
             if(koreanFont==null)koreanFont=Font.CreateDynamicFontFromOSFont("Malgun Gothic",16);
             GUI.skin.font=koreanFont;
             float width=Mathf.Max(0,Mathf.Min(380,Screen.width-24));
             float height=Mathf.Max(0,Screen.height-24);
             var panel=new Rect(12,12,width,height);
+            Color previousColor=GUI.color;
+            try {
+                GUI.color=new Color(.04f,.05f,.07f,1f);
+                GUI.DrawTexture(panel,Texture2D.whiteTexture);
+            } finally {GUI.color=previousColor;}
             GUI.Box(panel,GUIContent.none);
             float innerWidth=Mathf.Max(0,width-12);
             GUI.Label(new Rect(18,18,innerWidth,24),"Reverie Saga — 플레이테스트");
@@ -332,6 +440,7 @@ namespace ReverieSaga
             float controlsHeight=dialogueFocused?(focusError?Mathf.Min(24,available):0):Mathf.Floor(available*.6f);
             var controls=new Rect(18,78,innerWidth,controlsHeight);
             var history=new Rect(18,controls.yMax+30,innerWidth,available-controlsHeight);
+            historyViewportHeight=history.height;
 #if UNITY_EDITOR || DEVELOPMENT_BUILD
             ControlsViewport=controls;HistoryViewport=history;
 #endif
@@ -347,10 +456,21 @@ namespace ReverieSaga
             } else if(focusError) {
                 GUI.Label(controls,failure!=""?"연결 오류: "+failure:"요청 거부: "+transportError);
             }
-            GUI.Label(new Rect(18,controls.yMax+6,innerWidth,24),"행동·대화 기록");
+            float latestWidth=Mathf.Min(92,innerWidth);
+            GUI.Label(new Rect(18,controls.yMax+6,Mathf.Max(0,innerWidth-latestWidth-6),24),"행동·대화 기록");
+            GUI.enabled=true;
+            if(GUI.Button(new Rect(18+innerWidth-latestWidth,controls.yMax+6,latestWidth,24),"최신 기록"))
+                ShowLatestHistory();
             GUILayout.BeginArea(history);
             scroll=GUILayout.BeginScrollView(scroll,false,false);
-            foreach(string message in messages) GUILayout.Label(message);
+            bool measure=Event.current.type==EventType.Repaint;
+            if(measure)historyRowStarts.Clear();
+            foreach(string message in messages) {
+                GUILayout.Label(message);
+                if(measure)historyRowStarts.Add(GUILayoutUtility.GetLastRect().y);
+            }
+            var historyEnd=GUILayoutUtility.GetRect(0,0);
+            if(measure)historyContentHeight=historyEnd.yMax;
             GUILayout.EndScrollView();GUILayout.EndArea();
         }
 

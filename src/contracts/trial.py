@@ -6,6 +6,7 @@ from typing import Literal, Protocol
 from contracts.messages import CommandPayload, FactPayload, PresentationPayload, StateDelta
 from contracts.read_views import ComponentKey, ComponentPatch
 from domain.primitives import EntityId, FieldAddress, FieldFamily, TypeKey
+from domain.trial import CELL_POSITION_SCHEMA, TRIAL_MAP_SCHEMA
 
 
 class TrialMapRead(Protocol):
@@ -25,8 +26,8 @@ class CellPositionRead(Protocol):
     def cell(self) -> int: ...
 
 
-TRIAL_MAP = ComponentKey[TrialMapRead](TypeKey("trial.map", 1))
-CELL_POSITION = ComponentKey[CellPositionRead](TypeKey("trial.position", 1))
+TRIAL_MAP = ComponentKey[TrialMapRead](TRIAL_MAP_SCHEMA)
+CELL_POSITION = ComponentKey[CellPositionRead](CELL_POSITION_SCHEMA)
 
 
 @dataclass(frozen=True, slots=True)

@@ -373,7 +373,7 @@ def test_real_cli_scope_and_read_only(native_project: tuple[Path, Path]) -> None
             len(gate._array(row["nested_code"], 256, nonempty=False))
             for row in _rows(_json(root / gate._INVENTORY)["methods"])
         )
-        == 3
+        == 4
     )
 
 
