@@ -8,11 +8,29 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-PUBLISH-F82-F87-2026-10-29:human authorizes all current work through protected main.
-Verified43delivery hashes exactly match;local/fetched main5fa348b equal,index empty.
-Publish development checkpoint through ordinary branch/PR/latest required CI/merge/local
-main synchronization. Actual GitHub PR/refs/jobs own final status;no native/independent/
-CP06/device/release waiver,new feature,agents or administration.
+F88-GIT-UPLOAD2026-10-29:human requests uploading the completed F88work to Git.
+All8delivery inputs exactly match the final audit;fetched main still4cc0004,0ahead/behind.
+Commit/push only to owned codex/qt-f88-conversation-support-20261029;no main merge requested.
+This is the precommit authorization snapshot;actual commit/remote ref owns upload status.
+Reuse unchanged product verification;fresh document/scope checks before commit. No native,
+release,agents,new feature or administration. [Scope](docs/work_orders/QT-F88_CONVERSATION_SUPPORT_PLAN.md#git-upload-follow-up).
+
+QT-F88 LOCAL_ACCEPTED2026-10-29:self-review;primary5presentation support,related2/6/7.
+Reach-mode talk recalls the prior retained conversation-end support plan;activity lists
+latest2using each historical snapshot's own stock/pose/gate. One existing replay/snapshot,
+canonical projection,no new domain/format/IO/cache. Baseline direct/framed2missing-row FAIL;
+new18within166affectedPASS126.32s;strict271/Ruffboth/format14/import3+1/pip PASS.
+Old12modes whole outputs/core/protocol/pins/SQL EXACT;reach short/long differs only declared
+history rows. Current direct/framed8query samples<2s,max0.923s,whole outputs/source EXACT;
+paired long direct max1.024s. Current-host samples only. ExactCI31andfinal document/scope
+evidence in receipt. Native/independent/device/CP06/release holds remain;no publication/
+agents/goal action. One requested next task completed;no automatic further selection.
+[Order](docs/work_orders/QT-F88_CONVERSATION_SUPPORT_PLAN.md),[receipt](docs/reviews/QT-F88_EXECUTION_2026-10-29.md).
+
+PUBLISH-F82-F87-2026-10-29:local Git now contains PR19merge4cc0004 and delivery2c15df4;
+main equals the locally stored origin/main tracking ref. This supersedes the prior
+prepublication snapshot below;no fresh remote CI/read or publication performed for F88.
+Native/independent/CP06/device/release holds remain.
 [Order](docs/work_orders/PUBLISH_F82_F87_2026-10-29.md),[input snapshot](docs/reviews/PUBLISH_F82_F87_2026-10-29.md).
 
 QT-F87 LOCAL_ACCEPTED2026-10-29:self-review,primary5presentation support;related2/6/7.

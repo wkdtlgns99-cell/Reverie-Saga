@@ -445,3 +445,10 @@ The Python player now identifies pending dialogue,activity,memory and slot inspe
 (QT-F87). Readonly queries explain time/progress preservation;the actual result replaces
 the pending text. Existing input/error/cancel/close handling remains active.
 [Evidence](docs/reviews/QT-F87_EXECUTION_2026-10-29.md).
+
+Reach-aid talk also recalls the support plan at the previous retained conversation end
+(QT-F88);activity lists the latest two. Each projection uses its own verified stock,
+NPC position and gate state. These describe past plans,not executed aid;compact saves
+without retained conversation events explicitly lack older projections. Existing modes,
+save formats and game rules stay unchanged.
+[Evidence](docs/reviews/QT-F88_EXECUTION_2026-10-29.md).
