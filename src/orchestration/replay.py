@@ -13,13 +13,14 @@ from contracts.turn import (
 )
 from domain.canonical import (
     JsonObject, JsonValue, array_value, canonical_json, decode_json, exact_fields,
-    hash_document, int_value, object_value, text_value,
+    hash_document, int_value, object_value, text_value, tagged_hash,
 )
 from domain.state_types import (
     CoreSnapshot,
 )
-from contracts.state_io import StateIO
-from orchestration.serialization import _hex, _packages
+from contracts.state_io import StateIO, CheckpointEncoding
+from orchestration.serialization import _hex, _packages, RegisteredStateIO, hash_core_document
+from orchestration.turn import Driver
 
 
 
@@ -70,19 +71,31 @@ def _witness_document(witness: ReplayWitness) -> JsonObject:
             "facts": decode_json(witness.canonical_facts_json), "diff": decode_json(witness.canonical_diff_json)}
 
 
-def _validate_witness(step: ReplayStep, header: ReplayHeader, io: StateIO) -> None:
+def _validate_witness(step: ReplayStep, header: ReplayHeader, io: StateIO) -> JsonObject | None:
     if step.expected_witness is None:
-        return
+        return None
     w = _witness_document(step.expected_witness)
-    core = io.decode_core(object_value(w["core"]))
-    protocol = io.decode_protocol(object_value(w["protocol"]), core)
-    _pins(header, core)
-    io.validate_checkpoint(core, protocol)
-    hashes = (io.hash_core(core), hash_document("protocol/v1", w["protocol"]),
-              hash_document("turn-facts/v1", w["facts"]), hash_document("turn-diff/v1", w["diff"]))
+    if type(io) is RegisteredStateIO:
+        registered = io
+        decoded = registered._decode_checkpoint(object_value(w["core"]), object_value(w["protocol"]))
+        core, protocol = decoded.core, decoded.protocol
+        _pins(header, core)
+        registered._validate_decoded_checkpoint(decoded)
+        core_hash = decoded.core_hash
+        protocol_hash = tagged_hash("protocol/v1", decoded.protocol_document.to_bytes())
+    else:
+        core = io.decode_core(object_value(w["core"]))
+        protocol = io.decode_protocol(object_value(w["protocol"]), core)
+        _pins(header, core)
+        io.validate_checkpoint(core, protocol)
+        core_hash = io.hash_core(core)
+        protocol_hash = hash_document("protocol/v1", w["protocol"])
+    hashes = (core_hash, protocol_hash, hash_document("turn-facts/v1", w["facts"]),
+              hash_document("turn-diff/v1", w["diff"]))
     if hashes != (step.expected_core_hash, step.expected_protocol_hash, step.expected_facts_hash, step.expected_diff_hash):
         raise ValueError("corrupt witness digest")
     io.validate_effects(step.command, step.expected_outcome, core, protocol, w["facts"], w["diff"])
+    return w
 
 
 def _step_document(step: ReplayStep, io: StateIO) -> JsonObject:
@@ -210,6 +223,7 @@ class Runner:
 
     def run(self, trace: ReplayTrace) -> tuple[ReplayMismatch, ...]:
         io = self._io
+        witnesses: list[JsonObject | None] = []
         try:
             _header(_header_document(trace.header))
             _initial(trace.header, self._core, self._protocol, io)
@@ -221,26 +235,54 @@ class Runner:
                 io.decode_outcome(object_value(_outcome_document(step.expected_outcome, io)))
                 for digest in (step.expected_core_hash, step.expected_protocol_hash, step.expected_facts_hash, step.expected_diff_hash):
                     _hex(digest)
-                _validate_witness(step, trace.header, io)
-                if step.expected_witness is not None and object_value(_witness_document(step.expected_witness)["protocol"])["branch_id"] != self._protocol.branch_id:
+                witness = _validate_witness(step, trace.header, io)
+                witnesses.append(witness)
+                if witness is not None and object_value(witness["protocol"])["branch_id"] != self._protocol.branch_id:
                     raise ValueError("witness branch changed")
         except (CandidateError, ReadViewError, ValueError, TypeError, KeyError) as error:
             raise ReplayFormatError(str(error)) from error
         session = self._factory.restore(self._core, self._protocol)
         mismatches: list[ReplayMismatch] = []
         for index, step in enumerate(trace.steps):
-            session.driver.submit(step.command)
+            driver = session.driver
+            checkpoint: CheckpointEncoding | None = None
+            if type(driver) is Driver and driver._encoding_owner(io):
+                _, checkpoint = driver._submit_with_checkpoint(step.command)
+            else:
+                driver.submit(step.command)
             publication = session.last_publication()
             # Replay compares simulation effects; presentation is outside its witness contract.
             p = io.encode_publication(replace(publication, cues=()))
-            actual: JsonObject = {"core": io.encode_core(session.snapshot()), "protocol": io.encode_protocol(session.protocol()),
+            actual_core = object_value(checkpoint.core_document.value) if checkpoint is not None else io.encode_core(session.snapshot())
+            if checkpoint is not None:
+                actual_protocol = object_value(checkpoint.protocol_document.value)
+                core_hash = checkpoint.core_hash
+                protocol_bytes = checkpoint.protocol_document.to_bytes()
+            elif type(io) is RegisteredStateIO:
+                registered = io
+                owned_protocol = registered._protocol_document(session.protocol())
+                actual_protocol = object_value(owned_protocol.value)
+                core_hash = hash_core_document(actual_core)
+                protocol_bytes = owned_protocol.to_bytes()
+            else:
+                actual_protocol = io.encode_protocol(session.protocol())
+                core_hash = io.hash_core(session.snapshot())
+                protocol_bytes = canonical_json(actual_protocol)
+            actual: JsonObject = {"core": actual_core, "protocol": actual_protocol,
                                   "facts": p["facts"], "diff": p["diff"]}
-            hashes = (io.hash_core(session.snapshot()), hash_document("protocol/v1", actual["protocol"]),
-                      hash_document("turn-facts/v1", actual["facts"]), hash_document("turn-diff/v1", actual["diff"]))
+            facts_bytes = canonical_json(actual["facts"])
+            diff_bytes = canonical_json(actual["diff"])
+            hashes = (core_hash, tagged_hash("protocol/v1", protocol_bytes),
+                      tagged_hash("turn-facts/v1", facts_bytes), tagged_hash("turn-diff/v1", diff_bytes))
             expected_hashes = (step.expected_core_hash, step.expected_protocol_hash, step.expected_facts_hash, step.expected_diff_hash)
-            expected = None if step.expected_witness is None else _witness_document(step.expected_witness)
-            for key, expected_hash, actual_hash in zip(("core", "protocol", "facts", "diff"), expected_hashes, hashes):
-                difference = None if expected is None else _first(expected[key], actual[key], "$" + key)
+            expected = witnesses[index]
+            expected_witness = step.expected_witness
+            actual_bytes = (canonical_json(actual["core"]), protocol_bytes, facts_bytes, diff_bytes) if expected_witness is not None else ()
+            expected_bytes = (expected_witness.canonical_core_json, expected_witness.canonical_protocol_json,
+                              expected_witness.canonical_facts_json, expected_witness.canonical_diff_json) if expected_witness is not None else ()
+            for part, (key, expected_hash, actual_hash) in enumerate(zip(("core", "protocol", "facts", "diff"), expected_hashes, hashes)):
+                # Equal canonical bytes already establish exact type/value equality.
+                difference = None if expected is None or actual_bytes[part] == expected_bytes[part] else _first(expected[key], actual[key], "$" + key)
                 if difference is not None:
                     mismatches.append(ReplayMismatch(index, *difference))
                 elif expected_hash != actual_hash:

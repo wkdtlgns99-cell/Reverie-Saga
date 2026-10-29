@@ -972,6 +972,49 @@ namespace ReverieSaga
                 room.NpcPositionForVerification==new Vector3(value%3,.5f,-(value/3)),label);
         }
 
+        IEnumerator ReachAidFlow()
+        {
+            room.SelectWaitDuration(0);
+            Check(room.NpcReachAidEnabled&&room.NpcReadyPatrolEnabled,"reach_aid_selection");
+            yield return Intent("down");yield return Intent("talk");yield return Intent("up");
+            for(int tick=4;tick<=14;tick++)
+            {
+                yield return Intent("wait");
+                Check(room.Latest.update.view.tick==tick.ToString()&&!room.Latest.update.view.gate_open,
+                    "reach_aid_closed_"+tick);
+                if(tick==9||tick==14)
+                {
+                    CheckPatrolCell(tick==9?"6":"7","reach_aid_pose_"+tick);
+                    string bytes=FileHash(room.Latest.update.working_path);
+                    room.InspectActivity();yield return Ready();
+                    string plan=tick==9?
+                        "NPC 지원 계획 · 공동 물자가 확보되어 통행문 옆 작업 지점에 도착해야 통행을 도울 수 있습니다.":
+                        "NPC 지원 계획 · 공동 물자가 확보되어 가까이 있는 NPC에게 통행 지원을 요청할 수 있습니다.";
+                    Check(Array.IndexOf(room.Latest.update.messages,plan)>=0&&
+                        FileHash(room.Latest.update.working_path)==bytes,"reach_aid_readonly_plan_"+tick);
+                    yield return Intent("save");
+                }
+            }
+            room.InspectPreviousSlot();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,
+                "선택 저장 NPC 지원 계획 · 공동 물자가 확보되어 통행문 옆 작업 지점에 도착해야 통행을 도울 수 있습니다.")>=0,
+                "reach_aid_saved_pose");
+            yield return Intent("bell");
+            Check(room.Latest.update.view.tick=="15"&&room.Latest.update.view.gate_open&&
+                room.Latest.update.view.npc_replies=="1","reach_aid_adjacent_answer");
+            string answered=FileHash(room.Latest.update.working_path);
+            yield return Intent("retry");
+            Check(FileHash(room.Latest.update.working_path)==answered,"reach_aid_retry");
+            yield return Intent("load");
+            Check(room.Latest.update.view.tick=="14"&&!room.Latest.update.view.gate_open,"reach_aid_load");
+            int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.NpcReachAidEnabled&&room.BrainProcessId!=pid,"reach_aid_reconnect");
+            yield return Intent("bell");
+            Check(room.Latest.update.view.gate_open&&room.Latest.update.view.npc_replies=="1",
+                "reach_aid_reconnected_answer");
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
+        }
+
         IEnumerator ReadyPatrolFlow()
         {
             const string policy="NPC 지원 준비 · 의뢰 진행 중 통행문이 닫혀 있고 공동 물자가 2개 미만이면 원래 작업 지점 복귀·대기를 우선합니다.";
@@ -1731,6 +1774,8 @@ namespace ReverieSaga
                 case "invalid-supply-aid-selection":return "NPC_SUPPLY_AID_SELECTION";
                 case "invalid-call-pause":return "NPC_CALL_PAUSE_CONTENT";
                 case "invalid-call-pause-selection":return "NPC_CALL_PAUSE_SELECTION";
+                case "invalid-reach-aid":return "NPC_REACH_AID_CONTENT";
+                case "invalid-reach-aid-selection":return "NPC_REACH_AID_SELECTION";
                 case "invalid-ready-patrol":return "NPC_READY_PATROL_CONTENT";
                 case "invalid-ready-patrol-selection":return "NPC_READY_PATROL_SELECTION";
                 case "invalid-quest-patrol":return "NPC_QUEST_PATROL_CONTENT";
@@ -1776,6 +1821,7 @@ namespace ReverieSaga
                 yield return InspectSlot("initial_slot_missing",null);
             }
             if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
+                if(room.NpcReachAidEnabled){yield return ReachAidFlow();yield break;}
                 if(room.NpcReadyPatrolEnabled){yield return ReadyPatrolFlow();yield break;}
                 if(room.NpcCallPauseEnabled){yield return CallPausePatrolFlow();yield break;}
                 if(room.NpcQuestPatrolEnabled){yield return QuestPatrolFlow();yield break;}

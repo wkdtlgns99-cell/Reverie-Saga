@@ -400,3 +400,48 @@ plan snapshots,even if its authoritative memory contains past talks. No new flag
 format/state/pins/extra replay/IO/cache. Current362affected/35new/CI31/old10parity/
 new11declared-row-only parity/actual original-source queries pass;native and ENV-001
 required current import/successful full gates remain held (IMPLEMENTED_ENV_BLOCKED). [Order](docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md).
+
+
+### Physical NPC passage assistance (QT-F82)
+
+Add `--npc-reach-aid` to either client CLI with `--npc-ready-patrol` and all its parents.
+Use a new working file (for example `tmp/npc-reach-aid/game.sqlite`);existing saves retain
+their rules identity and are never repinned. Missing parent/non-bool API selections reject
+`NPC_REACH_AID_CONTENT` before save/thread creation. The new identity is
+`quest.harbor-reach-aid-v1`. The NPC needs prior committed stock of at least two and a
+position adjacent to the passage;arrival during the same phase cannot qualify early.
+Talk/activity and selected-save comparison describe each snapshot's actual position.
+[Contract](docs/work_orders/QT-F82_REACH_GATE_AID.md),
+[verification](docs/reviews/QT-F82_EXECUTION_2026-10-29.md).
+
+
+Reach-mode answered calls also show the existing support plan labelled as current state
+after the response (QT-F83). Exact retries produce no additional plan;the presentation
+neither infers past failure reasons nor changes assistance timing or stored state.
+[Contract](docs/work_orders/QT-F83_CALL_SUPPORT_FEEDBACK.md),
+[evidence](docs/reviews/QT-F83_EXECUTION_2026-10-29.md).
+
+
+### Verified-query conversion cost (QT-F84)
+
+Checkpoint validation reuses freshly owned command conversion results within that one
+operation,without persistent caches,skipping replay or truncating history. Paired12query
+samples preserve complete outputs and SQLite dumps:mean1.845204->1.427486s,
+max4.948312->3.726747s. All4long talk/activity samples still exceed the2sTARGET;
+all12remain below the10sdeadline. This is measured improvement,not global latency or
+minimum-spec acceptance. [Evidence](docs/reviews/QT-F84_EXECUTION_2026-10-29.md).
+
+Reach-mode answered calls now also present the existing current next-patrol-step plan
+(QT-F85),including occupied-target waits. This shares the current support snapshot and
+neither promises a future event nor adds a replay/query/state change. Exact retries add
+no plan. [Evidence](docs/reviews/QT-F85_EXECUTION_2026-10-29.md).
+
+QT-F86qualifies the same12query samples below2s on the current host:maximum1.833s;
+three extra repetitions of each formerly slow case also pass,maximum1.952s. Complete
+outputs/storage remain identical;full3599PASS. This supersedes the F84sample misses,
+not global history/device/minimum-spec performance. [Evidence](docs/reviews/QT-F86_EXECUTION_2026-10-29.md).
+
+The Python player now identifies pending dialogue,activity,memory and slot inspections
+(QT-F87). Readonly queries explain time/progress preservation;the actual result replaces
+the pending text. Existing input/error/cancel/close handling remains active.
+[Evidence](docs/reviews/QT-F87_EXECUTION_2026-10-29.md).

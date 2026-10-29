@@ -67,3 +67,39 @@ change. Stale fixture12equals14Supplyand is valid;use8for a truly different prio
 Full player/query/native-source wiring remains unfinished. Actual latest CI/PR/merge
 evidence belongs to [checkpoint](../reviews/MAIN_INTEGRATION_2026-10-29.md),not a new
 feature acceptance or release/native/independent-review waiver.
+
+
+## Stage B/C continuation on C:/ReverieSaga — 2026-10-29
+
+QT-F82 PYTHON_VERIFIED_NATIVE_NOT_RUN2026-10-29:StageB runtime/durable/restore/query/
+worker/Tk/both CLI/framed bridge and native selection/path/reconnect/source verifier are
+connected. Actual current/saved plans use their own NPC pose and canonical adjacency.
+Original full3518PASS/24FAIL1347.57s;17failed cases then7remaining cases PASS after
+permitted local-server/hardlink execution,correct PYTHONPATH,and a production fix preserving
+the old optional projection callback signature. All3542original collected cases qualified;
+5additional new vector cases qualified separately:3547distinct cases. Affected146PASS/
+5new fixture-vector failures,then corrected new5PASS (3+4with2overlaps). Original tests,
+goldens,checkers and engine sources unchanged by this continuation. Ruffboth/strict262/
+imports3+1/pip PASS. Baseline main vs current all12modes(default plus11opt-in) complete
+outputs/core/protocol/SQLite dumps EXACT. Actual12short/long direct/framed queries:
+mean2.014210s,max5.380210s,4miss2sTARGET,all<10sdeadline;no global2s/speedup claim.
+Native compile/editor/render/build NOT_RUN AWAY001;new-head remote CI NOT_RUN,no publication.
+Primary2internal calculation;related5/6/7;existing independent/CP06/release holds remain.
+[Order](../work_orders/QT-F82_REACH_GATE_AID.md).
+Human now requests exactly one further bounded task after this completion;no general loop,
+agents,publication or native waiver. F83response-time current support presentation selected.
+
+Evidence:tmp/qtf82-local/full.log,recovery.log,recovery-env.log,affected.log,vectors.log,
+short.log,parity-before2/results.json,parity-after/results.json,performance-summary.json.
+The original full invocation omitted PYTHONPATH for child-module tests;the corrected
+process environment resolves those failures without changing product/test/security settings.
+Two old projection fault-injection callbacks rejected the new false keyword;the old
+invocation shape is now preserved when reach mode is disabled. Existing tests were retained.
+The additional five fixtures initially assumed the wrong harbor routing/NPC phase;blocked
+cell1,enemy8 and actual NPC6/7positions informed corrected independent player input vectors.
+Four performance cases PASS57.15s;quest/report/reward/source-preserving clone case PASS in
+prior3PASS/2FAIL56.02srun. Actual complete mode parity compares every selected update,
+authoritative snapshots/protocol and complete SQL dumps,excluding only attachment/path fields.
+No engine/CORE/format/golden/checker change in this continuation. Native source was reviewed
+for selection precedence,strict flag,parent rejection,isolated path,forwarding,reconnect and
+matching numeric scenario;this is not native execution/compilation qualification.

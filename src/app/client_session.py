@@ -27,8 +27,12 @@ from app.npc_activity import (
 )
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
-from app.npc_support_status import support_slot_messages
-from app.npc_patrol_status import quest_patrol_slot_messages, quest_patrol_step_slot_messages
+from app.npc_support_status import support_slot_messages, supply_support_plan
+from app.npc_patrol_status import (
+    quest_patrol_slot_messages,
+    quest_patrol_step_slot_messages,
+    quest_patrol_next_step,
+)
 from domain.npc_cycle import CycleRecord
 from domain.npc_patrol import patrol_cells
 from app.npc_work import bootstrap_work, stock_text, work_bundle
@@ -41,7 +45,7 @@ from contracts.messages import CommandPayload
 from contracts.persistence import DurableCheckpoint, SaveError
 from contracts.trial import MoveCommand
 from contracts.turn import GameCommand, TurnCommitted, TurnPublication
-from contracts.watch import BellCommand, WaitCommand
+from contracts.watch import BellCommand, WaitCommand, WatchReplied
 from domain.encounter import (
     ATTACK_PROFILE_ID,
     GateRecord,
@@ -134,6 +138,7 @@ class ClientSession:
         npc_quest_patrol: bool = False,
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
+        npc_reach_aid: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -173,11 +178,14 @@ class ClientSession:
             raise ValueError("NPC_CALL_PAUSE_CONTENT")
         if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
             raise ValueError("NPC_READY_PATROL_CONTENT")
+        if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
+            raise ValueError("NPC_REACH_AID_CONTENT")
         self._npc_patrol = npc_patrol
         self._npc_talk_pause = npc_talk_pause
         self._npc_quest_patrol = npc_quest_patrol
         self._npc_call_pause = npc_call_pause
         self._npc_ready_patrol = npc_ready_patrol
+        self._npc_reach_aid = npc_reach_aid
         self._npc_work = npc_work
         self._names = MappingProxyType(
             {
@@ -200,6 +208,7 @@ class ClientSession:
                 npc_quest_patrol=npc_quest_patrol,
                 npc_call_pause=npc_call_pause,
                 npc_ready_patrol=npc_ready_patrol,
+                npc_reach_aid=npc_reach_aid,
             )
             if npc_cycle
             else work_bundle(quest_content)
@@ -228,6 +237,7 @@ class ClientSession:
                     npc_quest_patrol=npc_quest_patrol,
                     npc_call_pause=npc_call_pause,
                     npc_ready_patrol=npc_ready_patrol,
+                    npc_reach_aid=npc_reach_aid,
                 )
                 if npc_cycle
                 else bootstrap_work(spec, quest_content)
@@ -326,6 +336,7 @@ class ClientSession:
                     npc_quest_patrol=self._npc_quest_patrol,
                     npc_call_pause=self._npc_call_pause,
                     npc_ready_patrol=self._npc_ready_patrol,
+                    npc_reach_aid=self._npc_reach_aid,
                 )
                 if self._npc_cycle
                 else activity_messages(
@@ -431,6 +442,7 @@ class ClientSession:
                         npc_quest_patrol=self._npc_quest_patrol,
                         npc_call_pause=self._npc_call_pause,
                         npc_ready_patrol=self._npc_ready_patrol,
+                        npc_reach_aid=self._npc_reach_aid,
                     )
                 except (SaveError, OSError) as error:
                     logging.getLogger(__name__).exception(
@@ -471,6 +483,40 @@ class ClientSession:
                 update = replace(
                     update, messages=(*update.messages, *recollection, stock_text(stock))
                 )
+        if (
+            self._npc_reach_aid
+            and isinstance(outcome, TurnCommitted)
+            and any(
+                isinstance(event.payload, WatchReplied)
+                and event.payload.npc_id == self._layout.npc_id
+                for event in publication.facts
+            )
+        ):
+            try:
+                core = self._owner.snapshot()
+                plan = (
+                    *supply_support_plan(
+                        core,
+                        self._layout,
+                        error_code="NPC_RECOLLECTION_SOURCE",
+                        npc_call_aid=True,
+                        npc_reach_aid=True,
+                    ),
+                    *quest_patrol_next_step(
+                        core,
+                        self._layout,
+                        error_code="NPC_RECOLLECTION_SOURCE",
+                        npc_ready_patrol=True,
+                    ),
+                )
+            except SaveError as error:
+                logging.getLogger(__name__).exception("committed reply support projection failed")
+                raise SaveError(
+                    "NPC_RECOLLECTION_SOURCE", "reply committed;current support plan unavailable"
+                ) from error
+            update = replace(
+                update, messages=(*update.messages, *("응답 후 현재 " + line for line in plan))
+            )
         return update
 
     def act(self, action: ClientAction, *, seconds: int = 1) -> ClientUpdate:
@@ -562,9 +608,21 @@ class ClientSession:
                 raise SaveError("SAVE_INSPECT_FAILED", error.code) from error
             if self._npc_supply_aid:
                 try:
-                    messages += support_slot_messages(
-                        checkpoint.core, current.core, self._layout, npc_call_aid=self._npc_call_aid
-                    )
+                    if self._npc_reach_aid:
+                        messages += support_slot_messages(
+                            checkpoint.core,
+                            current.core,
+                            self._layout,
+                            npc_call_aid=self._npc_call_aid,
+                            npc_reach_aid=True,
+                        )
+                    else:
+                        messages += support_slot_messages(
+                            checkpoint.core,
+                            current.core,
+                            self._layout,
+                            npc_call_aid=self._npc_call_aid,
+                        )
                 except SaveError:
                     logging.getLogger(__name__).exception("NPC support slot plan comparison failed")
                     raise

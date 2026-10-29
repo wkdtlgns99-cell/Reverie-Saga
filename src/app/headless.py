@@ -109,12 +109,17 @@ def _restore(core: CoreSnapshot, protocol: ProtocolSnapshot, bundles: tuple[Feat
     if schedule is not None and schedule != selected_io.schedule:
         raise BootstrapError("INVALID_ACTIVATION", "checkpoint schedule fingerprint")
     return _Session(Driver(core, protocol, bundles, selected_io.schedule, rng, io=selected_io,
-                           commit_port=commit_port), selected_io)
+                           commit_port=commit_port,
+                           checkpoint_encoding=selected_io if type(selected_io) is RegisteredStateIO else None), selected_io)
 
 
 def restore_checkpoint(core: CoreSnapshot, protocol: ProtocolSnapshot, *,
                        bundles: tuple[FeatureBundle, ...], rng: RngService | None = None) -> HeadlessSession:
-    io = state_io(bundles)
+    return _restore_checkpoint(core, protocol, bundles=bundles, io=state_io(bundles), rng=rng)
+
+
+def _restore_checkpoint(core: CoreSnapshot, protocol: ProtocolSnapshot, *, bundles: tuple[FeatureBundle, ...],
+                        io: StateIO, rng: RngService | None = None) -> HeadlessSession:
     validate_checkpoint(core, protocol, io=io)
     return _restore(core, protocol, bundles,
                     rng if rng is not None else CounterRngService(core.world_seed_hex, core.world_id, rng_purposes()), io=io)

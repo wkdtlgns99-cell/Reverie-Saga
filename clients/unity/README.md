@@ -549,3 +549,17 @@ F81adds Python ready-mode prior-conversation plan messages through the existing 
 message consumer;native sources/selection/scene/wire remain unchanged. Current Python
 362affected/35new/CI31/old10parity/new11only-declared-row parity/query-source checks pass. Fresh text/layout/native/compile/build NOT_RUN AWAY-001;no historical native
 result qualifies these new rows. [Scope](../../docs/work_orders/QT-F81_CONVERSATION_PATROL_PLAN.md).
+
+
+## F82 physical passage assistance source selection
+
+`REVERIE_UNITY_NPC_REACH_AID=1` requires `REVERIE_UNITY_NPC_READY_PATROL=1` and all
+existing parents. Absent/0 retains old selection;other values reject
+`NPC_REACH_AID_SELECTION`,missing parent rejects `NPC_REACH_AID_CONTENT` before child/save
+creation. Default isolated storage: `tmp/unity-play/harbor-reach-aid/<catalog-pin>/game.sqlite`.
+Explicit working paths retain normal ruleset validation. Reconnect forwards the same mode.
+`ReachAidFlow` is selected before the parent ready flow and checks prior-position timing,
+current/saved plans,save/load,retry and reconnect. Native compilation/editor/render/build
+remain NOT_RUN under AWAY-001;Python framed execution is separate evidence.
+[Contract](../../docs/work_orders/QT-F82_REACH_GATE_AID.md),
+[evidence](../../docs/reviews/QT-F82_EXECUTION_2026-10-29.md).

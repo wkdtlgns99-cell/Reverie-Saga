@@ -6,6 +6,7 @@ import json
 from types import MappingProxyType
 from typing import cast
 import unicodedata
+from dataclasses import dataclass
 
 type JsonValue = None | bool | int | str | tuple[JsonValue, ...] | Mapping[str, JsonValue]
 type JsonObject = Mapping[str, JsonValue]
@@ -16,43 +17,116 @@ def seal(value: object, depth: int = 0) -> JsonValue:
     return cast(JsonValue, _convert(value, depth, immutable=True))
 
 
-def _convert(value: object, depth: int, *, immutable: bool) -> object:
+def _convert(
+    value: object,
+    depth: int,
+    immutable: bool,
+    owned_children: frozenset[int] | None = None,
+    maximum: list[int] | None = None,
+) -> object:
     """Validate once while building the owned representation needed by the caller."""
     if depth > 32:
         raise ValueError("JSON nesting exceeds32")
-    if value is None or type(value) is bool or type(value) is int:
+    if maximum is not None and depth > maximum[0]:
+        maximum[0] = depth
+    kind = type(value)
+    if owned_children is not None and kind is CanonicalDocument and id(value) in owned_children:
+        document = cast(CanonicalDocument, value)
+        if depth + document._depth > 32:
+            raise ValueError("JSON nesting exceeds32")
+        if maximum is not None and depth + document._depth > maximum[0]:
+            maximum[0] = depth + document._depth
+        return document.value
+    if value is None or kind is bool or kind is int:
         return value
-    if isinstance(value, str):
+    if kind is str or isinstance(value, str):
+        value = cast(str, value)
         if unicodedata.normalize("NFC", value) != value:
             raise ValueError("non-NFC string")
         value.encode("utf-8", errors="strict")
         return value
-    if isinstance(value, (list, tuple)):
+    if kind is list or kind is tuple or isinstance(value, (list, tuple)):
         children = (
-            _convert(v, depth + 1, immutable=immutable)
+            _convert(v, depth + 1, immutable, owned_children, maximum)
             for v in cast(list[object] | tuple[object, ...], value)
         )
         return tuple(children) if immutable else list(children)
-    if isinstance(value, Mapping):
+    if kind is dict or kind is MappingProxyType or isinstance(value, Mapping):
         pairs = cast(Mapping[object, object], value)
         result: dict[str, object] = {}
         for key, child in pairs.items():
             if not isinstance(key, str):
                 raise ValueError("JSON object keys must be strings")
-            _convert(key, depth + 1, immutable=immutable)
-            result[key] = _convert(child, depth + 1, immutable=immutable)
+            _convert(key, depth + 1, immutable, owned_children, maximum)
+            result[key] = _convert(child, depth + 1, immutable, owned_children, maximum)
         return MappingProxyType(result) if immutable else result
     raise ValueError("unsupported canonical value")
 
 
-def canonical_json(value: JsonValue) -> bytes:
+def _proxy_document(value: object) -> object:
+    if type(value) is MappingProxyType:
+        return dict(cast(JsonObject, value))
+    raise TypeError("unsupported JSON document")
+
+
+def _json_bytes(value: object) -> bytes:
     return json.dumps(
-        _convert(value, 0, immutable=False),
+        value,
         ensure_ascii=False,
         sort_keys=True,
         separators=(",", ":"),
         allow_nan=False,
+        default=_proxy_document,
     ).encode("utf-8")
+
+
+def _owned_height(value: JsonValue) -> int:
+    kind = type(value)
+    if kind is tuple:
+        children = cast(tuple[JsonValue, ...], value)
+        return 0 if not children else 1 + max(_owned_height(child) for child in children)
+    if kind is MappingProxyType:
+        values = cast(JsonObject, value)
+        return 0 if not values else 1 + max(_owned_height(child) for child in values.values())
+    return 0
+
+
+@dataclass(frozen=True, slots=True, init=False)
+class CanonicalDocument:
+    """An owned immutable JSON value,composable only through fresh checked construction."""
+
+    value: JsonValue
+    _depth: int
+
+    def __init__(self, value: object, *, children: tuple[CanonicalDocument, ...] = ()) -> None:
+        if any(type(child) is not CanonicalDocument for child in children):
+            raise ValueError("unsupported canonical value")
+        maximum = [0]
+        selected = frozenset(id(child) for child in children) if children else None
+        owned = _convert(value, 0, immutable=True, owned_children=selected, maximum=maximum)
+        object.__setattr__(self, "value", cast(JsonValue, owned))
+        object.__setattr__(self, "_depth", maximum[0])
+
+    def select(self, keys: tuple[str, ...]) -> CanonicalDocument:
+        source = object_value(self.value)
+        values: dict[str, JsonValue] = {}
+        for key in keys:
+            if not isinstance(key, str):
+                raise ValueError("JSON object keys must be strings")
+            seal(key)
+            values[key] = source[key]
+        owned = MappingProxyType(values)
+        result = object.__new__(CanonicalDocument)
+        object.__setattr__(result, "value", owned)
+        object.__setattr__(result, "_depth", _owned_height(owned))
+        return result
+
+    def to_bytes(self) -> bytes:
+        return _json_bytes(self.value)
+
+
+def canonical_json(value: JsonValue) -> bytes:
+    return _json_bytes(_convert(value, 0, immutable=False))
 
 
 def pack(tokens: tuple[str, ...]) -> bytes:

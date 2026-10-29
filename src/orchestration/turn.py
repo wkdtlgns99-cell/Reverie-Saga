@@ -20,7 +20,7 @@ from contracts.persistence import (
     WorldUnavailable,
 )
 from contracts.skeleton import CommandRoute, FeatureBundle
-from contracts.state_io import StateIO
+from contracts.state_io import StateIO, CheckpointEncodingIO, CheckpointEncoding
 from contracts.turn import (
     CapabilityManifest,
     CompiledSchedule,
@@ -218,6 +218,7 @@ class Driver:
         *,
         io: StateIO,
         commit_port: DurableCommitPort | None = None,
+        checkpoint_encoding: CheckpointEncodingIO | None = None,
     ) -> None:
         validate_registry(bundles, schedule)
         if io.schedule != schedule or io.pins != core.pins:
@@ -229,7 +230,10 @@ class Driver:
         ):
             raise BootstrapError("DUPLICATE_SCHEMA", "state IO/registry pins")
         io.validate_checkpoint(core, protocol)
+        if checkpoint_encoding is not None and checkpoint_encoding is not io:
+            raise ValueError("checkpoint encoding owner differs")
         self._io = io
+        self._checkpoint_encoding = checkpoint_encoding
         self._head = _Head(core, protocol)
         self._bundles = bundles
         self._schedule = schedule
@@ -401,12 +405,27 @@ class Driver:
         return outcome
 
     def submit(self, command: GameCommand) -> TurnOutcome:
+        return self._submit_operation(command, None)
+
+    def _encoding_owner(self, io: StateIO) -> bool:
+        return self._checkpoint_encoding is io
+
+    def _submit_with_checkpoint(
+        self, command: GameCommand
+    ) -> tuple[TurnOutcome, CheckpointEncoding | None]:
+        captured: list[CheckpointEncoding] = []
+        outcome = self._submit_operation(command, captured)
+        return outcome, captured[0] if captured else None
+
+    def _submit_operation(
+        self, command: GameCommand, captured: list[CheckpointEncoding] | None
+    ) -> TurnOutcome:
         self._active()
         if self._busy:
             raise RuntimeError("one authoritative turn at a time")
         self._busy = True
         try:
-            return self._submit(command)
+            return self._submit(command, captured)
         finally:
             self._busy = False
 
@@ -747,7 +766,7 @@ class Driver:
 
     def _prepare_commit(
         self, command: GameCommand, checked: _CheckedCommand, simulation: _Candidate, target: Tick
-    ) -> tuple[_Head, TurnPublication]:
+    ) -> tuple[_Head, TurnPublication, CheckpointEncoding | None]:
         core, protocol = self._head.core, self._head.protocol
         bus = simulation.bus
         candidate = replace(
@@ -756,12 +775,19 @@ class Driver:
             tick=target,
             pending=bus.finish(target) if bus is not None else core.pending,
         )
+        encoder = self._checkpoint_encoding
+        encoded_core = encoder._encode_core_for_commit(candidate) if encoder is not None else None
+        core_hash = (
+            encoder._hash_core_encoding(encoded_core)
+            if encoder is not None and encoded_core is not None
+            else self._io.hash_core(candidate)
+        )
         receipt = CommitReceipt(
             command.command_id,
             protocol.revision,
             WorldRevision(protocol.revision + 1),
             target,
-            self._io.hash_core(candidate),
+            core_hash,
         )
         next_protocol = replace(
             protocol,
@@ -781,12 +807,21 @@ class Driver:
         prepared = TurnPublication(
             outcome, tuple(simulation.facts), diff, (), bus.diagnostics if bus is not None else ()
         )
-        self._io.validate_checkpoint(candidate, next_protocol)
+        checkpoint = None
+        if encoder is not None and encoded_core is not None:
+            checkpoint = encoder._validate_core_encoding(encoded_core, next_protocol)
+        else:
+            self._io.validate_checkpoint(candidate, next_protocol)
         encoded = self._io.encode_publication(prepared)
-        self._io.validate_effects(
-            command, outcome, candidate, next_protocol, encoded["facts"], encoded["diff"]
-        )
-        return _Head(candidate, next_protocol), prepared
+        if encoder is not None and checkpoint is not None:
+            encoder._validate_effects_encoding(
+                checkpoint, command, outcome, encoded["facts"], encoded["diff"]
+            )
+        else:
+            self._io.validate_effects(
+                command, outcome, candidate, next_protocol, encoded["facts"], encoded["diff"]
+            )
+        return _Head(candidate, next_protocol), prepared, checkpoint
 
     def _commit(
         self, command: GameCommand, head: _Head, prepared: TurnPublication
@@ -811,7 +846,9 @@ class Driver:
         self._blocked_code = None
         return None
 
-    def _submit(self, command: GameCommand) -> TurnOutcome:
+    def _submit(
+        self, command: GameCommand, captured: list[CheckpointEncoding] | None = None
+    ) -> TurnOutcome:
         checked = self._check_command(command)
         if not isinstance(checked, _CheckedCommand):
             return checked
@@ -820,7 +857,7 @@ class Driver:
             if isinstance(admission, TurnRejected):
                 return admission
             simulation = self._simulate(admission)
-            head, prepared = self._prepare_commit(
+            head, prepared, checkpoint = self._prepare_commit(
                 command, checked, simulation, admission.plan.target_tick
             )
             aborted = self._commit(command, head, prepared)
@@ -843,7 +880,15 @@ class Driver:
             aborted = TurnAborted(failure(code))
             self._publication = TurnPublication(aborted, (), None, (), ())
             return aborted
-        return self._present(prepared, head.core)
+        outcome = self._present(prepared, head.core)
+        if (
+            captured is not None
+            and checkpoint is not None
+            and self._head.core is checkpoint.core
+            and self._head.protocol is checkpoint.protocol
+        ):
+            captured.append(checkpoint)
+        return outcome
 
     def _present(self, prepared: TurnPublication, candidate: CoreSnapshot) -> TurnOutcome:
         outcome = prepared.outcome

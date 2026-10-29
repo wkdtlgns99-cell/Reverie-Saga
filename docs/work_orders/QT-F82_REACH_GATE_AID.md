@@ -1,6 +1,6 @@
 # QT-F82 — Gate assistance requires the NPC to reach the passage
 
-Status:IN_PROGRESS_STAGE_A_CORE2026-10-29. Current Codex local self-review,not independent acceptance.
+Status:PYTHON_VERIFIED_NATIVE_NOT_RUN2026-10-29. Current Codex local self-review,not independent acceptance.
 Authority:original human-resumed automatic NPC/world development;actual goal ACTIVE.
 Primary2internal calculation;related5/6/7. New bounded opt-in physical interaction rule.
 
@@ -68,3 +68,9 @@ change. Stale fixture12equals14Supplyand is valid;use8for a truly different prio
 Full player/query/native-source wiring remains unfinished. Actual latest CI/PR/merge
 evidence belongs to [checkpoint](../reviews/MAIN_INTEGRATION_2026-10-29.md),not a new
 feature acceptance or release/native/independent-review waiver.
+
+
+Current StageB/C continuation supersedes earlier unfinished-stage statements;see the
+[receipt](../reviews/QT-F82_EXECUTION_2026-10-29.md).
+Both import contracts now run on this PC;historical ENV001is not inferred for this host.
+Native/remote publication/independent/release and measured2sTARGET limits remain explicit.
