@@ -52,6 +52,8 @@ namespace ReverieSaga
         bool npcWork;
         bool npcCycle;
         bool npcAid;
+        bool npcReachAid;
+        public bool NpcReachAidEnabled { get { return npcReachAid; } }
         bool npcReadyPatrol;
         public bool NpcReadyPatrolEnabled { get { return npcReadyPatrol; } }
         bool npcCallPause;
@@ -68,7 +70,7 @@ namespace ReverieSaga
         public bool NpcSupplyAidEnabled { get { return npcSupplyAid; } }
         public bool NpcAidEnabled { get { return npcAid; } }
         public bool NpcCycleEnabled { get { return npcCycle; } }
-        public string NpcModeLabel { get { return npcReadyPatrol?"NPC 지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcCallPause?"NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcQuestPatrol?"NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcTalkPause?"NPC 대화 대기·순찰·호출 지원·물자·반복 작업·기억 모드":npcPatrol?"NPC 순찰·호출 지원·물자·반복 작업·기억 모드":npcCallAid?"NPC 호출 지원·물자·반복 작업·기억 모드":npcSupplyAid?"NPC 물자 2개 확보 후 지원·반복 작업·기억 모드":npcAid?"NPC 의뢰 지원·반복 작업·기억 모드":npcCycle?"NPC 반복 작업·기억 모드":npcWork?"NPC 비축·기억 모드":npcMemory?"NPC 대화 기억 모드":"기본 모드"; } }
+        public string NpcModeLabel { get { return npcReachAid?"NPC 인접 통행 지원·지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcReadyPatrol?"NPC 지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcCallPause?"NPC 호출 응답 대기·의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcQuestPatrol?"NPC 의뢰 순찰·대화 대기·호출 지원·물자·반복 작업·기억 모드":npcTalkPause?"NPC 대화 대기·순찰·호출 지원·물자·반복 작업·기억 모드":npcPatrol?"NPC 순찰·호출 지원·물자·반복 작업·기억 모드":npcCallAid?"NPC 호출 지원·물자·반복 작업·기억 모드":npcSupplyAid?"NPC 물자 2개 확보 후 지원·반복 작업·기억 모드":npcAid?"NPC 의뢰 지원·반복 작업·기억 모드":npcCycle?"NPC 반복 작업·기억 모드":npcWork?"NPC 비축·기억 모드":npcMemory?"NPC 대화 기억 모드":"기본 모드"; } }
         public bool NpcWorkEnabled { get { return npcWork; } }
         public string QuestCatalog { get { return questCatalog; } }
         public bool NpcMemoryEnabled { get { return npcMemory; } }
@@ -143,6 +145,10 @@ namespace ReverieSaga
                 if(!String.IsNullOrEmpty(readyPatrolSelection)&&readyPatrolSelection!="0"&&readyPatrolSelection!="1")
                     throw new IOException("NPC_READY_PATROL_SELECTION");
                 npcReadyPatrol=readyPatrolSelection=="1";
+                string reachAidSelection=Environment.GetEnvironmentVariable("REVERIE_UNITY_NPC_REACH_AID");
+                if(!String.IsNullOrEmpty(reachAidSelection)&&reachAidSelection!="0"&&reachAidSelection!="1")
+                    throw new IOException("NPC_REACH_AID_SELECTION");
+                npcReachAid=reachAidSelection=="1";
                 questCatalog=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_CATALOG")??"";
                 questSha256=Environment.GetEnvironmentVariable("REVERIE_UNITY_QUEST_SHA256")??"";
                 bool approvedPreset=String.IsNullOrEmpty(scenarioSelection)&&
@@ -169,6 +175,7 @@ namespace ReverieSaga
                 if(npcQuestPatrol&&!npcTalkPause)throw new IOException("NPC_QUEST_PATROL_CONTENT");
                 if(npcCallPause&&!npcQuestPatrol)throw new IOException("NPC_CALL_PAUSE_CONTENT");
                 if(npcReadyPatrol&&!npcCallPause)throw new IOException("NPC_READY_PATROL_CONTENT");
+                if(npcReachAid&&!npcReadyPatrol)throw new IOException("NPC_REACH_AID_CONTENT");
                 if(npcWork&&!npcMemory)throw new IOException("NPC_WORK_CONTENT");
                 if(npcMemory&&(scenario!="harbor"||String.IsNullOrEmpty(questCatalog)||
                     questSha256.Length!=64||!System.Text.RegularExpressions.Regex.IsMatch(questSha256,"^[0-9a-f]{64}$")))
@@ -179,7 +186,7 @@ namespace ReverieSaga
                     Path.Combine(root,"tmp","unity-play",scenario,"game.sqlite");
                 if(!String.IsNullOrEmpty(questCatalog)&&String.IsNullOrEmpty(
                     Environment.GetEnvironmentVariable("REVERIE_UNITY_WORKING")))
-                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcReadyPatrol?"harbor-ready-patrol":npcCallPause?"harbor-call-pause":npcQuestPatrol?"harbor-quest-patrol":npcTalkPause?"harbor-talk-patrol":npcPatrol?"harbor-call-patrol":npcCallAid?"harbor-call-aid":npcSupplyAid?"harbor-cycle-supply-aid":npcAid?"harbor-cycle-aid":npcCycle?"harbor-cycle":npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
+                    working=npcMemory?Path.Combine(root,"tmp","unity-play",npcReachAid?"harbor-reach-aid":npcReadyPatrol?"harbor-ready-patrol":npcCallPause?"harbor-call-pause":npcQuestPatrol?"harbor-quest-patrol":npcTalkPause?"harbor-talk-patrol":npcPatrol?"harbor-call-patrol":npcCallAid?"harbor-call-aid":npcSupplyAid?"harbor-cycle-supply-aid":npcAid?"harbor-cycle-aid":npcCycle?"harbor-cycle":npcWork?"harbor-work":"harbor-memory",questSha256,"game.sqlite"):
                         Path.Combine(root,"tmp","unity-play","harbor-quest","game.sqlite");
                 Directory.CreateDirectory(Path.GetDirectoryName(working));
                 Connect();
@@ -350,7 +357,7 @@ namespace ReverieSaga
             }
             if(destroyed)yield break;
             try {
-                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork,npcCycle,npcAid,npcSupplyAid,npcCallAid,npcPatrol,npcTalkPause,npcQuestPatrol,npcCallPause,npcReadyPatrol);
+                brain=new BrainConnection(root,working,scenario,questCatalog,questSha256,npcMemory,npcWork,npcCycle,npcAid,npcSupplyAid,npcCallAid,npcPatrol,npcTalkPause,npcQuestPatrol,npcCallPause,npcReadyPatrol,npcReachAid);
                 failure="";transportError="";
             } catch(Exception e) {Fail(e);}
             finally {connecting=false;}

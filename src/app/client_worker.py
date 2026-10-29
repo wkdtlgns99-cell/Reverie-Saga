@@ -35,6 +35,7 @@ class ClientWorker:
         npc_quest_patrol: bool = False,
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
+        npc_reach_aid: bool = False,
     ) -> None:
         if type(npc_memory) is not bool or npc_memory and quest_content is None:
             raise ValueError("NPC_MEMORY_CONTENT")
@@ -67,11 +68,14 @@ class ClientWorker:
             raise ValueError("NPC_CALL_PAUSE_CONTENT")
         if type(npc_ready_patrol) is not bool or npc_ready_patrol and not npc_call_pause:
             raise ValueError("NPC_READY_PATROL_CONTENT")
+        if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
+            raise ValueError("NPC_REACH_AID_CONTENT")
         self._npc_patrol = npc_patrol
         self._npc_talk_pause = npc_talk_pause
         self._npc_quest_patrol = npc_quest_patrol
         self._npc_call_pause = npc_call_pause
         self._npc_ready_patrol = npc_ready_patrol
+        self._npc_reach_aid = npc_reach_aid
         self._npc_work = npc_work
         self._executor = ThreadPoolExecutor(max_workers=1, thread_name_prefix="reverie-brain")
         self._owner: ClientSession | None = None
@@ -146,6 +150,7 @@ class ClientWorker:
                         npc_quest_patrol=self._npc_quest_patrol,
                         npc_call_pause=self._npc_call_pause,
                         npc_ready_patrol=self._npc_ready_patrol,
+                        npc_reach_aid=self._npc_reach_aid,
                     )
                 )
             owner = self._owner

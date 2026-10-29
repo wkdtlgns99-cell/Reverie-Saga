@@ -20,8 +20,12 @@ def require_integer(value: int, minimum: int = 0, maximum: int = MAX_INT) -> Non
         raise ValueError("integer outside declared range")
 
 
+_NAMESPACE_RE = re.compile(r"[a-z][a-z0-9_.:-]{0,127}")
+_TYPE_KIND_RE = re.compile(r"[a-z][a-z0-9_.-]{0,127}")
+
+
 def require_namespace(value: str) -> None:
-    if not isinstance(value, str) or re.fullmatch(r"[a-z][a-z0-9_.:-]{0,127}", value) is None:
+    if not isinstance(value, str) or _NAMESPACE_RE.fullmatch(value) is None:
         raise ValueError("invalid namespace")
 
 
@@ -42,7 +46,7 @@ class TypeKey:
     version: int
 
     def __post_init__(self) -> None:
-        if re.fullmatch(r"[a-z][a-z0-9_.-]{0,127}", self.kind) is None:
+        if _TYPE_KIND_RE.fullmatch(self.kind) is None:
             raise ValueError("invalid kind")
         require_integer(self.version, 1, 2**31 - 1)
 

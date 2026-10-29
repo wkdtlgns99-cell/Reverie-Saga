@@ -15,6 +15,93 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+PUBLISH-F82-F87-2026-10-29:human authorizes all current work through protected main.
+Verified43delivery hashes exactly match;local/fetched main5fa348b equal,index empty.
+Publish development checkpoint through ordinary branch/PR/latest required CI/merge/local
+main synchronization. Actual GitHub PR/refs/jobs own final status;no native/independent/
+CP06/device/release waiver,new feature,agents or administration.
+[Order](docs/work_orders/PUBLISH_F82_F87_2026-10-29.md),[input snapshot](docs/reviews/PUBLISH_F82_F87_2026-10-29.md).
+
+QT-F87 LOCAL_ACCEPTED2026-10-29:self-review,primary5presentation support;related2/6/7.
+Exactly one requested next task after accepted F86. Specific talk/activity/memory/recent/
+slot pending text through actual Tk callbacks;same worker/query/commit/error/close path.
+No new domain behavior. Five baseline missing-label FAIL;final8new within109affected
+PASS67.97s;exactCI31PASS6.69s,strict270/Ruffboth/format19/import3+1/pip/scope43PASS.
+F86shared CORE/query inputs unchanged;reuse its full3599and24sub2ssamples. Native,
+independent/device/CP06/release holds remain. Exactly one next task complete;stop.
+[Order](docs/work_orders/QT-F87_PENDING_QUERY_FEEDBACK.md),[receipt](docs/reviews/QT-F87_EXECUTION_2026-10-29.md).
+
+QT-F86 LOCAL_ACCEPTED2026-10-29,self-review:human resumed four remaining >2squeries plus exactly
+one subsequent bounded task. Primary2performance support;related4/5/6/7. Operation-local
+owned canonical/checkpoint documents remove repeated conversion while preserving fresh
+validation,commit/recovery and detailed replay errors. Paired12samples mean1.476->0.710s,
+max3.841->1.833s,2smisses4->0;complete output/SQL EXACT. Extra3x4slow repeats all<2s,
+max1.952s. Proof safety25/affected196/static269/imports3+1/pip PASS. Frozen full3599PASS
+784.22s;final exactCI31PASS6.87s,format18/scope40paths PASS. Current-host sample only.
+The one requested next task F87specific pending-query/talk feedback is now complete.
+Preserve all F82–85work. Native/independent/device/CP06/release holds remain;no publication,
+agents,dependency/security/native action. [Order](docs/work_orders/QT-F86_TWO_SECOND_QUERIES.md),
+[receipt](docs/reviews/QT-F86_EXECUTION_2026-10-29.md).
+
+QT-F85 LOCAL_ACCEPTED2026-10-29,self-review;primary5presentation support,related2/6/7.
+Reach-mode actual replies now append canonical current next-patrol-step text alongside
+F83support feedback,using one captured current snapshot. No extra replay/IO/state/rules.
+Independent direct/framed11/13/15/17baseline8missing-row FAIL;new10withinaffected62PASS
+92.77s. Exact retry has no new row;old ready mode unchanged;postcommit helper failure
+preserves real aid/reply and later retry/action. Ruffboth/strict265PASS. Prior F84full3562
+reused for unchanged shared sources;final currentCI31/imports/docs recorded separately.
+F84paired max4.948312->3.726747s and4remaining2sTARGET misses remain explicit. Native/
+independent/device/CP06/release holds retained,no publication/agents/dependency/security.
+Exactly one requested next task completed;no automatic further selection.
+[Order](docs/work_orders/QT-F85_CALL_PATROL_FEEDBACK.md),[receipt](docs/reviews/QT-F85_EXECUTION_2026-10-29.md).
+
+
+QT-F84 LOCAL_ACCEPTED2026-10-29,self-review;2sTARGET OPEN. Primary2performance
+support;related4/5/6/7. Growing receipt-command conversion during verified long replay was
+the hotspot. One serialization.py diff reuses freshly validated owned DTOs within each
+operation;no persistent cache,validation/truncation bypass,format/pin or gameplay change.
+Semantic83PASS(including8new baseline/current cases);full3562PASS984.82s;Ruffboth/
+strict264/imports3+1/pip PASS. Default+11prior modes complete outputs/core/protocol/SQL
+EXACT;new reach short/long direct/framed complete updates/SQL EXACT. Fresh paired12queries:
+mean1.845204->1.427486s,max4.948312->3.726747s;four long talk/activity samples improve
+23.5–25.1percent but all4still exceed2sTARGET,all12below10sdeadline. Not global2s/MIN-SPEC.
+No engine/golden/checker/native/scene/other prior sources changed. Native/independent/CP06/
+release holds retained,no publication/agents/dependency/security action.
+[Order](docs/work_orders/QT-F84_PROTOCOL_CONVERSION.md),[receipt](docs/reviews/QT-F84_EXECUTION_2026-10-29.md).
+Exactly one human-authorized next task:F85current next-patrol-step feedback after replies.
+
+
+
+QT-F83 LOCAL_ACCEPTED2026-10-29:self-review,primary5presentation support;related2/6/7.
+Reach-mode actual NPC replies now append the existing current support projection once,
+explicitly labelled post-response current state. No new replay/IO/state/schema/rules.
+Independent baseline6missing-row FAIL;new7andaffected54PASS84.90s,exactCI31PASS,
+Ruffboth/strict263/scopedformat12PASS. Exact retries have no new row;postcommit projection
+failure logs truthful committed status,preserves actual aid/reply and allows retry/next action.
+F82andearlier holds retained;no native/remote CI/publication/agents. Human-authorized one
+additional task is complete;no automatic next selection.
+[Order](docs/work_orders/QT-F83_CALL_SUPPORT_FEEDBACK.md),[receipt](docs/reviews/QT-F83_EXECUTION_2026-10-29.md).
+
+
+QT-F82 PYTHON_VERIFIED_NATIVE_NOT_RUN2026-10-29:StageB runtime/durable/restore/query/
+worker/Tk/both CLI/framed bridge and native selection/path/reconnect/source verifier are
+connected. Actual current/saved plans use their own NPC pose and canonical adjacency.
+Original full3518PASS/24FAIL1347.57s;17failed cases then7remaining cases PASS after
+permitted local-server/hardlink execution,correct PYTHONPATH,and a production fix preserving
+the old optional projection callback signature. All3542original collected cases qualified;
+5additional new vector cases qualified separately:3547distinct cases. Affected146PASS/
+5new fixture-vector failures,then corrected new5PASS (3+4with2overlaps). Original tests,
+goldens,checkers and engine sources unchanged by this continuation. Ruffboth/strict262/
+imports3+1/pip PASS. Baseline main vs current all12modes(default plus11opt-in) complete
+outputs/core/protocol/SQLite dumps EXACT. Actual12short/long direct/framed queries:
+mean2.014210s,max5.380210s,4miss2sTARGET,all<10sdeadline;no global2s/speedup claim.
+Native compile/editor/render/build NOT_RUN AWAY001;new-head remote CI NOT_RUN,no publication.
+Primary2internal calculation;related5/6/7;existing independent/CP06/release holds remain.
+[Order](docs/work_orders/QT-F82_REACH_GATE_AID.md),[receipt](docs/reviews/QT-F82_EXECUTION_2026-10-29.md).
+Human now requests exactly one further bounded task after this completion;no general loop,
+agents,publication or native waiver. F83response-time current support presentation selected.
+
+
 MAIN-INTEGRATION2026-10-29:latest human explicitly authorizes checkpoint commit/push,
 ordinary PR verification/merge and local main synchronization. Scope includes current work
 through unfinished F82core;no new feature selection or general automatic-goal resume.

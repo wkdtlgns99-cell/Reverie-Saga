@@ -122,3 +122,25 @@ remain unfinished. No new question;ENV001/AWAY001/CP06/independent/release holds
 At reported actual reset1793216985a distinct one-time quota wake reverie-saga-2was confirmed
 ACTIVE for2026-10-29at04:49:45KST;human03:10check retained. No actual recovery proof/manual
 pause resume/weekly-spend bypass. Resume unfinished F82before selecting another task.
+
+
+F82continuation2026-10-29on C:/ReverieSaga:both installed import contracts now run;
+full original3542cases qualified through3518PASS+24recovered,plus5newcases. Historical
+other-host ENV001does not establish a blocker here. Current measured12query samples
+include4above2sTARGET(max5.380210s),all<10sdeadline. Native compile/render/build AWAY001,
+independent/CP06/device/release holds remain. No decision requested while bounded work
+was independently executable. F83post-response presentation completed as the one further
+human-authorized task;no broader automatic resume or future publication inferred.
+
+
+F84measured conversion optimization2026-10-29:paired12queries preserve output/storage;
+mean1.845204->1.427486s,max4.948312->3.726747s. Four long talk/activity queries still miss
+2sTARGET,all12below10sdeadline. Full3562PASS984.82s. This does not waive residual growing
+verified-history cost/global2s/MIN-SPEC. F85current next-action reply feedback is the one
+additional completed task;no further automatic feature or publication inferred.
+
+F86local performance acceptance2026-10-29:all12designated samples<2s(max1.833s),all12
+additional slow-case repeats<2s(max1.952s),complete output/storage parity and frozen
+full3599PASS784.22s. This closes those four sample misses;global history/device/MIN-SPEC,
+native/AWAY001,independent/CP06/release holds remain. Human authorizes exactly one further
+bounded task:F87pending-query/talk display feedback. No publication or general task loop.

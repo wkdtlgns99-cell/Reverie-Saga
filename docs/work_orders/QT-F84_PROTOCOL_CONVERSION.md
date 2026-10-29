@@ -1,0 +1,29 @@
+# QT-F84 — Remove repeated receipt command conversion during checkpoint validation
+
+Status:LOCAL_ACCEPTED2026-10-29;2sTARGET remains OPEN. Authority:human requests diagnosis,optimization,verification then
+one further bounded task. Executor:local Codex,self-review. Primary2performance support;
+related4retrieval,6save,5wait,7integration. No gameplay change.
+
+| Field | Contract |
+|---|---|
+| goal/non_goals | Reduce repeated registered command codec conversion on long verified NPC queries;retain every semantic/type/ownership/hash/ordering check. No dynamic cache,skipped replay/truncated trace,format/pin/schema/dependency/native/publication change |
+| baseline | main5fa348b plus21F82/F83dirty paths,preserved in tmp/qtf84/entry.json and baseline/src. Long source tick132/132trace steps,unprofiled activity4.758797s. Profile16.270s:132submit12.405s,137checkpoint validations9.130s,139decode_protocol5.383s,36564encode_command4.894s. Diagnostic profiler overhead is separate |
+| prerequisites/reads | ENGINEERING_RULES,HANDOFF,BACKLOG,Korean progress,MASTER,numbered guide,Sol template,WORKSTATION_SETUP;F53/57/61/67/76orders;RegisteredStateIO payload/command/protocol encoding/decoding,Runner.run,TurnDriver._prepare_commit and existing codec/protocol tests |
+| allowed_edit_paths | MODIFY C:/ReverieSaga/src/orchestration/serialization.py;BACKLOG.md;SESSION_HANDOFF.md;GAME_SYSTEM_SUMMARY_KO.md;README.md;docs/DEFERRED_USER_DECISIONS.md. NEW tests/unit/test_protocol_conversion.py;owned tmp/qtf84/measure_matrix.py;docs/work_orders/QT-F84_PROTOCOL_CONVERSION.md;docs/reviews/QT-F84_EXECUTION_2026-10-29.md. Owned ignored tmp/qtf84/.pytest_cache/f84-* |
+| forbidden_paths | Other production/engine/domain/contracts/checker/golden/configuration/old tests/user/source saves/Unity. Preserve prior21paths and index;no agents/commit/push/security/settings/dependency/native action |
+| public_contract | Existing StateIO public signatures/bytes/errors remain. Private conversion returns the already-owned encoded document and freshly decoded command from the same full codec roundtrip. Validation consumes these operation-local results once,never stores across calls |
+| behavior | Encode payload still validates immutability,owned data,decode,decoded immutability,canonical reencode equality and exact decoded class. Command header checks retain precedence. Public decode performs existing registered validation;protocol fingerprint uses its validated command document. Native checkpoint encoding supplies freshly roundtripped commands to the same private protocol walker,retaining owned full document validation,all branch/stream/receipt constraints and final protocol equality/policy |
+| edge_policy | Empty receipts/16streams/1024receipt bounds,duplicate/order/high-water/branch/actor/revision/tick/head hash/fingerprint checks unchanged. Exact bool/int/range/schema/Unicode/depth and mutable-child/codec coercion rejection retained;bad later calls must reject after successful earlier calls. No reliance on identity of external MappingProxyType or prior head |
+| examples | A current132receipt protocol must produce identical owned bytes/snapshot. Corrupt old command expected_revision=True,changed fingerprint/stream/highwater/revision/tick/headhash or bad codec second encode must still reject with original error/code/path. External source mutation cannot alter returned documents |
+| algorithm_steps/wiring | Preserve dirty baseline/profile;add independent native/decode boundary and byte/ownership tests;factor private conversion in canonical RegisteredStateIO callers. Measure same saved-source current/baseline in isolated processes;correctness before timing. Then full/static/CI/source/parity qualification |
+| performance | Same short/long actual direct/framed talk/activity/slot12samples,2sTARGET/10sdeadline,retain misses. Before/current same command vectors and persisted sources,complete outputs/core/protocol/SQL dumps and no-mutation/retry. Improve long-sample median,report noise;no global2s/MIN-SPECclaim |
+| baseline_commands | New semantic tests must pass before edit (optimization has no intended functional red case);existing same-source profile recorded. Frozen before/current standalone worker uses actual saved checkpoints |
+| verification_commands | Ruffboth/scopedformat/strict/import3+1/pip;new+codec/serialization/receipt/durable/replay/query boundaries,currentCI31/docs10. Shared serialization requires frozen full pytest with PYTHONPATH=src on permitted host. Do not rerun successful unchanged full until new evidence warrants it |
+| test_responsibilities | New unit file covers public protocol/native checkpoint error parity,literal bytes,owned documents,fresh validation after success,registered codec validation. Owned integration probe and unchanged F82tests cover direct/framed saved query outputs,actual persisted bodies/retry/source/performance;existing F82tests remain unchanged |
+| acceptance | Measured improvement with identical outputs/errors/state/protocol/persisted bytes,all scoped/full checks pass and root trio synchronized. No weakened validation or dynamic domain cache. Report actual remaining2sTARGET/native/independent/release limits |
+| claude_checkpoints | Existing private StateIO contract,not new subsystem/format/owner,so no new CP01–05trigger. Full regression required. CP06/independent/native/device/release holds retained |
+| stop_conditions/delivery | Stop on user overlap,semantic divergence or unavailable required evidence after safe alternatives;preserve state and explain blocker. English receipt/Korean progress;no publication. After acceptance execute exactly one further bounded useful task under latest human request |
+
+
+[Execution evidence](../reviews/QT-F84_EXECUTION_2026-10-29.md). Improvement acceptance
+does not qualify the2sTARGET;all4long talk/activity samples still exceed it.

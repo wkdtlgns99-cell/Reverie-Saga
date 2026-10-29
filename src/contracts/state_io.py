@@ -1,12 +1,26 @@
 from __future__ import annotations
 
 from typing import Protocol
+from dataclasses import dataclass
 
 from contracts.events import ExecutionLimits, QueuedEvent
 from contracts.read_views import ComponentPatch
-from contracts.turn import CompiledSchedule, GameCommand, ProtocolSnapshot, TurnOutcome, TurnPublication
-from domain.canonical import JsonObject, JsonValue
-from domain.primitives import ComponentAddress, EntityId, FieldAddress, FieldFamily, FrozenPayload, TypeKey
+from contracts.turn import (
+    CompiledSchedule,
+    GameCommand,
+    ProtocolSnapshot,
+    TurnOutcome,
+    TurnPublication,
+)
+from domain.canonical import JsonObject, JsonValue, CanonicalDocument
+from domain.primitives import (
+    ComponentAddress,
+    EntityId,
+    FieldAddress,
+    FieldFamily,
+    FrozenPayload,
+    TypeKey,
+)
 from domain.state_types import ComponentRecord, CoreSnapshot, PendingDocument, SimulationPins
 
 
@@ -51,7 +65,58 @@ class StateIO(Protocol):
     def decode_protocol(self, document: JsonObject, core: CoreSnapshot) -> ProtocolSnapshot: ...
     def encode_publication(self, publication: TurnPublication) -> JsonObject: ...
     def decode_outcome(self, document: JsonObject) -> TurnOutcome: ...
-    def validate_effects(self, command: GameCommand, outcome: TurnOutcome, core: CoreSnapshot,
-                         protocol: ProtocolSnapshot, facts: JsonValue, diff: JsonValue) -> None: ...
-    def apply_patch(self, address: ComponentAddress, allowed: FieldAddress,
-                    before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord: ...
+    def validate_effects(
+        self,
+        command: GameCommand,
+        outcome: TurnOutcome,
+        core: CoreSnapshot,
+        protocol: ProtocolSnapshot,
+        facts: JsonValue,
+        diff: JsonValue,
+    ) -> None: ...
+    def apply_patch(
+        self,
+        address: ComponentAddress,
+        allowed: FieldAddress,
+        before: ComponentRecord,
+        patch: ComponentPatch,
+    ) -> ComponentRecord: ...
+
+
+@dataclass(frozen=True, slots=True)
+class CoreEncoding:
+    owner: StateIO
+    source: CoreSnapshot
+    checked: CoreSnapshot
+    document: CanonicalDocument
+    components: tuple[CanonicalDocument, ...]
+    pending: tuple[CanonicalDocument, ...]
+    core_hash: str
+
+
+@dataclass(frozen=True, slots=True)
+class CheckpointEncoding:
+    owner: StateIO
+    core: CoreSnapshot
+    protocol: ProtocolSnapshot
+    core_document: CanonicalDocument
+    protocol_document: CanonicalDocument
+    core_hash: str
+
+
+class CheckpointEncodingIO(StateIO, Protocol):
+    """Optional operation-local encoding results;never a retained domain cache."""
+
+    def _encode_core_for_commit(self, core: CoreSnapshot) -> CoreEncoding: ...
+    def _hash_core_encoding(self, core: CoreEncoding) -> str: ...
+    def _validate_core_encoding(
+        self, core: CoreEncoding, protocol: ProtocolSnapshot
+    ) -> CheckpointEncoding: ...
+    def _validate_effects_encoding(
+        self,
+        checkpoint: CheckpointEncoding,
+        command: GameCommand,
+        outcome: TurnOutcome,
+        facts: JsonValue,
+        diff: JsonValue,
+    ) -> None: ...

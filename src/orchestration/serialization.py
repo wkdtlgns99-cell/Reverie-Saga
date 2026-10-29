@@ -5,6 +5,8 @@ from collections.abc import Mapping
 import hashlib
 import re
 from types import MappingProxyType
+from typing import cast
+from functools import lru_cache
 
 from contracts.events import ExecutionLimits, QueuedEvent
 from contracts.dialogue import QuestConsumer, QuestContent
@@ -14,11 +16,12 @@ from contracts.read_views import AdapterBinding, ComponentPatch, ViewEpoch
 from domain.scenario import scenario_document, Scenario, ScenarioConsumer
 from contracts.replay import PackagePin
 from contracts.skeleton import FeatureBundle
+from contracts.state_io import CoreEncoding, CheckpointEncoding
 from contracts.turn import (CommitReceipt, CompiledSchedule, Failure, GameCommand, NodeKey,
     ProtocolSnapshot, StoredReceipt, StreamCursor, TurnAborted, TurnCommitted, TurnOutcome,
     TurnPublication, TurnRejected)
-from domain.canonical import (JsonObject, JsonValue, array_value, canonical_json, decode_json, exact_fields,
-    hash_document, int_value, object_value, pack, seal, text_value)
+from domain.canonical import (JsonObject, JsonValue, CanonicalDocument, array_value, canonical_json, decode_json, exact_fields,
+    hash_document, int_value, object_value, pack, seal, text_value, tagged_hash)
 from domain.primitives import (CommandId, ComponentAddress, EntityId, FieldAddress, FieldSpec, FrozenPayload,
     EventId, Phase, Tick, TypeKey, WorldRevision, require_integer, require_namespace)
 from domain.state_types import ComponentRecord, CoreSnapshot, PendingDocument, SimulationPins, StoredRoot
@@ -39,9 +42,16 @@ def _number(value: JsonValue, minimum: int = 0) -> int:
     return result
 
 
+_HEX64 = re.compile(r"[0-9a-f]{64}")
+_HEX32 = re.compile(r"[0-9a-f]{32}")
+_COMMAND_ID = re.compile(r"c1:([0-9a-f]{32}):([0-9a-f]{32}):([1-9][0-9]*)")
+
+
 def _hex(value: JsonValue, size: int = 64) -> str:
     result = text_value(value)
-    if re.fullmatch(f"[0-9a-f]{{{size}}}", result) is None:
+    matched = (_HEX64.fullmatch(result) if size == 64 else _HEX32.fullmatch(result)
+               if size == 32 else re.fullmatch(f"[0-9a-f]{{{size}}}", result))
+    if matched is None:
         raise ValueError("invalid lowercase hex")
     return result
 
@@ -65,7 +75,7 @@ def _packages(value: JsonValue) -> tuple[PackagePin, ...]:
 
 
 def _command_parts(identifier: str) -> tuple[str, str, int]:
-    match = re.fullmatch("c1:([0-9a-f]{32}):([0-9a-f]{32}):([1-9][0-9]*)", identifier)
+    match = _COMMAND_ID.fullmatch(identifier)
     if match is None:
         raise ValueError("invalid command identity")
     sequence = int(match[3])
@@ -110,17 +120,27 @@ def receipt_document(receipt: CommitReceipt) -> JsonObject:
 
 
 def hash_core_document(document: JsonObject) -> str:
+    return _hash_core_documents(document)
+
+
+def _hash_core_documents(document: JsonObject, components: tuple[CanonicalDocument, ...] | None = None,
+                         queue: tuple[CanonicalDocument, ...] | None = None) -> str:
     leaves: list[JsonValue] = []
-    for child in array_value(document["components"]):
+    for index, child in enumerate(array_value(document["components"])):
         component = object_value(child)
-        leaves.append({"schema": component["schema"], "entity_id": component["entity_id"],
-                       "hash": hash_document("component/v1", component)})
+        schema, entity = component["schema"], component["entity_id"]
+        body = canonical_json(component) if components is None else components[index].to_bytes()
+        leaves.append({"schema": schema, "entity_id": entity,
+                       "hash": tagged_hash("component/v1", body)})
     pending: list[JsonValue] = []
-    for child in array_value(document["pending"]):
+    for index, child in enumerate(array_value(document["pending"])):
         q = object_value(child)
         header = object_value(object_value(q["event"])["header"])
-        pending.append({"event_id": header["event_id"], "hash": hash_document("pending-event/v1", q)})
-    return hash_document("core-root/v1", {**document, "components": tuple(leaves), "pending": tuple(pending)})
+        event_id = header["event_id"]
+        body = canonical_json(q) if queue is None else queue[index].to_bytes()
+        pending.append({"event_id": event_id, "hash": tagged_hash("pending-event/v1", body)})
+    root = CanonicalDocument({**document, "components": tuple(leaves), "pending": tuple(pending)})
+    return tagged_hash("core-root/v1", root.to_bytes())
 
 
 def header_document(header: EventHeader) -> JsonObject:
@@ -129,6 +149,13 @@ def header_document(header: EventHeader) -> JsonObject:
             "phase": header.phase.name, "wave": header.wave, "producer_rank": header.producer_rank,
             "sequence": header.sequence, "caused_by": header.caused_by,
             "degraded": tuple({"producer_id": d.producer_id, "code": d.code} for d in header.degraded)}
+
+
+@lru_cache(maxsize=128)
+def _frozen_field_names(kind: type[object]) -> tuple[str, ...]:
+    if not is_dataclass(kind):
+        raise ValueError("record class is not a dataclass")
+    return tuple(field.name for field in fields(kind))
 
 
 def _immutable(value: object, depth: int = 0) -> None:
@@ -147,8 +174,8 @@ def _immutable(value: object, depth: int = 0) -> None:
             seal(key)
             _immutable(child, depth + 1)
     elif is_dataclass(value) and not isinstance(value, type) and getattr(value, "__dataclass_params__").frozen:
-        for field in fields(value):
-            _immutable(getattr(value, field.name), depth + 1)
+        for name in _frozen_field_names(type(value)):
+            _immutable(getattr(value, name), depth + 1)
     else:
         raise ValueError("mutable or unsupported record child")
 
@@ -229,6 +256,10 @@ class RegisteredStateIO:
         _validate_scenario_binding(bundle)
         self._schedule = schedule
         self._registrations = tuple(bundle.read_adapters)
+        self._component_registrations = (
+            MappingProxyType({r.schema: r for r in self._registrations})
+            if all(type(r) is AdapterBinding for r in self._registrations) else None
+        )
         self._policy = bundle.checkpoint_policy
         self._components = MappingProxyType({c.schema: c for c in bundle.component_codecs})
         self._payloads = MappingProxyType({c.schema: c for c in bundle.codecs})
@@ -457,13 +488,17 @@ class RegisteredStateIO:
         return factory
 
     def _component_fields(self, record: ComponentRecord) -> JsonObject:
+        return object_value(self._encode_component(record)[0].value)
+
+    def _encode_component(self, record: ComponentRecord) -> tuple[CanonicalDocument, ComponentRecord]:
         codec = self._components.get(record.schema)
         if codec is None:
             raise SchemaError("UNSUPPORTED_SCHEMA", "core.component.schema")
         try:
             require_namespace(record.entity_id)
             _immutable(record)
-            data = object_value(seal(codec.encode(record)))
+            document = CanonicalDocument(codec.encode(record))
+            data = object_value(document.value)
             specs = self._component_specs.get(record.schema.kind, ())
             exact_fields(data, tuple(s.family.field for s in specs))
             for spec in specs:
@@ -481,14 +516,22 @@ class RegisteredStateIO:
                 raise ValueError("component codec type/identity")
             _immutable(decoded)
             # The byte comparison validates and owns its JSON tree;no sealed temporary escapes.
-            if canonical_json(object_value(codec.encode(decoded))) != canonical_json(data):
+            if canonical_json(object_value(codec.encode(decoded))) != document.to_bytes():
                 raise ValueError("component codec is not lossless")
-            self._factory((record,))
-            return data
+            if self._component_registrations is None:
+                self._factory((record,))
+            else:
+                # Builtin bindings only install static metadata;record validation stays fresh.
+                factory = ObservedReadViewFactory(StoredRoot((record,), 0))
+                self._component_registrations[record.schema].install(factory)
+            return document, decoded
         except (ValueError, TypeError, AttributeError) as error:
             raise SchemaError("INVALID_COMPONENT", "core.component.fields") from error
 
     def encode_core(self, core: CoreSnapshot) -> JsonObject:
+        return object_value(self._encode_core(core)[0].value)
+
+    def _encode_core(self, core: CoreSnapshot) -> tuple[CanonicalDocument, CoreSnapshot, tuple[CanonicalDocument, ...], tuple[CanonicalDocument, ...]]:
         StoredRoot(core.components, 0)
         require_integer(core.tick)
         seed = _hex(core.world_seed_hex)
@@ -507,15 +550,29 @@ class RegisteredStateIO:
             if not q.event.header.occurred_at <= core.tick < q.event.due_tick:
                 raise ValueError("pending checkpoint time")
         p = self.pins
-        return object_value(seal({"world_id": core.world_id, "world_seed_hex": seed, "tick": core.tick,
-            "components": tuple({"schema": key_document(c.schema), "entity_id": c.entity_id,
-                                 "fields": self._component_fields(c)} for c in core.components),
-            "pending": tuple(decode_json(d.canonical_event_json) for d in core.pending), "pins": {"schema_fingerprint": p.schema_fingerprint,
+        components: list[CanonicalDocument] = []
+        decoded: list[ComponentRecord] = []
+        for record in core.components:
+            fields, checked = self._encode_component(record)
+            components.append(CanonicalDocument({"schema": key_document(record.schema),
+                "entity_id": record.entity_id, "fields": fields}, children=(fields,)))
+            decoded.append(checked)
+        pending = tuple(CanonicalDocument(decode_json(d.canonical_event_json)) for d in core.pending)
+        owned = CanonicalDocument({"world_id": core.world_id, "world_seed_hex": seed, "tick": core.tick,
+            "components": tuple(components), "pending": pending, "pins": {"schema_fingerprint": p.schema_fingerprint,
                 "rules_fingerprint": p.rules_fingerprint, "schedule_fingerprint": p.schedule_fingerprint,
                 "rng_version": p.rng_version, "hash_version": p.hash_version,
-                "gameplay_catalog_hash": p.gameplay_catalog_hash, "gameplay_packages": ()}}))
+                "gameplay_catalog_hash": p.gameplay_catalog_hash, "gameplay_packages": ()}},
+            children=(*components, *pending))
+        checked_core = CoreSnapshot(core.world_id, seed, core.tick, tuple(decoded),
+                                   tuple(PendingDocument(q.to_bytes()) for q in pending), p)
+        return owned, checked_core, tuple(components), pending
+
 
     def decode_core(self, document: JsonObject) -> CoreSnapshot:
+        return self._decode_core_document(document)[0]
+
+    def _decode_core_document(self, document: JsonObject) -> tuple[CoreSnapshot, CanonicalDocument]:
         d = exact_fields(seal(document), ("world_id", "world_seed_hex", "tick", "components", "pending", "pins"))
         components: list[ComponentRecord] = []
         for item in array_value(d["components"]):
@@ -536,70 +593,126 @@ class RegisteredStateIO:
                 raise SchemaError("INVALID_COMPONENT", "core.component.fields") from error
         core = CoreSnapshot(text_value(d["world_id"]), _hex(d["world_seed_hex"]), Tick(_number(d["tick"])),
                             tuple(components), tuple(PendingDocument(canonical_json(q)) for q in array_value(d["pending"])), self.pins)
-        if canonical_json(self.encode_core(core)) != canonical_json(d):
+        encoded, _, _, _ = self._encode_core(core)
+        if encoded.to_bytes() != canonical_json(d):
             raise ValueError("checkpoint pins/shape mismatch")
-        return core
+        return core, encoded
+
+    def _decode_checkpoint(self, core: JsonObject, protocol: JsonObject) -> CheckpointEncoding:
+        checked_core, core_document = self._decode_core_document(core)
+        core_hash = hash_core_document(object_value(core_document.value))
+        checked_protocol, protocol_document = self._decode_protocol_document(protocol, checked_core, head_hash=core_hash)
+        return CheckpointEncoding(self, checked_core, checked_protocol, core_document, protocol_document, core_hash)
+
+    def _validate_decoded_checkpoint(self, checkpoint: CheckpointEncoding) -> None:
+        if checkpoint.owner is not self:
+            raise ValueError("foreign decoded checkpoint")
+        self._policy.validate(checkpoint.core, checkpoint.protocol)
+
+    def _protocol_document(self, protocol: ProtocolSnapshot) -> CanonicalDocument:
+        return cast(CanonicalDocument, self._encode_protocol(protocol, own=True)[0])
+
+    def _encode_core_for_commit(self, core: CoreSnapshot) -> CoreEncoding:
+        document, checked, components, pending = self._encode_core(core)
+        core_hash = _hash_core_documents(object_value(document.value), components, pending)
+        return CoreEncoding(self, core, checked, document, components, pending, core_hash)
 
     def hash_core(self, core: CoreSnapshot) -> str:
-        return hash_core_document(self.encode_core(core))
+        return self._hash_core_encoding(self._encode_core_for_commit(core))
+
+    def _hash_core_encoding(self, core: CoreEncoding) -> str:
+        if core.owner is not self:
+            raise ValueError("foreign core encoding")
+        return core.core_hash
 
     def validate_checkpoint(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
-        checked = self.decode_core(self.encode_core(core))
-        verified = self.decode_protocol(object_value(seal(self.encode_protocol(protocol))), checked)
+        self._validate_core_encoding(self._encode_core_for_commit(core), protocol)
+
+    def _validate_core_encoding(self, core: CoreEncoding, protocol: ProtocolSnapshot) -> CheckpointEncoding:
+        if core.owner is not self:
+            raise ValueError("foreign core encoding")
+        checked = core.checked
+        self._factory(checked.components)
+        document, commands = self._encode_protocol(protocol, own=True)
+        verified = self._decode_protocol(document, checked, commands=commands, head_hash=core.core_hash)
         if verified != protocol:
             raise ValueError("protocol roundtrip mismatch")
         self._policy.validate(checked, verified)
+        return CheckpointEncoding(self, core.source, protocol, core.document, cast(CanonicalDocument, document), core.core_hash)
 
     def _decode_payload(self, schema: TypeKey, data: JsonObject) -> FrozenPayload:
+        if schema not in self._payloads:
+            raise SchemaError("UNSUPPORTED_SCHEMA", "payload.schema")
+        try:
+            owned = CanonicalDocument(data)
+        except (ValueError, TypeError, AttributeError) as error:
+            raise SchemaError("INVALID_PAYLOAD", "payload") from error
+        return self._decode_owned_payload(schema, owned)
+
+    def _decode_owned_payload(self, schema: TypeKey, document: CanonicalDocument) -> FrozenPayload:
+        # Only freshly owned DTOs from this conversion operation reach this helper.
         codec = self._payloads.get(schema)
         if codec is None:
             raise SchemaError("UNSUPPORTED_SCHEMA", "payload.schema")
         try:
-            owned = object_value(seal(data))
+            owned = object_value(document.value)
             payload = codec.decode(owned)
             _immutable(payload)
-            if payload.schema != schema or canonical_json(object_value(codec.encode(payload))) != canonical_json(owned):
+            if payload.schema != schema or canonical_json(object_value(codec.encode(payload))) != document.to_bytes():
                 raise ValueError("payload codec identity/roundtrip")
             return payload
         except (ValueError, TypeError, AttributeError) as error:
             raise SchemaError("INVALID_PAYLOAD", "payload") from error
 
     def encode_payload(self, payload: FrozenPayload) -> JsonObject:
+        return object_value(self._encode_payload(payload)[0].value)
+
+    def _encode_payload(self, payload: FrozenPayload) -> tuple[CanonicalDocument, FrozenPayload]:
         codec = self._payloads.get(payload.schema)
         if codec is None:
             raise SchemaError("UNSUPPORTED_SCHEMA", "payload.schema")
         try:
             _immutable(payload)
-            data = object_value(seal(codec.encode(payload)))
-            decoded = self._decode_payload(payload.schema, data)
+            data = CanonicalDocument(codec.encode(payload))
+            decoded = self._decode_owned_payload(payload.schema, data)
             if type(decoded) is not type(payload):
                 raise ValueError("unsupported payload class")
-            return data
+            return data, decoded
         except (ValueError, TypeError, AttributeError) as error:
             raise SchemaError("INVALID_PAYLOAD", "payload") from error
 
     def encode_command(self, command: GameCommand) -> JsonObject:
+        return object_value(self._encode_command(command)[0].value)
+
+    def _encode_command(self, command: GameCommand) -> tuple[CanonicalDocument, GameCommand]:
         _command_parts(command.command_id)
         require_namespace(command.actor_id)
         require_integer(command.expected_revision)
         if command.payload.schema not in self._commands or not isinstance(command.payload, CommandPayload):
             raise SchemaError("UNSUPPORTED_SCHEMA", "command.schema")
-        return object_value(seal({"command_id": command.command_id, "actor_id": command.actor_id,
+        data, decoded = self._encode_payload(command.payload)
+        if not isinstance(decoded, CommandPayload):
+            raise SchemaError("INVALID_PAYLOAD", "command.payload")
+        document = CanonicalDocument({"command_id": command.command_id, "actor_id": command.actor_id,
             "expected_revision": command.expected_revision, "schema": key_document(command.payload.schema),
-            "payload": self.encode_payload(command.payload)}))
+            "payload": data}, children=(data,))
+        return document, GameCommand(command.command_id, command.actor_id, command.expected_revision, decoded)
 
     def decode_command(self, document: JsonObject) -> GameCommand:
+        return self._decode_command(document)[0]
+
+    def _decode_command(self, document: JsonObject) -> tuple[GameCommand, CanonicalDocument]:
         d = exact_fields(seal(document), ("command_id", "actor_id", "expected_revision", "schema", "payload"))
         key = decode_key(d["schema"])
         if key not in self._commands:
             raise SchemaError("UNSUPPORTED_SCHEMA", "command.schema")
-        payload = self._decode_payload(key, object_value(d["payload"]))
+        payload = self._decode_owned_payload(key, CanonicalDocument(object_value(d["payload"])))
         if not isinstance(payload, CommandPayload):
             raise SchemaError("INVALID_PAYLOAD", "command.payload")
         command = GameCommand(CommandId(text_value(d["command_id"])), EntityId(_namespace(d["actor_id"])),
                               WorldRevision(_number(d["expected_revision"])), payload)
-        self.encode_command(command)
-        return command
+        encoded, _ = self._encode_command(command)
+        return command, encoded
 
     def decode_outcome(self, document: JsonObject) -> TurnOutcome:
         return _outcome(seal(document))
@@ -630,6 +743,17 @@ class RegisteredStateIO:
 
     def validate_effects(self, command: GameCommand, outcome: TurnOutcome, core: CoreSnapshot,
                          protocol: ProtocolSnapshot, facts: JsonValue, diff: JsonValue) -> None:
+        self._validate_effects(command, outcome, core, protocol, facts, diff)
+
+    def _validate_effects_encoding(self, checkpoint: CheckpointEncoding, command: GameCommand,
+                                   outcome: TurnOutcome, facts: JsonValue, diff: JsonValue) -> None:
+        if checkpoint.owner is not self:
+            raise ValueError("foreign checkpoint encoding")
+        self._validate_effects(command, outcome, checkpoint.core, checkpoint.protocol, facts, diff,
+                               core_hash=checkpoint.core_hash)
+
+    def _validate_effects(self, command: GameCommand, outcome: TurnOutcome, core: CoreSnapshot,
+                         protocol: ProtocolSnapshot, facts: JsonValue, diff: JsonValue, *, core_hash: str | None = None) -> None:
         values = array_value(seal(facts))
         if len(values) > self._limits.max_events_per_tick * self._limits.max_duration_seconds:
             raise ValueError("fact cap")
@@ -646,7 +770,7 @@ class RegisteredStateIO:
         if not isinstance(outcome, TurnCommitted):
             raise ValueError("diff without commit")
         d = exact_fields(seal(diff), ("receipt", "changes"))
-        if _receipt(d["receipt"]) != outcome.receipt or outcome.receipt.revision != protocol.revision or outcome.receipt.core_hash != self.hash_core(core) or outcome.receipt.tick != core.tick:
+        if _receipt(d["receipt"]) != outcome.receipt or outcome.receipt.revision != protocol.revision or outcome.receipt.core_hash != (self.hash_core(core) if core_hash is None else core_hash) or outcome.receipt.tick != core.tick:
             raise ValueError("diff/head receipt inconsistent")
         if self._limits.enable_simulation:
             self._enabled_effects(command, core, values)
@@ -740,17 +864,43 @@ class RegisteredStateIO:
             seen.add(h.event_id)
 
     def encode_protocol(self, protocol: ProtocolSnapshot) -> JsonObject:
-        return {"branch_id": protocol.branch_id, "revision": protocol.revision,
-                "streams": tuple({"stream_id": s.stream_id, "actor_id": s.actor_id,
-                                  "highest_committed_sequence": s.highest_committed_sequence,
-                                  "status": s.status} for s in protocol.streams),
-                "receipts": tuple({"command": self.encode_command(s.command),
-                                   "command_fingerprint": s.command_fingerprint,
-                                   "receipt": receipt_document(s.receipt)} for s in protocol.receipts)}
+        document, _ = self._encode_protocol(protocol)
+        return object_value(document.value) if isinstance(document, CanonicalDocument) else document
 
+    def _encode_protocol(self, protocol: ProtocolSnapshot, *, own: bool = False) -> tuple[JsonObject | CanonicalDocument, tuple[tuple[GameCommand, CanonicalDocument], ...]]:
+        # Retain operation-local roundtrip results;no validation survives this call.
+        streams: tuple[JsonValue, ...] = tuple({"stream_id": s.stream_id, "actor_id": s.actor_id,
+                         "highest_committed_sequence": s.highest_committed_sequence,
+                         "status": s.status} for s in protocol.streams)
+        receipts: list[JsonValue] = []
+        owned_receipts: list[object] = []
+        owned_commands: list[CanonicalDocument] = []
+        commands: list[tuple[GameCommand, CanonicalDocument]] = []
+        for stored in protocol.receipts:
+            document, decoded = self._encode_command(stored.command)
+            commands.append((decoded, document))
+            metadata: JsonObject = {"command_fingerprint": stored.command_fingerprint,
+                                    "receipt": receipt_document(stored.receipt)}
+            receipts.append({"command": document.value, **metadata})
+            if own:
+                owned_commands.append(document)
+                owned_receipts.append({"command": document, **metadata})
+        result: JsonObject = {"branch_id": protocol.branch_id, "revision": protocol.revision,
+                              "streams": streams, "receipts": tuple(receipts)}
+        return (CanonicalDocument({**result, "receipts": owned_receipts}, children=tuple(owned_commands))
+                if own else result), tuple(commands)
 
     def decode_protocol(self, document: JsonObject, core: CoreSnapshot) -> ProtocolSnapshot:
-        d = exact_fields(seal(document), ("branch_id", "revision", "streams", "receipts"))
+        return self._decode_protocol(document, core)
+
+    def _decode_protocol(self, document: JsonObject | CanonicalDocument, core: CoreSnapshot,
+                         *, commands: tuple[tuple[GameCommand, CanonicalDocument], ...] | None = None, head_hash: str | None = None) -> ProtocolSnapshot:
+        return self._decode_protocol_document(document, core, commands=commands, head_hash=head_hash)[0]
+
+    def _decode_protocol_document(self, document: JsonObject | CanonicalDocument, core: CoreSnapshot,
+                         *, commands: tuple[tuple[GameCommand, CanonicalDocument], ...] | None = None, head_hash: str | None = None) -> tuple[ProtocolSnapshot, CanonicalDocument]:
+        owned = document if commands is not None and isinstance(document, CanonicalDocument) else CanonicalDocument(document)
+        d = exact_fields(owned.value, ("branch_id", "revision", "streams", "receipts"))
         branch, revision = _hex(d["branch_id"], 32), WorldRevision(_number(d["revision"]))
         streams: list[StreamCursor] = []
         actors = {c.entity_id for c in core.components}
@@ -769,27 +919,30 @@ class RegisteredStateIO:
         if streams != sorted(streams, key=lambda s: s.stream_id):
             raise ValueError("unsorted streams")
         receipts: list[StoredReceipt] = []
-        for item in array_value(d["receipts"]):
+        for index, item in enumerate(array_value(d["receipts"])):
             r = exact_fields(item, ("command", "command_fingerprint", "receipt"))
-            command, receipt = self.decode_command(object_value(r["command"])), _receipt(r["receipt"])
+            if commands is None:
+                command, command_document = self._decode_command(object_value(r["command"]))
+            else:
+                command, command_document = commands[index]
+            receipt = _receipt(r["receipt"])
             route_branch, stream_id, sequence = _command_parts(command.command_id)
             cursor = next((s for s in streams if s.stream_id == stream_id), None)
             if route_branch != branch or cursor is None or cursor.actor_id != command.actor_id or sequence > cursor.highest_committed_sequence:
                 raise ValueError("receipt stream ownership/high-water")
             if receipt.command_id != command.command_id or receipt.previous_revision != command.expected_revision or receipt.revision > revision or receipt.tick > core.tick:
                 raise ValueError("receipt command/revision/tick")
-            document = self.encode_command(command)
-            fingerprint = hash_document("command/v1", {k: v for k, v in document.items() if k != "command_id"})
+            fingerprint = tagged_hash("command/v1", command_document.select(("actor_id", "expected_revision", "schema", "payload")).to_bytes())
             if _hex(r["command_fingerprint"]) != fingerprint:
                 raise ValueError("receipt fingerprint")
-            if receipt.revision == revision and (receipt.core_hash != self.hash_core(core) or receipt.tick != core.tick):
+            if receipt.revision == revision and (receipt.core_hash != (self.hash_core(core) if head_hash is None else head_hash) or receipt.tick != core.tick):
                 raise ValueError("latest receipt does not match head")
             receipts.append(StoredReceipt(command, fingerprint, receipt))
         if len(receipts) > 1024 or len({r.command.command_id for r in receipts}) != len(receipts) or len({r.receipt.revision for r in receipts}) != len(receipts):
             raise ValueError("receipt cap/identity")
         if receipts != sorted(receipts, key=lambda r: (r.receipt.revision, r.command.command_id)):
             raise ValueError("unsorted receipts")
-        return ProtocolSnapshot(branch, revision, tuple(streams), tuple(receipts))
+        return ProtocolSnapshot(branch, revision, tuple(streams), tuple(receipts)), owned
 
 
     def encode_publication(self, publication: TurnPublication) -> JsonObject:
