@@ -1,6 +1,6 @@
 # RS-PUBLISH-001 — Publish each completed task
 
-READY2026-10-30;executor:current assistant;self-review. Primary7workflow support.
+DONE2026-10-30;executor:current assistant;self-review. Primary7workflow support.
 Authority:director explicitly requests a standing per-task PR/merge/main-sync rule and
 one next task. This is not authorization for an indefinite development loop.
 
