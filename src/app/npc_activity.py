@@ -147,6 +147,18 @@ class _ActivitySession:
                         )[0]
                         self._factory.conversation_plans.append((event.due_tick, step))
                         del self._factory.conversation_plans[:-2]
+                        if self._factory.reach_aid:
+                            support = supply_support_plan(
+                                conversation_core,
+                                self._factory.layout,
+                                error_code="NPC_RECOLLECTION_SOURCE",
+                                npc_call_aid=True,
+                                npc_reach_aid=True,
+                            )[0]
+                            self._factory.conversation_support_plans.append(
+                                (event.due_tick, support)
+                            )
+                            del self._factory.conversation_support_plans[:-2]
             if (
                 isinstance(payload, (NpcActed, WatchReplied, ProvisionPrepared))
                 and payload.npc_id == self._factory.npc_id
@@ -230,6 +242,8 @@ class _ActivityFactory:
         self.layout = content.definition.layout
         self.ready_patrol = npc_ready_patrol
         self.conversation_plans: list[tuple[int, str]] = []
+        self.reach_aid = npc_reach_aid
+        self.conversation_support_plans: list[tuple[int, str]] = []
         self.actor_id = content.definition.layout.actor_id
         self.collect_calls = collect_calls
         self.collect_assists = collect_assists and npc_aid
@@ -472,6 +486,7 @@ def cycle_activity_messages(
         *_assistance_messages(factory, segment.checkpoint.core.tick),
         *_patrol_messages(factory, segment.checkpoint.core.tick),
         *_conversation_plan_messages(factory, segment.checkpoint.core.tick),
+        *_conversation_plan_messages(factory, segment.checkpoint.core.tick, support=True),
         *(
             quest_patrol_plan(
                 current.core, content.definition.layout, error_code="NPC_ACTIVITY_SOURCE"
@@ -674,6 +689,9 @@ def cycle_return_recollection(
             factory, segment.checkpoint.core.tick, previous=previous, recollection=True
         ),
         *_conversation_plan_messages(factory, segment.checkpoint.core.tick, recollection=True),
+        *_conversation_plan_messages(
+            factory, segment.checkpoint.core.tick, recollection=True, support=True
+        ),
         *(
             quest_patrol_plan(
                 current.core, content.definition.layout, error_code="NPC_RECOLLECTION_SOURCE"
@@ -795,12 +813,16 @@ def _patrol_messages(
 
 
 def _conversation_plan_messages(
-    factory: _ActivityFactory, checkpoint_tick: int, *, recollection: bool = False
+    factory: _ActivityFactory,
+    checkpoint_tick: int,
+    *,
+    recollection: bool = False,
+    support: bool = False,
 ) -> tuple[str, ...]:
     """Recall a verified conversation-end projection,never an inferred past action."""
-    if not factory.ready_patrol:
+    if not (factory.reach_aid if support else factory.ready_patrol):
         return ()
-    plans = factory.conversation_plans
+    plans = factory.conversation_support_plans if support else factory.conversation_plans
     ticks = tuple(tick for tick, _ in plans)
     if (
         len(plans) != len(factory.conversations)
@@ -810,20 +832,24 @@ def _conversation_plan_messages(
         or any(first >= second for first, second in zip(ticks, ticks[1:]))
     ):
         code = "NPC_RECOLLECTION_SOURCE" if recollection else "NPC_ACTIVITY_SOURCE"
-        raise SaveError(code, "conversation patrol plan retained window differs")
+        kind = "support" if support else "patrol"
+        raise SaveError(code, f"conversation {kind} plan retained window differs")
+    subject = "지원 계획" if support else "계획"
     if recollection:
         return (
-            f"NPC 지난 대화 계획 · {plans[-2][0]}초 대화 종료 상태: {plans[-2][1]}"
+            f"NPC 지난 대화 {subject} · {plans[-2][0]}초 대화 종료 상태: {plans[-2][1]}"
             if len(plans) == 2
-            else "NPC 지난 대화 계획 · 현재 저장 구간에 이전 대화 종료 상태가 없습니다. "
+            else f"NPC 지난 대화 {subject} · 현재 저장 구간에 이전 대화 종료 상태가 없습니다. "
             "현재 상태로 과거 계획을 추정하지 않습니다.",
         )
     return (
-        f"NPC 대화 계획 기록 · {checkpoint_tick}초 이후 저장 구간의 최근 최대 2회입니다.",
+        f"NPC 대화 {subject} 기록 · {checkpoint_tick}초 이후 저장 구간의 최근 최대 2회입니다.",
         *(
-            tuple(f"NPC 대화 계획 기록 · {tick}초 대화 종료 상태: {step}" for tick, step in plans)
+            tuple(
+                f"NPC 대화 {subject} 기록 · {tick}초 대화 종료 상태: {step}" for tick, step in plans
+            )
             or (
-                "NPC 대화 계획 기록 · 현재 저장 구간에 대화 종료 상태가 없습니다. "
+                f"NPC 대화 {subject} 기록 · 현재 저장 구간에 대화 종료 상태가 없습니다. "
                 "현재 상태로 과거 계획을 추정하지 않습니다.",
             )
         ),
