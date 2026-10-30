@@ -1,0 +1,24 @@
+# QT-F89 — Expose previous-save recovery in Tk
+
+LOCAL_ACCEPTED2026-10-30;executor:current assistant;self-review,not independent.
+Primary5presentation support;related6existing safe restore,7registered player path.
+
+| Field | Contract |
+|---|---|
+| goal/non_goals | Tk players can inspect and explicitly load the selected slot's previous generation. Close the UI gap over F39's existing worker/session APIs;no persistence/rules/format/wire/native changes or automatic fallback |
+| baseline | Clean main/origin-main0e8e133after F88PR20and policyPR21ordinary merges and local equality. Owned branch codex/qt-f89-tk-previous-save-20261030;no unrelated edits |
+| prerequisites/read_files | ENGINEERING_RULES,HANDOFF,BACKLOG,Korean companion,MASTER2/9,architecture checkpoint/ownership rules,numbered guide,Sol template,WORKSTATION_SETUP,README,client.py/client_worker.py/client_session.py/contracts.client,previous-slot/F39/client/pending-query tests and order |
+| allowed_edit_paths | MODIFY C:/ReverieSaga/src/app/client.py,README.md,BACKLOG.md,SESSION_HANDOFF.md,GAME_SYSTEM_SUMMARY_KO.md;NEW tests/integration/test_tk_previous_save.py,docs/work_orders/QT-F89_TK_PREVIOUS_SAVE.md,docs/reviews/QT-F89_EXECUTION_2026-10-30.md. Prior-delivery metadata only:docs/reviews/RS-PUBLISH-001_EXECUTION_2026-10-30.md,docs/work_orders/RS-PUBLISH-001_PER_TASK_MAIN.md. Owned tmp/qtf89 and .pytest_cache/f89-* |
+| forbidden_paths | All other production/tests/goldens/contracts/content/CI/settings/dependencies/native/user/reference files;no agents or release action |
+| public_contract | Existing ClientWorker.inspect_previous_slot(slot_id) and request(load_previous,slot_id) unchanged. Add Tk previous-preview button and registered buttons[load_previous];existing slot01..08selector applies to both. Existing latest-preview/load/save remain explicit latest-generation operations |
+| behavior/algorithm_steps | Add one two-column button row below slot preview. Preview callback checks busy,submits existing worker inspection,sets operation-specific readonly pending text. Previous-load button uses _send(load_previous),same async lifecycle,explicit pending text. Enable/disable both with existing controls |
+| edge_policy | Missing backup ->PREVIOUS_SAVE_NOT_FOUND;corrupt selected generation ->SAVE_CORRUPT,no fallback. Preview preserves view/token/path/retry/bytes. Successful previous load ->LOADED/new private path/token/reset history/retry cleared;selected slot retained. Pending/closing rejects extra actions;ordinary Future error/cancellation restores input/polling/close. Existing fatal propagation unchanged. Invalid slot handling remains backend-owned |
+| examples | Save at1then3;at5corrupt latest. Latest load fails unchanged;previous preview shows1while current stays5;explicit previous load resumes1in a private branch with all original bytes retained. slot08must not inspect/load slot01 |
+| wiring | _build button commands ->_inspect_previous_slot/_send ->existing single-owner worker ->session inspect/load(previous=True) ->_poll/_render;no synchronous Tk IO |
+| performance | Same existing one worker operation per click,no additional IO/replay. Actual short fixture preview/load TARGET<2s each,current-host sample only. Geometry:button rectangles do not overlap controls or each other;no final-human-UX/MIN-SPEC claim |
+| baseline_commands | New real Tk selected-slot recovery vectors fail on missing UI controls before production edit;local .venv CPython3.13.12/Tk8.6 already verified. F88current-host18PASS14.18s and remote3625PASSare prior evidence |
+| verification_commands | New tests plus existing client,pending-query,previous-slot and F88support tests;README Ruff both/scoped format/strict mypy/both import contracts/pip;document UTF8/links/diff/scope. Published head must pass unchanged full required CI before ordinary merge/main sync |
+| test_responsibilities | Real Tk callbacks/worker/SQLite selected01and08,latest corruption/explicit previous recovery/source bytes/retry/history,absent/corrupt backup/no fallback,pending duplicate guard and disable,state-preserving preview,error/cancellation/next action/close,reach-mode support preview and layout. Backend restart qualification reused unchanged |
+| acceptance | New controls reachable in basic and reach modes;all independent normal/error/state/lifecycle/geometry checks pass;only client.pyproduction diff;root trio truthful;PR/latest required CI/ordinary merge/local main equality and clean status |
+| claude_checkpoints | NOT_APPLICABLE:existing CP01/04/05settled async/restore boundary and F39integration,private Tk wiring only. Native/independent/device/CP06/release holds remain |
+| stop_conditions/delivery | Repair within scope;stop for new restore/format/ownership semantics,overlap or unavailable checks after safe alternatives. Standing director2026-10-30authorizes scoped commit/push/PR/merge/local sync;finish exactly this next task,no automatic further feature |

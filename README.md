@@ -53,6 +53,12 @@ retained record as messages arrive;evicted records yield to the oldest remaining
 Click `최신 기록으로` beside the history heading to return to the bottom and follow new output.
 Loading a save resets history and returns to the latest output.
 
+Tk also offers **이전 저장 정보** and **이전 저장 불러오기** for the selected slot
+(QT-F89). Preview keeps the current game unchanged;explicit previous loading continues
+in a separate working file and preserves both saved generations. Missing or damaged
+previous saves report an error without falling back to the latest save.
+[Evidence](docs/reviews/QT-F89_EXECUTION_2026-10-30.md).
+
 In NPC-memory modes,selected-slot information also compares that slot's memories with
 the current game:shared,current-only and saved-only conversations,with their actual times.
 Differences describe save/branch history,not NPC forgetting;received reports remain distinct

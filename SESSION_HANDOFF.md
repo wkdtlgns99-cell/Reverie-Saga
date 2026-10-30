@@ -15,11 +15,21 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-RS-PUBLISH-001 IN_PROGRESS2026-10-30:director requests standing per-task publication
-and one next bounded task. Each accepted coherent task now requires scoped commit/push,
-PR/latest required CI/ordinary merge/local main equality before advancing. No direct-main
-push,bypass,agent or automatic development-loop authority. F88PR20is awaiting required
-run41017530781;native/independent/device/CP06/release holds remain.
+QT-F89 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
+Tk previous-save preview/load controls now use existing registered worker/session paths.
+Explicit selected01/08restore,new branch/token,source bytes/retry/history/restart,
+missing/corrupt generation,busy/error/cancel/close and reach-mode preview qualified.
+New10within125distinct affected cases qualified:restricted123PASS/2hardlink environment
+FAIL47.99s;permitted both unchanged failures plus final new10PASS6.07s. Ruffboth/format2/
+strict272/import3+1/pip PASS. Actual preview<=0.050s/load<=0.151s,short current-PC samples.
+Required new-head CI/PR/merge/main synchronization pending;no next feature selection.
+Native/independent/device/CP06/release holds remain.
+[Order](docs/work_orders/QT-F89_TK_PREVIOUS_SAVE.md),[receipt](docs/reviews/QT-F89_EXECUTION_2026-10-30.md).
+
+RS-PUBLISH-001 DONE2026-10-30:standing per-task publication rule added to ENGINEERING_RULES
+and canonical execution policy. F88PR20mergedbca720d and rulePR21merged0e8e133after each
+required full3625/boundary31PASS. Local main0e8e133exactly matched origin/main,clean,before
+F89branch entry. F88new18also PASS14.18s on this PC. No direct-main push,bypass or release waiver.
 [Order](docs/work_orders/RS-PUBLISH-001_PER_TASK_MAIN.md),[receipt](docs/reviews/RS-PUBLISH-001_EXECUTION_2026-10-30.md).
 
 F88-GIT-UPLOAD2026-10-29:human requests uploading the completed F88work to Git.

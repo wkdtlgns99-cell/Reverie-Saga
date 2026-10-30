@@ -244,6 +244,17 @@ class PlayWindow:
         self.slot_preview_button.grid(
             row=wait_row + 2, column=0, columnspan=2, sticky="ew", padx=3, pady=3
         )
+        self.previous_slot_preview_button = ttk.Button(
+            controls, text="이전 저장 정보", command=self._inspect_previous_slot
+        )
+        self.previous_slot_preview_button.grid(
+            row=wait_row + 3, column=0, sticky="ew", padx=3, pady=3
+        )
+        previous_load = ttk.Button(
+            controls, text="이전 저장 불러오기", command=partial(self._send, "load_previous")
+        )
+        previous_load.grid(row=wait_row + 3, column=1, sticky="ew", padx=3, pady=3)
+        self.buttons["load_previous"] = previous_load
         ttk.Label(panel, text="파랑: 플레이어   빨강: 적   금색: 문   초록: NPC   회색: 벽").grid(
             row=3, column=0, columnspan=2, sticky="w", pady=(12, 0)
         )
@@ -328,6 +339,7 @@ class PlayWindow:
         if self.activity_button is not None:
             self.activity_button.configure(state="normal" if enabled else "disabled")
         self.slot_preview_button.configure(state="normal" if enabled else "disabled")
+        self.previous_slot_preview_button.configure(state="normal" if enabled else "disabled")
         self.wait_input.configure(state="normal" if enabled else "disabled")
         self.slot_input.configure(state="readonly" if enabled else "disabled")
 
@@ -343,9 +355,13 @@ class PlayWindow:
             if not self.history or not self.history[-1].endswith(message):
                 self._append_messages((message,))
             return
+        message = "처리 중…"
+        if request == "talk":
+            message = "대화 결과를 확인하는 중입니다."
+        elif request == "load_previous":
+            message = "이전 저장을 별도 진행 파일로 불러오는 중입니다."
         self._begin_request(
-            self.worker.request(request, seconds=seconds, slot_id=self.slot.get()),
-            message="대화 결과를 확인하는 중입니다." if request == "talk" else "처리 중…",
+            self.worker.request(request, seconds=seconds, slot_id=self.slot.get()), message=message
         )
 
     def _inspect_memory(self) -> None:
@@ -374,6 +390,13 @@ class PlayWindow:
             self._begin_request(
                 self.worker.inspect_activity(),
                 message="NPC 활동 기록을 확인하는 중입니다. 게임 시간은 흐르지 않습니다.",
+            )
+
+    def _inspect_previous_slot(self) -> None:
+        if not self.busy:
+            self._begin_request(
+                self.worker.inspect_previous_slot(self.slot.get()),
+                message="이전 저장 정보를 확인하는 중입니다. 현재 진행은 유지됩니다.",
             )
 
     def _begin_request(self, pending: Future[ClientUpdate], *, message: str = "처리 중…") -> None:
