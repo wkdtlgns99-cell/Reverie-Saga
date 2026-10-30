@@ -177,23 +177,54 @@ class PlayWindow:
         panel = ttk.Frame(root, padding=18)
         panel.pack(fill="both", expand=True)
         panel.columnconfigure(0, weight=1)
-        panel.rowconfigure(8, weight=1)
+        panel.rowconfigure(2, weight=3, minsize=120)
+        panel.rowconfigure(8, weight=1, minsize=60)
         ttk.Label(panel, text="REVERIE SAGA", font=("Segoe UI", 21, "bold")).grid(
             row=0, column=0, columnspan=2, sticky="w"
         )
-        ttk.Label(panel, text="작은 코어 연결 테스트 · " + self.mode_label).grid(
+        ttk.Label(panel, text="작은 코어 연결 테스트 · " + self.mode_label, wraplength=740).grid(
             row=1, column=0, columnspan=2, sticky="w", pady=(0, 14)
         )
+        play_panel = ttk.Frame(panel)
+        play_panel.grid(row=2, column=0, columnspan=2, sticky="nsew")
+        play_panel.columnconfigure(0, weight=1)
+        play_panel.rowconfigure(0, weight=1)
+        self.play_viewport = tk.Canvas(
+            play_panel,
+            width=CELL_PIXELS * 6,
+            height=CELL_PIXELS * 3,
+            background=BACKGROUND,
+            highlightthickness=0,
+        )
+        self.play_viewport.grid(row=0, column=0, sticky="nsew")
+        self.play_vertical_scrollbar = ttk.Scrollbar(play_panel, command=self.play_viewport.yview)
+        self.play_vertical_scrollbar.grid(row=0, column=1, sticky="ns")
+        self.play_horizontal_scrollbar = ttk.Scrollbar(
+            play_panel, orient="horizontal", command=self.play_viewport.xview
+        )
+        self.play_horizontal_scrollbar.grid(row=1, column=0, sticky="ew")
+        self.play_viewport.configure(
+            yscrollcommand=self.play_vertical_scrollbar.set,
+            xscrollcommand=self.play_horizontal_scrollbar.set,
+        )
+        self.play_content = ttk.Frame(self.play_viewport)
+        self._play_window = self.play_viewport.create_window(
+            0, 0, anchor="nw", window=self.play_content
+        )
+        self._play_width = 0
+        self.play_content.bind("<Configure>", self._layout_play_area)
+        self.play_viewport.bind("<Configure>", self._layout_play_area)
+        root.bind("<MouseWheel>", self._scroll_play_area, add="+")
         self.canvas = tk.Canvas(
-            panel,
+            self.play_content,
             width=CELL_PIXELS * 3,
             height=CELL_PIXELS * 3,
             background=BACKGROUND,
             highlightthickness=0,
         )
-        self.canvas.grid(row=2, column=0, sticky="n")
-        controls = ttk.Frame(panel, padding=(18, 0, 0, 0))
-        controls.grid(row=2, column=1, sticky="n")
+        self.canvas.grid(row=0, column=0, sticky="n")
+        controls = ttk.Frame(self.play_content, padding=(18, 0, 0, 0))
+        controls.grid(row=0, column=1, sticky="n")
         ttk.Label(controls, textvariable=self.stats, font=("맑은 고딕", 11)).grid(
             row=0, column=0, columnspan=2, sticky="w", pady=(0, 12)
         )
@@ -303,6 +334,35 @@ class PlayWindow:
             self.debug_details.grid_remove()
         else:
             self.debug_details.grid(row=10, column=0, columnspan=2, sticky="w")
+
+    def _layout_play_area(self, event: tk.Event[tk.Misc]) -> None:
+        width = max(self.play_viewport.winfo_width(), self.play_content.winfo_reqwidth())
+        # Own the embedded width so Configure callbacks settle after a resize.
+        if self._play_width != width:
+            self.play_viewport.itemconfigure(self._play_window, width=width)
+            self._play_width = width
+        self.play_viewport.configure(
+            scrollregion=(
+                0,
+                0,
+                width,
+                max(self.play_viewport.winfo_height(), self.play_content.winfo_reqheight()),
+            )
+        )
+
+    def _scroll_play_area(self, event: tk.Event[tk.Misc]) -> str | None:
+        if not event.delta or isinstance(event.widget, (ttk.Spinbox, ttk.Combobox)):
+            return None
+        widget: tk.Misc | None = event.widget
+        while widget is not None and widget is not self.play_content:
+            if widget is self.play_viewport:
+                break
+            widget = widget.master
+        if widget is None:
+            return None
+        units = max(1, abs(event.delta) // 120)
+        self.play_viewport.yview_scroll(-units if event.delta > 0 else units, "units")
+        return "break"
 
     def _append_messages(self, messages: tuple[str, ...]) -> None:
         follow_tail = not self.history or self.log_text.yview()[1] >= 1.0

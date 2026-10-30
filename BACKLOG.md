@@ -8,6 +8,16 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+QT-F90 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
+Fix actual compact Tk clipping with scrollable full-size map/controls and independent
+history/status/path. Baseline4geometryFAIL2.20s;final new12within104affectedPASS45.91s.
+Basic/reach900x600history y497/height60;900x768y633/height92,all within client. Real
+scrollbar/worker/SQLite previous restore,source bytes,local wheels,input fields,resize,
+pending/error/next action/close qualified. Ruffboth/format2/strict273/import3+1/pip PASS.
+Local acceptance input;actual PR/required checks/refs own final publication status.
+Native/independent/device/CP06/release holds remain;no automatic next feature.
+[Order](docs/work_orders/QT-F90_TK_COMPACT_VIEWPORT.md),[receipt](docs/reviews/QT-F90_EXECUTION_2026-10-30.md).
+
 QT-F89 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
 Tk previous-save preview/load controls now use existing registered worker/session paths.
 Explicit selected01/08restore,new branch/token,source bytes/retry/history/restart,
@@ -15,7 +25,8 @@ missing/corrupt generation,busy/error/cancel/close and reach-mode preview qualif
 New10within125distinct affected cases qualified:restricted123PASS/2hardlink environment
 FAIL47.99s;permitted both unchanged failures plus final new10PASS6.07s. Ruffboth/format2/
 strict272/import3+1/pip PASS. Actual preview<=0.050s/load<=0.151s,short current-PC samples.
-Required new-head CI/PR/merge/main synchronization pending;no next feature selection.
+Publication complete:PR22ordinary merge57aa240after both required full3635/boundary31
+PASS;local main equality/clean verified. Precommit pending notes in old snapshots are historical.
 Native/independent/device/CP06/release holds remain.
 [Order](docs/work_orders/QT-F89_TK_PREVIOUS_SAVE.md),[receipt](docs/reviews/QT-F89_EXECUTION_2026-10-30.md).
 

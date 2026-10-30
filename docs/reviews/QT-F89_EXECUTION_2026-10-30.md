@@ -1,7 +1,7 @@
 # QT-F89 — Tk previous-save controls
 
 LOCAL_ACCEPTED2026-10-30;self-review,primary5presentation support;related6/7.
-[Order](../work_orders/QT-F89_TK_PREVIOUS_SAVE.md). Publication remains pending below.
+[Order](../work_orders/QT-F89_TK_PREVIOUS_SAVE.md). Publication completed;see follow-up below.
 
 Entry clean main/origin-main0e8e133after ordinary F88PR20and policyPR21merges.
 Reused this PC's CPython3.13.12/Tk8.6/.venv and pinned tools;no dependency/settings change.
@@ -49,3 +49,15 @@ The director's standing rule authorizes scoped commit/push,PR,required latest-he
 ordinary merge and local main synchronization. This is the precommit acceptance record;
 actual GitHub PR/jobs/refs own final publication status. Preserve final publication evidence
 under ignored tmp/qtf89/publication. No further feature selection authorized.
+
+## Publication completed — 2026-10-30
+
+Commit72e0e594bbd3f1e40a665b48cf73899e85e33f08published through
+[PR22](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/22).
+PR run41020908866/job123947766313:full3635PASS927.47s,boundaries31PASS6.72s.
+Push run41020875781/job123947664130:full3635PASS1093.37s,boundaries31PASS8.05s.
+The first merge was blocked by the still-running required push check. After observing
+both required checks SUCCESS,ordinary merge57aa24013a8e51b37bb03eb24f9bcb87dd516ae3
+completed without bypass. Local main was fetched/fast-forwarded to exactly origin/main,
+0ahead/behind and clean. Ignored tmp/qtf89/publication/result.jsonretains actual evidence.
+Native/independent/device/CP06/release limits remain unchanged.

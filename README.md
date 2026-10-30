@@ -59,6 +59,13 @@ in a separate working file and preserves both saved generations. Missing or dama
 previous saves report an error without falling back to the latest save.
 [Evidence](docs/reviews/QT-F89_EXECUTION_2026-10-30.md).
 
+In compact Tk windows,the map and controls share a scrollable region while status,
+working-path information and history remain below it (QT-F90). Use the play-region
+scrollbars or mouse wheel to reach controls;history scrolls independently. Wait-time
+and slot fields keep their own wheel behavior. Basic/reach-mode geometry is qualified
+at900x600and900x768on the current PC,not final renderer/device UX acceptance.
+[Evidence](docs/reviews/QT-F90_EXECUTION_2026-10-30.md).
+
 In NPC-memory modes,selected-slot information also compares that slot's memories with
 the current game:shared,current-only and saved-only conversations,with their actual times.
 Differences describe save/branch history,not NPC forgetting;received reports remain distinct
