@@ -1,7 +1,8 @@
 # Authorized Continuation and Useful Engineering
 
 Director rule2026-10-23. Execution authority:[ENGINEERING_RULES](../ENGINEERING_RULES.md).
-These rules guide already-authorized work;they do not grant publication,agent or release authority.
+These rules guide already-authorized work. The2026-10-30publication rule below supplies
+standing delivery authority;agent,administration and release authority remain separate.
 
 ## Continue across turns
 
@@ -19,10 +20,7 @@ These rules guide already-authorized work;they do not grant publication,agent or
 - At task entry and after compaction,read the turn rulebook and current handoff/backlog;
   inspect actual files,Git and outstanding jobs. Resume unfinished work before choosing a
   new bounded order. Record concrete contracts,acceptance and verification before editing.
-- Reuse evidence for unchanged inputs and group related accepted changes into reviewable
-  PRs when efficient. A separate PR/merge after every small task is not required. Actual
-  publication still requires user authorization,all required CI on the published revision,
-  applicable review/checkpoint gates and ordinary protected main merge/synchronization.
+- Reuse evidence for unchanged inputs and follow [per-task publication](#publish-each-completed-task).
   Never bypass protection or silently weaken checks to reduce waiting time.
 - Advance through actual implementation,repair and verification. A wait must observe a
   confirmed live process/job;repeated plans or unchanged status alone are not progress.
@@ -31,6 +29,31 @@ These rules guide already-authorized work;they do not grant publication,agent or
   finish a specific publication while paused do not resume the broader development loop.
   Resume it only when the user requests continuation. Retain existing checkpoint holds,
   user work and permissions across turns;automatic execution does not authorize agents.
+
+## Publish each completed task
+
+Director2026-10-30:for each authorized,independently complete task,finish its ordinary
+publication and local main synchronization before beginning the next task. This replaces
+the earlier default of accumulating several accepted tasks before publication.
+
+- Standing authorization covers scoped commits,pushes to an owned task branch,PR creation,
+  required-CI observation and repair,ordinary protected-main merge,and local main update.
+  Do not ask for this delivery permission again unless a later instruction restricts it.
+- One coherent task includes its implementation,related UI,tests and documentation. Keep
+  necessary intermediate commits together;do not create a PR for every edit or partial step,
+  or bundle unrelated completed tasks merely to reduce CI runs.
+- Finish local acceptance and self-review,update backlog/handoff/Korean progress,then push
+  the task branch and open or update its PR. Confirm all required checks pass for the latest
+  published revision and current base,and all applicable review/checkpoint gates permit merge.
+- Merge through the ordinary PR path without bypass,force push or direct main push. The
+  merge updates remote main;fetch and fast-forward local main,then verify matching SHAs and
+  a clean worktree. Preserve unrelated edits;never reset or discard them to obtain cleanliness.
+- If checks,conflicts,permissions or a checkpoint prevent publication,repair within scope
+  and retain the exact branch/PR/job/blocker. Report incomplete delivery truthfully;do not
+  claim main synchronization or begin the next task while the publication remains unresolved.
+- This rule grants no new feature selection,automatic development loop,agent,dependency,
+  administration,external messaging or release authority. Honor pauses and later task-specific
+  publication restrictions. Retain native,independent,device and release qualification limits.
 
 ## Resume after a five-hour quota interruption
 
