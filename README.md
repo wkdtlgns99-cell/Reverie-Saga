@@ -465,3 +465,8 @@ NPC position and gate state. These describe past plans,not executed aid;compact 
 without retained conversation events explicitly lack older projections. Existing modes,
 save formats and game rules stay unchanged.
 [Evidence](docs/reviews/QT-F88_EXECUTION_2026-10-29.md).
+
+Keyboard focus in the scrollable Tk play area now reveals the focused control on both
+axes when needed (QT-F91). Native Tab/reverse-Tab traversal and Space activation retain
+their existing commands. History,other windows and input editing remain independent.
+[Evidence](docs/reviews/QT-F91_EXECUTION_2026-10-30.md).

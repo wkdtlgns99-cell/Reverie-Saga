@@ -215,6 +215,7 @@ class PlayWindow:
         self.play_content.bind("<Configure>", self._layout_play_area)
         self.play_viewport.bind("<Configure>", self._layout_play_area)
         root.bind("<MouseWheel>", self._scroll_play_area, add="+")
+        root.bind("<FocusIn>", self._reveal_play_focus, add="+")
         self.canvas = tk.Canvas(
             self.play_content,
             width=CELL_PIXELS * 3,
@@ -363,6 +364,29 @@ class PlayWindow:
         units = max(1, abs(event.delta) // 120)
         self.play_viewport.yview_scroll(-units if event.delta > 0 else units, "units")
         return "break"
+
+    def _reveal_play_focus(self, event: tk.Event[tk.Misc]) -> None:
+        target = event.widget
+        if self._closing or self.closed or not isinstance(target, tk.Misc):
+            return
+        widget: tk.Misc | None = target
+        while widget is not None and widget is not self.play_content:
+            widget = widget.master
+        if widget is None or not target.winfo_ismapped():
+            return
+        viewport = self.play_viewport
+        left = target.winfo_rootx() - self.play_content.winfo_rootx()
+        top = target.winfo_rooty() - self.play_content.winfo_rooty()
+        width, height = target.winfo_width(), target.winfo_height()
+        visible_width, visible_height = viewport.winfo_width(), viewport.winfo_height()
+        x, y = viewport.canvasx(0), viewport.canvasy(0)
+        # Reveal only the clipped axis;oversized targets keep their leading edge visible.
+        if left < x or left + width > x + visible_width:
+            offset = left if left < x or width > visible_width else left + width - visible_width
+            viewport.xview_moveto(offset / max(1, self.play_content.winfo_width()))
+        if top < y or top + height > y + visible_height:
+            offset = top if top < y or height > visible_height else top + height - visible_height
+            viewport.yview_moveto(offset / max(1, self.play_content.winfo_height()))
 
     def _append_messages(self, messages: tuple[str, ...]) -> None:
         follow_tail = not self.history or self.log_text.yview()[1] >= 1.0
