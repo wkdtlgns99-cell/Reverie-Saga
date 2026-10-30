@@ -1,6 +1,6 @@
 # Engineering Turn Rules
 
-Approved2026-10-08;updated2026-10-23. Canonical execution/repair policy;architecture/product contracts retain authority.
+Approved2026-10-08;updated2026-10-30. Canonical execution/repair policy;architecture/product contracts retain authority.
 MUST read this file from disk at the start of every assistant turn,including chat/status and
 after compaction. Apply only relevant actions;reload contracts on task entry/scope change.
 
@@ -60,10 +60,11 @@ after compaction. Apply only relevant actions;reload contracts on task entry/sco
   batch related work and honor pauses. Follow [execution policy](docs/AUTONOMOUS_EXECUTION.md).
   Resume quota interruptions at the reported reset;manual pauses remain authoritative.
 - When explaining project work or answering where it belongs,read [numbered structure](docs/GAME_STRUCTURE_GUIDE_EN.md);report its primary1–7 number/name,related numbers when relevant,and current implementation status. Label supporting work explicitly rather than claiming a new gameplay capability.
-- Self-review diff,scope,contracts,wiring and acceptance. Report actual commands/results,
+- Self-review diff,scope,contracts,wiring,acceptance. Report actual commands/results,
   baseline failures and NOT_RUN/UNVERIFIED limits;never relabel historical/self-review evidence.
 - Mark DONE only after acceptance;update backlog,handoff and Korean progress together before
   advancing. AI documents:English;chat/player/progress:Korean. Link contracts instead of copying.
+- [Per-task publication/main synchronization](docs/AUTONOMOUS_EXECUTION.md#publish-each-completed-task) before advancing;authorized2026-10-30.
 - Respect user scope and checkpoint holds. No unrequested commit/push,agents,dependencies,
   external messaging,destructive operations or policy weakening. Further governance/public
   contract/save-format changes outside this task require explicit authorization.

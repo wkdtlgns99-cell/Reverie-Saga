@@ -1,12 +1,19 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-10-29 | Current task/status/dependency SSOT.
+Updated:2026-10-30 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
+
+RS-PUBLISH-001 IN_PROGRESS2026-10-30:director requests standing per-task publication
+and one next bounded task. Each accepted coherent task now requires scoped commit/push,
+PR/latest required CI/ordinary merge/local main equality before advancing. No direct-main
+push,bypass,agent or automatic development-loop authority. F88PR20is awaiting required
+run41017530781;native/independent/device/CP06/release holds remain.
+[Order](docs/work_orders/RS-PUBLISH-001_PER_TASK_MAIN.md),[receipt](docs/reviews/RS-PUBLISH-001_EXECUTION_2026-10-30.md).
 
 F88-GIT-UPLOAD2026-10-29:human requests uploading the completed F88work to Git.
 All8delivery inputs exactly match the final audit;fetched main still4cc0004,0ahead/behind.

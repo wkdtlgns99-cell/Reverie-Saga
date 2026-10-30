@@ -1,5 +1,11 @@
 # Reverie Saga — 게임 시스템 진행 요약
 
+2026-10-30 **작업별 main 동기화 규칙 추가 중: 7번 전체 연결의 개발 절차 보조 작업**입니다.
+완성된 작업마다 검증 후 PR·필수 CI·일반 병합·로컬 main 동기화까지 마친 뒤 다음 작업을 시작합니다.
+이번 요청은 이 게시 절차를 기본 승인하며, 실제 게임 동작이나 기존 검토·출시 보류를 변경하지 않습니다.
+F88은 [PR #20](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/20)의 CI를 기다리고 있습니다.
+[규칙 작업 근거](docs/work_orders/RS-PUBLISH-001_PER_TASK_MAIN.md).
+
 2026-10-29 Git 업로드 요청: 완료한 F88의 8개 파일을 전용 브랜치
 `codex/qt-f88-conversation-support-20261029`에 커밋·푸시합니다.
 **7번 전체 연결의 게시 보조 작업**이며 관련 영역은 **2·5·6번**입니다.

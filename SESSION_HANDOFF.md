@@ -1,9 +1,9 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-10-29 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-10-30 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
+Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -14,6 +14,13 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 5. Latest user request governs scope. No automatic next task,agent,publication,remote administration or checkpoint waiver.
 
 ## Checkout and Local Work
+
+RS-PUBLISH-001 IN_PROGRESS2026-10-30:director requests standing per-task publication
+and one next bounded task. Each accepted coherent task now requires scoped commit/push,
+PR/latest required CI/ordinary merge/local main equality before advancing. No direct-main
+push,bypass,agent or automatic development-loop authority. F88PR20is awaiting required
+run41017530781;native/independent/device/CP06/release holds remain.
+[Order](docs/work_orders/RS-PUBLISH-001_PER_TASK_MAIN.md),[receipt](docs/reviews/RS-PUBLISH-001_EXECUTION_2026-10-30.md).
 
 F88-GIT-UPLOAD2026-10-29:human requests uploading the completed F88work to Git.
 All8delivery inputs exactly match the final audit;fetched main still4cc0004,0ahead/behind.
