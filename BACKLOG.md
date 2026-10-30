@@ -8,13 +8,26 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+QT-F91 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
+Focused controls in the compact Tk play area scroll into view on either clipped axis,
+without changing focus,history,commands or saved state. Baseline4geometryFAIL5.14s;
+new11within115affectedPASS84.92s. Actual Tab/reverse Tab/Space previous-save restore,
+both axes,already-visible/oversized targets,history/other-window/unmapped isolation,
+entry ownership,pending/error/recovery/close and40focus updates preserve state.
+Ruffboth/format13/strict274/import3+1/pip PASS. Exact boundary/document/scope receipt
+qualifies local acceptance;PR/latest required CI/ordinary merge/local main sync remain
+part of this task under standing publication authority. Native/independent/device/CP06/
+release holds retained;no next feature before publication completes.
+[Order](docs/work_orders/QT-F91_TK_FOCUS_VISIBILITY.md),[receipt](docs/reviews/QT-F91_EXECUTION_2026-10-30.md).
+
 QT-F90 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
 Fix actual compact Tk clipping with scrollable full-size map/controls and independent
 history/status/path. Baseline4geometryFAIL2.20s;final new12within104affectedPASS45.91s.
 Basic/reach900x600history y497/height60;900x768y633/height92,all within client. Real
 scrollbar/worker/SQLite previous restore,source bytes,local wheels,input fields,resize,
 pending/error/next action/close qualified. Ruffboth/format2/strict273/import3+1/pip PASS.
-Local acceptance input;actual PR/required checks/refs own final publication status.
+Publication complete:PR23merged0dde4a6;actual PR workflow97checks SUCCESS confirmed.
+Fetched local main fast-forwarded to0dde4a6andclean before F91branch entry.
 Native/independent/device/CP06/release holds remain;no automatic next feature.
 [Order](docs/work_orders/QT-F90_TK_COMPACT_VIEWPORT.md),[receipt](docs/reviews/QT-F90_EXECUTION_2026-10-30.md).
 
