@@ -15,6 +15,17 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+QT-F93 LOCAL_ACCEPTED2026-11-01:self-review;primary5input support,related2/6/7.
+Ctrl/Alt movement-key chords no longer issue gameplay;Shift/CapsLock WASD uses existing
+movement. Native baseline16FAIL16.90s;new19within128affectedPASS98.41s,including basic/reach
+chord ownership,all uppercase directions,NumLock/arrows,entry/history/slot isolation,
+save/retry/load,pending error/next input/close. Source bytes/view/history/focus preserved
+for ignored chords. Ruffboth/format13/strict276/import3+1/pip PASS;boundary/docs/scope in receipt.
+Publication input snapshot:actual PR/head/required CI/merge/local-main result belongs to
+tmp/qtf93/publication and the attached PR. Standing delivery authority applies;do not infer
+publication from this precommit snapshot. Native/independent/device/CP06/release holds remain.
+[Order](docs/work_orders/QT-F93_TK_KEYBOARD_MODIFIERS.md),[receipt](docs/reviews/QT-F93_EXECUTION_2026-11-01.md).
+
 QT-F92 LOCAL_ACCEPTED2026-11-01:self-review;primary5presentation support,related6/7.
 Shift+wheel scrolls only the horizontal play axis;ordinary wheel remains vertical.
 Basic/reach narrow-window directions/subnotch/multiple/zero/clamp,input/history/other-window
@@ -22,9 +33,9 @@ ownership,actual previous-save restore,pending/error/recovery/close qualified.
 Baseline8FAIL7.92s;new12within109affectedPASS76.09s;final typed handler new12PASS11.59s.
 40actual callbacks0.301115s,source/view/history/focus preserved. Ruffboth/format13/
 strict275/import3+1/pip PASS. Boundary/document/scope evidence in receipt.
-PR/latest required CI/ordinary merge/local main sync remain part of this task under standing
-authority;actual publication evidence lives in tmp/qtf92/publication and the attached PR.
-Native/independent/device/CP06/release holds remain;no next feature before delivery.
+Publication complete:PR25merged8c02ed6;both actual required workflows102/103SUCCESS,
+each full3670PASS. Fresh fetch found local main equal to origin/main8c02ed6andclean
+before F93branch entry. Native/independent/device/CP06/release holds remain.
 [Order](docs/work_orders/QT-F92_TK_HORIZONTAL_WHEEL.md),[receipt](docs/reviews/QT-F92_EXECUTION_2026-10-31.md).
 
 QT-F91 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.

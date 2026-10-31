@@ -475,3 +475,7 @@ In narrow Tk windows,Shift+mouse wheel scrolls the play region horizontally (QT-
 Ordinary wheel input still scrolls vertically;wait/slot inputs and history retain their
 own wheel handling. Scrolling changes no game time or saved state.
 [Evidence](docs/reviews/QT-F92_EXECUTION_2026-10-31.md).
+
+Tk movement accepts WASD with Shift or CapsLock enabled (QT-F93). Ctrl/Alt combinations
+do not issue movement commands. Arrow controls and native wait/slot/history input remain
+unchanged. [Evidence](docs/reviews/QT-F93_EXECUTION_2026-11-01.md).

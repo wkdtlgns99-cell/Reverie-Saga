@@ -412,7 +412,11 @@ class PlayWindow:
     def _key(self, event: tk.Event[tk.Misc]) -> None:
         if isinstance(event.widget, (ttk.Entry, ttk.Spinbox, ttk.Combobox, tk.Text)):
             return
-        request = KEYS.get(event.keysym)
+        # Control and Alt/Mod1 belong to shortcuts;Shift and CapsLock still allow movement.
+        if isinstance(event.state, int) and event.state & (0x4 | 0x8 | 0x20000):
+            return
+        key = event.keysym.lower() if len(event.keysym) == 1 else event.keysym
+        request = KEYS.get(key)
         if request is not None:
             self._send(request)
 
