@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-10-30 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-01 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -15,6 +15,18 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+QT-F92 LOCAL_ACCEPTED2026-11-01:self-review;primary5presentation support,related6/7.
+Shift+wheel scrolls only the horizontal play axis;ordinary wheel remains vertical.
+Basic/reach narrow-window directions/subnotch/multiple/zero/clamp,input/history/other-window
+ownership,actual previous-save restore,pending/error/recovery/close qualified.
+Baseline8FAIL7.92s;new12within109affectedPASS76.09s;final typed handler new12PASS11.59s.
+40actual callbacks0.301115s,source/view/history/focus preserved. Ruffboth/format13/
+strict275/import3+1/pip PASS. Boundary/document/scope evidence in receipt.
+PR/latest required CI/ordinary merge/local main sync remain part of this task under standing
+authority;actual publication evidence lives in tmp/qtf92/publication and the attached PR.
+Native/independent/device/CP06/release holds remain;no next feature before delivery.
+[Order](docs/work_orders/QT-F92_TK_HORIZONTAL_WHEEL.md),[receipt](docs/reviews/QT-F92_EXECUTION_2026-10-31.md).
+
 QT-F91 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.
 Focused controls in the compact Tk play area scroll into view on either clipped axis,
 without changing focus,history,commands or saved state. Baseline4geometryFAIL5.14s;
@@ -22,9 +34,10 @@ new11within115affectedPASS84.92s. Actual Tab/reverse Tab/Space previous-save res
 both axes,already-visible/oversized targets,history/other-window/unmapped isolation,
 entry ownership,pending/error/recovery/close and40focus updates preserve state.
 Ruffboth/format13/strict274/import3+1/pip PASS. Exact boundary/document/scope receipt
-qualifies local acceptance;PR/latest required CI/ordinary merge/local main sync remain
-part of this task under standing publication authority. Native/independent/device/CP06/
-release holds retained;no next feature before publication completes.
+qualifies local acceptance. Publication complete:PR24mergedc690f2f;actual PR workflow100
+SUCCESS confirmed,including full regression. Fresh fetch found local main exactly equal
+to origin/mainc690f2fandclean before F92branch entry. Native/independent/device/CP06/
+release holds retained.
 [Order](docs/work_orders/QT-F91_TK_FOCUS_VISIBILITY.md),[receipt](docs/reviews/QT-F91_EXECUTION_2026-10-30.md).
 
 QT-F90 LOCAL_ACCEPTED2026-10-30:self-review;primary5presentation support,related6/7.

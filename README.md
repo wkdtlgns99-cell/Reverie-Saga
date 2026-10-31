@@ -470,3 +470,8 @@ Keyboard focus in the scrollable Tk play area now reveals the focused control on
 axes when needed (QT-F91). Native Tab/reverse-Tab traversal and Space activation retain
 their existing commands. History,other windows and input editing remain independent.
 [Evidence](docs/reviews/QT-F91_EXECUTION_2026-10-30.md).
+
+In narrow Tk windows,Shift+mouse wheel scrolls the play region horizontally (QT-F92).
+Ordinary wheel input still scrolls vertically;wait/slot inputs and history retain their
+own wheel handling. Scrolling changes no game time or saved state.
+[Evidence](docs/reviews/QT-F92_EXECUTION_2026-10-31.md).

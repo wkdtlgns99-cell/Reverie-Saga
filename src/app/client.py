@@ -362,7 +362,10 @@ class PlayWindow:
         if widget is None:
             return None
         units = max(1, abs(event.delta) // 120)
-        self.play_viewport.yview_scroll(-units if event.delta > 0 else units, "units")
+        # Tk's Shift mask is bit0;non-numeric event state has no known modifiers.
+        horizontal = isinstance(event.state, int) and event.state & 0x1
+        scroll = self.play_viewport.xview_scroll if horizontal else self.play_viewport.yview_scroll
+        scroll(-units if event.delta > 0 else units, "units")
         return "break"
 
     def _reveal_play_focus(self, event: tk.Event[tk.Misc]) -> None:
