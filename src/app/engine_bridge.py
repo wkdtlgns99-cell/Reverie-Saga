@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.npc_assistance_memory import assistance_options
+
 import argparse
 from dataclasses import asdict, fields
 import hashlib
@@ -160,6 +162,7 @@ class EngineBridge:
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
         npc_reach_aid: bool = False,
+        npc_assistance_memory: bool = False,
     ) -> None:
         self.worker = ClientWorker(
             path,
@@ -177,6 +180,7 @@ class EngineBridge:
             npc_call_pause=npc_call_pause,
             npc_ready_patrol=npc_ready_patrol,
             npc_reach_aid=npc_reach_aid,
+            **assistance_options(npc_assistance_memory),
         )
         self.narratives = narratives
         self.last = self.worker.request("attach").result()
@@ -261,6 +265,7 @@ def serve(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> int:
     bridge = EngineBridge(
         path,
@@ -279,6 +284,7 @@ def serve(
         npc_call_pause=npc_call_pause,
         npc_ready_patrol=npc_ready_patrol,
         npc_reach_aid=npc_reach_aid,
+        **assistance_options(npc_assistance_memory),
     )
     try:
         write_frame(target, bridge.response("0"))
@@ -316,9 +322,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-call-pause", action="store_true")
     parser.add_argument("--npc-ready-patrol", action="store_true")
     parser.add_argument("--npc-reach-aid", action="store_true")
+    parser.add_argument("--npc-assistance-memory", action="store_true")
     args = parser.parse_args(argv)
     logging.basicConfig(stream=sys.stderr)
     try:
+        if args.npc_assistance_memory and not args.npc_reach_aid:
+            raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
         narratives = load_catalog(args.catalog, args.catalog_sha256)
         try:
             choice = select_scenario(args.scenario)
@@ -348,6 +357,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             npc_call_pause=args.npc_call_pause,
             npc_ready_patrol=args.npc_ready_patrol,
             npc_reach_aid=args.npc_reach_aid,
+            **assistance_options(args.npc_assistance_memory),
         )
     except (OSError, ValueError, EOFError) as error:
         logging.getLogger(__name__).error("engine pipe unavailable: %s", error)

@@ -1,7 +1,7 @@
 {
   "schema_version": 2,
   "source_sha256": {
-    "src/engines/encounter.py": "5a5ca1e2b24683533aad38b28c808d13488f343e7bcfbff95cb7708656cb4d05",
+    "src/engines/encounter.py": "999677024a9f2dba7dbd07edd5b496fb192b84f186431001ddf30ec16daabc6e",
     "src/engines/npc_memory.py": "be39c2d417aec5f219f0caed015b152135c0c8343c8297c9361ea2a648a397f2",
     "src/contracts/dialogue.py": "036d5dc8a1cd3e6012926d6a222d69ea9d2efe0e307cac827a82070c790224d4",
     "src/engines/quest.py": "1e8932c2fe39755e6e9ee28803abfa3261507515ae1593b47ef8745790c2facd",
@@ -57,9 +57,9 @@
       "key": "engines.encounter.EncounterActions.evaluate",
       "implementation": "engines.encounter.EncounterActions.evaluate",
       "path": "src/engines/encounter.py",
-      "definition_line": 177,
-      "body_start": 178,
-      "body_end": 194,
+      "definition_line": 200,
+      "body_start": 201,
+      "body_end": 217,
       "registries": [
         "encounter_bundle",
         "memory_bundle",
@@ -73,9 +73,9 @@
       "key": "engines.encounter.EncounterActions.manifest",
       "implementation": "engines.encounter.EncounterActions.manifest",
       "path": "src/engines/encounter.py",
-      "definition_line": 138,
-      "body_start": 139,
-      "body_end": 175,
+      "definition_line": 151,
+      "body_start": 152,
+      "body_end": 198,
       "registries": [
         "encounter_bundle",
         "memory_bundle",
@@ -86,7 +86,7 @@
       "nested_code": [
         {
           "name": "<genexpr>",
-          "first_line": 161,
+          "first_line": 179,
           "qualname": "EncounterActions.manifest.<locals>.<genexpr>",
           "policy": "reviewed_generator_expression_within_enclosing_body"
         }
@@ -96,9 +96,9 @@
       "key": "engines.encounter.EncounterActions.scenario_layout",
       "implementation": "engines.encounter.EncounterActions.scenario_layout",
       "path": "src/engines/encounter.py",
-      "definition_line": 134,
-      "body_start": 135,
-      "body_end": 135,
+      "definition_line": 147,
+      "body_start": 148,
+      "body_end": 148,
       "registries": [
         "encounter_bundle",
         "memory_bundle",
@@ -112,9 +112,9 @@
       "key": "engines.encounter.EncounterMovement.evaluate",
       "implementation": "engines.encounter.EncounterMovement.evaluate",
       "path": "src/engines/encounter.py",
-      "definition_line": 385,
-      "body_start": 386,
-      "body_end": 435,
+      "definition_line": 427,
+      "body_start": 428,
+      "body_end": 477,
       "registries": [
         "encounter_bundle",
         "memory_bundle",
@@ -128,9 +128,9 @@
       "key": "engines.encounter.EncounterMovement.manifest",
       "implementation": "engines.encounter.EncounterMovement.manifest",
       "path": "src/engines/encounter.py",
-      "definition_line": 382,
-      "body_start": 383,
-      "body_end": 383,
+      "definition_line": 424,
+      "body_start": 425,
+      "body_end": 425,
       "registries": [
         "encounter_bundle",
         "memory_bundle",
@@ -144,9 +144,9 @@
       "key": "engines.encounter.EncounterMovement.scenario_layout",
       "implementation": "engines.encounter.EncounterMovement.scenario_layout",
       "path": "src/engines/encounter.py",
-      "definition_line": 378,
-      "body_start": 379,
-      "body_end": 379,
+      "definition_line": 420,
+      "body_start": 421,
+      "body_end": 421,
       "registries": [
         "encounter_bundle",
         "memory_bundle",

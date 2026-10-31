@@ -1,5 +1,16 @@
 # Unity Prototype
 
+F97source preparation only:strict `REVERIE_UNITY_NPC_ASSISTANCE_MEMORY=1` requires
+the existing reach-aid parent chain. Absent/0retains the old selection;other values
+report NPC_ASSISTANCE_MEMORY_SELECTION,and missing parent reports CONTENT before child
+launch/save creation. The default isolated path is
+`tmp/unity-play/harbor-assistance-memory/<quest catalog SHA256>/game.sqlite`.
+Reconnect forwards the leaf flag. LiveVerification has a dedicated16second assistance,
+readonly inspection,save/load/reconnect flow qualified against actual Python framed
+responses. C#compile/editor/render/capture/build remain NOT_RUN under the existing
+native/AWAY desktop stop;source preparation does not resume desktop interaction.
+[F97order](../../docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md).
+
 Unity6000.3.25f1 (e1dba0a9aba4),Windows x64,Mono,built-in renderer. Provisional engine;
 Python remains authoritative. Source Assets/meta,Packages/lock and ProjectSettings are tracked.
 Library,editor/license/account caches,local saves and builds are ignored. No engine plugin or
