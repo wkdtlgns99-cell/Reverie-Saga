@@ -479,3 +479,9 @@ own wheel handling. Scrolling changes no game time or saved state.
 Tk movement accepts WASD with Shift or CapsLock enabled (QT-F93). Ctrl/Alt combinations
 do not issue movement commands. Arrow controls and native wait/slot/history input remain
 unchanged. [Evidence](docs/reviews/QT-F93_EXECUTION_2026-11-01.md).
+
+In reach-aid mode,NPC activity inspection also reports communal supplies prepared/used
+since the latest retained conversation end (QT-F94). Without a retained conversation,
+it explicitly starts at the source checkpoint;older cumulative totals do not become new
+changes. Inspection advances no time and reuses its existing single verified replay.
+[Evidence](docs/reviews/QT-F94_EXECUTION_2026-11-01.md).
