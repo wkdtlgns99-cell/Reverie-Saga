@@ -17,10 +17,21 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 CONTINUATION_ACTIVE2026-11-01:director explicitly requests automatic work after the current
 task and subsequent tasks. Actual same-chat goal created and ACTIVE confirmed;ordinary
-usage allowed. Complete F94and its publication/main sync,then select the next useful
+usage allowed. F94publication/main sync completed;select the next useful
 bounded order from actual sources and current priorities without reprompting. This is
 workflow support,not new gameplay authority;native/independent/device/CP06/release and
 agent/administration restrictions remain. Honor user pause/stop;no periodic automation.
+
+QT-F95 CONTRACT_PROPOSAL_PREPARED2026-11-01:self-review;primary2/6design support,related3/5/7.
+Concrete persistent own-assistance memory proposal:total count/latest4causal anchors,new
+explicit child mode,same-result gate+memory atomicity,old save/pin isolation. Current-source
+probe confirms aid16visible in retained history but absent after checkpoint-only compaction;
+repeated actual aids16/20/24/28/32confirm source vectors. Existing F56works as contracted;
+new persistence is not implemented or approved. Future runtime order stays DRAFT until
+explicit director authority for the new public/save contract;current task is docs/probes.
+Normal document publication/main sync remains part of delivery;source/tests/content/CI
+unchanged. All existing review/native/device/release/agent/administration holds remain.
+[Order](docs/work_orders/QT-F95_ASSISTANCE_MEMORY_CONTRACT.md),[proposal](docs/proposals/QT-F95_PERSISTENT_ASSISTANCE_MEMORY.md),[receipt](docs/reviews/QT-F95_EXECUTION_2026-11-01.md).
 
 QT-F94 LOCAL_ACCEPTED2026-11-01:self-review;primary5factual presentation support,related2/6/7.
 Reach activity shows prepared/used changes since latest retained conversation end,or the
@@ -30,9 +41,9 @@ affectedPASS125.16s,exactCI31PASS7.88s. Latest/tie/zero/compact/rewind/restart/s
 one replay,real Tk error/recovery/next input/close qualified. Old12modes234updates EXACT;
 14pairs291updates/state/protocol/pins/SQL EXACT except2declared reach activity rows.
 Direct/framed8actual queries all<2s,max1.070568s;current-host only. Ruffboth/format14/
-strict277/import3+1/pip PASS. Actual publication/head/CI/merge/main receipts belong to
-tmp/qtf94/publication and the attached PR;this precommit snapshot does not infer success.
-Finish publication/main sync before the next automatically authorized bounded order.
+strict277/import3+1/pip PASS. Publication complete:PR27merged738e27b;both required
+workflows108/109SUCCESS,each full3703PASS. Fresh fetch found local main equal to
+origin/main738e27bandclean before F95entry.
 Native/independent/device/CP06/release holds remain.
 [Order](docs/work_orders/QT-F94_ACTIVITY_SUPPLY_CHANGE.md),[receipt](docs/reviews/QT-F94_EXECUTION_2026-11-01.md).
 
