@@ -17,6 +17,15 @@ def seal(value: object, depth: int = 0) -> JsonValue:
     return cast(JsonValue, _convert(value, depth, immutable=True))
 
 
+def _checked_text(value: str) -> str:
+    if type(value) is str and value.isascii():
+        return value
+    if unicodedata.normalize("NFC", value) != value:
+        raise ValueError("non-NFC string")
+    value.encode("utf-8", errors="strict")
+    return value
+
+
 def _convert(
     value: object,
     depth: int,
@@ -40,11 +49,7 @@ def _convert(
     if value is None or kind is bool or kind is int:
         return value
     if kind is str or isinstance(value, str):
-        value = cast(str, value)
-        if unicodedata.normalize("NFC", value) != value:
-            raise ValueError("non-NFC string")
-        value.encode("utf-8", errors="strict")
-        return value
+        return _checked_text(cast(str, value))
     if kind is list or kind is tuple or isinstance(value, (list, tuple)):
         children = (
             _convert(v, depth + 1, immutable, owned_children, maximum)
@@ -57,7 +62,10 @@ def _convert(
         for key, child in pairs.items():
             if not isinstance(key, str):
                 raise ValueError("JSON object keys must be strings")
-            _convert(key, depth + 1, immutable, owned_children, maximum)
+            if depth + 1 > 32:
+                raise ValueError("JSON nesting exceeds32")
+            _checked_text(key)
+            # The child at this same depth also records the key's height.
             result[key] = _convert(child, depth + 1, immutable, owned_children, maximum)
         return MappingProxyType(result) if immutable else result
     raise ValueError("unsupported canonical value")
