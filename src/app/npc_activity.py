@@ -474,6 +474,13 @@ def cycle_activity_messages(
         raise SaveError("NPC_ACTIVITY_SOURCE", "retained activity source mismatch") from error
     return (
         *cycle_messages(records[0]),
+        *(
+            _cycle_activity_change_messages(
+                factory, segment.checkpoint.core.tick, current.core.tick, records[0].state
+            )
+            if npc_reach_aid
+            else ()
+        ),
         f"NPC 종·호출 활동 · {segment.checkpoint.core.tick}초 이후 저장 구간의 최근 최대 8개입니다.",
         *(
             tuple(entry.text() for entry in reversed(factory.entries))
@@ -874,9 +881,6 @@ def _cycle_supply_messages(factory: _ActivityFactory, checkpoint_tick: int) -> t
     previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
     before = states[-2] if previous is not None else factory.initial_supply
     after = states[-1]
-    prepared, used = after.produced - before.produced, after.consumed - before.consumed
-    if prepared < 0 or used < 0:
-        raise SaveError("NPC_RECOLLECTION_SOURCE", "cycle conversation counters decreased")
     heading = (
         f"NPC 반복 작업 회상 · {checkpoint_tick}초 이후 저장 구간의 변화입니다."
         if previous is None
@@ -884,6 +888,37 @@ def _cycle_supply_messages(factory: _ActivityFactory, checkpoint_tick: int) -> t
     )
     return (
         heading,
+        *_supply_change_rows(before, after, error_code="NPC_RECOLLECTION_SOURCE"),
+    )
+
+
+def _cycle_activity_change_messages(
+    factory: _ActivityFactory, checkpoint_tick: int, current_tick: int, current: Supply
+) -> tuple[str, ...]:
+    conversations, states = factory.conversations, factory.conversation_supply
+    ticks = tuple(tick for tick, _ in conversations)
+    if (
+        factory.initial_supply is None
+        or len(states) != len(conversations)
+        or len(ticks) > 2
+        or any(not checkpoint_tick < tick <= current_tick for tick in ticks)
+        or any(first >= second for first, second in zip(ticks, ticks[1:]))
+    ):
+        raise SaveError("NPC_ACTIVITY_SOURCE", "cycle activity conversation window unavailable")
+    before = states[-1] if states else factory.initial_supply
+    heading = (
+        f"NPC 반복 작업 변화 · 지난 대화({ticks[-1]}초) 뒤의 변화입니다."
+        if ticks
+        else f"NPC 반복 작업 변화 · {checkpoint_tick}초 이후 저장 구간의 변화입니다."
+    )
+    return (heading, *_supply_change_rows(before, current, error_code="NPC_ACTIVITY_SOURCE"))
+
+
+def _supply_change_rows(before: Supply, after: Supply, *, error_code: str) -> tuple[str, ...]:
+    prepared, used = after.produced - before.produced, after.consumed - before.consumed
+    if prepared < 0 or used < 0:
+        raise SaveError(error_code, "cycle conversation counters decreased")
+    return (
         f"확인한 물자 변화 · 준비 {prepared}회 · 사용 {used}회."
         if prepared or used
         else "현재 저장 구간에 새로 확인된 물자 변화가 없습니다.",

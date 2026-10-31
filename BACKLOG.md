@@ -8,15 +8,36 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+CONTINUATION_ACTIVE2026-11-01:director explicitly requests automatic work after the current
+task and subsequent tasks. Actual same-chat goal created and ACTIVE confirmed;ordinary
+usage allowed. Complete F94and its publication/main sync,then select the next useful
+bounded order from actual sources and current priorities without reprompting. This is
+workflow support,not new gameplay authority;native/independent/device/CP06/release and
+agent/administration restrictions remain. Honor user pause/stop;no periodic automation.
+
+QT-F94 LOCAL_ACCEPTED2026-11-01:self-review;primary5factual presentation support,related2/6/7.
+Reach activity shows prepared/used changes since latest retained conversation end,or the
+source checkpoint when absent. One verified replay/current Supply,shared counter renderer;
+no new domain behavior/state/schema/flag/pin/IO/cache. Baseline2FAIL2.51s;new14within180
+affectedPASS125.16s,exactCI31PASS7.88s. Latest/tie/zero/compact/rewind/restart/source errors,
+one replay,real Tk error/recovery/next input/close qualified. Old12modes234updates EXACT;
+14pairs291updates/state/protocol/pins/SQL EXACT except2declared reach activity rows.
+Direct/framed8actual queries all<2s,max1.070568s;current-host only. Ruffboth/format14/
+strict277/import3+1/pip PASS. Actual publication/head/CI/merge/main receipts belong to
+tmp/qtf94/publication and the attached PR;this precommit snapshot does not infer success.
+Finish publication/main sync before the next automatically authorized bounded order.
+Native/independent/device/CP06/release holds remain.
+[Order](docs/work_orders/QT-F94_ACTIVITY_SUPPLY_CHANGE.md),[receipt](docs/reviews/QT-F94_EXECUTION_2026-11-01.md).
+
 QT-F93 LOCAL_ACCEPTED2026-11-01:self-review;primary5input support,related2/6/7.
 Ctrl/Alt movement-key chords no longer issue gameplay;Shift/CapsLock WASD uses existing
 movement. Native baseline16FAIL16.90s;new19within128affectedPASS98.41s,including basic/reach
 chord ownership,all uppercase directions,NumLock/arrows,entry/history/slot isolation,
 save/retry/load,pending error/next input/close. Source bytes/view/history/focus preserved
 for ignored chords. Ruffboth/format13/strict276/import3+1/pip PASS;boundary/docs/scope in receipt.
-Publication input snapshot:actual PR/head/required CI/merge/local-main result belongs to
-tmp/qtf93/publication and the attached PR. Standing delivery authority applies;do not infer
-publication from this precommit snapshot. Native/independent/device/CP06/release holds remain.
+Publication complete:PR26mergeddbbf9c9;both required workflows105/106SUCCESS,each full3689PASS.
+Fresh fetch found local main equal to origin/maindbbf9c9andclean before F94branch entry.
+Native/independent/device/CP06/release holds remain.
 [Order](docs/work_orders/QT-F93_TK_KEYBOARD_MODIFIERS.md),[receipt](docs/reviews/QT-F93_EXECUTION_2026-11-01.md).
 
 QT-F92 LOCAL_ACCEPTED2026-11-01:self-review;primary5presentation support,related6/7.
