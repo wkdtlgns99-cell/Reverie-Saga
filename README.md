@@ -91,6 +91,19 @@ compilation,NPC context,query export/check/comparison and plan-based generation.
 Normal play needs no key/network. New generated content stays NEEDS_REVIEW until actual director approval;
 existing games retain their content pins. [Current qualification limits](BACKLOG.md#qt-f07-deferred-qualification).
 
+## Persistent own-assistance mode
+
+The optional `--npc-assistance-memory` child requires the complete `--npc-memory
+--npc-cycle --npc-aid --npc-supply-aid --npc-call-aid --npc-patrol --npc-talk-pause
+--npc-quest-patrol --npc-call-pause --npc-ready-patrol --npc-reach-aid` chain and the
+approved harbor quest catalog arguments used above. Both `app.client` and
+`app.engine_bridge` accept it. Use a separate working path such as
+`tmp/harbor-assistance-memory/game.sqlite`;existing saves are never migrated or repinned.
+Talk,activity and slot inspection show the NPC's cumulative own gate-assistance count
+and latest4actual causes even after checkpoint-only compaction. Retained-event history
+remains a separate bounded view. This mode adds factual memory,not new aid behavior.
+[Contract](docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md).
+
 ## Verification
 
 Unity **저장 관리** opens a dedicated slot01–08 panel with current/previous save

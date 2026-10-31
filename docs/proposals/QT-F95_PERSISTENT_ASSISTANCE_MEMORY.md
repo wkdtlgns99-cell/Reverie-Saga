@@ -1,6 +1,8 @@
 # Proposed persistent memory of an NPC's own gate assistance
 
-PROPOSED2026-11-01;director scope decision pending. Future implementation order:DRAFT.
+ADOPTED_BY_DELEGATION2026-11-01 for bounded [F97](../work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md).
+Director response to the specific implementation question:"너 알아서 좋을대로".
+Executor adopts this proposal;not blanket future authority or implementation/review acceptance.
 This document changes no runtime,save,API,pin or review gate.
 Primary2internal factual memory;6persistence;related3definitions,5inspection,7village flow.
 [Preparation order](../work_orders/QT-F95_ASSISTANCE_MEMORY_CONTRACT.md).
@@ -23,7 +25,7 @@ relationships,five-level general memory,forgetting and generation remain outside
 
 ## Proposed data contract
 
-All names/values below require approval and a refreshed implementation order before code.
+The names/values below are adopted by the delegated decision and concrete F97order.
 These are feature-owned DTOs,not fields added to ClientView or the wire envelope.
 
 | Item | Proposed exact definition |
@@ -115,11 +117,11 @@ format/ownership refactor is part of this proposal.
 | Actual callers | Direct/worker/Tk/framed/CLI agree;pending/error/recovery/input/poll/close remain usable. Saved/current/previous inspection and exact source bytes qualified |
 | Regressions/performance | Full shared CORE/replay/goldens,strict types,lint,imports/dependencies and exact source/pin/old-output parity. New query bookkeeping O(4);measure2sTARGET/10sdeadline with short/long sources,no unmeasured device claim |
 
-## Decision required
+## Delegated decision
 
-Director approval is requested for this new optional persisted own-assistance component,
+The director delegated this specific choice;the executor adopts the new optional persisted own-assistance component,
 four-anchor retention,cumulative count,validated causal-source binding and explicit child
-mode compatibility boundary. Approval permits authoring a refreshed implementation order;
+mode compatibility boundary. The bounded decision permits the concrete F97implementation order;
 it does not certify implementation,tests,native execution,independent review or release.
 
 The automatic goal explicitly retains public/save-contract limits.
@@ -127,4 +129,4 @@ The automatic goal explicitly retains public/save-contract limits.
 further public/save-format changes outside an authorized task. This preparation neither
 grants that authority nor fabricates it. Future implementation must evaluate the existing
 checkpoint procedure against its actual scope;do not reopen closed checkpoints,create a
-new gate or waive held review without authority. Until a decision,implementation is DRAFT.
+new gate or waive held review without authority. The former DRAFT hold is resolved only for the bounded F97order by the delegated decision;all other holds remain.
