@@ -1,10 +1,22 @@
 # Workstation Setup — Laptop and Other PC
 
-Updated:2026-10-13. Installation/discovery SSOT for the two director-owned computers.
+Updated:2026-11-01. Installation/discovery SSOT for the two director-owned computers.
 Task status:[BACKLOG](../BACKLOG.md);commands:[README](../README.md#verification),
-[Unity run/build](../clients/unity/README.md). Source baseline:63670be2.
+[Unity run/build](../clients/unity/README.md). Historical setup baseline:63670be2;
+later task receipts own their qualified revisions.
 
 ## Task Entry and Authorization
+
+QT-F96current-host2026-11-01:[receipt](reviews/QT-F96_EXECUTION_2026-11-01.md).
+Existing Python3.13.12/Tcl8.6.15/Git reused;no installation. This checkout's different
+Git owner makes plain nested Git fail128. Direct commands retain exact command-scope
+safe.directory;verification subprocesses append safe.directory=C:/Reverie Saga through
+GIT_CONFIG_COUNT/KEY_n/VALUE_n,preserving prior entries and applying only to that process
+tree. Use the actual resolved checkout on each device;no wildcard/global/repo config edit.
+Original full3631PASS/6FAIL/76ERRORwere all Git provenance/checkout failures;two unchanged
+representatives PASS34.61s,then identical301inputs full3713PASS894.34s. Canonical pytest
+capture=sys remains. No source/test/check weakening,native Unity/security setting change
+or other-device/MIN-SPEC/release qualification.
 
 QT-F26current-host2026-10-18:[receipt](reviews/QT-F26_EXECUTION_2026-10-18.md). Reused actual
 Python3.13.12/Tk8.6/editor6000.3.25f1(e1dba0a9aba4);pip PASS,actual startup resolved existing

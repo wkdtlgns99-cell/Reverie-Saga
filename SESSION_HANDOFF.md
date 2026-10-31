@@ -15,12 +15,36 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-CONTINUATION_ACTIVE2026-11-01:director explicitly requests automatic work after the current
-task and subsequent tasks. Actual same-chat goal created and ACTIVE confirmed;ordinary
-usage allowed. F94publication/main sync completed;select the next useful
-bounded order from actual sources and current priorities without reprompting. This is
+CONTINUATION_REQUESTED2026-11-01:director explicitly requests automatic work after the current
+task and subsequent tasks. Goal was ACTIVE at entry,then quota interrupted it. Actual
+reset-only follow-up delivered and was deleted;ordinary usage is allowed again. F96work
+resumes in this chat. Native goal still reports usageLimited;do not claim it is ACTIVE.
+F95document publication/main sync completed;F96performance work is current.
+Finish its required full verification/publication before selecting another order. This is
 workflow support,not new gameplay authority;native/independent/device/CP06/release and
 agent/administration restrictions remain. Honor user pause/stop;no periodic automation.
+
+QT-F96 LOCAL_ACCEPTED2026-11-01:self-review;primary2performance support,
+related5/6/7. Canonical object keys avoid generic recursive dispatch;exact built-in ASCII
+proves NFC/UTF8 validity,while subclasses and other strings retain fresh original checks.
+Existing bytes/errors/ownership/depth32 remain. New10within120relatedPASS2.61s;Ruffboth/
+format14/strict278/import3+1/pip PASS. All14mode pairs291updates/core/protocol/pins/SQL
+EXACT. Corrected actual direct/framed12pairs48timed queries EXACT with real inner-engine
+source hashes;8median comparisons improve7.21-11.41percent. Dense264still misses2sTARGET;
+all samples<10s. First framed harness selected current for both variants:its matrix2/3
+framed comparisons are INVALID and retained,not acceptance. Matrix4uses only valid
+direct samples plus corrected fresh framed pairs. Other299tracked inputs unchanged.
+Original full TERMINAL1:3631PASS/6FAIL/76ERROR775.76s,all301inputs unchanged. All82are
+Git checkout/provenance failures from repository ownership trust;plain Git reproduces128,
+exact command-scope safe.directory succeeds. Two unchanged representative cases PASS34.61s
+with only subprocess-local exact path trust,no global config/test/security changes.
+Full-safe retry TERMINAL0:3713PASS894.34s,all301inputs unchanged. Current-host Git context
+is documented in workstation setup;no install/global setting/other-device claim.
+Local verification accepted;ordinary PR/bothCI/merge/localmain sync remains before another task.
+F95new public/save contract approval remains separately pending;no dependent runtime.
+Native/independent/device/CP06/release/agent/administration holds retained;native goal
+usageLimited after quota,ordinary usage allowed and this reset-triggered task resumes.
+[Order](docs/work_orders/QT-F96_CANONICAL_KEY_VALIDATION.md),[receipt](docs/reviews/QT-F96_EXECUTION_2026-11-01.md).
 
 QT-F95 CONTRACT_PROPOSAL_PREPARED2026-11-01:self-review;primary2/6design support,related3/5/7.
 Concrete persistent own-assistance memory proposal:total count/latest4causal anchors,new
@@ -29,8 +53,11 @@ probe confirms aid16visible in retained history but absent after checkpoint-only
 repeated actual aids16/20/24/28/32confirm source vectors. Existing F56works as contracted;
 new persistence is not implemented or approved. Future runtime order stays DRAFT until
 explicit director authority for the new public/save contract;current task is docs/probes.
-Normal document publication/main sync remains part of delivery;source/tests/content/CI
-unchanged. All existing review/native/device/release/agent/administration holds remain.
+Document publication complete:PR28merged5005ee6;both required workflows111/112SUCCESS,
+each full3703/boundary31PASS. Fresh fetch/fast-forward main equals origin/main5005ee6,
+clean before F96entry. Actual contract approval requested;no director response received.
+Source/tests/content/CI unchanged by F95. All existing review/native/device/release/
+agent/administration holds remain.
 [Order](docs/work_orders/QT-F95_ASSISTANCE_MEMORY_CONTRACT.md),[proposal](docs/proposals/QT-F95_PERSISTENT_ASSISTANCE_MEMORY.md),[receipt](docs/reviews/QT-F95_EXECUTION_2026-11-01.md).
 
 QT-F94 LOCAL_ACCEPTED2026-11-01:self-review;primary5factual presentation support,related2/6/7.
