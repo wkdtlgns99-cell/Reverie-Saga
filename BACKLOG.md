@@ -8,6 +8,13 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+PUBLICATION_SCOPE2026-11-03 LATEST:director now requests branch upload ONLY;do not merge
+or synchronize main automatically. This overrides the earlier Git/main request and standing
+per-task publication for this delivery. Session documents are on
+`codex/product-alignment-clarification-20261103`,[PR33](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/33).
+PR remains open/unmerged;CI success would not authorize merge. Retain this checkpoint for the
+home computer;resume merger only on an explicit later instruction. RS-PLAN-001 remains FIRST NEXT.
+
 RS-PLAN-001 WAITING_FOR_DIRECTOR_START2026-11-03;highest priority on the director's next
 "next task" instruction,primary7planning support;related2/3/4/5/6. Before implementation,
 ask unresolved product decisions ONE AT A TIME,each with the executor's recommendation,

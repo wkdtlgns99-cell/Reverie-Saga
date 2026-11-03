@@ -15,14 +15,20 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+LATEST_PUBLICATION_SCOPE2026-11-03:branch upload only;director says merge can wait until home.
+Earlier main-merge authorization is superseded for this delivery. Work is on
+`codex/product-alignment-clarification-20261103`,[PR33](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/33),
+not main. Do not auto-merge after CI or auto-sync main;an explicit later merge instruction is required.
+Use this remote branch on the other computer to recover the session documents before reviewing them.
+
 NEXT_FIRST RS-PLAN-001 WAITING_FOR_DIRECTOR_START2026-11-03:when the director next says
 "next task",begin product decision clarification before any implementation. Ask ONE decision
 at a time with a recommended answer,concrete gameplay examples and alternatives/effects;reuse
 prior answers and record confirmed decisions. [BACKLOG](BACKLOG.md#current-delivery) owns scope.
 Do not ask now or auto-start;this planning task grants no coding authority even after answers.
 The director now adopts [material-ambiguity policy](docs/CLARIFICATION_POLICY.md),linked from
-ENGINEERING_RULES Preflight. Current separate request authorizes all session documents to Git/main
-via ordinary protected PR/checks/merge/local sync;no broader development or stopped desktop resume.
+ENGINEERING_RULES Preflight. Current separate request authorizes branch upload only under the
+latest scope above;no main merge,broader development or stopped desktop resume.
 Local rule/boundary31PASS7.42s;rulebook550words. [Delivery input](docs/reviews/PRODUCT_ALIGNMENT_DELIVERY_2026-11-03.md)
 records scope and evidence;actual PR/jobs/refs own publication. Do not start RS-PLAN-001 during publication.
 

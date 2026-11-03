@@ -1,6 +1,12 @@
 # Product Alignment / Clarification Rule — Delivery Input
 
 Date:2026-11-03. Primary7governance/planning support;related1–6. Self-review,not independent review.
+Latest director scope:upload only,leave main merge for later. This supersedes the earlier main
+request and the prospective merge sequence below. Branch `codex/product-alignment-clarification-20261103`
+was pushed with commit9c8659c and [PR33](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/33) opened.
+No merge was attempted;both runs had passed preceding checks and were still running full regression
+when the director changed scope. Subsequent CI results are not a merge instruction. This scope/handoff
+follow-up is also uploaded to the same branch;no further CI waiting or gameplay/planning work.
 Director explicitly requests adoption of the proposed question rule,reservation of a first-next
 planning conversation,and publication of all this session's document changes through main.
 No gameplay implementation,provider call,agent,desktop resume or broader automatic work authorized.
