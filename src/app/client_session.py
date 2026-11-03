@@ -25,7 +25,11 @@ from app.npc_activity import (
     cycle_return_recollection,
     return_recollection,
 )
-from app.npc_assistance_memory import assistance_options, assistance_messages
+from app.npc_assistance_memory import (
+    assistance_options,
+    assistance_messages,
+    assistance_slot_comparison,
+)
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
 from app.npc_support_status import support_slot_messages, supply_support_plan
@@ -680,11 +684,13 @@ class ClientSession:
             if self._quest_content is None:
                 raise RuntimeError("assistance inspection requires quest content")
             try:
-                messages += assistance_messages(
-                    self._owner.snapshot(), self._quest_content, label="현재 NPC"
-                )
+                live_core = self._owner.snapshot()
+                messages += assistance_messages(live_core, self._quest_content, label="현재 NPC")
                 messages += assistance_messages(
                     checkpoint.core, self._quest_content, label="저장된 NPC"
+                )
+                messages += assistance_slot_comparison(
+                    checkpoint.core, live_core, self._quest_content
                 )
             except SaveError:
                 logging.getLogger(__name__).exception("NPC assistance slot inspection failed")

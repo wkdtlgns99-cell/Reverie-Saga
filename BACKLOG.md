@@ -1,14 +1,31 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-11-01 | Current task/status/dependency SSOT.
+Updated:2026-11-03 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
 
-CONTINUATION_REQUESTED2026-11-01:the director requests automatic authorized work.
+QT-F98 LOCAL_ACCEPTED2026-11-03:self-review;primary5presentation support,related2/6/7.
+Current/saved persistent assistance memories now have four child-only comparison rows:
+exact cumulative count difference and common/current-only/saved-only retained anchors,
+with explicit recent-four retention disclaimer. Original per-snapshot rows unchanged.
+New13within137affectedPASS45.61s;Ruffboth/format3/strict287/import3+1/pip PASS. Actual
+short slot samples0.047–0.053s,current-PC only;F97dense2sTARGET remains unqualified here.
+Previous/rewind/restart/compaction/branch source/readonly bytes/retry/errors/Tk/framed
+qualified. No domain/format/IO/replay/native change. Actual PR/checks/refs own publication;
+finish scoped commit/required bothCI/ordinary merge/local main equality before further work.
+[Order](docs/work_orders/QT-F98_ASSISTANCE_SLOT_COMPARISON.md),[receipt](docs/reviews/QT-F98_EXECUTION_2026-11-03.md).
+
+ENTRY_SYNC2026-11-03:latest direct request asks checking Git/local files before next work.
+No local edits/untracked files at entry;fetch revealed F91–96merged and accepted F97PR30open.
+Both F97required full3761/boundary31PASS;current-PC48PASS12.01s. Ordinary PR30merge248ce3b,
+local main equality/clean verified before F98. Historical continuation/usage notes below
+are not a claim of current cross-turn activation. No new goal/automation/agent/desktop action.
+
+HISTORICAL_CONTINUATION2026-11-01:the director requests automatic authorized work.
 Native goal remains usageLimited after the actual quota interruption;ordinary usage is
 allowed,but supported cross-turn activation is not confirmed. The completed reset-only
 registration was deleted. This direct user reply delegates the specific F95contract choice;
@@ -29,8 +46,8 @@ strict286/import3+1/pip PASS. Full3761PASS901.83s,all434inputs unchanged;G07CURR
 still misses2sTARGET. Original sandbox run stopped after11observed loopback failures;
 WinError10013reproduced directly,identical case PASS0.25s and unchanged full PASS under
 approved local-network execution. No source/test/check/security setting changed.
-Local-acceptance snapshot;ordinary PR/bothCI/merge/localmain sync follows before any next
-task. Actual publication state:task PR and tmp/qtf97/publication receipts. Holds retained.
+Publication complete2026-11-03:PR30merged248ce3bafter both required full3761/boundary31
+PASS;local main equality/clean verified before F98. Holds retained.
 [Order](docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md),[receipt](docs/reviews/QT-F97_EXECUTION_2026-11-01.md).
 
 QT-F96 LOCAL_ACCEPTED2026-11-01:self-review;primary2performance support,
