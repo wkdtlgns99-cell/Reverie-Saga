@@ -15,6 +15,17 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+QT-F99 LOCAL_ACCEPTED2026-11-03;self-review,primary2performance support;related5/6/7.
+Canonical select uses existing checked-text validation directly after its string type check,
+removing only generic scalar dispatch. New11baseline-qualified;affected132PASS23.90s;
+Ruffboth/format14/strict288/import3+1/pip PASS. Source-proven24direct/framed dense queries
+retain complete updates/SQL/source bytes;four medians improve0.7–4.0percent. Current4.25–4.51s
+still misses2sTARGET. Full local3785PASS765.86s,293source/test/config inputs unchanged;
+exact CI31PASS5.13s,UTF8/nine-path scope/Markdown links PASS. No new gameplay/contract/
+save-format/native capability. Publication pending:both latest-head required CI checks,
+ordinary PR merge and local main equality/clean before completion. Finish F99only;holds retained.
+[Order](docs/work_orders/QT-F99_CANONICAL_SELECTION.md),[receipt](docs/reviews/QT-F99_EXECUTION_2026-11-03.md).
+
 QT-F98 LOCAL_ACCEPTED2026-11-03:self-review;primary5presentation support,related2/6/7.
 Current/saved persistent assistance memories now have four child-only comparison rows:
 exact cumulative count difference and common/current-only/saved-only retained anchors,
@@ -22,8 +33,9 @@ with explicit recent-four retention disclaimer. Original per-snapshot rows uncha
 New13within137affectedPASS45.61s;Ruffboth/format3/strict287/import3+1/pip PASS. Actual
 short slot samples0.047–0.053s,current-PC only;F97dense2sTARGET remains unqualified here.
 Previous/rewind/restart/compaction/branch source/readonly bytes/retry/errors/Tk/framed
-qualified. No domain/format/IO/replay/native change. Actual PR/checks/refs own publication;
-finish scoped commit/required bothCI/ordinary merge/local main equality before further work.
+qualified. No domain/format/IO/replay/native change. Publication complete2026-11-03:
+PR31merged dbcd288after both required full3774/boundary31PASS;local main equality/clean
+and merge-tree equality with qualified head verified before F99entry.
 [Order](docs/work_orders/QT-F98_ASSISTANCE_SLOT_COMPARISON.md),[receipt](docs/reviews/QT-F98_EXECUTION_2026-11-03.md).
 
 ENTRY_SYNC2026-11-03:latest direct request asks checking Git/local files before next work.

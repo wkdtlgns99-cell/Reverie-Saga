@@ -249,6 +249,11 @@ Inspection shares one isolated replay,advances no time,and preserves saves/retry
 [Contract](docs/work_orders/QT-F33_NPC_WORK_INSPECTION.md).
 
 Use the applicable order for affected tests;shared CORE changes require full regression.
+QT-F99 reduces redundant scalar dispatch in canonical selection without skipping key
+validation or replay. Source-proven direct/framed dense264-command activity/talk pairs
+retain exact outputs/persisted data;current-PC medians improve0.7–4.0percent to4.25–4.51s.
+The2sTARGET remains OPEN;these samples do not qualify other devices or MIN-SPEC.
+[Scope and measured evidence](docs/reviews/QT-F99_EXECUTION_2026-11-03.md).
 The environment setup below applies to all commands,including both import checks.
 ```powershell
 $env:PYTHONPATH = "$PWD/src"
