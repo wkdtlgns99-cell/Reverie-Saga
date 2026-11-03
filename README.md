@@ -498,3 +498,10 @@ since the latest retained conversation end (QT-F94). Without a retained conversa
 it explicitly starts at the source checkpoint;older cumulative totals do not become new
 changes. Inspection advances no time and reuses its existing single verified replay.
 [Evidence](docs/reviews/QT-F94_EXECUTION_2026-11-01.md).
+
+In the optional persistent assistance-memory mode,slot inspection also summarizes current
+versus saved cumulative help counts and the overlap of retained assistance anchors (QT-F98).
+Current and previous slots use their own snapshots,including saves later than a rewound
+current game. Each side keeps at most four anchors;absence on one side does not imply
+that the NPC never helped or forgot. Inspection neither loads a save nor advances time.
+[Evidence](docs/reviews/QT-F98_EXECUTION_2026-11-03.md).

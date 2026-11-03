@@ -156,13 +156,12 @@ def with_assistance_memory(base: FeatureBundle, content: QuestContent) -> Featur
     )
 
 
-def assistance_messages(
+def _memory_record(
     core: CoreSnapshot,
     content: QuestContent,
     *,
-    label: str = "NPC",
-    error_code: str = "SAVE_INSPECT_FAILED",
-) -> tuple[str, ...]:
+    error_code: str,
+) -> AssistanceMemoryRecord:
     matches = tuple(
         record for record in core.components if record.schema == ASSISTANCE_MEMORY.schema
     )
@@ -172,7 +171,17 @@ def assistance_messages(
         AssistanceAdapter(content).validate(matches[0])
     except ValueError as error:
         raise SaveError(error_code, "persistent assistance memory is invalid") from error
-    state = cast(AssistanceMemoryRecord, matches[0]).state
+    return cast(AssistanceMemoryRecord, matches[0])
+
+
+def assistance_messages(
+    core: CoreSnapshot,
+    content: QuestContent,
+    *,
+    label: str = "NPC",
+    error_code: str = "SAVE_INSPECT_FAILED",
+) -> tuple[str, ...]:
+    state = _memory_record(core, content, error_code=error_code).state
     return (
         f"{label} 지속 도움 기억: 누적 {state.total_assists}회 · 최근 {len(state.entries)}개를 보관합니다.",
         *(
@@ -180,4 +189,41 @@ def assistance_messages(
             + ("정기 행동." if entry.source_kind == "wake" else "호출 응답.")
             for entry in state.entries
         ),
+    )
+
+
+def assistance_slot_comparison(
+    saved: CoreSnapshot, current: CoreSnapshot, content: QuestContent
+) -> tuple[str, ...]:
+    """Compare bounded anchors from two owner-validated snapshots,not missing history."""
+    if saved.world_id != current.world_id or saved.pins != current.pins:
+        raise SaveError("SAVE_INSPECT_FAILED", "assistance comparison source differs")
+    old = _memory_record(saved, content, error_code="SAVE_INSPECT_FAILED")
+    new = _memory_record(current, content, error_code="SAVE_INSPECT_FAILED")
+    old_entries = {
+        (old.entity_id, entry.target_id, entry.source_kind, entry.cause_event_id): entry
+        for entry in old.state.entries
+    }
+    new_entries = {
+        (new.entity_id, entry.target_id, entry.source_kind, entry.cause_event_id): entry
+        for entry in new.state.entries
+    }
+    common = old_entries.keys() & new_entries.keys()
+    if any(old_entries[key] != new_entries[key] for key in common):
+        raise SaveError("SAVE_INSPECT_FAILED", "assistance comparison identity differs")
+    difference = new.state.total_assists - old.state.total_assists
+    if difference > 0:
+        count = f"현재가 선택 저장보다 {difference}회 많습니다."
+    elif difference < 0:
+        count = f"선택 저장이 현재보다 {-difference}회 많습니다."
+    else:
+        count = f"양쪽 모두 {new.state.total_assists}회입니다."
+    return (
+        f"NPC 도움 기억 비교 · 현재 {current.tick}초 / 선택 저장 {saved.tick}초",
+        "NPC 누적 도움 횟수 비교 · " + count,
+        f"보관 도움 기억 비교 · 공통 {len(common)}개 · "
+        f"현재에만 {len(new_entries.keys() - old_entries.keys())}개 · "
+        f"선택 저장에만 {len(old_entries.keys() - new_entries.keys())}개",
+        f"각 진행이 보관한 최근 최대 {ASSISTANCE_CAPACITY}개의 도움 기억만 비교합니다. "
+        "한쪽에 없다고 돕지 않았거나 기억을 잊었다는 뜻은 아닙니다.",
     )
