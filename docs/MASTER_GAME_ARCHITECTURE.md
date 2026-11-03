@@ -2,7 +2,7 @@
 
 Purpose: canonical product requirements. Engineering constraints: [v2.6 prompt](ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md).
 Format: structured English for all AI-facing material;only essential human-facing notices/decisions/actions in concise Korean. No parallel Korean technical translation;preserve Korean player/source data. The director-authorized [Korean game progress companion](../GAME_SYSTEM_SUMMARY_KO.md) is a human-facing exception and follows the prompt's **Korean Game Progress Companion** rule. Follow the prompt's **AI Documentation Format** rule.
-Updated: 2026-10-07 (human-facing progress exception only). Product requirements preserved; no implementation authorization.
+Updated: 2026-11-03 (director clarification in §0.4). Requirements recorded; no production implementation authorization in this review session.
 
 ## Current Project Overrides
 
@@ -44,9 +44,20 @@ Generation success alone is not completion.
 ### 0.3 Production vs Runtime AI
 
 - Production AI generates and validates code/data/images/3D/animation/audio before shipping; suitable paid services are allowed.
-- Optional runtime LLM runs in new-game/world-generation, chapter transition, loading/preparation, or explicit large-content windows.
+- Runtime LLM supports required live free-form NPC conversation (§0.4), plus optional new-game/world-generation, chapter transition, loading/preparation, or explicit large-content windows.
 - Runtime output: structured data → schema/rule validation → accept/reject → cache/persist → ordinary gameplay data.
-- Normal turns require neither LLM prose nor live image/3D/audio generation.
+- Ordinary movement/combat turns require neither LLM prose nor live image/3D/audio generation. NPC conversation is a distinct required live-generation interaction.
+
+### 0.4 Director Clarification — 2026-11-03
+
+Source:direct director answers during the product/design/implementation alignment review.
+This clarification supersedes conflicting optional-dialogue or generation-windows-only language in earlier design documents;it records intended product behavior,not completed implementation or a new coding order.
+
+- Highest-priority experience:a world and NPC society that change autonomously,player intervention,and later encounters with the consequences. The director may stop and redirect development after inspecting results.
+- Live free-form conversation reflecting each NPC's own memories and personality is a core requirement,not an optional prepared-dialogue experiment. Validated prepared lines alone do not complete it. LLM speech cannot directly overwrite objective world facts,damage,rewards or authoritative state;accepted dialogue/context must remain traceable and replay must not call a live provider.
+- On pressing Play,the player expects a world-wide baseline already established to some degree. Subsequent player actions change the world and guide its further expansion. A starting-room-only world does not meet this requirement. This does not require every distant entity or visual detail to be materialized/simulated at full resolution.
+- Exact initial world coverage/detail,generation timing/loading budget,NPC dialogue latency/provider/failure behavior,and the rules for consistent expansion remain unresolved design contracts. No numeric scale,zero-second generation claim,new formula,or API policy is inferred from these answers.
+- This session remains an alignment review. Existing bounded features retain their original acceptance;world generation,personality-driven live conversation and broad social causality remain unimplemented as product capabilities. Existing publication/native/release holds are not waived.
 
 ## 1. Game Vision
 
@@ -95,7 +106,7 @@ Brain domain types MUST NOT depend on client SDK types.
 
 Keyboard/gamepad/UI → client mapping → typed GameCommand.
 Examples: Attack, Skill, Guard, Item, Move, Interact, Talk, Inspect, Travel.
-Optional natural-language input stays outside simulation and maps to the same command contract.
+Free-form NPC conversation input stays outside authoritative simulation. Any supported gameplay action proposed through conversation must map to the same typed command/validation boundary;natural-language control of other gameplay is optional.
 
 ## 3. Determinism & Causality
 
@@ -213,9 +224,9 @@ Maintain each NPC's identity consistency; field models need not render all portr
 
 ## 7. Runtime Content & BYOK
 
-### 7.1 Optional Use
+### 7.1 Required Conversation / Optional Content Windows
 
-World packages, chapter quests, NPC backgrounds, dialogue bundles, event content in explicit windows only. No LLM per move/combat action.
+Required:live free-form NPC conversations grounded in each NPC's personality and memories (§0.4). Optional:world packages,chapter quests,NPC backgrounds,dialogue bundles and event content in explicit generation windows. No LLM per move/combat action. Existing preparation tools do not establish live-conversation completion.
 
 ### 7.2 Business Rule
 
@@ -225,7 +236,7 @@ Provider/model/tier quotas are mutable, not fixed capacity promises. “1,500 tu
 ### 7.3 Window UX
 
 New game / chapter transition → generate or load → validate → save/cache → play.
-Failure: bounded retry, defer, accepted cached fallback, or explicit error/status; never fake success.
+For optional content windows:bounded retry,defer,accepted cached fallback,or explicit error/status;never fake success. Live-conversation provider/latency/failure UX requires its own design contract;these window options are not automatic approval to replace the required conversation with fixed lines.
 
 ## 8. Memory & Retrieval
 
@@ -306,7 +317,7 @@ Do not bulk-produce final assets before stable contracts/import gates.
 
 MASTER defines product outcomes; v2.6 prompt defines engineering invariants/decision freedom; Sol designs.
 Client, IPC, persistence, retrieval, and packaging infrastructure may be replaced with justified alternatives.
-Fixed: graphical HD-2D/2.5D turn RPG; deterministic truth; human-director/AI-production workflow; pre-generated 3D/audio/voice; SD1.5+LoRA+ADetailer; Windows standalone; no mandatory per-turn LLM.
+Fixed: graphical HD-2D/2.5D turn RPG; deterministic truth; human-director/AI-production workflow; pre-generated 3D/audio/voice; SD1.5+LoRA+ADetailer; Windows standalone;no mandatory LLM per movement/combat turn;required memory/personality-grounded live NPC conversation and initial world baseline (§0.4).
 
 ## 15. Clarifications
 

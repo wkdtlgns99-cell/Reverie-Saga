@@ -8,6 +8,36 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+RS-PLAN-001 WAITING_FOR_DIRECTOR_START2026-11-03;highest priority on the director's next
+"next task" instruction,primary7planning support;related2/3/4/5/6. Before implementation,
+ask unresolved product decisions ONE AT A TIME,each with the executor's recommendation,
+concrete gameplay examples and meaningful alternatives/effects. Read MASTER §0.4 and the
+[alignment review M0](docs/reviews/PRODUCT_ALIGNMENT_2026-11-03.md#proposed-development-sequence--not-an-executable-work-order).
+Reuse confirmed answers;record each decision in canonical product/design documents and keep
+remaining questions explicit. Initial world coverage/loading and expansion,dialogue knowledge/
+personality/action/time rules,and API latency/failure UX are candidate topics,not preselected answers.
+Do not start asking now or implement during this planning task;finishing questions does not itself
+authorize coding. This priority supersedes older NEXT/READY selection,not explicit later instructions.
+No automatic goal/agent/desktop resume. Current follow-up authorizes publication of this session's docs.
+
+RS-RULE-CLARIFY-001 LOCAL_ACCEPTED2026-11-03:director adopts the proposed material-ambiguity
+rule. [Canonical policy](docs/CLARIFICATION_POLICY.md) is linked from ENGINEERING_RULES Preflight;
+routine reversible choices stay autonomous,prior answers reused,and silence is not approval.
+No runtime change. Exact CI boundary31PASS7.42s;rulebook550words,existing tests unchanged.
+[Delivery input](docs/reviews/PRODUCT_ALIGNMENT_DELIVERY_2026-11-03.md);actual PR/jobs/refs own publication status.
+
+DIRECTOR_ALIGNMENT2026-11-03:product intent confirmed during review,primary7design support;
+related2/3/4/6. [MASTER §0.4](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03)
+owns the three requirements:autonomous world/consequences as highest priority,required memory/personality-
+grounded live free-form NPC conversation,and an established world-wide baseline at Play followed by
+action-driven change/expansion. Earlier optional-dialogue/windows-only assumptions are superseded.
+Broad capabilities remain unimplemented;prior bounded acceptance is unchanged. Continue this session's
+alignment review,not automatic coding/publication. Detailed scale/timing/dialogue/expansion contracts unresolved.
+Follow-up [alignment review](docs/reviews/PRODUCT_ALIGNMENT_2026-11-03.md):A01–14source/design gaps,
+proposed M0–6playable completion sequence and clarification-rule wording. Review/proposal only;
+the original review made no runtime/active governance edit;subsequent director adoption is recorded
+above. First combined core-experience target proposed at M3,not whole-game DONE.
+
 QT-F99 LOCAL_ACCEPTED2026-11-03;self-review,primary2performance support;related5/6/7.
 Canonical select uses existing checked-text validation directly after its string type check,
 removing only generic scalar dispatch. New11baseline-qualified;affected132PASS23.90s;
@@ -1260,7 +1290,9 @@ Ordinary Unity verification now retains the editor;[workflow](clients/unity/READ
 
 ## Adopted Architecture Direction — 2026-10-16
 
-Direction only;not an implementation order or completion claim.
+Direction only;not an implementation order or completion claim. The optional-dialogue assumption below
+is superseded by [MASTER §0.4,2026-11-03](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03);
+other architecture directions remain applicable.
 
 - Keep deterministic code authoritative for state,events,replay and persistence. Use RAG for retrieval and a shared optional LLM for bounded dialogue or proposals,never factual calculation.
 - Simulate gameplay-relevant off-screen changes through exact ordered events/catch-up;freeze only proven no-op or cosmetic state.
@@ -1274,6 +1306,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
+| RS-PLAN-001 | FIRST NEXT / WAITING_FOR_DIRECTOR_START | On next-task request,ask preimplementation product decisions one at a time with recommendation and gameplay examples;see Current Delivery. No coding authorization |
 | D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond bounded quest/supply anchors;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection and F40–44supply cycle/persistent own memory/client recovery accepted;F45saved/current own-memory comparison,F46cycle player recall,F47cycle self-activity retrieval and F48causal call links accepted. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |

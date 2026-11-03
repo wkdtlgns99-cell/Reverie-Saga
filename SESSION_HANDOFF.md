@@ -15,6 +15,29 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+NEXT_FIRST RS-PLAN-001 WAITING_FOR_DIRECTOR_START2026-11-03:when the director next says
+"next task",begin product decision clarification before any implementation. Ask ONE decision
+at a time with a recommended answer,concrete gameplay examples and alternatives/effects;reuse
+prior answers and record confirmed decisions. [BACKLOG](BACKLOG.md#current-delivery) owns scope.
+Do not ask now or auto-start;this planning task grants no coding authority even after answers.
+The director now adopts [material-ambiguity policy](docs/CLARIFICATION_POLICY.md),linked from
+ENGINEERING_RULES Preflight. Current separate request authorizes all session documents to Git/main
+via ordinary protected PR/checks/merge/local sync;no broader development or stopped desktop resume.
+Local rule/boundary31PASS7.42s;rulebook550words. [Delivery input](docs/reviews/PRODUCT_ALIGNMENT_DELIVERY_2026-11-03.md)
+records scope and evidence;actual PR/jobs/refs own publication. Do not start RS-PLAN-001 during publication.
+
+DIRECTOR_ALIGNMENT2026-11-03:current session is product/design/implementation review only.
+Read [MASTER §0.4](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03):autonomous
+world/consequences are highest priority;each NPC's memory/personality-grounded live free-form conversation
+is core;Play expects an established world-wide baseline followed by action-driven change/expansion.
+Earlier optional-dialogue/windows-only limits are superseded. Initial scale/detail/timing,live dialogue
+provider/failure UX and expansion contracts remain unresolved. No runtime work/publication/desktop resume
+or new automatic task is authorized by this clarification. Bounded prototype acceptance remains bounded.
+Follow-up [review and proposed sequence](docs/reviews/PRODUCT_ALIGNMENT_2026-11-03.md) records
+A01–14gaps,M0–6playable exits and a clarification-rule draft. No production/active-rule change;
+that review is historical;the rule is now adopted above. Future next-task selection follows
+RS-PLAN-001,not an old READY feature or stale publication note.
+
 QT-F99 LOCAL_ACCEPTED2026-11-03;self-review,primary2performance support;related5/6/7.
 Canonical select uses existing checked-text validation directly after its string type check,
 removing only generic scalar dispatch. New11baseline-qualified;affected132PASS23.90s;
