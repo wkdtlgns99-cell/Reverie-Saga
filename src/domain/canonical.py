@@ -121,7 +121,7 @@ class CanonicalDocument:
         for key in keys:
             if not isinstance(key, str):
                 raise ValueError("JSON object keys must be strings")
-            seal(key)
+            _checked_text(key)
             values[key] = source[key]
         owned = MappingProxyType(values)
         result = object.__new__(CanonicalDocument)
