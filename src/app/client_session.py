@@ -25,6 +25,7 @@ from app.npc_activity import (
     cycle_return_recollection,
     return_recollection,
 )
+from app.npc_assistance_memory import assistance_options, assistance_messages
 from app.npc_cycle import bootstrap_cycle, cycle_bundle, cycle_messages
 from app.npc_cycle_compare import cycle_slot_messages
 from app.npc_support_status import support_slot_messages, supply_support_plan
@@ -139,6 +140,7 @@ class ClientSession:
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
         npc_reach_aid: bool = False,
+        npc_assistance_memory: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         if type(layout) is not Scenario:
@@ -180,12 +182,15 @@ class ClientSession:
             raise ValueError("NPC_READY_PATROL_CONTENT")
         if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
             raise ValueError("NPC_REACH_AID_CONTENT")
+        if type(npc_assistance_memory) is not bool or npc_assistance_memory and not npc_reach_aid:
+            raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
         self._npc_patrol = npc_patrol
         self._npc_talk_pause = npc_talk_pause
         self._npc_quest_patrol = npc_quest_patrol
         self._npc_call_pause = npc_call_pause
         self._npc_ready_patrol = npc_ready_patrol
         self._npc_reach_aid = npc_reach_aid
+        self._npc_assistance_memory = npc_assistance_memory
         self._npc_work = npc_work
         self._names = MappingProxyType(
             {
@@ -209,6 +214,7 @@ class ClientSession:
                 npc_call_pause=npc_call_pause,
                 npc_ready_patrol=npc_ready_patrol,
                 npc_reach_aid=npc_reach_aid,
+                **assistance_options(npc_assistance_memory),
             )
             if npc_cycle
             else work_bundle(quest_content)
@@ -238,6 +244,7 @@ class ClientSession:
                     npc_call_pause=npc_call_pause,
                     npc_ready_patrol=npc_ready_patrol,
                     npc_reach_aid=npc_reach_aid,
+                    **assistance_options(npc_assistance_memory),
                 )
                 if npc_cycle
                 else bootstrap_work(spec, quest_content)
@@ -337,6 +344,7 @@ class ClientSession:
                     npc_call_pause=self._npc_call_pause,
                     npc_ready_patrol=self._npc_ready_patrol,
                     npc_reach_aid=self._npc_reach_aid,
+                    **assistance_options(self._npc_assistance_memory),
                 )
                 if self._npc_cycle
                 else activity_messages(
@@ -347,6 +355,10 @@ class ClientSession:
                     npc_work=self._npc_work,
                 )
             )
+            if self._npc_assistance_memory:
+                messages += assistance_messages(
+                    current.core, self._quest_content, error_code="NPC_ACTIVITY_SOURCE"
+                )
         except (SaveError, OSError) as error:
             logging.getLogger(__name__).exception("NPC activity inspection failed")
             if isinstance(error, SaveError):
@@ -443,7 +455,12 @@ class ClientSession:
                         npc_call_pause=self._npc_call_pause,
                         npc_ready_patrol=self._npc_ready_patrol,
                         npc_reach_aid=self._npc_reach_aid,
+                        **assistance_options(self._npc_assistance_memory),
                     )
+                    if self._npc_assistance_memory:
+                        cycle_context += assistance_messages(
+                            core, self._quest_content, error_code="NPC_RECOLLECTION_SOURCE"
+                        )
                 except (SaveError, OSError) as error:
                     logging.getLogger(__name__).exception(
                         "committed cycle call recollection failed"
@@ -659,6 +676,19 @@ class ClientSession:
                         "NPC patrol slot position comparison failed"
                     )
                     raise
+        if self._npc_assistance_memory:
+            if self._quest_content is None:
+                raise RuntimeError("assistance inspection requires quest content")
+            try:
+                messages += assistance_messages(
+                    self._owner.snapshot(), self._quest_content, label="현재 NPC"
+                )
+                messages += assistance_messages(
+                    checkpoint.core, self._quest_content, label="저장된 NPC"
+                )
+            except SaveError:
+                logging.getLogger(__name__).exception("NPC assistance slot inspection failed")
+                raise
         return self.update("SLOT_INSPECTED", messages=messages)
 
     def load(self, slot_id: str, *, previous: bool = False) -> ClientUpdate:

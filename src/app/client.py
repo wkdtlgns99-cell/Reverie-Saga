@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+from app.npc_assistance_memory import assistance_options
+
 import argparse
 from collections import deque
 from collections.abc import Sequence
@@ -77,6 +79,7 @@ class PlayWindow:
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
         npc_reach_aid: bool = False,
+        npc_assistance_memory: bool = False,
     ) -> None:
         layout = resolve_selection(layout, scenario)
         self.root = root
@@ -96,11 +99,14 @@ class PlayWindow:
             npc_call_pause=npc_call_pause,
             npc_ready_patrol=npc_ready_patrol,
             npc_reach_aid=npc_reach_aid,
+            **assistance_options(npc_assistance_memory),
         )
         self._quest_content = quest_content
         self._npc_memory = npc_memory
         self.mode_label = (
-            (
+            "NPC 지속 도움 기억·인접 통행 지원 모드"
+            if npc_assistance_memory
+            else (
                 "NPC 인접 통행 지원·지원 준비 우선·호출 응답 대기·의뢰 순찰·대화 대기·"
                 "호출 지원·물자·반복 작업·기억 모드"
             )
@@ -648,7 +654,10 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-call-pause", action="store_true")
     parser.add_argument("--npc-ready-patrol", action="store_true")
     parser.add_argument("--npc-reach-aid", action="store_true")
+    parser.add_argument("--npc-assistance-memory", action="store_true")
     args = parser.parse_args(argv)
+    if args.npc_assistance_memory and not args.npc_reach_aid:
+        raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
     layout = select_scenario(args.scenario).layout
     content = client_quest(layout, args.quest_catalog, args.quest_sha256)
     if args.npc_memory and content is None:
@@ -693,6 +702,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         npc_call_pause=args.npc_call_pause,
         npc_ready_patrol=args.npc_ready_patrol,
         npc_reach_aid=args.npc_reach_aid,
+        **assistance_options(args.npc_assistance_memory),
     )
     try:
         root.mainloop()

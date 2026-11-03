@@ -1,5 +1,6 @@
 """Retrieve self-activity through verified, isolated replay of retained save events."""
 
+from app.npc_assistance_memory import assistance_options
 from dataclasses import dataclass
 from typing import Literal
 
@@ -205,6 +206,7 @@ class _ActivityFactory:
         npc_call_pause: bool = False,
         npc_ready_patrol: bool = False,
         npc_reach_aid: bool = False,
+        npc_assistance_memory: bool = False,
         collect_assists: bool = False,
     ) -> None:
         if type(npc_patrol) is not bool or npc_patrol and not (npc_call_aid and npc_cycle):
@@ -219,6 +221,8 @@ class _ActivityFactory:
             raise ValueError("NPC_READY_PATROL_CONTENT")
         if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
             raise ValueError("NPC_REACH_AID_CONTENT")
+        if type(npc_assistance_memory) is not bool or npc_assistance_memory and not npc_reach_aid:
+            raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
         self.bundles = (
             cycle_bundle(
                 content,
@@ -231,6 +235,7 @@ class _ActivityFactory:
                 npc_call_pause=npc_call_pause,
                 npc_ready_patrol=npc_ready_patrol,
                 npc_reach_aid=npc_reach_aid,
+                **assistance_options(npc_assistance_memory),
             )
             if npc_cycle
             else work_bundle(content)
@@ -388,6 +393,7 @@ def _verified_activity(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
     collect_assists: bool = False,
 ) -> _ActivityFactory:
     factory = _ActivityFactory(
@@ -405,6 +411,7 @@ def _verified_activity(
         npc_call_pause=npc_call_pause,
         npc_ready_patrol=npc_ready_patrol,
         npc_reach_aid=npc_reach_aid,
+        **assistance_options(npc_assistance_memory),
         collect_assists=collect_assists,
     )
     runner = Runner(
@@ -438,6 +445,7 @@ def cycle_activity_messages(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> tuple[str, ...]:
     """Keep persistent own work apart from the bounded retained bell/reply history."""
     if npc_id != content.definition.layout.npc_id:
@@ -466,6 +474,7 @@ def cycle_activity_messages(
             npc_call_pause=npc_call_pause,
             npc_ready_patrol=npc_ready_patrol,
             npc_reach_aid=npc_reach_aid,
+            **assistance_options(npc_assistance_memory),
             collect_calls=True,
             collect_assists=npc_aid,
             error_code="NPC_ACTIVITY_SOURCE",
@@ -626,6 +635,7 @@ def cycle_call_recollection(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> tuple[str, ...]:
     """Recall verified replies since the previous retained cycle conversation."""
     factory = _conversation_activity(
@@ -645,6 +655,7 @@ def cycle_call_recollection(
         npc_call_pause=npc_call_pause,
         npc_ready_patrol=npc_ready_patrol,
         npc_reach_aid=npc_reach_aid,
+        **assistance_options(npc_assistance_memory),
     )
     previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
     return _call_messages(factory, segment.checkpoint.core.tick, previous=previous)
@@ -666,6 +677,7 @@ def cycle_return_recollection(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> tuple[str, ...]:
     """Compare exact committed supply states and recall calls through one replay."""
     factory = _conversation_activity(
@@ -685,6 +697,7 @@ def cycle_return_recollection(
         npc_call_pause=npc_call_pause,
         npc_ready_patrol=npc_ready_patrol,
         npc_reach_aid=npc_reach_aid,
+        **assistance_options(npc_assistance_memory),
         collect_assists=npc_aid,
     )
     previous = factory.conversations[-2][0] if len(factory.conversations) > 1 else None
@@ -971,6 +984,7 @@ def _conversation_activity(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
     collect_assists: bool = False,
 ) -> _ActivityFactory:
     if npc_id != content.definition.layout.npc_id:
@@ -992,6 +1006,7 @@ def _conversation_activity(
             npc_call_pause=npc_call_pause,
             npc_ready_patrol=npc_ready_patrol,
             npc_reach_aid=npc_reach_aid,
+            **assistance_options(npc_assistance_memory),
             error_code="NPC_RECOLLECTION_SOURCE",
             collect_calls=collect_calls,
             collect_assists=collect_assists,

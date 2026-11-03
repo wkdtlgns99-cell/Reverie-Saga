@@ -24,6 +24,11 @@ from contracts.encounter import (
 )
 from contracts.errors import CandidateError
 from contracts.npc_gate_aid import GateAssisted
+from contracts.npc_assistance_memory import (
+    ASSISTANCE_FAMILY,
+    ASSISTANCE_MEMORY,
+    AssistanceMemoryDelta,
+)
 from contracts.npc_cycle import CYCLE, CYCLE_FAMILY
 from contracts.npc_memory import MEMORY, MEMORY_FAMILY, read_record
 from contracts.messages import EmittedFact, FactPayload, StateDelta, WorldEvent
@@ -41,6 +46,7 @@ from domain.primitives import EntityId, FieldFamily, Phase
 from domain.watch import ECHO_DEPTH, WAKE_PERIOD
 from domain.npc_work import SUPPORT_STOCK_MIN
 from domain.npc_cycle import Supply, state_at
+from domain.npc_assistance_memory import AssistanceEntry, AssistanceMemoryRecord, append_assistance
 from domain.npc_patrol import patrol_cells
 
 
@@ -117,6 +123,7 @@ class EncounterActions:
     npc_supply_aid: bool = False
     npc_call_aid: bool = False
     npc_reach_aid: bool = False
+    npc_assistance_memory: bool = False
 
     def __post_init__(self) -> None:
         if type(self.layout) is not Scenario:
@@ -129,6 +136,12 @@ class EncounterActions:
             raise ValueError("NPC_CALL_AID_CONTENT")
         if type(self.npc_reach_aid) is not bool or self.npc_reach_aid and not self.npc_call_aid:
             raise ValueError("NPC_REACH_AID_CONTENT")
+        if (
+            type(self.npc_assistance_memory) is not bool
+            or self.npc_assistance_memory
+            and not self.npc_reach_aid
+        ):
+            raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
 
     @property
     def scenario_layout(self) -> Scenario:
@@ -144,6 +157,11 @@ class EncounterActions:
             reads=(
                 *_ACTIONS_MANIFEST.reads,
                 PhaseAccess(Phase.POST_TICK, MEMORY_FAMILY),
+                *(
+                    (PhaseAccess(Phase.POST_TICK, ASSISTANCE_FAMILY),)
+                    if self.npc_assistance_memory
+                    else ()
+                ),
                 *(
                     (
                         PhaseAccess(Phase.POST_TICK, FieldFamily("watch.npc", "cell")),
@@ -166,6 +184,11 @@ class EncounterActions:
             writes=(
                 *_ACTIONS_MANIFEST.writes,
                 PhaseAccess(Phase.POST_TICK, FieldFamily(GATE.schema.kind, "is_open")),
+                *(
+                    (PhaseAccess(Phase.POST_TICK, ASSISTANCE_FAMILY),)
+                    if self.npc_assistance_memory
+                    else ()
+                ),
             ),
             emits=(*_ACTIONS_MANIFEST.emits, GateAssisted.SCHEMA),
             consumes=(
@@ -228,8 +251,27 @@ class EncounterActions:
                 raise CandidateError("INVALID_FACT", "reach aid NPC source")
             if not adjacent_cells(npc.cell, gate.cell):
                 return EngineResult((), (), ())
+        deltas: tuple[StateDelta, ...] = (GateDelta(self.layout.gate_id, 0, 1),)
+        if self.npc_assistance_memory:
+            try:
+                before = invocation.state.component(ASSISTANCE_MEMORY, self.layout.npc_id).state
+                AssistanceMemoryRecord(self.layout.npc_id, before)
+                if any(entry.target_id != self.layout.gate_id for entry in before.entries):
+                    raise ValueError("NPC_ASSISTANCE_MEMORY_OWNER")
+                after = append_assistance(
+                    before,
+                    AssistanceEntry(
+                        tick,
+                        self.layout.gate_id,
+                        "answered_call" if type(event.payload) is WatchReplied else "wake",
+                        header.event_id,
+                    ),
+                )
+            except ValueError as error:
+                raise CandidateError("INVALID_FACT", "assistance memory source") from error
+            deltas += (AssistanceMemoryDelta(self.layout.npc_id, before, after),)
         return EngineResult(
-            (GateDelta(self.layout.gate_id, 0, 1),),
+            deltas,
             (
                 EmittedFact(
                     GateAssisted(self.layout.npc_id, self.layout.gate_id), tick, (header.event_id,)

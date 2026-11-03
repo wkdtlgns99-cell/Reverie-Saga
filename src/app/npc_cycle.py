@@ -6,6 +6,7 @@ from app.headless import HeadlessSession
 from app.npc_memory import memory_bundle
 from app.npc_gate_aid import with_gate_aid
 from app.npc_patrol import with_patrol
+from app.npc_assistance_memory import assistance_options, with_assistance_memory
 from app.watch import WatchBootstrapSpec, _bootstrap
 from contracts.dialogue import QuestContent
 from contracts.messages import EventPolicy
@@ -17,6 +18,7 @@ from domain.canonical import array_value, object_value, seal, text_value
 from domain.npc_memory import NpcQuestMemoryRecord
 from domain.npc_work import STOCK_CAP, WORK_PERIOD
 from domain.npc_cycle import MEMORY_CAP, USE_PERIOD, CycleRecord, Supply, SupplyEvidence
+from domain.npc_assistance_memory import AssistanceMemory, AssistanceMemoryRecord
 from domain.primitives import EntityId, FieldSpec, Phase
 from domain.quest import QuestRecord
 from engines.npc_cycle import NpcSupplyCycle
@@ -43,6 +45,7 @@ def cycle_bundle(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> FeatureBundle:
     if type(npc_aid) is not bool:
         raise ValueError("NPC_AID_CONTENT")
@@ -62,6 +65,8 @@ def cycle_bundle(
         raise ValueError("NPC_READY_PATROL_CONTENT")
     if type(npc_reach_aid) is not bool or npc_reach_aid and not npc_ready_patrol:
         raise ValueError("NPC_REACH_AID_CONTENT")
+    if type(npc_assistance_memory) is not bool or npc_assistance_memory and not npc_reach_aid:
+        raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
     base = memory_bundle(content)
     binding = EngineBinding(
         NpcSupplyCycle(content),
@@ -211,7 +216,7 @@ def cycle_bundle(
         if npc_aid
         else bundle
     )
-    return (
+    bundle = (
         with_patrol(
             bundle,
             content,
@@ -224,6 +229,7 @@ def cycle_bundle(
         if npc_patrol
         else bundle
     )
+    return with_assistance_memory(bundle, content) if npc_assistance_memory else bundle
 
 
 def bootstrap_cycle(
@@ -239,6 +245,7 @@ def bootstrap_cycle(
     npc_call_pause: bool = False,
     npc_ready_patrol: bool = False,
     npc_reach_aid: bool = False,
+    npc_assistance_memory: bool = False,
 ) -> HeadlessSession:
     return _bootstrap(
         spec,
@@ -255,11 +262,17 @@ def bootstrap_cycle(
             npc_call_pause=npc_call_pause,
             npc_ready_patrol=npc_ready_patrol,
             npc_reach_aid=npc_reach_aid,
+            **assistance_options(npc_assistance_memory),
         ),
         extra_records=(
             QuestRecord(EntityId(content.definition.quest_id), 0),
             NpcQuestMemoryRecord(content.definition.layout.npc_id, ()),
             CycleRecord(content.definition.layout.npc_id, Supply(0, 0, 0), ()),
+            *(
+                (AssistanceMemoryRecord(content.definition.layout.npc_id, AssistanceMemory(0, ())),)
+                if npc_assistance_memory
+                else ()
+            ),
         ),
     )[0]
 

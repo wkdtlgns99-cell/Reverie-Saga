@@ -15,14 +15,30 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-CONTINUATION_REQUESTED2026-11-01:director explicitly requests automatic work after the current
-task and subsequent tasks. Goal was ACTIVE at entry,then quota interrupted it. Actual
-reset-only follow-up delivered and was deleted;ordinary usage is allowed again. F96work
-resumes in this chat. Native goal still reports usageLimited;do not claim it is ACTIVE.
-F95document publication/main sync completed;F96performance work is current.
-Finish its required full verification/publication before selecting another order. This is
-workflow support,not new gameplay authority;native/independent/device/CP06/release and
-agent/administration restrictions remain. Honor user pause/stop;no periodic automation.
+CONTINUATION_REQUESTED2026-11-01:the director requests automatic authorized work.
+Native goal remains usageLimited after the actual quota interruption;ordinary usage is
+allowed,but supported cross-turn activation is not confirmed. The completed reset-only
+registration was deleted. This direct user reply delegates the specific F95contract choice;
+the executor adopts it under F97. No agents/desktop/native/release/administration waiver.
+
+QT-F97 LOCAL_ACCEPTED2026-11-01:self-review;primary2internal calculation and6persistence,
+related3/5/7. Optional child mode persists exact own-assistance count/latest4causal anchors
+in the same encounter-owned result/COMMIT as the gate. Strict component/payload/transition/
+checkpoint contracts and Python bootstrap/replay/session/worker/Tk/bothCLI/query wiring.
+Unity selector/path/reconnect/new flow prepared source only;native execution NOT_RUN.
+F95specific director response "너 알아서 좋을대로" delegates this choice;executor adopts,
+not blanket future contract authority or implementation/review/release acceptance.
+Actual aids16/20/24/28/32,count5/latest4,compaction/previous/load/restart/rollback/uncertain
+commit/retry/source-bound direct-framed queries qualified. Old13modes plus dense reach:
+14pairs291whole updates/core/protocol/pins/full SQL EXACT. New48PASS;Ruffboth/format23/
+strict286/import3+1/pip PASS. Full3761PASS901.83s,all434inputs unchanged;G07CURRENT/PASS
+35bodies/8replays. All12new direct/framed query samples<10s;dense264activity/talk4.7-5.0s
+still misses2sTARGET. Original sandbox run stopped after11observed loopback failures;
+WinError10013reproduced directly,identical case PASS0.25s and unchanged full PASS under
+approved local-network execution. No source/test/check/security setting changed.
+Local-acceptance snapshot;ordinary PR/bothCI/merge/localmain sync follows before any next
+task. Actual publication state:task PR and tmp/qtf97/publication receipts. Holds retained.
+[Order](docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md),[receipt](docs/reviews/QT-F97_EXECUTION_2026-11-01.md).
 
 QT-F96 LOCAL_ACCEPTED2026-11-01:self-review;primary2performance support,
 related5/6/7. Canonical object keys avoid generic recursive dispatch;exact built-in ASCII
@@ -40,8 +56,10 @@ exact command-scope safe.directory succeeds. Two unchanged representative cases 
 with only subprocess-local exact path trust,no global config/test/security changes.
 Full-safe retry TERMINAL0:3713PASS894.34s,all301inputs unchanged. Current-host Git context
 is documented in workstation setup;no install/global setting/other-device claim.
-Local verification accepted;ordinary PR/bothCI/merge/localmain sync remains before another task.
-F95new public/save contract approval remains separately pending;no dependent runtime.
+Publication complete:PR29merged1030696;both required published-head workflows SUCCESS,
+each full3713/boundary31PASS. Native main merge workflow41239984017SUCCESS. Fresh fetch/
+fast-forward main1030696equal origin/main and clean before F97entry. F95decision now
+delegated/adopted only for the bounded F97child mode;see current row.
 Native/independent/device/CP06/release/agent/administration holds retained;native goal
 usageLimited after quota,ordinary usage allowed and this reset-triggered task resumes.
 [Order](docs/work_orders/QT-F96_CANONICAL_KEY_VALIDATION.md),[receipt](docs/reviews/QT-F96_EXECUTION_2026-11-01.md).
@@ -51,11 +69,12 @@ Concrete persistent own-assistance memory proposal:total count/latest4causal anc
 explicit child mode,same-result gate+memory atomicity,old save/pin isolation. Current-source
 probe confirms aid16visible in retained history but absent after checkpoint-only compaction;
 repeated actual aids16/20/24/28/32confirm source vectors. Existing F56works as contracted;
-new persistence is not implemented or approved. Future runtime order stays DRAFT until
-explicit director authority for the new public/save contract;current task is docs/probes.
+F95itself was documentation/probes only. Subsequent director reply delegates the specific
+implementation choice;executor adopts the proposal in F97. See current F97order/status.
 Document publication complete:PR28merged5005ee6;both required workflows111/112SUCCESS,
 each full3703/boundary31PASS. Fresh fetch/fast-forward main equals origin/main5005ee6,
-clean before F96entry. Actual contract approval requested;no director response received.
+clean before F96entry. The subsequent director response "너 알아서 좋을대로" delegates the specific choice;
+executor adopts it under F97,without claiming resulting implementation/review acceptance.
 Source/tests/content/CI unchanged by F95. All existing review/native/device/release/
 agent/administration holds remain.
 [Order](docs/work_orders/QT-F95_ASSISTANCE_MEMORY_CONTRACT.md),[proposal](docs/proposals/QT-F95_PERSISTENT_ASSISTANCE_MEMORY.md),[receipt](docs/reviews/QT-F95_EXECUTION_2026-11-01.md).

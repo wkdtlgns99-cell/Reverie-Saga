@@ -1,0 +1,598 @@
+{
+  "task": "QT-F97",
+  "review": "self/source review,not independent",
+  "prior_inventory_sha256": "2ef804403a74c98068e1b01ceb6d666f8ba705d905aedb6c7bc80fd15612e617",
+  "scope": {
+    "schema_version": 2,
+    "source_sha256": {
+      "src/engines/encounter.py": "999677024a9f2dba7dbd07edd5b496fb192b84f186431001ddf30ec16daabc6e",
+      "src/engines/npc_memory.py": "be39c2d417aec5f219f0caed015b152135c0c8343c8297c9361ea2a648a397f2",
+      "src/contracts/dialogue.py": "036d5dc8a1cd3e6012926d6a222d69ea9d2efe0e307cac827a82070c790224d4",
+      "src/engines/quest.py": "1e8932c2fe39755e6e9ee28803abfa3261507515ae1593b47ef8745790c2facd",
+      "src/engines/skeleton.py": "eebb9a1912c6727b0e30569fe3505a10e19a236a816faa46e841bf822c21b13c",
+      "src/engines/trial.py": "012b74415a924a260082408f3dafcd408fb71c9894ce946454cf62a1b4e8fa44",
+      "src/engines/watch.py": "910043f32334740655ed4914d2d7ac52bb01114cd711ac05f546588f3fbf5807",
+      "src/domain/scenario.py": "dcde6202bd8d0f281f92ce3240002518c002305253fce0450bf4674a3ccc56d0"
+    },
+    "golden_nodes": [
+      {
+        "node_id": "tests/replay/test_golden.py::test_core_trace",
+        "context": "tests.replay.test_golden.test_core_trace",
+        "registry": "skeleton_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_trial.py::test_trial_core_trace",
+        "context": "tests.replay.test_trial.test_trial_core_trace",
+        "registry": "trial_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_encounter.py::test_encounter_core_trace",
+        "context": "tests.replay.test_encounter.test_encounter_core_trace",
+        "registry": "encounter_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_encounter.py::test_encounter_death_trace",
+        "context": "tests.replay.test_encounter.test_encounter_death_trace",
+        "registry": "encounter_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_watch.py::test_watch_core_trace",
+        "context": "tests.replay.test_watch.test_watch_core_trace",
+        "registry": "watch_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_watch.py::test_watch_passive_trace",
+        "context": "tests.replay.test_watch.test_watch_passive_trace",
+        "registry": "watch_bundle"
+      },
+      {
+        "node_id": "tests/replay/test_quest.py::test_independent_vector_then_real_durable_offline_replay",
+        "context": "tests.replay.test_quest.test_independent_vector_then_real_durable_offline_replay",
+        "registry": "quest_bundle"
+      },
+      {
+        "node_id": "tests/integration/test_npc_memory.py::test_retry_repeat_save_load_resume_and_offline_replay",
+        "context": "tests.integration.test_npc_memory.test_retry_repeat_save_load_resume_and_offline_replay",
+        "registry": "memory_bundle"
+      }
+    ],
+    "methods": [
+      {
+        "key": "engines.encounter.EncounterActions.evaluate",
+        "implementation": "engines.encounter.EncounterActions.evaluate",
+        "path": "src/engines/encounter.py",
+        "definition_line": 200,
+        "body_start": 201,
+        "body_end": 217,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterActions.manifest",
+        "implementation": "engines.encounter.EncounterActions.manifest",
+        "path": "src/engines/encounter.py",
+        "definition_line": 151,
+        "body_start": 152,
+        "body_end": 198,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 179,
+            "qualname": "EncounterActions.manifest.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.encounter.EncounterActions.scenario_layout",
+        "implementation": "engines.encounter.EncounterActions.scenario_layout",
+        "path": "src/engines/encounter.py",
+        "definition_line": 147,
+        "body_start": 148,
+        "body_end": 148,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "encounter.actions",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.evaluate",
+        "implementation": "engines.encounter.EncounterMovement.evaluate",
+        "path": "src/engines/encounter.py",
+        "definition_line": 427,
+        "body_start": 428,
+        "body_end": 477,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.manifest",
+        "implementation": "engines.encounter.EncounterMovement.manifest",
+        "path": "src/engines/encounter.py",
+        "definition_line": 424,
+        "body_start": 425,
+        "body_end": 425,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.encounter.EncounterMovement.scenario_layout",
+        "implementation": "engines.encounter.EncounterMovement.scenario_layout",
+        "path": "src/engines/encounter.py",
+        "definition_line": 420,
+        "body_start": 421,
+        "body_end": 421,
+        "registries": [
+          "encounter_bundle",
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.evaluate",
+        "implementation": "engines.npc_memory.NpcQuestMemory.evaluate",
+        "path": "src/engines/npc_memory.py",
+        "definition_line": 29,
+        "body_start": 30,
+        "body_end": 73,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.manifest",
+        "implementation": "engines.npc_memory.NpcQuestMemory.manifest",
+        "path": "src/engines/npc_memory.py",
+        "definition_line": 16,
+        "body_start": 17,
+        "body_end": 27,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.quest_content",
+        "implementation": "contracts.dialogue.QuestBound.quest_content",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 136,
+        "body_start": 137,
+        "body_end": 137,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.npc_memory.NpcQuestMemory.scenario_layout",
+        "implementation": "contracts.dialogue.QuestBound.scenario_layout",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 140,
+        "body_start": 141,
+        "body_end": 141,
+        "registries": [
+          "memory_bundle"
+        ],
+        "engine_id": "quest.memory",
+        "nested_code": []
+      },
+      {
+        "key": "engines.quest.QuestRules.evaluate",
+        "implementation": "engines.quest.QuestRules.evaluate",
+        "path": "src/engines/quest.py",
+        "definition_line": 41,
+        "body_start": 42,
+        "body_end": 90,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 89,
+            "qualname": "QuestRules.evaluate.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.quest.QuestRules.manifest",
+        "implementation": "engines.quest.QuestRules.manifest",
+        "path": "src/engines/quest.py",
+        "definition_line": 25,
+        "body_start": 26,
+        "body_end": 39,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 34,
+            "qualname": "QuestRules.manifest.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.quest.QuestRules.quest_content",
+        "implementation": "contracts.dialogue.QuestBound.quest_content",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 136,
+        "body_start": 137,
+        "body_end": 137,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": []
+      },
+      {
+        "key": "engines.quest.QuestRules.scenario_layout",
+        "implementation": "contracts.dialogue.QuestBound.scenario_layout",
+        "path": "src/contracts/dialogue.py",
+        "definition_line": 140,
+        "body_start": 141,
+        "body_end": 141,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle"
+        ],
+        "engine_id": "quest.rules",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Counter.evaluate",
+        "implementation": "engines.skeleton.Counter.evaluate",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 40,
+        "body_start": 41,
+        "body_end": 42,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.counter",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Counter.manifest",
+        "implementation": "engines.skeleton.Counter.manifest",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 35,
+        "body_start": 36,
+        "body_end": 38,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.counter",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Stepper.evaluate",
+        "implementation": "engines.skeleton.Stepper.evaluate",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 20,
+        "body_start": 21,
+        "body_end": 27,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.stepper",
+        "nested_code": []
+      },
+      {
+        "key": "engines.skeleton.Stepper.manifest",
+        "implementation": "engines.skeleton.Stepper.manifest",
+        "path": "src/engines/skeleton.py",
+        "definition_line": 15,
+        "body_start": 16,
+        "body_end": 18,
+        "registries": [
+          "skeleton_bundle"
+        ],
+        "engine_id": "skeleton.stepper",
+        "nested_code": []
+      },
+      {
+        "key": "engines.trial.Movement.evaluate",
+        "implementation": "engines.trial.Movement.evaluate",
+        "path": "src/engines/trial.py",
+        "definition_line": 25,
+        "body_start": 26,
+        "body_end": 48,
+        "registries": [
+          "trial_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": []
+      },
+      {
+        "key": "engines.trial.Movement.manifest",
+        "implementation": "engines.trial.Movement.manifest",
+        "path": "src/engines/trial.py",
+        "definition_line": 15,
+        "body_start": 16,
+        "body_end": 23,
+        "registries": [
+          "trial_bundle"
+        ],
+        "engine_id": "trial.movement",
+        "nested_code": [
+          {
+            "name": "<genexpr>",
+            "first_line": 16,
+            "qualname": "Movement.manifest.<locals>.<genexpr>",
+            "policy": "reviewed_generator_expression_within_enclosing_body"
+          }
+        ]
+      },
+      {
+        "key": "engines.watch.WatchBell.evaluate",
+        "implementation": "engines.watch.WatchBell.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 266,
+        "body_start": 267,
+        "body_end": 274,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchBell.manifest",
+        "implementation": "engines.watch.WatchBell.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 263,
+        "body_start": 264,
+        "body_end": 264,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchBell.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 139,
+        "body_start": 140,
+        "body_end": 140,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.bell",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.evaluate",
+        "implementation": "engines.watch.WatchEchoEngine.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 299,
+        "body_start": 300,
+        "body_end": 321,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.manifest",
+        "implementation": "engines.watch.WatchEchoEngine.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 296,
+        "body_start": 297,
+        "body_end": 297,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchEchoEngine.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 139,
+        "body_start": 140,
+        "body_end": 140,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.echo",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.evaluate",
+        "implementation": "engines.watch.WatchNpc.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 96,
+        "body_start": 97,
+        "body_end": 116,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.manifest",
+        "implementation": "engines.watch.WatchNpc.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 60,
+        "body_start": 61,
+        "body_end": 93,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchNpc.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 139,
+        "body_start": 140,
+        "body_end": 140,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.npc",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.evaluate",
+        "implementation": "engines.watch.WatchPassive.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 329,
+        "body_start": 330,
+        "body_end": 334,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.manifest",
+        "implementation": "engines.watch.WatchPassive.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 326,
+        "body_start": 327,
+        "body_end": 327,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchPassive.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 139,
+        "body_start": 140,
+        "body_end": 140,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.passive",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.evaluate",
+        "implementation": "engines.watch.WatchRespond.evaluate",
+        "path": "src/engines/watch.py",
+        "definition_line": 282,
+        "body_start": 283,
+        "body_end": 291,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.manifest",
+        "implementation": "engines.watch.WatchRespond.manifest",
+        "path": "src/engines/watch.py",
+        "definition_line": 279,
+        "body_start": 280,
+        "body_end": 280,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      },
+      {
+        "key": "engines.watch.WatchRespond.scenario_layout",
+        "implementation": "domain.scenario.ScenarioBound.scenario_layout",
+        "path": "src/domain/scenario.py",
+        "definition_line": 139,
+        "body_start": 140,
+        "body_end": 140,
+        "registries": [
+          "memory_bundle",
+          "quest_bundle",
+          "watch_bundle"
+        ],
+        "engine_id": "watch.respond",
+        "nested_code": []
+      }
+    ]
+  },
+  "disposition": "Existing EncounterActions extension only;all35public/8source/8golden/4nested obligations retained. Constructor/private helper excluded by unchanged existing public-method policy. No checker/test/threshold/golden weakened."
+}

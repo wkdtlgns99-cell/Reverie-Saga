@@ -972,6 +972,35 @@ namespace ReverieSaga
                 room.NpcPositionForVerification==new Vector3(value%3,.5f,-(value/3)),label);
         }
 
+        // Prepared source only. Execute after the director resumes native verification.
+        // The count/source assertions are qualified against the actual Python framed flow.
+        IEnumerator AssistanceMemoryFlow()
+        {
+            const string remembered="NPC 지속 도움 기억: 누적 1회 · 최근 1개를 보관합니다.";
+            const string anchor="NPC 도움 기억 · 16초: 통행문을 열었습니다 · 원인: 정기 행동.";
+            room.SelectWaitDuration(0);
+            Check(room.NpcAssistanceMemoryEnabled&&room.NpcReachAidEnabled&&
+                room.NpcModeLabel=="NPC 지속 도움 기억·인접 통행 지원 모드","assistance_memory_selection");
+            yield return Intent("down");yield return Intent("talk");yield return Intent("up");
+            for(int i=0;i<13;i++)yield return Intent("wait");
+            Check(room.Latest.update.view.tick=="16"&&room.Latest.update.view.gate_open,
+                "assistance_memory_actual_gate16");
+            string bytes=FileHash(room.Latest.update.working_path);
+            room.InspectActivity();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,remembered)>=0&&
+                Array.IndexOf(room.Latest.update.messages,anchor)>=0&&
+                FileHash(room.Latest.update.working_path)==bytes,"assistance_memory_persisted_read");
+            yield return Intent("save");yield return Intent("wait");yield return Intent("load");
+            Check(room.Latest.update.view.tick=="16","assistance_memory_load_tick");
+            int pid=room.BrainProcessId;room.Reconnect();yield return Ready();
+            Check(room.NpcAssistanceMemoryEnabled&&room.BrainProcessId!=pid,"assistance_memory_reconnect");
+            bytes=FileHash(room.Latest.update.working_path);room.InspectActivity();yield return Ready();
+            Check(Array.IndexOf(room.Latest.update.messages,remembered)>=0&&
+                Array.IndexOf(room.Latest.update.messages,anchor)>=0&&
+                FileHash(room.Latest.update.working_path)==bytes,"assistance_memory_reopened_read");
+            Debug.Log(failed?"ENGINE_VERIFY_FAILED":"ENGINE_VERIFY_PASSED");Exit(failed?1:0);
+        }
+
         IEnumerator ReachAidFlow()
         {
             room.SelectWaitDuration(0);
@@ -1774,6 +1803,8 @@ namespace ReverieSaga
                 case "invalid-supply-aid-selection":return "NPC_SUPPLY_AID_SELECTION";
                 case "invalid-call-pause":return "NPC_CALL_PAUSE_CONTENT";
                 case "invalid-call-pause-selection":return "NPC_CALL_PAUSE_SELECTION";
+                case "invalid-assistance-memory":return "NPC_ASSISTANCE_MEMORY_CONTENT";
+                case "invalid-assistance-memory-selection":return "NPC_ASSISTANCE_MEMORY_SELECTION";
                 case "invalid-reach-aid":return "NPC_REACH_AID_CONTENT";
                 case "invalid-reach-aid-selection":return "NPC_REACH_AID_SELECTION";
                 case "invalid-ready-patrol":return "NPC_READY_PATROL_CONTENT";
@@ -1821,6 +1852,7 @@ namespace ReverieSaga
                 yield return InspectSlot("initial_slot_missing",null);
             }
             if(room.Latest!=null&&room.Latest.update.quest_id=="quest:harbor-sentinel") {
+                if(room.NpcAssistanceMemoryEnabled){yield return AssistanceMemoryFlow();yield break;}
                 if(room.NpcReachAidEnabled){yield return ReachAidFlow();yield break;}
                 if(room.NpcReadyPatrolEnabled){yield return ReadyPatrolFlow();yield break;}
                 if(room.NpcCallPauseEnabled){yield return CallPausePatrolFlow();yield break;}
