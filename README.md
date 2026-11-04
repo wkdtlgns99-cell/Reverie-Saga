@@ -88,7 +88,7 @@ Human UX,final art/camera/engine,gamepad,MIN-SPEC,portable standalone and other-
 
 [CLI workflows](docs/CLI_WORKFLOWS.md) contain key loading,explicit preparation,offline review/approval/
 compilation,NPC context,query export/check/comparison and plan-based generation.
-Normal play needs no key/network. New generated content stays NEEDS_REVIEW until actual director approval;
+Legacy prepared-content play needs no key/network. New generated preparation content stays NEEDS_REVIEW until actual director approval;
 existing games retain their content pins. [Current qualification limits](BACKLOG.md#qt-f07-deferred-qualification).
 
 ## Persistent own-assistance mode
@@ -104,7 +104,7 @@ and latest4actual causes even after checkpoint-only compaction. Retained-event h
 remains a separate bounded view. This mode adds factual memory,not new aid behavior.
 [Contract](docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md).
 
-## Fixed development world and supply slice
+## Fixed development world, supply and live conversation
 
 Run the opt-in graphical slice from this checkout:
 
@@ -115,7 +115,8 @@ $env:PYTHONPATH = "$PWD/src"
 
 The same stored world has6continents,6countries and12major cities. Map clicks inspect
 places;road buttons/Left-Right while the road has focus walk one metre per recorded second.
-Default progress is `tmp/world-supply-play/game.sqlite`;save/load uses slot01.
+Default progress is `tmp/world-conversation-play/game.sqlite`;save/load uses slot01.
+Earlier supply-only progress remains at its original separate path and pins.
 Idle,map,inventory and offer consideration advance one game second per ten real seconds;
 ESC pauses. Movement/confirmed interactions advance their recorded duration.
 
@@ -127,9 +128,27 @@ city treasury. Consideration is nonmodal;confirming after the deadline630rejects
 Inventory and resident activities show actual saved state. Tests vary supported incidents
 with deterministic seeds without regenerating the world or calling an AI provider.
 
-This slice does not yet provide live free-text NPC dialogue,local2D exploration or transport
-journeys. Earlier prototype working files retain their own pins;no silent save migration.
-[Scope and evidence](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md).
+**주민과 대화** opens a nonmodal resident selector,free-text input and saved own transcript.
+Submitting speech records its duration once;AI waiting adds no game time. ESC holds further
+speech segments and reply acceptance. After restart,use **말 계속하기** for an unfinished
+utterance. On response failure,use **응답 다시 요청** or **답 없이 계속**;already heard words
+remain. **응답 요청 취소** stops the owned request;**처리 재시도** resolves uncertain save/ack
+without repeating speech or generating a second reply. A proposed supported action shows
+actual terms and **조건을 확인하고 실행**;unconfirmed prose transfers no money/items.
+
+Runtime loads the primary key from `GEMINI_API_KEY_1` (legacy alias `GEMINI_API_KEY`),then
+`GEMINI_API_KEY_2` and `_3`,from the environment or this checkout's ignored `.env`.
+Only provider429advances to the next key;all limited is an explicit error. Each explicit
+generation job starts at key1 and tries each configured key at most once. Authentication,
+timeout,bad output and cancellation stop immediately. Preparation defaults remain60s;
+runtime has no artificial gap,no paid fallback and records each attempt in ignored
+`tmp/gemini-runtime-profile`. Never commit credentials or private progress.
+
+Live qualification on the current host accepted two personas,own-memory recall after
+restart and a supported action proposal. Four calls10.9–21.3s;two miss the15sTARGET.
+Local2D exploration,transport journeys,broader social mechanics and final native/device/
+release qualification remain open. Existing saves retain pins;no silent migration.
+[Conversation completion contract](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md).
 
 ## Verification
 

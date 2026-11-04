@@ -1,9 +1,9 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-11-04 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-05 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
-Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
+Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Read on Entry
 
@@ -15,30 +15,35 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-LATEST_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,ordinary
-protected merge and local-main synchronization,then remaining settled backlog work.
-This supersedes the earlier upload-only pause. Current actual checkout C:/Reverie Saga;
-branch codex/live-npc-conversation-20261104,entry head a4851050,remote main6b12f51.
-CI41801640562failed:synthetic dependency fixture lacks five registered world engines;
-local allowed-dag reproduces missing engines.world_travel. Repair/qualification in
-[PR35order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
-Foundation merge is separate from unfinished Gworker/UI/provider acceptance.
-Goal tool now ACTIVE for requested PR/main and settled backlog work;no agent/native/
-independent/device/release waiver. Ask the next material product question after its
-settled prerequisites;do not re-ask confirmed answers.
+DIRECTOR_CONTINUATION2026-11-05:latest scope is ONLY previously asked/answered work. The director is going to sleep and explicitly requests
+continuing autonomously without questions. This supersedes earlier ask-after-batch wording.
+Proceed with settled implementation,repair,verification and ordinary per-task PR/main delivery;
+record routine choices and actual limits. Preserve unresolved new-contract/native/device/
+independent/release/agent boundaries;do not treat silence as approval. Native goal ACTIVE.
 
-Gimplemented:registered own speech/history,exact codepoint speech time/16scontinuations,
-snapshot/slot/restart/replay,own-only bounded retrieval,context/proposal revalidation,
-cancellable one-attempt Gemini adapter and explicit runtime spacing0/preparation default60s.
-Confirmed new answers:failed reply preserves speech/time with retry-or-continue;runtime
-one call per explicit send/retry,provider errors exposed,no automatic paid/key fallback.
-Final affected84PASS8.99s,Ruffboth/format15/strict334/import3+1/pip PASS. Actual provider
-one attempt GENERATION_TIMEOUT;no live NPC reply accepted. Current --world is still supply UI.
-No app/world_conversation_worker.py or dialogue panel exists yet;do not mistake contract
-plans/protocol methods for completed wiring. [Gcheckpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md)
-owns exact progress/failures/resume actions. [BACKLOG inventory](BACKLOG.md#session-decision-and-implementation-inventory--2026-11-04)
-records ALL session decisions and completed/unfinished boundaries. Credentials/private saves
-remain ignored/local;the failed qualification save is not uploaded. The latest director instruction explicitly resumes this remaining work after PR35delivery.
+
+LATEST_SCOPE2026-11-04:director resumes PR verification/ordinary merge/main sync and
+remaining settled backlog implementation. PR35merged265fc4b after both final-head runs
+41846021869/41846030829each3935full/32boundaryPASS. Local/remote main equal265fc4b and
+clean before new codex/world-conversation-ui-20261104. Current checkout C:/Reverie Saga.
+PR35repair local130/11document/57world-TkPASS;actual jobs own full evidence.
+
+Current Gcompletion:coordinator/single-owner worker and nonmodal panel now wire speech,
+segments,reply retry/cancel,pause,own transcript and inline confirmed supply actions.
+Controlled transport tests retain real domain/SQLite/GUI outcomes. Actual four Gemini
+responses accepted:two personas,own-memory recall after restart and typed accept proposal
+with zero automatic resources.16.550/12.324/21.338/10.944s,two15sTARGET misses. Final
+affected207PASS34.25s with341inputs preserved,Ruffboth/format19/strict337/import3+1/pip PASS.
+Local acceptance complete;final published-head full CI/ordinary merge/localmain remain pending.
+[Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md).
+Latest director key follow-up explicitly authorizes runtime key1→2→3 fallback only after
+provider429;other failures stop,all exhausted explicit. Local .env has numbered names;
+credentials never enter chat/tracked files/commands/saves/logs. Preparation defaults unchanged.
+[Completion order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) supersedes Gcheckpoint's
+pause/no-rotation/one-feature stop;goal ACTIVE for settled remaining parent requirements.
+No agents/native/ComputerUse/independent/device/release waiver. Latest director restricts
+execution to already asked/answered scope,without questions. Finish this accepted batch
+through ordinary CI/PR/main delivery;do not select new unanswered expansion features.
 
 RS-PLAY-001F MERGED_PR34_MAIN6b12f51:all12cities have registered supply aggregates;
 starting disruption changes real stock and saved resident activities. Confirmed offer
