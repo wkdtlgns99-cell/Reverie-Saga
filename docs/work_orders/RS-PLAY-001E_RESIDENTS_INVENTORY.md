@@ -55,3 +55,8 @@ Only ordinary routine/no-incident behavior accepted at this stage;parent remains
 Final affected149PASS22.06s under Tk warning-as-error;format10PASS. Work continues on
 codex/world-social-play-20261104 with an intermediate local checkpoint,not parent/main
 completion. No full regression or live-provider qualification yet.
+
+Portability repair in scope:MODIFY C:/ReverieSaga/.gitattributes for the exact fixed-world
+JSON path only (text eol=lf). Git otherwise reports automatic CRLF conversion,which would
+break the canonical-byte fixture on a fresh Windows checkout. Existing evidence-byte
+attributes are unchanged;retain the strict fixture test rather than normalizing its oracle.
