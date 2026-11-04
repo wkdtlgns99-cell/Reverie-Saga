@@ -11,6 +11,7 @@ from concurrent.futures import CancelledError, Future
 from dataclasses import replace
 from functools import partial
 import logging
+import sys
 from pathlib import Path
 import tkinter as tk
 from tkinter import ttk
@@ -638,6 +639,9 @@ class PlayWindow:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Provisional Reverie Saga playable harness")
+    parser.add_argument(
+        "--world", action="store_true", help="Open the persistent world catalog map"
+    )
     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
     parser.add_argument("--scenario", default="legacy")
     parser.add_argument("--quest-catalog", type=Path)
@@ -655,7 +659,14 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-ready-patrol", action="store_true")
     parser.add_argument("--npc-reach-aid", action="store_true")
     parser.add_argument("--npc-assistance-memory", action="store_true")
-    args = parser.parse_args(argv)
+    selected_argv = list(argv) if argv is not None else sys.argv[1:]
+    args = parser.parse_args(selected_argv)
+    if args.world and selected_argv != ["--world"]:
+        parser.error("--world cannot be combined with legacy room options")
+    if args.world:
+        from app.world_client import launch_world
+
+        return launch_world()
     if args.npc_assistance_memory and not args.npc_reach_aid:
         raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")
     layout = select_scenario(args.scenario).layout

@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-11-03 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-04 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
@@ -15,22 +15,134 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
+restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through
+usable gameplay,tests and integration;publish through required CI and ordinary protected PR
+merge,then synchronize local main. Ask only material product decisions blocking the current
+feature,ONE AT A TIME;once answered,continue implementation without renewed coding permission.
+Later-feature questions wait for their dependency. Routine technical choices are delegated.
+Existing independent/native/device/release qualification requirements remain;no agent launch,
+new automation or release/public distribution authority is inferred.
+WORLD_SCALE_CONFIRMED2026-11-04:director selects6continents/6countries/12major cities,
+with distinct regional identities and one persisted development world reused across tests.
+Earlier proposed scales are superseded. Continue implementation through main without reprompting.
+
+RS-PLAY-001B IMPLEMENTED_PARTIAL2026-11-04:app.client --world now launches the shared
+fixed-world Tk map (app/world_client.py). Shows6continents/12cities/12road-sea routes;
+real click selects public geography/country livelihood/export/need without travel or mutation.
+Actual Tk4PASS0.70s after callback-ownership repair;prior combined world/rulebook/client90PASS
+17.43s. Both scoped Ruff/format3/strict293/import3+1PASS;final callback edit then scoped Ruff,
+strict293/Tk4PASS. Fixed runtime tk.Event annotation evaluation via future annotations.
+Single canvas click binding avoids accumulating Tcl callbacks on redraw. No main publication.
+NEXT:registered travel,world state persistence and full play;parent D01-D07 remains active.
+TRAVEL_DECISION_CONFIRMED2026-11-04:director chooses a hybrid:default direct walking;
+carriage/train/other special transport uses time-summary journeys with interruptions.
+The previous question is answered;no travel-mode blocker remains.
+
+CURRENT_WORK_BRANCH2026-11-04:codex/world-social-play-20261104;intermediate local
+checkpoint only,not complete/main publication. Final related149PASS22.06s (Tk warnings as
+errors),Ruffboth/strict316/format10/import3+1PASS. No live-provider/full regression claim.
+
+RS-PLAY-001E LOCAL_PARTIAL2026-11-04:living bundle extends timed world with14registered
+components (traveler,inventory,12settlements). Only start detail exists initially;POST_TICK
+materializes actual destination on arrival in same COMMIT as visit/location. Saved resident
+work hours/place/personality definitions survive slots/restart. Current activity derives
+from saved schedule and logical day08:00origin;this is ordinary baseline routine,not an
+incident response or complete NPC cognition. Inventory is real persisted gold0/emptyitems,
+no invented starting grant. Nonmodal inventory displays it and retains slow clock/ESC.
+Combined newpopulation+actualGUI27PASS5.04s;all-sourceRuffboth/strict316/import3+1PASS.
+Default GUI working path tmp/world-living-play/game.sqlite isolates earlier prototype pins.
+INCIDENT_CONFIRMED2026-11-04:director accepts first supply-disruption/intervention example
+and delegates the better test approach. Keep fixed world/representative incident regression;
+also vary timings/duration/affected-place seeds deterministically with no per-test AI calls.
+Do not fabricate unsupported other incident mechanics. NEXT:registered supply disruption,
+NPC changed activity,delivery request/confirmation/resources/reward,then live dialogue/social
+memory/local2D/transport and final evidence/main. Parent goal remains ACTIVE;not DONE.
+
+RS-PLAY-001D GUI_PARTIAL2026-11-04:100ms timer now drives SlowClock and recorded waits
+through timed WorldWorker/DurableSession. ESC overlay blocks new actions/freezes accrual;
+map stays slow-idle. AI-wait lifecycle hook excludes its interval (live provider not wired).
+Physical action processing excludes idle double charge. Prior idle batches flush before
+queued user input;pause/resume during a pending wait preserves that input. Stable per-time
+request keys retain exact command identity across uncertain SQLite commit/recovery and
+postcommit acknowledgement failures;retry control remains available,not a new time charge.
+Worker uses timed bundle;GUI default tmp/world-time-play/game.sqlite preserves original
+foot-only working files. Timer/poll handles are owned/cancelled on root destruction.
+Combined134PASS20.17s before final deferred-resume guard;final actualTk12PASS3.17s after guard.
+Strict310/all-sourceRuffboth/format3/import3+1PASS at final source. No processes left running.
+INCOMPLETE:inventory has no authoritative items yet,so no fake empty inventory panel was added.
+D05 inventory path,live AI waiting,local2D travel/transport,NPC routines/social/action flows,
+full regression,shown gameplay artifact and main delivery remain. Next:actual resident/routine
+state and player inventory,then integrate panel and live conversation. Parent remains ACTIVE.
+
+FINAL_001C_LOCAL2026-11-04:combined111PASS18.22s with Tk unraisable warnings promoted to
+errors. Earlier111PASS25.38s had one main-thread Tcl Variable GC warning;repaired owned GUI
+fixture teardown with main-thread gc.collect(),no production/test suppression. Final typed
+keyboard guard strict303/Tk7PASS2.01s. All-source Ruffboth passed before final keyboard type
+and fixture-GC edits;final scoped quality/format12PASS. Imports3+1/pipPASS. No process remains.
+No provider calls,full regression,transport,time/AI/main publication acceptance claimed.
+Next safe work:world clock (action vs slow-idle vs AI wait vs ESC),then actual stored resident
+routines and social/conversation integration. Do not re-ask travel model or world size.
+
+RS-PLAY-001C IMPLEMENTED_PARTIAL2026-11-04:registered world-foot-v1 bundle now uses shared
+turn admission/engine/reducer/COMMIT/state IO/DurableSession;no new simulation kernel.
+One step1m/1logical second is initial tuning. Mid-road progress/reverse/exact arrival/visited
+IDs/sea rejection/retry/stale revision/replay/restart/slots tested. Tk world window now uses
+single-owner background worker,walk buttons/road arrow keys,visible local road,save/load;
+errors leave polling/next command usable. Atomic current-file reference resumes private loaded
+progress after restart rather than the old root save. Source slots remain separate.
+Combined55PASS3.73s;final keyboard actualTk7PASS1.72s;strict303/Ruffboth/import3+1/pip PASS
+before final keyboard-only edit. Final whole scoped acceptance still needs rerun after edits.
+First bootstrap event-policy error repaired with real committed-state WalkCue presenter.
+New slot test initially assumed protocol branch-ID change;existing contract uses private
+working-file/token replacement,so corrected independent assertion to that actual contract.
+Parent remains IN_PROGRESS:local 2D movement/exploration,transport,time/ESC/inventory,
+NPC routine/event simulation,live conversation/social/action semantics and final GUI/save/
+replay/full regression/publication remain. NEXT:time/clock + integrated NPC routine state;
+no new question unless a current gameplay contract materially blocks implementation.
+
+
+RS-PLAY-001A HISTORICAL_FOUNDATION2026-11-04:domain/world.py and app/world_catalog.py now
+load the persisted content/worlds/development-world-v1.json (6/6/12). Six original regional
+premises,12connected cities,road/sea geography validation and deterministic local resident/site
+definitions. Default CLI and ordinary tests reuse the file;zero provider calls. Actual CLI
+shows the loaded city/residents/neighbors. New20+engineering10PASS1.22s;both scoped Ruff,
+format3,strict291PASS;imports3+1PASS before final geography-only validation change. Default
+generate+validate0.000267s,not a gameplay or LLM latency claim. First mypy3andquality2failures
+repaired without suppression. No GUI/travel/simulation/live dialogue/save integration yet.
+Continue with registered world travel and durable state;do not declare parent complete or
+publish this foundation as the requested playable feature. All current changes remain local.
+Supported native goal is ACTIVE for D01-D07 through ordinary main delivery;no new automation.
+
+Current implementation entry:[RS-PLAY-001](docs/work_orders/RS-PLAY-001_WORLD_SOCIAL_PLAY.md).
+The following2026-11-03 publication/review restrictions are historical and superseded for this
+implementation scope;they must not be used to block the newly authorized work.
+
 LATEST_PUBLICATION_SCOPE2026-11-03:branch upload only;director says merge can wait until home.
 Earlier main-merge authorization is superseded for this delivery. Work is on
 `codex/product-alignment-clarification-20261103`,[PR33](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/33),
 not main. Do not auto-merge after CI or auto-sync main;an explicit later merge instruction is required.
 Use this remote branch on the other computer to recover the session documents before reviewing them.
 
-NEXT_FIRST RS-PLAN-001 WAITING_FOR_DIRECTOR_START2026-11-03:when the director next says
-"next task",begin product decision clarification before any implementation. Ask ONE decision
-at a time with a recommended answer,concrete gameplay examples and alternatives/effects;reuse
-prior answers and record confirmed decisions. [BACKLOG](BACKLOG.md#current-delivery) owns scope.
-Do not ask now or auto-start;this planning task grants no coding authority even after answers.
-The director now adopts [material-ambiguity policy](docs/CLARIFICATION_POLICY.md),linked from
-ENGINEERING_RULES Preflight. Current separate request authorizes branch upload only under the
-latest scope above;no main merge,broader development or stopped desktop resume.
-Local rule/boundary31PASS7.42s;rulebook550words. [Delivery input](docs/reviews/PRODUCT_ALIGNMENT_DELIVERY_2026-11-03.md)
-records scope and evidence;actual PR/jobs/refs own publication. Do not start RS-PLAN-001 during publication.
+RS-PLAN-001 IN_PROGRESS2026-11-04:the director requested next work and confirmed D01
+option1,world-wide structure plus detailed starting area. [MASTER §0.4](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03)
+owns D01-D07. D02:progressive elaboration within the large framework. D03:distant aggregate
+flows/nearby individuals,with ordinary residents following stored-data routines unless relevant
+events change them;no requirement to step every distant action. [BACKLOG](BACKLOG.md#current-delivery) owns task status. Continue ONE decision
+at a time with recommendation,gameplay example and alternatives. D04 now confirmed:normal
+action/speech duration,real-time1/10 during idle/read/think/type,AI-response wait excluded,
+no double counting. D05:ESC explicit pause fully stops time;inventory/map retain real-time1/10.
+MASTER §2.4 owns timing. D06:explicit confirmation of concrete supported conversation actions,
+with conditions revalidated at execution;MASTER §2.5 owns the flow. D07:submitted speech
+can create NPC reaction/memory without a second confirmation;claims/beliefs/facts stay distinct
+and D06 execution confirmation remains. MASTER §2.6 owns it. Historical unanswered question:NPC intentional deception,deferred until needed;
+initial world size is now confirmed6/6/12;
+other timing boundaries remain unsettled. D03 cadence/detail transitions/important-NPC exceptions remain open. Scale/loading/dialogue/failure contracts remain open.
+Planning-only and main-merge holds are now superseded by IMPLEMENTATION_AUTHORITY above.
+Implement D01-D07 after current blocking answers;do not ask for renewed coding permission.
+Entry2026-11-04:fresh fetch succeeded;HEAD9fdb95e matched remote task branch,clean before
+planning edits. GitHub PR33 open/unmerged;PR32 merge3f84796 is present in ancestry. F99's older
+publication-pending note below is stale;no fresh CI/full/local-main qualification is inferred.
 
 DIRECTOR_ALIGNMENT2026-11-03:current session is product/design/implementation review only.
 Read [MASTER §0.4](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03):autonomous

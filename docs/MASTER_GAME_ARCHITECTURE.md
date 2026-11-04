@@ -2,10 +2,11 @@
 
 Purpose: canonical product requirements. Engineering constraints: [v2.6 prompt](ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md).
 Format: structured English for all AI-facing material;only essential human-facing notices/decisions/actions in concise Korean. No parallel Korean technical translation;preserve Korean player/source data. The director-authorized [Korean game progress companion](../GAME_SYSTEM_SUMMARY_KO.md) is a human-facing exception and follows the prompt's **Korean Game Progress Companion** rule. Follow the prompt's **AI Documentation Format** rule.
-Updated: 2026-11-03 (director clarification in §0.4). Requirements recorded; no production implementation authorization in this review session.
+Updated: 2026-11-04 (director decisions in §0.4 and implementation authorization below). Requirements are not runtime-completion evidence.
 
 ## Current Project Overrides
 
+- Director implementation authorization2026-11-04 supersedes this session's earlier planning-only and branch-only restrictions:implement confirmed D01-D07 through actual playable behavior,verification and integration,then ordinary protected-main publication. Ask only blocking material product decisions one at a time;continue coding without repeated permission once answered. Historical review-only/no-coding statements below describe the earlier decision-recording stage,not a current prohibition. Individual new schemas/contracts must still be specified and verified before implementation. No gameplay completion is claimed by this authorization.
 - Workspace: `C:\ReverieSaga`. Reference: `C:\Quilltale`, read-only.
 - GPT-6.1 Sol owns architecture, all simple/complex coding, tests, diagnosis/repair, integration, and technical review. Astra: advice only when Sol is blocked; never mandatory. Earlier Sol/Luna split is superseded.
 - Historical `ASTRA_...` filename preserves links, not model authority. Documents do not change the app model or launch agents.
@@ -56,7 +57,17 @@ This clarification supersedes conflicting optional-dialogue or generation-window
 - Highest-priority experience:a world and NPC society that change autonomously,player intervention,and later encounters with the consequences. The director may stop and redirect development after inspecting results.
 - Live free-form conversation reflecting each NPC's own memories and personality is a core requirement,not an optional prepared-dialogue experiment. Validated prepared lines alone do not complete it. LLM speech cannot directly overwrite objective world facts,damage,rewards or authoritative state;accepted dialogue/context must remain traceable and replay must not call a live provider.
 - On pressing Play,the player expects a world-wide baseline already established to some degree. Subsequent player actions change the world and guide its further expansion. A starting-room-only world does not meet this requirement. This does not require every distant entity or visual detail to be materialized/simulated at full resolution.
-- Exact initial world coverage/detail,generation timing/loading budget,NPC dialogue latency/provider/failure behavior,and the rules for consistent expansion remain unresolved design contracts. No numeric scale,zero-second generation claim,new formula,or API policy is inferred from these answers.
+- RS-PLAN-001 D01 confirmed2026-11-04:the director selected option1,world-wide structure plus detailed starting area. Establish countries,major cities,roads and faction relationships before play;materialize local residents,buildings and incidents as areas become relevant,consistent with established facts. A distant trade city already exists on the map and can be affected by disrupted trade before the player visits. This settles the initial breadth/detail strategy;it does not require all distant residents or facilities to be generated at startup.
+- RS-PLAN-001 D02 confirmed2026-11-04:the director selected option1 and clarified that the large-scale structure is prepared first;smaller-scale structures and details of the large-scale structure become concrete as play progresses. Later elaboration may establish small settlements,caves,ruins and local settings within the existing framework,consistent with established geography,history and committed events. Elaboration is distinct from an actual world-changing event;the framework may change through gameplay consequences rather than being silently rewritten during elaboration. These examples specify permitted scope,not mandatory content or population targets.
+- RS-PLAN-001 D03 confirmed2026-11-04:the director chose a hybrid of coarse distant simulation and detailed nearby individual simulation. Ordinary residents follow recurring routines grounded in their stored data;without a relevant event,their daily activities remain broadly similar. Relevant events may change those routines. Distant regions retain autonomous aggregate developments;nearby regions resolve individual behavior in detail. Stored resident data and established consequences constrain both levels. This does not require stepping every distant resident through every action. Exact update cadence,detail-transition boundaries,event eligibility and any special treatment of important NPCs remain implementation/design contracts to settle,not inferred numeric rules.
+- RS-PLAN-001 D04 confirmed2026-11-04:the director approved action/utterance duration plus slow idle time,excluding AI-response waiting. [Time flow](#24-time-flow--director-decision-2026-11-04) owns the rules and remaining implementation details.
+- RS-PLAN-001 D05 confirmed2026-11-04:ESC explicit pause completely stops game time;inventory and map views retain the D04 one-tenth idle progression. See §2.4.
+- RS-PLAN-001 D06 confirmed2026-11-04:the director chose explicit confirmation of supported gameplay actions proposed through conversation. [Conversation action confirmation](#25-conversation-action-confirmation--director-decision-2026-11-04) owns the flow and limits.
+- RS-PLAN-001 D07 confirmed2026-11-04:submitted dialogue is speech actually delivered to the NPC;social response and memory do not require a second confirmation. [Speech consequences](#26-speech-consequences--director-decision-2026-11-04) owns the distinction from D06 action execution.
+- RS-PLAY-001 world scale confirmed2026-11-04:6continents,6countries,12major cities,with clearly distinct regional characteristics. Generate and retain one development world for ongoing tests;do not regenerate AI setting text on every run. This supersedes earlier proposed numeric profiles.
+- RS-PLAY-001 travel decision confirmed2026-11-04:direct walking is the default;special transport such as carriage or train uses time-summary journeys with interruptions. Neither world-map inspection nor selecting a destination is on-foot teleportation. Particular transport implementations and balance remain separate from this chosen interaction model.
+- RS-PLAY-001 first incident confirmed2026-11-04:the director accepts the proposed supply-disruption case and delegates the better testing approach. Preserve a fixed reusable world and representative regression while exercising deterministic variants of supported incidents;do not require fresh AI content generation for each test. Detailed balance and implementation contracts belong to the bounded incident order.
+- Remaining local density,generation timing/loading budget,NPC dialogue latency/provider/failure behavior,and detailed rules for consistent expansion remain unresolved design contracts. No numeric world scale,zero-second generation claim,additional formula,or API policy is inferred beyond the expressly confirmed D04 time-flow rule.
 - This session remains an alignment review. Existing bounded features retain their original acceptance;world generation,personality-driven live conversation and broad social causality remain unimplemented as product capabilities. Existing publication/native/release holds are not waived.
 
 ## 1. Game Vision
@@ -106,7 +117,44 @@ Brain domain types MUST NOT depend on client SDK types.
 
 Keyboard/gamepad/UI → client mapping → typed GameCommand.
 Examples: Attack, Skill, Guard, Item, Move, Interact, Talk, Inspect, Travel.
-Free-form NPC conversation input stays outside authoritative simulation. Any supported gameplay action proposed through conversation must map to the same typed command/validation boundary;natural-language control of other gameplay is optional.
+Raw free-form NPC conversation input stays outside authoritative rule execution. Accepted speech duration and elapsed idle time affect the world through the validated time-advancement boundary (§2.4);LLM prose does not directly mutate world state. Any supported gameplay action proposed through conversation must map to the same typed command/validation boundary;natural-language control of other gameplay is optional.
+
+### 2.4 Time Flow — Director Decision 2026-11-04
+
+RS-PLAN-001 D04;approved product behavior,not implemented runtime acceptance.
+
+- Movement,interaction and speech advance game time by their in-world duration. Resolve each action or utterance turn with its own duration;turns need not have equal duration.
+- For player speech,use the submitted utterance's character count to determine speaking duration. For NPC speech,use utterance length and speaking rate. A longer utterance takes more time at the same speaking rate. This is speaking time,not the player's real reading or typing time;no AI semantic classification of conversation importance is required to assign duration.
+- While the player is idle,reading,thinking or composing input,game time advances at one tenth of real elapsed time:10 real seconds equal1 game second.
+- ESC explicit pause stops game time completely. Merely opening the inventory or map does not pause the world:these views advance at the one-tenth idle rate. This decision does not settle background/unfocused-app behavior or combat-specific menu rules.
+- Time spent waiting for an AI response is excluded from game-time advancement,including the slow-idle contribution. Provider latency must not consume world time.
+- Count each interval once:normal action/speech duration and slow-idle progression must not both charge for the same interval. World/NPC activity and delayed consequences advance consistently with the resulting game time.
+- Illustrative arithmetic:NPC speech lasting10 game seconds,followed by20 real seconds of player thought,followed by player speech lasting3 game seconds,advances15 game seconds. An intervening AI-response wait adds zero. These speech durations illustrate accounting,not fixed dialogue costs.
+- Still unresolved:exact character-count and speaking-rate rules,action durations,clock precision/rounding,streamed-response phase boundaries,other menu/background behavior,combat timing integration and implementation/persistence/replay contracts. Preserve deterministic authoritative execution;record accepted time inputs for replay rather than consulting the live wall clock during replay. No save-format or runtime change is authorized by this product decision alone.
+
+### 2.5 Conversation Action Confirmation — Director Decision 2026-11-04
+
+RS-PLAN-001 D06;approved product behavior,not implemented runtime acceptance.
+
+- Free-form conversation may negotiate supported transactions,quest acceptance,item transfers or hiring. Discussion or an NPC's spoken agreement alone does not execute these actions.
+- Once a concrete supported proposal exists,show an action summary alongside the dialogue:the actual payment/items,objective or destination and applicable conditions,with explicit execution,continued-negotiation and refusal choices. Prefer an inline dialogue choice over a separate popup;not every utterance requires a confirmation.
+- Example only:an NPC agrees to guide the player to a mine entrance for100gold,excluding combat support. Show those terms and an explicit pay-and-hire choice before transferring money or creating the hire. Names,price and available mechanics are illustrative,not adopted content or balance.
+- Only supported,validated game actions and conditions may be offered for execution. LLM prose cannot invent executable rewards,resources or mechanics. Explicit confirmation crosses the existing typed command/validation boundary.
+- At execution,revalidate current resources,NPC availability and other applicable conditions. If circumstances have changed,explain why execution cannot proceed;do not claim a payment or accepted hire that did not occur. Successful execution commits the applicable state and persistence through the authoritative path.
+- Reading or considering the action summary uses the D04 one-tenth idle progression;ESC pause and AI-response waiting retain their existing exceptions.
+- Confirmation controls transaction/action execution,it does not erase words already spoken. D07 (§2.6) permits social response and memory from speech itself without an additional confirmation;exact social rules remain to be designed. Not confirming a proposed transaction is not retroactive withdrawal of speech.
+- Exact supported action set,proposal lifecycle/expiry,formal promise semantics and implementation/storage/replay contracts require bounded implementation orders. No runtime or save-format change is authorized by this product decision alone.
+
+### 2.6 Speech Consequences — Director Decision 2026-11-04
+
+RS-PLAN-001 D07;approved product behavior,not implemented runtime acceptance.
+
+- Submitting an utterance delivers it as player speech. No second confirmation is required before the addressed NPC can hear,react to or remember it,including insults,disclosed secrets,claims and informal promises.
+- Responses depend on the NPC's personality,own knowledge,relationship/trust and context. A statement does not guarantee a fixed attitude penalty,belief change or rumor. Exact interpretation and social-effect rules require later contracts;LLM prose cannot directly overwrite authoritative state.
+- Preserve the difference between an utterance received,a belief held and an objective world fact. Hearing the player accuse a mayor of theft does not establish that the theft actually occurred. Depending on context,the NPC may doubt,ask for evidence,believe or later relay the claim;these are illustrative possibilities,not mandatory outcomes.
+- A later correction or claim that the remark was a joke is further speech,not deletion of what was heard. Interpretation must account for context,including quotation,hypotheticals,jokes and retractions;do not automatically treat each mentioned proposition as an assertion.
+- An informal promise may create personal expectation or memory without accepting a formal quest. Actual payment,item transfer,hiring and formal quest acceptance retain D06 explicit action confirmation and authoritative validation. Declining an action proposal does not erase its preceding conversation.
+- This decision does not settle NPC intentional deception,rumor transmission rules,memory retention,numeric social effects or formal obligation mechanics. It introduces no unrestricted natural-language action execution and no runtime/save-format change.
 
 ## 3. Determinism & Causality
 
