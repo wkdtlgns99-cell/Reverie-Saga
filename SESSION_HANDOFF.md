@@ -21,6 +21,9 @@ CI waiting,do not merge or update main. This overrides the preceding one-more-fe
 request for this checkpoint. Parent goal must pause after Draft publication,not complete.
 Current branch:codex/live-npc-conversation-20261104;baseline main6b12f51includes mergedPR34
 and its PR33ancestors. Both FCI runs each3891full/31boundaryPASS;tested/merged trees equal.
+Uploaded as [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial
+checkpointffd67f1;left unmerged as requested,before17:49KST. At home fetch/checkout this
+branch and read the current BACKLOG/Gcheckpoint;do not start from main alone or re-ask answers.
 
 Gimplemented:registered own speech/history,exact codepoint speech time/16scontinuations,
 snapshot/slot/restart/replay,own-only bounded retrieval,context/proposal revalidation,

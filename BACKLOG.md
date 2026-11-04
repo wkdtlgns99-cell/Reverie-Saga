@@ -17,7 +17,7 @@ RS-PLAY-001F already merged viaPR34at6b12f51;parent D01-D07 remains incomplete.
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
-| RS-PLAY-001G | CHECKPOINT / INCOMPLETE / DRAFT_PR_ONLY | Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
+| RS-PLAY-001G | DRAFT_PR35 / INCOMPLETE / MERGE_HELD | [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial checkpointffd67f1. Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
