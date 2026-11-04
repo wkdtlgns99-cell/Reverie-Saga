@@ -9,7 +9,9 @@ from app.world_registry import world_bundle
 from app.world_time_registry import timed_world_bundle
 from app.world_population_registry import population_world_bundle
 from app.world_supply_registry import supply_world_bundle
+from app.world_conversation_registry import conversation_world_bundle
 from contracts.messages import CommandPayload
+from contracts.skeleton import FeatureBundle
 from contracts.persistence import DurableCheckpoint
 from contracts.turn import GameCommand, ProtocolSnapshot, StreamCursor
 from contracts.world_travel import Footstep
@@ -20,6 +22,24 @@ from domain.world import WorldCatalog, elaborate_place
 from domain.world_population import InventoryRecord, InventoryState, SettlementRecord
 from domain.world_travel import WORLD_ACTOR, TravelState, TravelerRecord
 from domain.world_supply import SupplyRecord, SupplyScenario, SupplyState
+from domain.world_conversation import ConversationRecord, ConversationState
+
+
+def _bundle(
+    world: WorldCatalog,
+    *,
+    timed: bool,
+    living: bool,
+    supply: SupplyScenario | None,
+    conversation: bool,
+) -> FeatureBundle:
+    if conversation:
+        return conversation_world_bundle(world, supply or SupplyScenario())
+    if supply is not None:
+        return supply_world_bundle(world, supply)
+    if living:
+        return population_world_bundle(world)
+    return timed_world_bundle(world) if timed else world_bundle(world)
 
 
 def world_checkpoint(
@@ -28,14 +48,9 @@ def world_checkpoint(
     timed: bool = False,
     living: bool = False,
     supply: SupplyScenario | None = None,
+    conversation: bool = False,
 ) -> DurableCheckpoint:
-    bundle = (
-        supply_world_bundle(world, supply)
-        if supply is not None
-        else population_world_bundle(world)
-        if living or supply is not None
-        else (timed_world_bundle(world) if timed else world_bundle(world))
-    )
+    bundle = _bundle(world, timed=timed, living=living, supply=supply, conversation=conversation)
     io = state_io((bundle,))
     identifier = (
         "w1-"
@@ -54,7 +69,7 @@ def world_checkpoint(
     components: tuple[ComponentRecord, ...] = (
         TravelerRecord(WORLD_ACTOR, TravelState(first, "", 0, (first,))),
     )
-    if living or supply is not None:
+    if living or supply is not None or conversation:
         components = tuple(
             sorted(
                 (
@@ -70,10 +85,17 @@ def world_checkpoint(
                 key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
             )
         )
-    if supply is not None:
+    if supply is not None or conversation:
         components = tuple(
             sorted(
                 (*components, *(SupplyRecord(EntityId(p.id), SupplyState()) for p in world.places)),
+                key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
+            )
+        )
+    if conversation:
+        components = tuple(
+            sorted(
+                (*components, ConversationRecord(WORLD_ACTOR, ConversationState())),
                 key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
             )
         )
@@ -99,18 +121,19 @@ def open_world_session(
     timed: bool = False,
     living: bool = False,
     supply: SupplyScenario | None = None,
+    conversation: bool = False,
 ) -> DurableSession:
     bundles = (
-        supply_world_bundle(world, supply)
-        if supply is not None
-        else population_world_bundle(world)
-        if living or supply is not None
-        else (timed_world_bundle(world) if timed else world_bundle(world)),
+        _bundle(world, timed=timed, living=living, supply=supply, conversation=conversation),
     )
     if path.exists():
         return resume_durable(path, bundles=bundles)
     return create_durable(
-        path, world_checkpoint(world, timed=timed, living=living, supply=supply), bundles=bundles
+        path,
+        world_checkpoint(
+            world, timed=timed, living=living, supply=supply, conversation=conversation
+        ),
+        bundles=bundles,
     )
 
 

@@ -14,7 +14,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 CONFIG = PROJECT_ROOT / "pyproject.toml"
 RUNTIME_CONFIG = PROJECT_ROOT / ".importlinter-runtime.toml"
 ROOTS = ("app", "adapters", "orchestration", "engines", "contracts", "domain")
-ENGINE_MODULES = ("skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work", "npc_cycle")
+ENGINE_MODULES = (
+    "skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work", "npc_cycle",
+    "world_travel", "world_time", "world_population", "world_supply", "world_conversation",
+)
+WORLD_ENGINE_MODULES = (
+    "world_travel", "world_time", "world_population", "world_supply", "world_conversation",
+)
 CONTRACT_NAMES = (
     ("rs-layers", "Reverie Saga six internal layers"),
     ("rs-engines-independent", "Reverie Saga concrete engine modules are independent"),
@@ -252,7 +258,25 @@ def test_dependency_sibling_runtime_cycle(
     assert f"No cycles are allowed in {package}." in results[1].stdout, results[1].stdout
 
 
-@pytest.mark.parametrize("missing", ("adapters", "engines.watch"))
+@pytest.mark.parametrize("module", WORLD_ENGINE_MODULES)
+@pytest.mark.parametrize("reverse", (False, True), ids=("forward", "reverse"))
+def test_dependency_world_engine_independence(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, module: str, reverse: bool,
+) -> None:
+    _tree(tmp_path)
+    source, target = ("quest", module) if reverse else (module, "quest")
+    (tmp_path / f"engines/{source}.py").write_text(
+        f"import engines.{target}\n", encoding="utf-8",
+    )
+    results = _run_probe(tmp_path, monkeypatch)
+    _expect(results, Probe("world-engine", (), 1, "rs-engines-independent"))
+    assert f"engines.{source}" in results[0].stdout, results[0].stdout
+    assert f"engines.{target}" in results[0].stdout, results[0].stdout
+
+
+@pytest.mark.parametrize("missing", ("adapters", "engines.watch", *(
+    f"engines.{module}" for module in WORLD_ENGINE_MODULES
+)))
 def test_dependency_missing_required_input(
     tmp_path: Path, monkeypatch: pytest.MonkeyPatch, missing: str,
 ) -> None:
@@ -262,7 +286,7 @@ def test_dependency_missing_required_input(
         (tmp_path / "adapters/port.py").unlink()
         (tmp_path / "adapters").rmdir()
     else:
-        (tmp_path / "engines/watch.py").unlink()
+        (tmp_path / (missing.replace(".", "/") + ".py")).unlink()
     results = _run_probe(tmp_path, monkeypatch)
     output = "\n".join(result.stdout + result.stderr for result in results)
     assert any(result.returncode != 0 for result in results), output
@@ -287,6 +311,8 @@ def test_dependency_configuration_keeps_type_and_runtime_scopes() -> None:
     assert forbidden["forbidden_modules"] == list(FORBIDDEN_ROOTS)
     assert forbidden["allow_indirect_imports"] is False
     assert forbidden["as_packages"] is True
+    independent = next(c for c in inclusive["contracts"] if c["id"] == "rs-engines-independent")
+    assert independent["modules"] == [f"engines.{module}" for module in ENGINE_MODULES]
 
 
 def test_dependency_actual_source_graph(

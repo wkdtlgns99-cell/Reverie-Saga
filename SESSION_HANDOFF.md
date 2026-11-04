@@ -15,21 +15,40 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-LATEST_STOP_BOUNDARY2026-11-04:director says finish ONE feature and stop. Finish
-RS-PLAY-001F supply slice with ordinary CI/PR/main synchronization,then pause the parent
-goal. Do not start live dialogue/local2D/transport. Current supply implementation and
-evidence:[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md). Root earlier NEXT
-entries are superseded by this boundary. Parent D01-D07 remains incomplete.
+LATEST_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,ordinary
+protected merge and local-main synchronization,then remaining settled backlog work.
+This supersedes the earlier upload-only pause. Current actual checkout C:/Reverie Saga;
+branch codex/live-npc-conversation-20261104,entry head a4851050,remote main6b12f51.
+CI41801640562failed:synthetic dependency fixture lacks five registered world engines;
+local allowed-dag reproduces missing engines.world_travel. Repair/qualification in
+[PR35order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
+Foundation merge is separate from unfinished Gworker/UI/provider acceptance.
+Goal tool now ACTIVE for requested PR/main and settled backlog work;no agent/native/
+independent/device/release waiver. Ask the next material product question after its
+settled prerequisites;do not re-ask confirmed answers.
 
-RS-PLAY-001F LOCAL_IMPLEMENTED2026-11-04:all12cities have registered supply aggregates;
+Gimplemented:registered own speech/history,exact codepoint speech time/16scontinuations,
+snapshot/slot/restart/replay,own-only bounded retrieval,context/proposal revalidation,
+cancellable one-attempt Gemini adapter and explicit runtime spacing0/preparation default60s.
+Confirmed new answers:failed reply preserves speech/time with retry-or-continue;runtime
+one call per explicit send/retry,provider errors exposed,no automatic paid/key fallback.
+Final affected84PASS8.99s,Ruffboth/format15/strict334/import3+1/pip PASS. Actual provider
+one attempt GENERATION_TIMEOUT;no live NPC reply accepted. Current --world is still supply UI.
+No app/world_conversation_worker.py or dialogue panel exists yet;do not mistake contract
+plans/protocol methods for completed wiring. [Gcheckpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md)
+owns exact progress/failures/resume actions. [BACKLOG inventory](BACKLOG.md#session-decision-and-implementation-inventory--2026-11-04)
+records ALL session decisions and completed/unfinished boundaries. Credentials/private saves
+remain ignored/local;the failed qualification save is not uploaded. The latest director instruction explicitly resumes this remaining work after PR35delivery.
+
+RS-PLAY-001F MERGED_PR34_MAIN6b12f51:all12cities have registered supply aggregates;
 starting disruption changes real stock and saved resident activities. Confirmed offer
 accept/collect/deliver consumes2crates and pays5from city treasury exactly once. Strict
 conservation/checkpoint/expiry/current-reach validation,slot/restart/replay and uncertain
 SQLite/presentation-ack retry verified. Default world GUI tmp/world-supply-play/game.sqlite.
 Final combined171PASS33.05s;finalGUI18PASS13.04s after acknowledgement/two-row repair;static324,
 Ruffboth/import3+1/pip PASS. Final offer-boundary repair:36affectedPASS16.54s/Ruffboth/
-strict324PASS;171earlier evidence reused for unchanged inputs. Required final CI/publication
-still pending at this entry. Actual manual accept/two-collection/delivery/5gold/stock recovery
+strict324PASS;171earlier evidence reused for unchanged inputs. Final CI and publication
+completed throughPR34;both3891full/31boundaryPASS. Actual manual accept/two-collection/delivery/5gold/stock recovery
 observed;user-facing captures in ignored tmp/rs-play-001-visual-final/.
 
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
@@ -56,8 +75,8 @@ TRAVEL_DECISION_CONFIRMED2026-11-04:director chooses a hybrid:default direct wal
 carriage/train/other special transport uses time-summary journeys with interruptions.
 The previous question is answered;no travel-mode blocker remains.
 
-CURRENT_WORK_BRANCH2026-11-04:codex/world-social-play-20261104;intermediate local
-checkpoint only,not complete/main publication. Final related149PASS22.06s (Tk warnings as
+HISTORICAL_F_BRANCH:codex/world-social-play-20261104;later merged throughPR34/main6b12f51.
+Earlier intermediate evidence only:related149PASS22.06s (Tk warnings as
 errors),Ruffboth/strict316/format10/import3+1PASS. No live-provider/full regression claim.
 
 RS-PLAY-001E LOCAL_PARTIAL2026-11-04:living bundle extends timed world with14registered

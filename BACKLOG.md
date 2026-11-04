@@ -8,13 +8,61 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-LATEST_STOP_BOUNDARY2026-11-04:director says finish ONE feature and stop. Finish
-RS-PLAY-001F supply slice with ordinary CI/PR/main synchronization,then pause the parent
-goal. Do not start live dialogue/local2D/transport. Parent D01-D07 remains incomplete.
+LATEST_DELIVERY_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,
+ordinary protected merge and local-main synchronization,then the remaining previously
+confirmed backlog implementation. Complete settled work before asking the next material
+product decision;execute dependent work after the answer. Earlier PR-only pause is superseded.
+Current checkout C:/Reverie Saga. No agents/native/device/independent/release waiver.
+[PR35verification order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
+PR35foundation acceptance does not complete the unfinished Gworker/UI/provider feature.
 
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
-| RS-PLAY-001F | LOCAL_ACCEPTED;Git/PR owns publication status | Fixed-world supply shortage changes stock/NPC activities;confirmed accept/collect/deliver conserves cargo/treasury,rewards once;expiry/stale terms,retry/save/restart/replay and seeded off-screen variants. Related171PASS33.05s;final boundary repair36affectedPASS16.54s/static324/import3+1/pip PASS. [Receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
+| RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
+| RS-PLAY-001G | PR35_VERIFICATION / FEATURE_INCOMPLETE | [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial checkpointffd67f1. Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
+
+### Session decision and implementation inventory — 2026-11-04
+
+This is the reconciled inventory requested by the director,not a new execution order.
+Confirmed choices must not be re-asked. Product SSOT:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03).
+
+| Decision / question | Confirmed answer | Actual implementation / remaining boundary |
+|---|---|---|
+| D01 initial breadth,option1 | World-wide structure plus detailed starting area before play | Main:connected6continents/6countries/12major cities;starting city's details exist. Complete faction relations/loading qualification remain |
+| D02 elaboration,option1 | Large framework first;small places/details become concrete consistently during play | Main:saved destination residents/sites materialize on actual arrival. Caves/ruins/additional small settlements and broad historical consistency remain |
+| D03 simulation,between1and2 | Distant aggregate flows,nearby individuals;ordinary saved-data routines until relevant events | Main:12city supply aggregates plus4saved nearby residents,schedules and shortage overrides. Fine local movement,regional economy/factions/rumors and broader cognition remain |
+| D04 time | Actions/utterance duration;idle/read/think/type at real-time1/10;AI waiting excluded;no overlapping charge | Main:footstep/action duration and slow-clock/AI-wait hook. Gcheckpoint:codepoint/rate speech durations and16ssegments. Actual provider-wait/UI integration remains;current idle resolution1s/fractional carry is session-only |
+| D05 menus,option1 | Only explicit ESC pause fully freezes;map/inventory retain1/10 | Main:actual Tk pause/map/inventory paths verified. Dialogue panel still to connect |
+| D06 action agreement,option1 | Concrete supported terms then explicit confirmation;revalidate current conditions | Main:accept/collect/deliver summary and confirmation with resources/deadline/retry. Gcheckpoint:typed live proposal validation;inline dialogue confirmation not wired |
+| D07 speech,option1 | Submitted words may cause response/memory without second confirmation;heard claim/belief/world fact remain distinct | Gcheckpoint:exact own utterances and accepted-reply provenance persist without resource effects. Live response/personality/recall,interpretation and UI need qualification. Numeric attitude/belief/rumor systems remain |
+| World size and token cost |6continents/6countries/12major cities,distinct regional identities;one saved development world reused | Main:fixed UTF8/LFcatalog reused without provider generation per test;deterministic definition/route variation tested |
+| Inter-city travel | Default direct walking;carriage/train/other special transport uses time-summary journey with interruptions | Main:metre-step road traversal and return/arrival/save. Local2D exploration and actual transport/interruption mechanism remain |
+| First incident / varying tests | Supply disruption accepted;executor chooses better test approach | Main:representative shortage,delivery repair/reward and deterministic timing/duration/place variants. Other incident types not fabricated or implemented |
+| AI response failure | Preserve delivered speech/time;retry only response or continue without reply | Confirmed this turn. Engine can leave an unanswered saved utterance and reject stale replies;runtime retry/continue controls not wired |
+| Runtime call cadence | One call per explicit send/retry,without preparation's artificial60s gap | Gcheckpoint:runtime spacing configurable0,prep default60s retained,one attempt/no auto retry,usage ledger. Actual provider limits still authoritative;no automatic paid fallback/key rotation |
+| NPC intentional deception | Earlier planning question unanswered | DEFERRED unless a later feature actually requires this decision;do not silently implement it |
+| Other turn-based-game comparisons | Reference/explanation requested,not adoption | No rule adoption is inferred from that research request |
+| Earlier planning-only and main holds | Superseded by explicit implementation/main instruction,then latest PR-only checkpoint | A–Fmerged. Latest explicit instruction resumes Gverification/merge and unfinished implementation |
+
+### Resume G at home — remaining concrete work
+
+1. Reuse the current branch/code/contracts;do not restart the product survey or regenerate the world.
+2. Implement `app/world_conversation_worker.py`:Say→ContinueSpeech segments→own context→one
+   provider call→NpcReply→remaining segments. Preserve exact pending command/generated reply
+   through uncertain COMMIT or acknowledgement failures;retry must not repeat player speech.
+3. Wire WorldWorker and a nonmodal NPC/free-text/transcript panel,reply retry/continue/cancel,
+   ESC/provider-wait/slow idle and inline supported SupplyAction confirmation. These files
+   are planned,not executable stubs. Current `--world` still runs the accepted supply UI.
+4. Finish pause/cancel/close/stale-attachment/long-speech/uncertain-save GUI tests;preserve
+   original input and already accepted speech. Pending speech after restart must finish once.
+5. Diagnose/qualify the actual provider TIMEOUT;then demonstrate two personas,own-memory
+   recall after restart and no unconfirmed reward. Keep model/usage/timing receipts sanitized.
+6. Complete final session audit/current progress,full required CI on the final head,ordinary
+   PR/main delivery under the latest explicit resume. Local2D/transport and full parent acceptance
+   stay outside this one feature. Existing independent/native/device/release holds remain.
+
+Historical chronological entries below retain their original evidence;the current inventory
+and latest delivery scope above supersede stale NEXT/ACTIVE/publication wording.
 
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
 restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through
@@ -1437,7 +1485,7 @@ old READY labels or historical permissions alone do not authorize implementation
 
 | ID / audit group | State | Required entry / remaining scope |
 |---|---|---|
-| RS-PLAN-001 | FIRST NEXT / WAITING_FOR_DIRECTOR_START | On next-task request,ask preimplementation product decisions one at a time with recommendation and gameplay examples;see Current Delivery. No coding authorization |
+| RS-PLAN-001 / RS-PLAY-001 | DECISIONS_RECORDED / IMPLEMENTATION_PARTIAL | See the reconciled Current Delivery inventory. A–Fsupply slice merged;Gconversation is an incomplete Draft checkpoint. Current instruction is PR-only then pause;do not restart answered planning questions or auto-merge |
 | D2 | OPEN,staged scope authorized | World/NPC/memory/retrieval beyond bounded quest/supply anchors;[audit](docs/reviews/OPEN_WORK_AUDIT_2026-10-14.md),[closure order](docs/work_orders/OPEN_WORK_CLOSURE_2026-10-14.md). F28communal work/F29work/F30calls/F31player statements accepted;F32compact dialogue display supported;F33work inspection and F40–44supply cycle/persistent own memory/client recovery accepted;F45saved/current own-memory comparison,F46cycle player recall,F47cycle self-activity retrieval and F48causal call links accepted. Regional cognition/relationships/economy remain open |
 | RS-V1-MIGRATION / D3 | IN_PROGRESS | 326 screened,6 descriptions imported,319 queued+1 rewrite. Artifact-specific rights,adaptation,new contracts/import validation required;[F06](docs/work_orders/QT-F06_NARRATIVE_IMPORT.md). No legacy mechanics/code/formulas/oracles/schema port |
 | RS-P1-GOV / D4 | IN_PROGRESS | GOV-01/02 DONE;[GOV-03manual command](docs/work_orders/RS-P1-GOV_03_CURRENT_IMPLEMENTATION.md) LOCAL_ACCEPTED:35methods/8sources/8traces/200inputs,full1897PASS. Further controls need current bounded orders;3s/all11/device/CI targets unqualified |

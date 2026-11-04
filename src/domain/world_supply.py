@@ -181,6 +181,38 @@ def supply_action(
     )
 
 
+def available_supply_operation(
+    state: SupplyState,
+    inventory: InventoryState,
+    scenario: SupplyScenario,
+    place_id: str,
+    tick: int,
+    *,
+    resident_index: int | None = None,
+) -> str:
+    if not blocked(scenario, place_id, state, tick) or not blocked(
+        scenario, place_id, state, tick + 1
+    ):
+        return "none"
+    operation = (
+        "accept" if state.stage == 0 else "collect" if state.claimed < REPAIR_CRATES else "deliver"
+    )
+    if resident_index is not None and resident_index != (0 if operation == "collect" else 1):
+        return "none"
+    try:
+        supply_action(state, inventory, scenario, place_id, operation, tick + 1)
+    except ValueError as error:
+        if str(error) not in (
+            "SUPPLY_QUEST_STAGE",
+            "SUPPLY_ALREADY_COLLECTED",
+            "SUPPLY_WAREHOUSE_EMPTY",
+            "SUPPLY_ITEMS_MISSING",
+        ):
+            raise
+        return "none"
+    return operation
+
+
 def supply_activity(
     resident: Resident,
     index: int,
