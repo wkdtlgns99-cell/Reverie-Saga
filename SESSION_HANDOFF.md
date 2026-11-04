@@ -15,15 +15,17 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-LATEST_SCOPE2026-11-04:director asks reaching PR upload ONLY,then continuing at home.
-Publish current Gconversation as an incomplete Draft PR;stop further implementation and
-CI waiting,do not merge or update main. This overrides the preceding one-more-feature/main
-request for this checkpoint. Parent goal must pause after Draft publication,not complete.
-Current branch:codex/live-npc-conversation-20261104;baseline main6b12f51includes mergedPR34
-and its PR33ancestors. Both FCI runs each3891full/31boundaryPASS;tested/merged trees equal.
-Uploaded as [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial
-checkpointffd67f1;left unmerged as requested,before17:49KST. At home fetch/checkout this
-branch and read the current BACKLOG/Gcheckpoint;do not start from main alone or re-ask answers.
+LATEST_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,ordinary
+protected merge and local-main synchronization,then remaining settled backlog work.
+This supersedes the earlier upload-only pause. Current actual checkout C:/Reverie Saga;
+branch codex/live-npc-conversation-20261104,entry head a4851050,remote main6b12f51.
+CI41801640562failed:synthetic dependency fixture lacks five registered world engines;
+local allowed-dag reproduces missing engines.world_travel. Repair/qualification in
+[PR35order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
+Foundation merge is separate from unfinished Gworker/UI/provider acceptance.
+Goal tool now ACTIVE for requested PR/main and settled backlog work;no agent/native/
+independent/device/release waiver. Ask the next material product question after its
+settled prerequisites;do not re-ask confirmed answers.
 
 Gimplemented:registered own speech/history,exact codepoint speech time/16scontinuations,
 snapshot/slot/restart/replay,own-only bounded retrieval,context/proposal revalidation,
@@ -36,8 +38,7 @@ No app/world_conversation_worker.py or dialogue panel exists yet;do not mistake 
 plans/protocol methods for completed wiring. [Gcheckpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md)
 owns exact progress/failures/resume actions. [BACKLOG inventory](BACKLOG.md#session-decision-and-implementation-inventory--2026-11-04)
 records ALL session decisions and completed/unfinished boundaries. Credentials/private saves
-remain ignored/local;the failed qualification save is not uploaded. No new provider attempt
-or remaining feature starts before an explicit resume from the director.
+remain ignored/local;the failed qualification save is not uploaded. The latest director instruction explicitly resumes this remaining work after PR35delivery.
 
 RS-PLAY-001F MERGED_PR34_MAIN6b12f51:all12cities have registered supply aggregates;
 starting disruption changes real stock and saved resident activities. Confirmed offer

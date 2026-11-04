@@ -8,16 +8,18 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-LATEST_DELIVERY_SCOPE2026-11-04:director now requests PR upload ONLY because the remaining
-work will continue at home. Publish RS-PLAY-001G as an explicitly incomplete Draft PR,
-then pause. Do not continue UI work,wait for full CI,merge,synchronize or push main.
-This supersedes the preceding finish-one-feature-through-main request for this checkpoint.
-RS-PLAY-001F already merged viaPR34at6b12f51;parent D01-D07 remains incomplete.
+LATEST_DELIVERY_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,
+ordinary protected merge and local-main synchronization,then the remaining previously
+confirmed backlog implementation. Complete settled work before asking the next material
+product decision;execute dependent work after the answer. Earlier PR-only pause is superseded.
+Current checkout C:/Reverie Saga. No agents/native/device/independent/release waiver.
+[PR35verification order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
+PR35foundation acceptance does not complete the unfinished Gworker/UI/provider feature.
 
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
-| RS-PLAY-001G | DRAFT_PR35 / INCOMPLETE / MERGE_HELD | [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial checkpointffd67f1. Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
+| RS-PLAY-001G | PR35_VERIFICATION / FEATURE_INCOMPLETE | [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial checkpointffd67f1. Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
@@ -40,7 +42,7 @@ Confirmed choices must not be re-asked. Product SSOT:[MASTER](docs/MASTER_GAME_A
 | Runtime call cadence | One call per explicit send/retry,without preparation's artificial60s gap | Gcheckpoint:runtime spacing configurable0,prep default60s retained,one attempt/no auto retry,usage ledger. Actual provider limits still authoritative;no automatic paid fallback/key rotation |
 | NPC intentional deception | Earlier planning question unanswered | DEFERRED unless a later feature actually requires this decision;do not silently implement it |
 | Other turn-based-game comparisons | Reference/explanation requested,not adoption | No rule adoption is inferred from that research request |
-| Earlier planning-only and main holds | Superseded by explicit implementation/main instruction,then latest PR-only checkpoint | A–Fmerged. GmustremainDraft/unmerged until a later explicit resume/publication instruction |
+| Earlier planning-only and main holds | Superseded by explicit implementation/main instruction,then latest PR-only checkpoint | A–Fmerged. Latest explicit instruction resumes Gverification/merge and unfinished implementation |
 
 ### Resume G at home — remaining concrete work
 
@@ -56,7 +58,7 @@ Confirmed choices must not be re-asked. Product SSOT:[MASTER](docs/MASTER_GAME_A
 5. Diagnose/qualify the actual provider TIMEOUT;then demonstrate two personas,own-memory
    recall after restart and no unconfirmed reward. Keep model/usage/timing receipts sanitized.
 6. Complete final session audit/current progress,full required CI on the final head,ordinary
-   PR/main delivery only after explicit resume. Local2D/transport and full parent acceptance
+   PR/main delivery under the latest explicit resume. Local2D/transport and full parent acceptance
    stay outside this one feature. Existing independent/native/device/release holds remain.
 
 Historical chronological entries below retain their original evidence;the current inventory
