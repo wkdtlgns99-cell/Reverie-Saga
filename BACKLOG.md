@@ -17,7 +17,7 @@ independent/release/agent boundaries;do not treat silence as approval. Native go
 
 LATEST_DELIVERY_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,
 ordinary protected merge and local-main synchronization,then the remaining previously
-confirmed backlog implementation. Continue settled work without questions under the latest2026-11-05director instruction. Earlier PR-only pause is superseded.
+confirmed backlog implementation. The latest2026-11-05director instruction limits work to prior answers without questions;the current executable A–Gbatch is now delivered. Earlier PR-only pause is superseded.
 Current checkout C:/Reverie Saga. No agents/native/device/independent/release waiver.
 [PR35verification order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
 PR35foundation acceptance does not complete the unfinished Gworker/UI/provider feature.
@@ -25,7 +25,7 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
-| RS-PLAY-001G | PR35_FOUNDATION_MERGED / UI_LOCAL_ACCEPTED | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Final required CI/ordinary merge/localmain sync pending. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
+| RS-PLAY-001G | PR35_FOUNDATION_MERGED / UI_LOCAL_ACCEPTED | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Both final-head CI41854770228/41854837409each3955full/32boundaryPASS;ordinary PR36merged4ef3cbd and fresh localmain equality/clean verified. Current answered batch closed;no new feature selection. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
@@ -63,10 +63,10 @@ GEMINI_API_KEY_1/_2/_3 supported;legacy primary remains an alias. Only provider4
 three exhausted ->explicit error;other failures stop. No credential values are tracked.
 Actual Gemini four responses accepted:two personas,own-name recall after restart and typed
 accept proposal with gold0/items empty before confirmation. Latencies16.550/12.324/21.338/
-10.944s;two15sTARGET misses explicit. Final affected207PASS/static337/import3+1qualified;required published-head full CI/main delivery pending.
+10.944s;two15sTARGET misses explicit. Final affected207PASS/static337/import3+1qualified. Both published-head CI3955full/32boundaryPASS;PR36merged4ef3cbd,localmain equal/clean. Current answered batch delivered.
 [Completion order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) owns remaining acceptance.
 Latest director restricts work to already asked/answered scope and prohibits further questions.
-Complete ordinary publication of this accepted batch;do not select new unanswered expansion
+Ordinary publication/main synchronization of this accepted batch is complete;do not select new unanswered expansion
 features or invent missing contracts. Parent broader requirements retain their actual limits. Native/device/independent/
 CP06/release holds remain. Local2D/transport and broad social simulation remain incomplete.
 

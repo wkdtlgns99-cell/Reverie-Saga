@@ -93,3 +93,20 @@ origin/main and was clean before this completion branch. Final root trio/README/
 reconciliation and task PR publication are part of this delivery. Actual GitHub runs/merge
 commit own later final-head evidence. Parent D01-D07 remains broader than this bounded feature;
 unsettled expansion/social/transport details and existing CP06holds are not marked complete.
+
+## Published acceptance — 2026-11-05
+
+Final head1ab07d0fe42aa1a5780b9e00ec12fa0af27dd124,base265fc4b unchanged before merge.
+Push41854770228:3955PASS784.43s,boundary32PASS5.87s. PR41854837409/job126660531505:
+3955PASS994.08s,boundary32PASS7.37s. Both workflows SUCCESS,all steps passed;no reviews or
+unresolved threads. Ordinary [PR36](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/36)
+merged4ef3cbdcdcc7bc7df8df0f2353fb00882a56a173. Fresh fetch/fast-forward local main equals
+origin/main4ef3cbd and clean. Git tree at the merge equals the tested feature-head tree.
+No direct-main push,bypass or force operation. Published16paths contain none of the actual
+configured credential values;624local Markdown references and final11document guards PASS.
+
+The receipt-only follow-up updates backlog,handoff and Korean progress together to actual
+delivered status;no production/test/contract change or new feature selection. The latest
+scope is answered work only,no questions. This executable batch is complete after its factual
+receipt publication. Broad parent/local2D/transport/social/native/device/independent/release
+limits remain open;the current scoped completion does not mark them complete.
