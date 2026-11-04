@@ -104,6 +104,33 @@ and latest4actual causes even after checkpoint-only compaction. Retained-event h
 remains a separate bounded view. This mode adds factual memory,not new aid behavior.
 [Contract](docs/work_orders/QT-F97_PERSISTENT_ASSISTANCE_MEMORY.md).
 
+## Fixed development world and supply slice
+
+Run the opt-in graphical slice from this checkout:
+
+```powershell
+$env:PYTHONPATH = "$PWD/src"
+.\.venv\Scripts\python.exe -m app.client --world
+```
+
+The same stored world has6continents,6countries and12major cities. Map clicks inspect
+places;road buttons/Left-Right while the road has focus walk one metre per recorded second.
+Default progress is `tmp/world-supply-play/game.sqlite`;save/load uses slot01.
+Idle,map,inventory and offer consideration advance one game second per ten real seconds;
+ESC pauses. Movement/confirmed interactions advance their recorded duration.
+
+At game30seconds the starting city's supply route is disrupted;market stock reaches0at90.
+Use **주민의 제안**:confirm the merchant's request,collect one crate twice from the courier,
+then deliver both to the merchant. Repair consumes the cargo and pays5gold once from the
+city treasury. Consideration is nonmodal;confirming after the deadline630rejects the action.
+**거래 반영 재시도** preserves the confirmed command after an uncertain save/acknowledgement.
+Inventory and resident activities show actual saved state. Tests vary supported incidents
+with deterministic seeds without regenerating the world or calling an AI provider.
+
+This slice does not yet provide live free-text NPC dialogue,local2D exploration or transport
+journeys. Earlier prototype working files retain their own pins;no silent save migration.
+[Scope and evidence](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md).
+
 ## Verification
 
 Unity **저장 관리** opens a dedicated slot01–08 panel with current/previous save

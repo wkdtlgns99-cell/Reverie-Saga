@@ -1,13 +1,13 @@
 # Engineering Turn Rules
 
-Approved2026-10-08;updated2026-10-30. Canonical execution/repair policy;architecture/product contracts retain authority.
+Approved2026-10-08;updated2026-11-03. Canonical execution/repair policy;architecture/product contracts retain authority.
 MUST read this file from disk at the start of every assistant turn,including chat/status and
 after compaction. Apply only relevant actions;reload contracts on task entry/scope change.
 
 ## Preflight
 
 - Check Git status before edits;preserve unrelated work. Read handoff,backlog,applicable
-  READY order and actual sources/callers. Resolve conflicting inputs before editing.
+  READY order and actual sources/callers. Resolve conflicts/ambiguity before dependent work:[clarification policy](docs/CLARIFICATION_POLICY.md).
 - Set scope,baseline,acceptance and live consumers. Resolve types,units,ranges,errors,
   ordering and mutation ownership;missing required semantics mean DRAFT,never guessed TODOs.
 - Search existing rules/helpers first. Reuse canonical constants/schema IDs through legal

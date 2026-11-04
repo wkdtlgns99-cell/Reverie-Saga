@@ -49,6 +49,7 @@ All use existing pinned standard tools;no new dependency/custom engine or artifa
 
 | Rule / boundary | Automated mechanism / actual tests | Limit / review still required |
 |---|---|---|
+| Material ambiguity / director intent | [Clarification policy](CLARIFICATION_POLICY.md) via ENGINEERING_RULES Preflight;director-approved2026-11-03 | Agent judgment/director answers;no automated intent proof,new checker or mandatory every-turn question |
 | Entry discoverability/compact input | `tests/unit/test_engineering_rules.py`:mandatory AGENTS route,stable quality link,local targets/fragments,five nonempty stages,≤550words | Cannot observe an AI's actual disk read,comprehension or obedience;AGENTS directs that behavior. Word limit is not a tokenizer measurement |
 | Current workspace authority | Added `test_current_workspace_authorities_agree` for prompt/MASTER vs handoff | Current declarations only;historical producer paths remain valid evidence |
 | Silent catch/nondeterminism/domain Any/global mutation | Existing Ruff S110/TID251/ANN401/PLW0603 +positive/negative stdin probes in that module | Qualified examples,not complete semantic/static reachability proof |

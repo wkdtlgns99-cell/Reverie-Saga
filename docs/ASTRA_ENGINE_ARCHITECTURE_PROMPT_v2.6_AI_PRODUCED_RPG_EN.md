@@ -11,6 +11,8 @@
 
 These explicit director instructions supersede conflicting role and development-environment assumptions elsewhere in this document for Reverie Saga.
 
+- Director product clarification2026-11-03:[MASTER §0.4](MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03) supersedes optional-NPC-dialogue/generation-windows-only assumptions throughout this prompt and earlier BLOCKs. Memory/personality-grounded live free-form NPC conversation is core;Play requires an established world-wide baseline that changes/expands with player actions. Movement/combat need no per-turn LLM;deterministic truth,validated state changes and frozen replay remain required. Scale,timing,dialogue provider/failure UX and expansion contracts remain unresolved;this review does not authorize production implementation.
+
 - GPT-6.1 Sol performs all development work: architecture, work-order authoring, simple and complex implementation, tests, defect diagnosis/repair, integration, and technical review. Use Astra only when Sol is blocked and a second opinion is needed; Astra is never a mandatory author or approval gate. The director superseded the earlier Sol/Luna split on 2026-10-02.
 - The historical `ASTRA_ENGINE_ARCHITECTURE_PROMPT_v2.6_AI_PRODUCED_RPG_EN.md` filename is retained for link compatibility; it does not assign authority to Astra. The current working project is `C:\ReverieSaga`; `C:\Quilltale` is read-only evidence.
 - Maintain concise `SESSION_HANDOFF.md` and `BACKLOG.md` in the project root. Before runnable code/report tooling exists, these are manual factual records, not generated verification reports. The director explicitly authorizes this documentation and role update; it does not authorize production implementation.
