@@ -5,6 +5,7 @@ from dataclasses import replace
 import pytest
 
 from app.world_catalog import load_world
+from app.world_supply import supply_offers
 from domain.world import elaborate_place
 from domain.world_population import InventoryState
 from domain.world_supply import (
@@ -115,3 +116,14 @@ def test_supply_rejects_invalid_conservation_and_boolean_counters() -> None:
         replace(SupplyState(), stock=2)
     with pytest.raises(ValueError, match="integer outside declared range"):
         replace(SupplyState(), claimed=True)
+
+
+def test_offer_requires_present_incident_and_time_to_finish_before_deadline() -> None:
+    local = elaborate_place(load_world(), "place:p0-a")
+    scenario = SupplyScenario()
+    inventory = InventoryState(0, ())
+    assert supply_offers(local, advance(29), inventory, scenario, 29) == ()
+    assert (
+        supply_offers(local, advance(30), inventory, scenario, 30)[0].action.operation == "accept"
+    )
+    assert supply_offers(local, advance(629), inventory, scenario, 629) == ()

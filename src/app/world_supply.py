@@ -31,7 +31,9 @@ def supply_offers(
     scenario: SupplyScenario,
     tick: int,
 ) -> tuple[SupplyOffer, ...]:
-    if not blocked(scenario, local.place_id, state, tick + 1):
+    if not blocked(scenario, local.place_id, state, tick) or not blocked(
+        scenario, local.place_id, state, tick + 1
+    ):
         return ()
     operation = (
         "accept" if state.stage == 0 else "collect" if state.claimed < REPAIR_CRATES else "deliver"

@@ -27,7 +27,10 @@ accept/collect/deliver consumes2crates and pays5from city treasury exactly once.
 conservation/checkpoint/expiry/current-reach validation,slot/restart/replay and uncertain
 SQLite/presentation-ack retry verified. Default world GUI tmp/world-supply-play/game.sqlite.
 Final combined171PASS33.05s;finalGUI18PASS13.04s after acknowledgement/two-row repair;static324,
-Ruffboth/import3+1/pip PASS. Required final CI/publication still pending at this entry.
+Ruffboth/import3+1/pip PASS. Final offer-boundary repair:36affectedPASS16.54s/Ruffboth/
+strict324PASS;171earlier evidence reused for unchanged inputs. Required final CI/publication
+still pending at this entry. Actual manual accept/two-collection/delivery/5gold/stock recovery
+observed;user-facing captures in ignored tmp/rs-play-001-visual-final/.
 
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
 restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through

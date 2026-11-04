@@ -14,7 +14,7 @@ goal. Do not start live dialogue/local2D/transport. Parent D01-D07 remains incom
 
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
-| RS-PLAY-001F | LOCAL_ACCEPTED;Git/PR owns publication status | Fixed-world supply shortage changes stock/NPC activities;confirmed accept/collect/deliver conserves cargo/treasury,rewards once;expiry/stale terms,retry/save/restart/replay and seeded off-screen variants. Final related171PASS33.05s/static324/import3+1/pip PASS. [Receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
+| RS-PLAY-001F | LOCAL_ACCEPTED;Git/PR owns publication status | Fixed-world supply shortage changes stock/NPC activities;confirmed accept/collect/deliver conserves cargo/treasury,rewards once;expiry/stale terms,retry/save/restart/replay and seeded off-screen variants. Related171PASS33.05s;final boundary repair36affectedPASS16.54s/static324/import3+1/pip PASS. [Receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
 
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
 restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through

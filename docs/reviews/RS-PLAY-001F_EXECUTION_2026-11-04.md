@@ -37,6 +37,13 @@ Director latest scope:finish this ONE feature,then stop;parent D01-D07 remains i
   First screenshot was occluded;foreground capture established actual game state.
   An attempted close was not executed when automatic approval review hit account quota;
   later account query confirmed ordinary usage available again. No unsafe-action finding.
+- Final manual UI flow confirmed accept→two separate collections→delivery/reward5gold;
+  inventory showed5gold/no remaining cargo and the courier left shortage activity.
+  A follow-up boundary regression reproduced an offer appearing at29before the30incident.
+  Repaired projection requires both present activity and eligibility at the action's end;
+  the629deadline case remains hidden. The new independent test failed before the repair.
+  Final affected supply/domain/Tk36PASS16.54s and both Ruff/strict324PASS after that repair;
+  earlier171case evidence is reused for unchanged inputs,not reported as a new combined run.
 - First tests:10PASS/domain;two temporary-root setup errors and one missing record-only
   presenter failure. Used owned workspace basetemp and registered the required presenter;
   original tests then13PASS. No skip,oracle weakening,dependency/security alteration.
