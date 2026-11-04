@@ -175,19 +175,26 @@ class GeminiConversation:
         *,
         free_tier_confirmed: bool,
         free_data_use_confirmed: bool,
+        fallback_keys: tuple[str, ...] = (),
         send: Callable[[JsonObject, str, Event], JsonObject] = cancellable_transport,
     ) -> None:
         if free_tier_confirmed is not True:
             raise GenerationError("GENERATION_TIER_UNVERIFIED")
         if free_data_use_confirmed is not True:
             raise GenerationError("GENERATION_DATA_USE_UNCONFIRMED")
-        if (
-            type(key) is not str
-            or not 1 <= len(key) <= 512
-            or any(ord(c) <= 32 or ord(c) >= 127 for c in key)
-        ):
-            raise GenerationError("GENERATION_KEY_MISSING")
-        self._key, self._budget, self._send = key, budget, send
+        if type(fallback_keys) is not tuple or len(fallback_keys) > 2:
+            raise GenerationError("GENERATION_KEY_CONFIGURATION")
+        self._keys = (key, *fallback_keys)
+        for candidate in self._keys:
+            if (
+                type(candidate) is not str
+                or not 1 <= len(candidate) <= 512
+                or any(ord(c) <= 32 or ord(c) >= 127 for c in candidate)
+            ):
+                raise GenerationError("GENERATION_KEY_MISSING")
+        if len(set(self._keys)) != len(self._keys):
+            raise GenerationError("GENERATION_KEY_CONFIGURATION")
+        self._budget, self._send = budget, send
         self._cancelled = Event()
         self._used = False
 
@@ -200,11 +207,32 @@ class GeminiConversation:
         if self._used:
             raise GenerationError("GENERATION_JOB_USED")
         self._used = True
+        for index, key in enumerate(self._keys):
+            if self._cancelled.is_set():
+                raise GenerationError("GENERATION_CANCELLED")
+            reply = self._attempt(context, key)
+            if reply is not None:
+                return reply
+            if self._cancelled.is_set():
+                raise GenerationError("GENERATION_CANCELLED")
+            if index == len(self._keys) - 1:
+                code = (
+                    "GENERATION_DEFERRED" if len(self._keys) == 1 else "GENERATION_KEYS_EXHAUSTED"
+                )
+                raise GenerationError(code)
+        raise RuntimeError("unreachable empty Gemini key sequence")
+
+    def _attempt(self, context: ConversationContext, key: str) -> GeneratedReply | None:
         request = generation_request(context)
-        if len(canonical_json({"key": self._key, "request": request})) > MAX_REQUEST_BYTES:
+        if len(canonical_json({"key": key, "request": request})) > MAX_REQUEST_BYTES:
             raise GenerationError("GENERATION_INPUT")
         reservation = self._budget.reserve()
-        response = self._send(request, self._key, self._cancelled)
+        try:
+            response = self._send(request, key, self._cancelled)
+        except GenerationError as error:
+            if error.code == "GENERATION_DEFERRED":
+                return None  # Only a provider429,never a local budget error,advances the key.
+            raise
         try:
             total = object_value(response.get("usageMetadata", {})).get("totalTokenCount")
             actual = None if total is None else int_value(total)
@@ -218,30 +246,44 @@ class GeminiConversation:
         return parse_reply(response, context)
 
 
+def development_keys(path: Path) -> tuple[str, ...]:
+    names = ("GEMINI_API_KEY", "GEMINI_API_KEY_1", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3")
+    entries: dict[str, str] = {}
+    try:
+        with path.open("rb") as source:
+            raw = source.read(65537)
+        if len(raw) > 65536:
+            raise GenerationError("GENERATION_KEY_CONFIGURATION")
+        for line in raw.decode("utf-8-sig").splitlines():
+            name, separator, value = line.partition("=")
+            name = name.strip()
+            if separator and name in names:
+                if name in entries:
+                    raise GenerationError("GENERATION_KEY_CONFIGURATION")
+                entries[name] = value.strip()
+    except FileNotFoundError:
+        pass  # An environment-only configuration does not require a local file.
+    except (OSError, UnicodeError):
+        raise GenerationError("GENERATION_KEY_MISSING") from None
+    for name in names:
+        if name in os.environ:
+            entries[name] = os.environ[name]
+    primary, numbered = entries.get(names[0], ""), entries.get(names[1], "")
+    if primary and numbered and primary != numbered:
+        raise GenerationError("GENERATION_KEY_CONFIGURATION")
+    first = numbered or primary
+    if not first:
+        raise GenerationError("GENERATION_KEY_MISSING")
+    return (first, *(entries[name] for name in names[2:] if entries.get(name)))
+
+
 def development_generator() -> GeminiConversation:
-    # The director authorized this development project's primary free-tier key/data use.
-    # Never read manual spares,rotate keys,change billing or introduce a paid fallback.
-    key = os.environ.get("GEMINI_API_KEY", "")
-    if not key:
-        path = Path(__file__).resolve().parents[2] / ".env"
-        try:
-            with path.open("rb") as source:
-                raw = source.read(65537)
-            if len(raw) > 65536:
-                raise GenerationError("GENERATION_KEY_MISSING")
-            entries = [
-                line.split("=", 1)[1].strip()
-                for line in raw.decode("utf-8-sig").splitlines()
-                if line.startswith("GEMINI_API_KEY=")
-            ]
-            if len(entries) != 1:
-                raise GenerationError("GENERATION_KEY_MISSING")
-            key = entries[0]
-        except (OSError, UnicodeError):
-            raise GenerationError("GENERATION_KEY_MISSING") from None
+    # Director2026-11-04 explicitly authorizes ordered quota-only key fallback.
+    keys = development_keys(Path(__file__).resolve().parents[2] / ".env")
     return GeminiConversation(
-        key,
+        keys[0],
         GenerationBudget(Path("tmp/gemini-runtime-profile"), spacing_ms=0),
+        fallback_keys=keys[1:],
         free_tier_confirmed=True,
         free_data_use_confirmed=True,
     )

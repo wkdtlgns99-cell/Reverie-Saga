@@ -1,6 +1,7 @@
 """Single-thread world-session ownership for nonblocking Tk commands and saves."""
 
 from concurrent.futures import Future, ThreadPoolExecutor
+from collections.abc import Callable
 from dataclasses import dataclass
 from pathlib import Path
 import logging
@@ -10,10 +11,14 @@ from adapters.world_attachment import current_world, remember_world
 from app.durable import DurableSession
 from app.world_session import foot_command, open_world_session, world_command
 from app.world_supply import SupplyOffer, supply_notice, supply_offers, supply_status
+from app.world_conversation_worker import ConversationCoordinator
+from adapters.world_conversation import development_generator
 from contracts.persistence import SaveError
 from contracts.world_time import WorldWait
 from contracts.world_supply import SupplyAction
 from contracts.turn import GameCommand, TurnCommitted, TurnRejected
+from contracts.world_conversation import ConversationGenerator, ContinueSpeech, PlayerSay
+from domain.world_conversation import ConversationRecord, ConversationState
 from domain.world import WorldCatalog
 from domain.world_travel import TravelState, TravelerRecord
 from domain.world_population import (
@@ -35,17 +40,40 @@ class WorldUpdate:
     wait_committed: bool | None = None
     supply_text: str = ""
     offers: tuple[SupplyOffer, ...] = ()
+    conversation: ConversationState | None = None
+    reply_ready: bool = False
+    speech_committed: bool | None = None
 
 
-type WorldAction = Literal["inspect", "walk", "save", "load", "wait", "supply"]
+type WorldAction = Literal[
+    "inspect",
+    "walk",
+    "save",
+    "load",
+    "wait",
+    "supply",
+    "say",
+    "speech",
+    "generate",
+    "reply",
+]
+DIALOGUE_ACTIONS = ("say", "speech", "generate", "reply")
 
 
 class WorldWorker:
     def __init__(
-        self, path: Path, world: WorldCatalog, *, scenario: SupplyScenario = SupplyScenario()
+        self,
+        path: Path,
+        world: WorldCatalog,
+        *,
+        scenario: SupplyScenario = SupplyScenario(),
+        conversation: bool = False,
+        generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
         self.world = world
+        self.conversation = conversation
+        self._dialogue = ConversationCoordinator(world, scenario, generator_factory)
         self._owner: DurableSession | None = None
         self._pending_wait: GameCommand | None = None
         self._wait_recovery = False
@@ -64,7 +92,10 @@ class WorldWorker:
         if self._owner is None:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._owner = open_world_session(
-                current_world(self.path), self.world, supply=self.scenario
+                current_world(self.path),
+                self.world,
+                supply=self.scenario,
+                conversation=self.conversation,
             )
         return self._owner
 
@@ -77,12 +108,24 @@ class WorldWorker:
         seconds: int = 1,
         request_key: str = "",
         supply: SupplyAction | None = None,
+        npc_id: str = "",
+        text: str = "",
     ) -> Future[WorldUpdate]:
         if action == "wait" and not request_key:
             self._request_sequence += 1
             request_key = f"auto-time-{self._request_sequence}"
+        if action == "generate":
+            self._dialogue.prepare_generation(request_key)
         return self._executor.submit(
-            self._run, action, destination, direction, seconds, request_key, supply
+            self._run,
+            action,
+            destination,
+            direction,
+            seconds,
+            request_key,
+            supply,
+            npc_id,
+            text,
         )
 
     def _run(
@@ -93,6 +136,8 @@ class WorldWorker:
         seconds: int,
         request_key: str,
         supply: SupplyAction | None,
+        npc_id: str,
+        text: str,
     ) -> WorldUpdate:
         if (
             action == "supply"
@@ -116,9 +161,16 @@ class WorldWorker:
         owner = self._session()
         notice: str
         wait_committed: bool | None = None
+        speech_committed: bool | None = None
+        if self._dialogue.unresolved and action not in DIALOGUE_ACTIONS:
+            raise SaveError("WORLD_DIALOGUE_PENDING", "resolve the previous speech command first")
         if self._pending_wait is not None and action != "wait":
             raise SaveError("WORLD_TIME_PENDING", "resolve the previous time command first")
-        if action == "supply":
+        if action in DIALOGUE_ACTIONS:
+            if not self.conversation:
+                raise ValueError("WORLD_CONVERSATION_DISABLED")
+            speech_committed, notice = self._speak(owner, action, request_key, npc_id, text)
+        elif action == "supply":
             notice = self._exchange(owner, supply, request_key)
         elif action == "wait":
             if self._pending_wait is not None and request_key != self._wait_key:
@@ -142,6 +194,7 @@ class WorldWorker:
             owner.export("slot01")
             notice = "저장했습니다."
         elif action == "load":
+            self._dialogue.invalidate()
             try:
                 owner.load("slot01")
             finally:
@@ -151,6 +204,45 @@ class WorldWorker:
             notice = "세계를 불러왔습니다."
         else:
             raise ValueError("UNKNOWN_WORLD_ACTION")
+        update = self._view(owner, notice, wait_committed, speech_committed)
+        if action == "wait":
+            self._wait_update = update
+        if action == "supply":
+            self._supply_update = update
+        return update
+
+    def _speak(
+        self,
+        owner: DurableSession,
+        action: str,
+        key: str,
+        npc_id: str,
+        text: str,
+    ) -> tuple[bool | None, str]:
+        if action == "say":
+            return self._dialogue.submit(owner, PlayerSay(npc_id, text), key)
+        if action == "reply":
+            return self._dialogue.accept_reply(owner, key)
+        if action == "generate":
+            self._dialogue.generate(owner, key)
+            return None, "응답을 준비했습니다."
+        previous = self._dialogue.retry_command(owner, key)
+        if previous is not None:
+            return previous
+        state = next(
+            c.state for c in owner.snapshot().components if isinstance(c, ConversationRecord)
+        )
+        if not state.exchanges:
+            raise ValueError("DIALOGUE_NO_SPEECH")
+        return self._dialogue.submit(owner, ContinueSpeech(state.exchanges[-1].speech_id), key)
+
+    def _view(
+        self,
+        owner: DurableSession,
+        notice: str,
+        wait_committed: bool | None,
+        speech_committed: bool | None,
+    ) -> WorldUpdate:
         core = owner.snapshot()
         record = next(c for c in core.components if isinstance(c, TravelerRecord))
         inventory = next(c for c in core.components if isinstance(c, InventoryRecord))
@@ -179,7 +271,11 @@ class WorldWorker:
             if local.state is None or record.state.destination_id
             else supply_offers(local.state, city, inventory.state, self.scenario, core.tick)
         )
-        update = WorldUpdate(
+        conversation = next(
+            (c.state for c in core.components if isinstance(c, ConversationRecord)),
+            None,
+        )
+        return WorldUpdate(
             record.state,
             core.tick,
             notice,
@@ -188,12 +284,16 @@ class WorldWorker:
             wait_committed,
             supply_status(city, self.scenario, record.state.place_id, core.tick),
             offers,
+            conversation,
+            self._dialogue.reply_ready
+            and conversation is not None
+            and bool(conversation.exchanges)
+            and not conversation.exchanges[-1].reply_text,
+            speech_committed,
         )
-        if action == "wait":
-            self._wait_update = update
-        if action == "supply":
-            self._supply_update = update
-        return update
+
+    def cancel_conversation(self) -> None:
+        self._dialogue.cancel()
 
     def _exchange(self, owner: DurableSession, payload: SupplyAction | None, key: str) -> str:
         if payload is None or not key:
@@ -247,6 +347,7 @@ class WorldWorker:
             self._owner = None
 
     def close(self) -> None:
+        self.cancel_conversation()
         pending = self._executor.submit(self._close)
         self._executor.shutdown(wait=True)
         pending.result()

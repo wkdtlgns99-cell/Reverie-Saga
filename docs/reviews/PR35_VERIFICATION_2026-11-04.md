@@ -44,3 +44,13 @@ feature or parent D01-D07 acceptance. No new provider/native run or release clai
 Final document/boundary checks and published-head full CI/merge/main equality are pending
 at this prepublication snapshot. Actual GitHub runs/merge commit own later remote evidence.
 Existing independent/native/device/release/CP06holds retained;no agents.
+
+## Published result
+
+Final head83405ce;push41846021869/job126629610184:3935PASS805.22s,boundary32PASS5.89s.
+PR41846030829/job126629642850:3935PASS1100.10s,boundary32PASS7.67s;all workflow steps
+SUCCESS. PR head/base unchanged83405ce/6b12f51 before ordinary merge265fc4b8c18be6f640ee25c35421316cd983fac3.
+Fresh fetch/fast-forward local main equals origin/main265fc4b,clean. No direct-main push.
+Additional current-host world/travel/time/population/supply/actualTk57PASS20.20s with
+unraisable warnings promoted to errors. Markdown543local references/11document guards PASS.
+Foundation publication complete;Gfeature remains separate unfinished follow-up work.

@@ -1,17 +1,23 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-11-04 | Current task/status/dependency SSOT.
+Updated:2026-11-05 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
 
 ## Current Delivery
 
+DIRECTOR_CONTINUATION2026-11-05:latest scope is ONLY previously asked/answered work. The director is going to sleep and explicitly requests
+continuing autonomously without questions. This supersedes earlier ask-after-batch wording.
+Proceed with settled implementation,repair,verification and ordinary per-task PR/main delivery;
+record routine choices and actual limits. Preserve unresolved new-contract/native/device/
+independent/release/agent boundaries;do not treat silence as approval. Native goal ACTIVE.
+
+
 LATEST_DELIVERY_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,
 ordinary protected merge and local-main synchronization,then the remaining previously
-confirmed backlog implementation. Complete settled work before asking the next material
-product decision;execute dependent work after the answer. Earlier PR-only pause is superseded.
+confirmed backlog implementation. Continue settled work without questions under the latest2026-11-05director instruction. Earlier PR-only pause is superseded.
 Current checkout C:/Reverie Saga. No agents/native/device/independent/release waiver.
 [PR35verification order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
 PR35foundation acceptance does not complete the unfinished Gworker/UI/provider feature.
@@ -19,7 +25,7 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
-| RS-PLAY-001G | PR35_VERIFICATION / FEATURE_INCOMPLETE | [Draft PR35](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/35),initial checkpointffd67f1. Registered utterances/own-history/duration segments/retry/save/replay/context validation and cancellable Gemini adapter implemented. Final84affectedPASS8.99s/static334/import3+1/pip PASS. Real provider1attemptTIMEOUT;no accepted live response. Ordinary worker/dialogue UI not wired. [Order](docs/work_orders/RS-PLAY-001G_LIVE_CONVERSATION.md),[checkpoint](docs/reviews/RS-PLAY-001G_CHECKPOINT_2026-11-04.md) |
+| RS-PLAY-001G | PR35_FOUNDATION_MERGED / UI_LOCAL_ACCEPTED | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Final required CI/ordinary merge/localmain sync pending. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
@@ -31,35 +37,38 @@ Confirmed choices must not be re-asked. Product SSOT:[MASTER](docs/MASTER_GAME_A
 | D01 initial breadth,option1 | World-wide structure plus detailed starting area before play | Main:connected6continents/6countries/12major cities;starting city's details exist. Complete faction relations/loading qualification remain |
 | D02 elaboration,option1 | Large framework first;small places/details become concrete consistently during play | Main:saved destination residents/sites materialize on actual arrival. Caves/ruins/additional small settlements and broad historical consistency remain |
 | D03 simulation,between1and2 | Distant aggregate flows,nearby individuals;ordinary saved-data routines until relevant events | Main:12city supply aggregates plus4saved nearby residents,schedules and shortage overrides. Fine local movement,regional economy/factions/rumors and broader cognition remain |
-| D04 time | Actions/utterance duration;idle/read/think/type at real-time1/10;AI waiting excluded;no overlapping charge | Main:footstep/action duration and slow-clock/AI-wait hook. Gcheckpoint:codepoint/rate speech durations and16ssegments. Actual provider-wait/UI integration remains;current idle resolution1s/fractional carry is session-only |
-| D05 menus,option1 | Only explicit ESC pause fully freezes;map/inventory retain1/10 | Main:actual Tk pause/map/inventory paths verified. Dialogue panel still to connect |
-| D06 action agreement,option1 | Concrete supported terms then explicit confirmation;revalidate current conditions | Main:accept/collect/deliver summary and confirmation with resources/deadline/retry. Gcheckpoint:typed live proposal validation;inline dialogue confirmation not wired |
-| D07 speech,option1 | Submitted words may cause response/memory without second confirmation;heard claim/belief/world fact remain distinct | Gcheckpoint:exact own utterances and accepted-reply provenance persist without resource effects. Live response/personality/recall,interpretation and UI need qualification. Numeric attitude/belief/rumor systems remain |
+| D04 time | Actions/utterance duration;idle/read/think/type at real-time1/10;AI waiting excluded;no overlapping charge | Main:footstep/action duration and slow-clock/AI-wait hook. Gcheckpoint:codepoint/rate speech durations and16ssegments. Gcompletion qualifies actual provider-wait/UI integration;current idle resolution1s/fractional carry is session-only |
+| D05 menus,option1 | Only explicit ESC pause fully freezes;map/inventory retain1/10 | Main:actual Tk pause/map/inventory paths verified. Gcompletion dialogue panel connected and qualified |
+| D06 action agreement,option1 | Concrete supported terms then explicit confirmation;revalidate current conditions | Main:accept/collect/deliver summary and confirmation with resources/deadline/retry. Gcheckpoint:typed live proposal validation;Gcompletion inline confirmation connected and qualified |
+| D07 speech,option1 | Submitted words may cause response/memory without second confirmation;heard claim/belief/world fact remain distinct | Gcheckpoint:exact own utterances and accepted-reply provenance persist without resource effects. Gcompletion qualifies real role/personality context,own-memory recall and UI;broader interpretation remains. Numeric attitude/belief/rumor systems remain |
 | World size and token cost |6continents/6countries/12major cities,distinct regional identities;one saved development world reused | Main:fixed UTF8/LFcatalog reused without provider generation per test;deterministic definition/route variation tested |
 | Inter-city travel | Default direct walking;carriage/train/other special transport uses time-summary journey with interruptions | Main:metre-step road traversal and return/arrival/save. Local2D exploration and actual transport/interruption mechanism remain |
 | First incident / varying tests | Supply disruption accepted;executor chooses better test approach | Main:representative shortage,delivery repair/reward and deterministic timing/duration/place variants. Other incident types not fabricated or implemented |
-| AI response failure | Preserve delivered speech/time;retry only response or continue without reply | Confirmed this turn. Engine can leave an unanswered saved utterance and reject stale replies;runtime retry/continue controls not wired |
-| Runtime call cadence | One call per explicit send/retry,without preparation's artificial60s gap | Gcheckpoint:runtime spacing configurable0,prep default60s retained,one attempt/no auto retry,usage ledger. Actual provider limits still authoritative;no automatic paid fallback/key rotation |
+| AI response failure | Preserve delivered speech/time;retry only response or continue without reply | Confirmed this turn. Engine can leave an unanswered saved utterance and reject stale replies;Gcompletion runtime retry/continue/cancel controls qualified |
+| Runtime call cadence | One explicit generation job per send/retry,without preparation's artificial60s gap;latest follow-up allows key1→2→3 only after provider429 | Gcheckpoint:runtime spacing configurable0,prep default60s retained,one attempt/no auto retry,usage ledger. Actual provider limits remain authoritative;ordered quota-only fallback now authorized,no paid fallback |
 | NPC intentional deception | Earlier planning question unanswered | DEFERRED unless a later feature actually requires this decision;do not silently implement it |
 | Other turn-based-game comparisons | Reference/explanation requested,not adoption | No rule adoption is inferred from that research request |
 | Earlier planning-only and main holds | Superseded by explicit implementation/main instruction,then latest PR-only checkpoint | A–Fmerged. Latest explicit instruction resumes Gverification/merge and unfinished implementation |
 
-### Resume G at home — remaining concrete work
+### G completion — current execution
 
-1. Reuse the current branch/code/contracts;do not restart the product survey or regenerate the world.
-2. Implement `app/world_conversation_worker.py`:Say→ContinueSpeech segments→own context→one
-   provider call→NpcReply→remaining segments. Preserve exact pending command/generated reply
-   through uncertain COMMIT or acknowledgement failures;retry must not repeat player speech.
-3. Wire WorldWorker and a nonmodal NPC/free-text/transcript panel,reply retry/continue/cancel,
-   ESC/provider-wait/slow idle and inline supported SupplyAction confirmation. These files
-   are planned,not executable stubs. Current `--world` still runs the accepted supply UI.
-4. Finish pause/cancel/close/stale-attachment/long-speech/uncertain-save GUI tests;preserve
-   original input and already accepted speech. Pending speech after restart must finish once.
-5. Diagnose/qualify the actual provider TIMEOUT;then demonstrate two personas,own-memory
-   recall after restart and no unconfirmed reward. Keep model/usage/timing receipts sanitized.
-6. Complete final session audit/current progress,full required CI on the final head,ordinary
-   PR/main delivery under the latest explicit resume. Local2D/transport and full parent acceptance
-   stay outside this one feature. Existing independent/native/device/release holds remain.
+PR35foundation is delivered through ordinary merge265fc4b;local/remote main equal/clean
+before codex/world-conversation-ui-20261104 entry. Current worker/coordinator/panel now
+connect ordinary world speech,segments,own transcript,reply retry/cancel,pause and inline
+confirmed supply actions. New actual worker/Tk and controlled-provider cases qualify exact
+uncertain SQLite/ack retries,provider error,input preservation,pause and restart.
+Director follow-up supplies three keys and explicitly requests ordered exhaustion fallback;
+this supersedes the earlier single-key/no-rotation choice only for runtime conversation.
+GEMINI_API_KEY_1/_2/_3 supported;legacy primary remains an alias. Only provider429advances,
+three exhausted ->explicit error;other failures stop. No credential values are tracked.
+Actual Gemini four responses accepted:two personas,own-name recall after restart and typed
+accept proposal with gold0/items empty before confirmation. Latencies16.550/12.324/21.338/
+10.944s;two15sTARGET misses explicit. Final affected207PASS/static337/import3+1qualified;required published-head full CI/main delivery pending.
+[Completion order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) owns remaining acceptance.
+Latest director restricts work to already asked/answered scope and prohibits further questions.
+Complete ordinary publication of this accepted batch;do not select new unanswered expansion
+features or invent missing contracts. Parent broader requirements retain their actual limits. Native/device/independent/
+CP06/release holds remain. Local2D/transport and broad social simulation remain incomplete.
 
 Historical chronological entries below retain their original evidence;the current inventory
 and latest delivery scope above supersede stale NEXT/ACTIVE/publication wording.

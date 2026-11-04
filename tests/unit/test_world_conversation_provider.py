@@ -15,6 +15,7 @@ from adapters.world_conversation import (
     cancellable_transport,
     generation_request,
     parse_reply,
+    development_keys,
 )
 from contracts.dialogue import GenerationError
 from contracts.world_conversation import ConversationContext
@@ -135,6 +136,137 @@ def test_provider_failure_never_automatically_retries(tmp_path: Path) -> None:
         provider.generate(context())
     assert calls == [1]
     assert object_value(decode_json((tmp_path / "budget.json").read_bytes()))["tokens"] == 20000
+
+
+def test_quota_exhaustion_tries_three_keys_in_order_and_accounts_each_attempt(
+    tmp_path: Path,
+) -> None:
+    calls: list[str] = []
+
+    def send(request: JsonObject, key: str, cancelled: Event) -> JsonObject:
+        calls.append(key)
+        if key != "third":
+            raise GenerationError("GENERATION_DEFERRED")
+        return response()
+
+    provider = GeminiConversation(
+        "first",
+        GenerationBudget(tmp_path, spacing_ms=0),
+        fallback_keys=("second", "third"),
+        free_tier_confirmed=True,
+        free_data_use_confirmed=True,
+        send=send,
+    )
+    assert provider.generate(context()).text == "안녕하세요."
+    assert calls == ["first", "second", "third"]
+    ledger = object_value(decode_json((tmp_path / "budget.json").read_bytes()))
+    assert ledger["attempts"] == 3 and ledger["tokens"] == 40123
+
+
+@pytest.mark.parametrize("code", ["GENERATION_TIMEOUT", "GENERATION_AUTH", "GENERATION_OUTPUT"])
+def test_nonquota_failure_stops_before_using_another_key(tmp_path: Path, code: str) -> None:
+    calls: list[str] = []
+
+    def send(request: JsonObject, key: str, cancelled: Event) -> JsonObject:
+        calls.append(key)
+        raise GenerationError(code)
+
+    provider = GeminiConversation(
+        "first",
+        GenerationBudget(tmp_path, spacing_ms=0),
+        fallback_keys=("second", "third"),
+        free_tier_confirmed=True,
+        free_data_use_confirmed=True,
+        send=send,
+    )
+    with pytest.raises(GenerationError, match=code):
+        provider.generate(context())
+    assert calls == ["first"]
+
+
+def test_all_keys_limited_is_explicit_and_cancel_stops_key_advancement(tmp_path: Path) -> None:
+    calls: list[str] = []
+
+    def send(request: JsonObject, key: str, cancelled: Event) -> JsonObject:
+        calls.append(key)
+        raise GenerationError("GENERATION_DEFERRED")
+
+    provider = GeminiConversation(
+        "first",
+        GenerationBudget(tmp_path, spacing_ms=0),
+        fallback_keys=("second", "third"),
+        free_tier_confirmed=True,
+        free_data_use_confirmed=True,
+        send=send,
+    )
+    with pytest.raises(GenerationError, match="GENERATION_KEYS_EXHAUSTED"):
+        provider.generate(context())
+    assert calls == ["first", "second", "third"]
+    calls.clear()
+
+    def cancel(request: JsonObject, key: str, cancelled: Event) -> JsonObject:
+        calls.append(key)
+        cancelled.set()
+        raise GenerationError("GENERATION_DEFERRED")
+
+    provider = GeminiConversation(
+        "first",
+        GenerationBudget(tmp_path, spacing_ms=0),
+        fallback_keys=("second", "third"),
+        free_tier_confirmed=True,
+        free_data_use_confirmed=True,
+        send=cancel,
+    )
+    with pytest.raises(GenerationError, match="GENERATION_CANCELLED"):
+        provider.generate(context())
+    assert calls == ["first"]
+
+
+def test_local_budget_deferral_does_not_trigger_key_fallback(tmp_path: Path) -> None:
+    budget = GenerationBudget(tmp_path)
+    budget.reserve()
+    calls: list[str] = []
+
+    def send(request: JsonObject, key: str, cancelled: Event) -> JsonObject:
+        calls.append(key)
+        return response()
+
+    provider = GeminiConversation(
+        "first",
+        budget,
+        fallback_keys=("second", "third"),
+        free_tier_confirmed=True,
+        free_data_use_confirmed=True,
+        send=send,
+    )
+    with pytest.raises(GenerationError, match="GENERATION_DEFERRED"):
+        provider.generate(context())
+    assert calls == []
+
+
+def test_numbered_local_keys_legacy_alias_and_environment_override(
+    tmp_path: Path,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    names = ("GEMINI_API_KEY", "GEMINI_API_KEY_1", "GEMINI_API_KEY_2", "GEMINI_API_KEY_3")
+    for name in names:
+        monkeypatch.delenv(name, raising=False)
+    path = tmp_path / ".env"
+    path.write_text(
+        "GEMINI_API_KEY_1=first\nGEMINI_API_KEY_2=second\nGEMINI_API_KEY_3=third\n",
+        encoding="utf-8",
+    )
+    assert development_keys(path) == ("first", "second", "third")
+    monkeypatch.setenv("GEMINI_API_KEY_2", "replacement")
+    assert development_keys(path) == ("first", "replacement", "third")
+    path.write_text("GEMINI_API_KEY=legacy\n", encoding="utf-8")
+    assert development_keys(path) == ("legacy", "replacement")
+    path.write_text("GEMINI_API_KEY=legacy\nGEMINI_API_KEY_1=conflict\n", encoding="utf-8")
+    with pytest.raises(GenerationError, match="GENERATION_KEY_CONFIGURATION"):
+        development_keys(path)
+    path.write_text("GEMINI_API_KEY_1=first\nGEMINI_API_KEY_1=duplicate\n", encoding="utf-8")
+    with pytest.raises(GenerationError, match="GENERATION_KEY_CONFIGURATION"):
+        development_keys(path)
 
 
 def test_inflight_cancellation_kills_and_closes_only_the_owned_real_child(

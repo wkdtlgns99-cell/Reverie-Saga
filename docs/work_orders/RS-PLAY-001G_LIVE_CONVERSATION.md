@@ -1,5 +1,10 @@
 # RS-PLAY-001G — Live NPC Conversation
 
+CURRENT_OVERRIDE2026-11-04:director explicitly resumes verification/ordinary merge/main
+and remaining settled work. PR35foundation merged265fc4b;[completion order](RS-PLAY-001G_UI_COMPLETION.md)
+owns active worker/UI qualification and newly authorized quota-only ordered key fallback.
+The earlier checkpoint pause and no-key-rotation statements below are historical.
+
 CHECKPOINT/INCOMPLETE2026-11-04;self-review;primary4,related2/3/5/6/7. Baseline6b12f51clean/main.
 LATEST_DELIVERY_OVERRIDE:director requests reaching PR upload ONLY,then continuing at home.
 Publish an explicitly incomplete Draft PR with current code,tests and session inventory;

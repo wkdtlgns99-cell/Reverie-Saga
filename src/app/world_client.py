@@ -9,6 +9,7 @@ import logging
 from pathlib import Path
 import sys
 import time
+import unicodedata
 import tkinter as tk
 from tkinter import ttk
 
@@ -16,6 +17,9 @@ from app.world_catalog import DEVELOPMENT_WORLD, load_world
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
 from app.world_supply import SupplyOffer, item_label
+from app.world_conversation import ConversationPanel, dialogue_notice
+from contracts.dialogue import GenerationError
+from domain.world_conversation import validate_speech
 from contracts.world_supply import SupplyAction
 from domain.world import WorldCatalog
 
@@ -129,6 +133,16 @@ class WorldMapWindow:
         self.deferred: tuple[WorldAction, int] | None = None
         self.clock_after: str | None = None
         self.poll_after: str | None = None
+        self.dialogue: ConversationPanel | None = None
+        self.dialogue_running = False
+        self.dialogue_recovery = False
+        self.dialogue_next: WorldAction | None = None
+        self.failed_dialogue_action: WorldAction = "say"
+        self.dialogue_key = ""
+        self.dialogue_sequence = 0
+        self.dialogue_npc = self.dialogue_text = self.dialogue_input = ""
+        self.want_reply = False
+        self.dialogue_cancelled = False
         root.title("Reverie Saga — 세계 지도")
         root.geometry("1080x760")
         root.minsize(780, 560)
@@ -190,6 +204,20 @@ class WorldMapWindow:
         self.retry_supply = ttk.Button(
             self.action_controls, text="거래 반영 재시도", command=partial(self.send, "supply")
         )
+        if worker is not None and worker.conversation:
+            self.dialogue = ConversationPanel(
+                root,
+                self.say,
+                self.conversation_action,
+                self.confirm_dialogue_supply,
+                self.toggle_pause,
+            )
+            ttk.Button(self.action_controls, text="주민과 대화", command=self.dialogue.show).grid(
+                row=1,
+                column=4,
+                padx=4,
+                pady=3,
+            )
         ttk.Button(self.action_controls, text="소지품", command=self.show_inventory).grid(
             row=1, column=3, padx=4, pady=3
         )
@@ -253,9 +281,17 @@ class WorldMapWindow:
     def _clock_mode(self) -> ClockMode:
         if self.paused:
             return "paused"
-        if self.ai_waiting:
+        if self.ai_waiting or self.pending_action == "generate":
             return "ai_wait"
-        if self.pending_action in ("walk", "supply"):
+        if (
+            self.dialogue_running
+            or (
+                self.update is not None
+                and self.update.conversation is not None
+                and self.update.conversation.remaining
+            )
+            or self.pending_action in ("walk", "supply", "say", "speech", "reply")
+        ):
             return "action"
         return "idle"
 
@@ -269,6 +305,9 @@ class WorldMapWindow:
         else:
             self.pause_panel.place_forget()
             self.resume_deferred()
+        self.dialogue_controls()
+        if self.paused and self.dialogue is not None:
+            self.dialogue.status.set("일시정지 · ESC를 누르면 이어서 진행합니다.")
         return "break"
 
     def set_ai_waiting(self, waiting: bool) -> None:
@@ -285,6 +324,8 @@ class WorldMapWindow:
     def dispose(self) -> None:
         if not self.closed:
             self.closed = True
+            if self.worker is not None:
+                self.worker.cancel_conversation()
             for handle in (self.clock_after, self.poll_after):
                 if handle is not None:
                     self.root.after_cancel(handle)
@@ -316,6 +357,9 @@ class WorldMapWindow:
             and self.update is not None
             and not self.wait_error
             and not self.supply_error
+            and not self.dialogue_running
+            and not self.dialogue_recovery
+            and not (self.update.conversation and self.update.conversation.remaining)
         ):
             self.flush_idle()
 
@@ -332,6 +376,11 @@ class WorldMapWindow:
         return True
 
     def resume_deferred(self) -> None:
+        if self.dialogue_next is not None and self.pending is None and not self.paused:
+            if not self.dialogue_recovery and not self.dialogue_cancelled:
+                action, self.dialogue_next = self.dialogue_next, None
+                self.new_dialogue_stage(action)
+            return
         if (
             self.deferred is not None
             and self.pending is None
@@ -353,8 +402,23 @@ class WorldMapWindow:
             or self.ai_waiting
         ):
             return
-        if action not in ("inspect", "walk", "save", "load", "wait", "supply"):
+        if action not in (
+            "inspect",
+            "walk",
+            "save",
+            "load",
+            "wait",
+            "supply",
+            "say",
+            "speech",
+            "generate",
+            "reply",
+        ):
             raise ValueError("UNKNOWN_WORLD_ACTION")
+        if self.dialogue_recovery or (
+            self.dialogue_running and action not in ("say", "speech", "generate", "reply", "wait")
+        ):
+            return
         self.clock.sample(self.now_ns())
         if self.supply_error:
             if action == "supply":
@@ -372,7 +436,11 @@ class WorldMapWindow:
         if self.reserved_seconds or self.wait_error:
             self.status.set("먼저 시간 반영을 재시도해 주세요.")
             return
-        if self.update is not None and self.flush_idle():
+        if (
+            self.update is not None
+            and not (self.update.conversation and self.update.conversation.remaining)
+            and self.flush_idle()
+        ):
             self.deferred = (action, direction)
             return
         self.start_request(action, direction)
@@ -389,6 +457,13 @@ class WorldMapWindow:
             self.pending = self.worker.request(
                 action, supply=self.supply_command, request_key=self.supply_request_key
             )
+        elif action in ("say", "speech", "generate", "reply"):
+            self.pending = self.worker.request(
+                action,
+                request_key=self.dialogue_key,
+                npc_id=self.dialogue_npc,
+                text=self.dialogue_text,
+            )
         else:
             self.pending = self.worker.request(
                 action,
@@ -400,6 +475,13 @@ class WorldMapWindow:
         for button in self.buttons:
             button.configure(state="disabled")
         self.status.set("처리 중…")
+        if self.dialogue is not None:
+            self.dialogue.status.set(
+                "응답을 기다리는 중… 게임 시간은 추가로 흐르지 않습니다."
+                if action == "generate"
+                else "처리 중…"
+            )
+        self.dialogue_controls()
         self.poll_after = self.root.after(20, self.poll)
 
     def poll(self) -> None:
@@ -429,6 +511,8 @@ class WorldMapWindow:
             if action == "supply":
                 self.supply_command = None
                 self.retry_supply.grid_remove()
+            if action in ("say", "speech", "generate", "reply"):
+                self.dialogue_ack(action, update)
             succeeded = True
         except Exception as error:
             logging.getLogger(__name__).exception("World request or presentation failed")
@@ -437,6 +521,16 @@ class WorldMapWindow:
             if action == "supply":
                 self.supply_error = True
                 self.retry_supply.grid(row=1, column=4, padx=4, pady=3)
+            if action in ("say", "speech", "generate", "reply"):
+                self.failed_dialogue_action = action
+                self.dialogue_running = False
+                self.dialogue_next = None
+                self.dialogue_recovery = action != "generate" or not (
+                    isinstance(error, GenerationError) or str(error).startswith("DIALOGUE_")
+                )
+                if self.dialogue is not None:
+                    code = error.code if isinstance(error, GenerationError) else str(error)
+                    self.dialogue.status.set(dialogue_notice(code))
             self.status.set(f"처리하지 못했습니다: {error}")
         finally:
             self.clock.sample(self.now_ns())
@@ -444,6 +538,7 @@ class WorldMapWindow:
             self.clock.transition(self._clock_mode(), self.now_ns())
             for button in self.buttons:
                 button.configure(state="normal")
+            self.dialogue_controls()
         if succeeded:
             self.resume_deferred()
 
@@ -485,6 +580,125 @@ class WorldMapWindow:
             if meter >= 0 and meter % 5 == 0:
                 self.road.create_text(x, 58, text=f"{meter}m", fill="white")
         self.road.create_oval(324, 24, 336, 42, fill="#ffe08a", tags=("player",))
+        if self.dialogue is not None:
+            self.dialogue.render(update)
+
+    def dialogue_controls(self) -> None:
+        if self.dialogue is not None:
+            self.dialogue.controls(
+                paused=self.paused,
+                busy=self.pending is not None,
+                running=self.dialogue_running,
+                recovery=self.dialogue_recovery,
+                generating=self.pending_action == "generate",
+            )
+
+    def say(self, npc_id: str, text: str) -> None:
+        if (
+            self.dialogue is None
+            or self.pending is not None
+            or self.paused
+            or self.dialogue_running
+            or self.dialogue_recovery
+        ):
+            return
+        normalized = unicodedata.normalize("NFC", text)
+        try:
+            validate_speech(normalized)
+        except ValueError:
+            self.dialogue.status.set("1~512글자의 공백이 아닌 발언을 입력해 주세요.")
+            return
+        self.clock.sample(self.now_ns())
+        self.dialogue_npc, self.dialogue_text, self.dialogue_input = npc_id, normalized, text
+        self.want_reply, self.dialogue_cancelled, self.dialogue_running = True, False, True
+        self.new_dialogue_stage("say", flush=True)
+
+    def new_dialogue_stage(self, action: WorldAction, *, flush: bool = False) -> None:
+        self.dialogue_sequence += 1
+        self.dialogue_key = f"ui-speech-{self.dialogue_sequence}"
+        if flush:
+            self.send(action)
+        else:
+            self.start_request(action)
+
+    def dialogue_ack(self, action: WorldAction, update: WorldUpdate) -> None:
+        if action != "generate" and update.speech_committed is None:
+            raise ValueError("WORLD_DIALOGUE_ACK_MISSING")
+        self.dialogue_recovery = False
+        state = update.conversation
+        if state is None:
+            raise ValueError("WORLD_DIALOGUE_ACK_MISSING")
+        if action != "generate" and not update.speech_committed:
+            self.dialogue_running = False
+            if self.dialogue is not None:
+                self.dialogue.status.set(dialogue_notice(update.notice))
+            return
+        if (
+            action == "say"
+            and self.dialogue is not None
+            and self.dialogue.text() == self.dialogue_input
+        ):
+            self.dialogue.input.delete("1.0", "end")
+        if self.dialogue_cancelled:
+            self.dialogue_next = None
+        elif state.remaining:
+            self.dialogue_next = "speech"
+        elif action == "generate":
+            if not update.reply_ready:
+                raise ValueError("WORLD_DIALOGUE_REPLY_MISSING")
+            self.dialogue_next = "reply"
+        elif self.want_reply and state.exchanges and not state.exchanges[-1].reply_text:
+            self.dialogue_next = "generate"
+        else:
+            self.dialogue_next = None
+        self.dialogue_running = self.dialogue_next is not None
+        if self.dialogue is not None:
+            self.dialogue.status.set(
+                "일시정지 · ESC를 누르면 이어서 진행합니다."
+                if self.paused
+                else f"발언 진행 중 · 남은 게임 시간 {state.remaining}초"
+                if state.remaining
+                else "응답을 준비하는 중…"
+                if self.dialogue_running
+                else "대화를 반영했습니다."
+            )
+
+    def conversation_action(self, action: str) -> None:
+        if self.worker is None or self.dialogue is None:
+            return
+        if action == "cancel":
+            self.worker.cancel_conversation()
+            self.want_reply = False
+            self.dialogue_cancelled = True
+            self.dialogue_next = None
+            return
+        if self.paused or self.pending is not None:
+            return
+        if action == "recover" and self.dialogue_recovery:
+            if self.pending_action is not None:
+                return
+            self.dialogue_recovery = False
+            self.dialogue_running = True
+            self.start_request(self.failed_dialogue_action)
+            return
+        if self.dialogue_recovery or self.dialogue_running or self.update is None:
+            return
+        if action == "skip":
+            self.want_reply = False
+            self.dialogue.status.set(
+                "답을 기다리지 않고 계속합니다. 전달한 발언은 기억에 남습니다."
+            )
+            return
+        self.clock.sample(self.now_ns())
+        self.want_reply, self.dialogue_cancelled, self.dialogue_running = (
+            action == "retry",
+            False,
+            True,
+        )
+        self.new_dialogue_stage("generate" if action == "retry" else "speech", flush=True)
+
+    def confirm_dialogue_supply(self, offer: SupplyOffer) -> None:
+        self.confirm_supply(offer, None)
 
     def show_supply_offer(self) -> None:
         if (
@@ -510,7 +724,7 @@ class WorldMapWindow:
         ttk.Button(panel, text="거절 / 닫기", command=panel.destroy).pack(pady=6)
         panel.bind("<Escape>", self.toggle_pause)
 
-    def confirm_supply(self, offer: SupplyOffer, panel: tk.Toplevel) -> None:
+    def confirm_supply(self, offer: SupplyOffer, panel: tk.Toplevel | None) -> None:
         if (
             self.paused
             or self.ai_waiting
@@ -519,12 +733,15 @@ class WorldMapWindow:
             or self.wait_error
             or self.reserved_seconds
             or self.supply_command is not None
+            or self.dialogue_running
+            or self.dialogue_recovery
         ):
             return
         self.supply_command = offer.action
         self.supply_sequence += 1
         self.supply_request_key = f"ui-supply-{self.supply_sequence}"
-        panel.destroy()
+        if panel is not None:
+            panel.destroy()
         self.send("supply")
 
 
@@ -536,7 +753,9 @@ def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    worker = WorldWorker(Path("tmp/world-supply-play/game.sqlite"), catalog)
+    worker = WorldWorker(
+        Path("tmp/world-conversation-play/game.sqlite"), catalog, conversation=True
+    )
     try:
         WorldMapWindow(root, catalog, worker)
         root.mainloop()
