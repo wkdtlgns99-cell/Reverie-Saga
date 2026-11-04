@@ -80,6 +80,14 @@ def test_rulebook_local_references_resolve() -> None:
     [
         (
             "pyproject.toml",
+            "src/adapters/world_conversation.py",
+            "import time\ntry:\n    value = time.monotonic()\nexcept Exception:\n    pass\n",
+            "import os\nimport time\n"
+            "value = (time.monotonic(), os.environ.get('REVERIE_PROBE', ''))\n",
+            "S110",
+        ),
+        (
+            "pyproject.toml",
             "src/adapters/_rules_probe.py",
             "try:\n    int('invalid')\nexcept Exception:\n    pass\n",
             "try:\n    int('invalid')\nexcept ValueError:\n    raise\n",

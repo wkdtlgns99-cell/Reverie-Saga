@@ -52,8 +52,10 @@ def _lock(handle: BinaryIO, release: bool = False) -> None:
 
 
 class GenerationBudget:
-    def __init__(self, profile: Path) -> None:
+    def __init__(self, profile: Path, *, spacing_ms: int = SPACING_MS) -> None:
+        require_integer(spacing_ms, 0, SPACING_MS)
         self.profile = profile
+        self.spacing_ms = spacing_ms
 
     @contextmanager
     def locked(self) -> Iterator[None]:
@@ -147,7 +149,7 @@ class GenerationBudget:
                 if stamp > day or instant < next_ms:
                     raise GenerationError("GENERATION_DEFERRED")
                 self._write(
-                    day, attempts + 1, tokens + CALL_RESERVATION, instant + SPACING_MS, settled
+                    day, attempts + 1, tokens + CALL_RESERVATION, instant + self.spacing_ms, settled
                 )
                 return Reservation(day, attempts + 1)
         except (OSError, ValueError, UnicodeError) as error:

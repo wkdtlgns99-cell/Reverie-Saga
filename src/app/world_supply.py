@@ -13,7 +13,7 @@ from domain.world_supply import (
     SupplyScenario,
     SupplyState,
     blocked,
-    supply_action,
+    available_supply_operation,
 )
 
 
@@ -31,24 +31,8 @@ def supply_offers(
     scenario: SupplyScenario,
     tick: int,
 ) -> tuple[SupplyOffer, ...]:
-    if not blocked(scenario, local.place_id, state, tick) or not blocked(
-        scenario, local.place_id, state, tick + 1
-    ):
-        return ()
-    operation = (
-        "accept" if state.stage == 0 else "collect" if state.claimed < REPAIR_CRATES else "deliver"
-    )
-    # Preview exactly the supported transition;failure means there is no actionable offer.
-    try:
-        supply_action(state, inventory, scenario, local.place_id, operation, tick + 1)
-    except ValueError as error:
-        if str(error) not in (
-            "SUPPLY_QUEST_STAGE",
-            "SUPPLY_ALREADY_COLLECTED",
-            "SUPPLY_WAREHOUSE_EMPTY",
-            "SUPPLY_ITEMS_MISSING",
-        ):
-            raise
+    operation = available_supply_operation(state, inventory, scenario, local.place_id, tick)
+    if operation == "none":
         return ()
     npc = local.residents[0 if operation == "collect" else 1]
     terms = {
