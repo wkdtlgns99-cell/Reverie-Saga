@@ -15,6 +15,8 @@ from tkinter import ttk
 from app.world_catalog import DEVELOPMENT_WORLD, load_world
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
+from app.world_supply import SupplyOffer, item_label
+from contracts.world_supply import SupplyAction
 from domain.world import WorldCatalog
 
 
@@ -119,6 +121,11 @@ class WorldMapWindow:
         self.reservation_key = ""
         self.reservation_sequence = 0
         self.wait_error = False
+        self.supply_error = False
+        self.supply_command: SupplyAction | None = None
+        self.supply_request_key = ""
+        self.supply_sequence = 0
+        self.offer_panel: tk.Toplevel | None = None
         self.deferred: tuple[WorldAction, int] | None = None
         self.clock_after: str | None = None
         self.poll_after: str | None = None
@@ -139,10 +146,14 @@ class WorldMapWindow:
         self.controls = ttk.Frame(root)
         self.controls.pack(side="bottom", fill="x", padx=12, pady=6)
         ttk.Label(self.controls, textvariable=self.status).pack(anchor="w")
+        self.action_controls = ttk.Frame(self.controls)
+        self.action_controls.pack(fill="x")
         self.route_ids: dict[str, str] = {}
         self.destination = tk.StringVar(root)
-        self.routes = ttk.Combobox(self.controls, state="readonly", textvariable=self.destination)
-        self.routes.pack(side="left")
+        self.routes = ttk.Combobox(
+            self.action_controls, state="readonly", textvariable=self.destination
+        )
+        self.routes.grid(row=0, column=0, padx=4, pady=3)
         self.buttons: list[ttk.Button] = []
         actions: tuple[tuple[str, WorldAction, int], ...] = (
             ("한 걸음 앞으로", "walk", 1),
@@ -150,21 +161,37 @@ class WorldMapWindow:
             ("저장", "save", 1),
             ("불러오기", "load", 1),
         )
-        for label, action, direction in actions:
+        for index, (label, action, direction) in enumerate(actions):
             button = ttk.Button(
-                self.controls, text=label, command=partial(self.send, action, direction)
+                self.action_controls, text=label, command=partial(self.send, action, direction)
             )
-            button.pack(side="left", padx=4)
+            button.grid(
+                row=0 if index < 2 else 1,
+                column=index + 1 if index < 2 else index - 2,
+                padx=4,
+                pady=3,
+            )
             self.buttons.append(button)
         self.retry_time = ttk.Button(
-            self.controls, text="시간 반영 재시도", command=partial(self.send, "wait")
+            self.action_controls, text="시간 반영 재시도", command=partial(self.send, "wait")
         )
-        self.retry_time.pack(side="left", padx=4)
+        self.retry_time.grid(row=1, column=2, padx=4, pady=3)
         self.inventory_panel: tk.Toplevel | None = None
         self.inventory_text = tk.StringVar(root, "")
         self.resident_text = tk.StringVar(root, "")
-        ttk.Button(self.controls, text="소지품", command=self.show_inventory).pack(
-            side="left", padx=4
+        self.supply_text = tk.StringVar(root, "")
+        ttk.Label(root, textvariable=self.supply_text, wraplength=1000).pack(
+            side="bottom", fill="x", padx=12, pady=4
+        )
+        self.offer_button = ttk.Button(
+            self.action_controls, text="주민의 제안", command=self.show_supply_offer
+        )
+        self.offer_button.grid(row=0, column=3, padx=4, pady=3)
+        self.retry_supply = ttk.Button(
+            self.action_controls, text="거래 반영 재시도", command=partial(self.send, "supply")
+        )
+        ttk.Button(self.action_controls, text="소지품", command=self.show_inventory).grid(
+            row=1, column=3, padx=4, pady=3
         )
         ttk.Label(root, textvariable=self.resident_text, wraplength=1000, justify="left").pack(
             side="bottom", fill="x", padx=12, pady=4
@@ -228,7 +255,7 @@ class WorldMapWindow:
             return "paused"
         if self.ai_waiting:
             return "ai_wait"
-        if self.pending_action == "walk":
+        if self.pending_action in ("walk", "supply"):
             return "action"
         return "idle"
 
@@ -288,6 +315,7 @@ class WorldMapWindow:
             and self.pending is None
             and self.update is not None
             and not self.wait_error
+            and not self.supply_error
         ):
             self.flush_idle()
 
@@ -310,6 +338,7 @@ class WorldMapWindow:
             and not self.paused
             and not self.ai_waiting
             and not self.wait_error
+            and not self.supply_error
         ):
             action, direction = self.deferred
             self.deferred = None
@@ -324,9 +353,15 @@ class WorldMapWindow:
             or self.ai_waiting
         ):
             return
-        if action not in ("inspect", "walk", "save", "load", "wait"):
+        if action not in ("inspect", "walk", "save", "load", "wait", "supply"):
             raise ValueError("UNKNOWN_WORLD_ACTION")
         self.clock.sample(self.now_ns())
+        if self.supply_error:
+            if action == "supply":
+                self.start_request("supply")
+            else:
+                self.status.set("먼저 거래 반영을 재시도해 주세요.")
+            return
         if action == "wait":
             if self.reserved_seconds:
                 self.start_request("wait")
@@ -350,13 +385,18 @@ class WorldMapWindow:
             destination = self.update.state.destination_id
         self.pending_action = action
         self.clock.transition(self._clock_mode(), self.now_ns())
-        self.pending = self.worker.request(
-            action,
-            destination,
-            direction,
-            seconds=self.reserved_seconds if action == "wait" else 1,
-            request_key=self.reservation_key if action == "wait" else "",
-        )
+        if action == "supply":
+            self.pending = self.worker.request(
+                action, supply=self.supply_command, request_key=self.supply_request_key
+            )
+        else:
+            self.pending = self.worker.request(
+                action,
+                destination,
+                direction,
+                seconds=self.reserved_seconds if action == "wait" else 1,
+                request_key=self.reservation_key if action == "wait" else "",
+            )
         for button in self.buttons:
             button.configure(state="disabled")
         self.status.set("처리 중…")
@@ -381,14 +421,22 @@ class WorldMapWindow:
                     self.clock.restore(self.reserved_seconds)
                 self.reserved_seconds = 0
                 self.wait_error = not update.wait_committed
+            if action == "supply":
+                self.supply_error = False
             if action == "load" or self.update is None:
                 self.clock.reset(self.now_ns())
             self.render(update)
+            if action == "supply":
+                self.supply_command = None
+                self.retry_supply.grid_remove()
             succeeded = True
         except Exception as error:
             logging.getLogger(__name__).exception("World request or presentation failed")
             if self.reserved_seconds:
                 self.wait_error = True
+            if action == "supply":
+                self.supply_error = True
+                self.retry_supply.grid(row=1, column=4, padx=4, pady=3)
             self.status.set(f"처리하지 못했습니다: {error}")
         finally:
             self.clock.sample(self.now_ns())
@@ -401,7 +449,11 @@ class WorldMapWindow:
 
     def render(self, update: WorldUpdate) -> None:
         self.update = update
-        stacks = "\n".join(f"{item}: {count}" for item, count in update.inventory.items)
+        stacks = "\n".join(f"{item_label(item)}: {count}" for item, count in update.inventory.items)
+        self.supply_text.set(update.supply_text)
+        self.offer_button.configure(
+            state="normal" if update.offers and not self.supply_error else "disabled"
+        )
         self.inventory_text.set(
             f"소지금: {update.inventory.gold}\n" + (stacks or "소지품이 없습니다.")
         )
@@ -434,6 +486,47 @@ class WorldMapWindow:
                 self.road.create_text(x, 58, text=f"{meter}m", fill="white")
         self.road.create_oval(324, 24, 336, 42, fill="#ffe08a", tags=("player",))
 
+    def show_supply_offer(self) -> None:
+        if (
+            self.paused
+            or self.ai_waiting
+            or self.pending is not None
+            or self.supply_error
+            or self.update is None
+            or not self.update.offers
+        ):
+            return
+        if self.offer_panel is not None and self.offer_panel.winfo_exists():
+            self.offer_panel.lift()
+            return
+        offer = self.update.offers[0]
+        panel = tk.Toplevel(self.root)
+        self.offer_panel = panel
+        panel.title(offer.npc_name + "의 제안")
+        ttk.Label(panel, text=offer.summary, wraplength=480, padding=18, justify="left").pack()
+        ttk.Button(
+            panel, text="확인하고 진행", command=partial(self.confirm_supply, offer, panel)
+        ).pack(pady=6)
+        ttk.Button(panel, text="거절 / 닫기", command=panel.destroy).pack(pady=6)
+        panel.bind("<Escape>", self.toggle_pause)
+
+    def confirm_supply(self, offer: SupplyOffer, panel: tk.Toplevel) -> None:
+        if (
+            self.paused
+            or self.ai_waiting
+            or self.pending is not None
+            or self.supply_error
+            or self.wait_error
+            or self.reserved_seconds
+            or self.supply_command is not None
+        ):
+            return
+        self.supply_command = offer.action
+        self.supply_sequence += 1
+        self.supply_request_key = f"ui-supply-{self.supply_sequence}"
+        panel.destroy()
+        self.send("supply")
+
 
 def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
     try:
@@ -443,7 +536,7 @@ def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    worker = WorldWorker(Path("tmp/world-living-play/game.sqlite"), catalog)
+    worker = WorldWorker(Path("tmp/world-supply-play/game.sqlite"), catalog)
     try:
         WorldMapWindow(root, catalog, worker)
         root.mainloop()

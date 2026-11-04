@@ -15,6 +15,20 @@ Observed current checkout:`C:\ReverieSaga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
+LATEST_STOP_BOUNDARY2026-11-04:director says finish ONE feature and stop. Finish
+RS-PLAY-001F supply slice with ordinary CI/PR/main synchronization,then pause the parent
+goal. Do not start live dialogue/local2D/transport. Current supply implementation and
+evidence:[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md). Root earlier NEXT
+entries are superseded by this boundary. Parent D01-D07 remains incomplete.
+
+RS-PLAY-001F LOCAL_IMPLEMENTED2026-11-04:all12cities have registered supply aggregates;
+starting disruption changes real stock and saved resident activities. Confirmed offer
+accept/collect/deliver consumes2crates and pays5from city treasury exactly once. Strict
+conservation/checkpoint/expiry/current-reach validation,slot/restart/replay and uncertain
+SQLite/presentation-ack retry verified. Default world GUI tmp/world-supply-play/game.sqlite.
+Final combined171PASS33.05s;finalGUI18PASS13.04s after acknowledgement/two-row repair;static324,
+Ruffboth/import3+1/pip PASS. Required final CI/publication still pending at this entry.
+
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
 restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through
 usable gameplay,tests and integration;publish through required CI and ordinary protected PR

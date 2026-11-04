@@ -4,13 +4,14 @@ from collections.abc import Iterator
 from pathlib import Path
 import gc
 import tkinter as tk
+from tkinter import ttk
 import time
 
 import pytest
 
 from app.world_catalog import DEVELOPMENT_WORLD, load_world
 from app.world_client import WorldMapWindow, launch_world
-from app.world_worker import WorldWorker
+from app.world_worker import WorldUpdate, WorldWorker
 from adapters.sqlite_store import SqliteCommitStore
 from contracts.persistence import DurableTurn, RecoveryResult
 from contracts.persistence import SaveError
@@ -367,3 +368,180 @@ def test_real_inventory_panel_keeps_slow_clock_and_respects_esc(
         assert window.update.inventory.gold == 0
     finally:
         worker.close()
+
+
+def _offer_button(window: WorldMapWindow, text: str) -> ttk.Button:
+    panel = window.offer_panel
+    assert panel is not None
+    return next(
+        child
+        for child in panel.winfo_children()
+        if isinstance(child, ttk.Button) and child.cget("text") == text
+    )
+
+
+def test_real_supply_offer_refusal_slow_consideration_and_confirmed_delivery(
+    root: tk.Tk, tmp_path: Path
+) -> None:
+    sample = [0]
+    worker = WorldWorker(tmp_path / "supply.sqlite", load_world())
+    try:
+        window = WorldMapWindow(root, load_world(), worker, now_ns=lambda: sample[0])
+        _settle(root, window)
+        sample[0] = 900_000_000_000
+        window.advance_clock()
+        _settle(root, window)
+        # Drain all90logical seconds through the real16-second batching path.
+        assert window.update is not None
+        # advance_clock submits one batch per idle callback;drive callbacks explicitly.
+        while window.update.tick < 90:
+            window.advance_clock()
+            _settle(root, window)
+        assert "시장 재고 0/3" in window.supply_text.get()
+        assert "배급 대기 중" in window.resident_text.get()
+        before = window.update.inventory
+        window.offer_button.invoke()
+        root.update()
+        assert window.offer_panel is not None and window.offer_panel.winfo_ismapped()
+        _offer_button(window, "거절 / 닫기").invoke()
+        root.update()
+        assert window.update.inventory == before
+        assert window.pending is None
+        window.offer_button.invoke()
+        sample[0] += 10_000_000_000
+        window.advance_clock()
+        _settle(root, window)
+        assert window.update.tick == 91
+        for operation in ("accept", "collect", "collect", "deliver"):
+            if window.offer_panel is None or not window.offer_panel.winfo_exists():
+                window.offer_button.invoke()
+            assert window.update.offers[0].action.operation == operation
+            _offer_button(window, "확인하고 진행").invoke()
+            _settle(root, window)
+        assert window.update.tick == 95
+        assert window.update.inventory.gold == 5 and window.update.inventory.items == ()
+        assert "복구 완료" in window.supply_text.get()
+        assert not window.update.offers
+        assert "대체 보급로 찾는 중" not in window.resident_text.get()
+    finally:
+        worker.close()
+
+
+def test_real_stale_offer_is_rejected_at_confirmation(root: tk.Tk, tmp_path: Path) -> None:
+    sample = [0]
+    worker = WorldWorker(tmp_path / "stale.sqlite", load_world())
+    try:
+        for seconds in (16, 14):
+            worker.request("wait", seconds=seconds).result(timeout=10)
+        window = WorldMapWindow(root, load_world(), worker, now_ns=lambda: sample[0])
+        _settle(root, window)
+        window.offer_button.invoke()
+        assert window.offer_panel is not None
+        # Actual recorded waiting expires the offer;the still-open panel retains its terms.
+        for _ in range(38):
+            worker.request("wait", seconds=16).result(timeout=10)
+        _offer_button(window, "확인하고 진행").invoke()
+        _settle(root, window)
+        assert window.update is not None and window.update.tick == 638
+        assert "기한이 끝났거나" in window.status.get()
+        assert window.update.inventory.gold == 0 and window.update.inventory.items == ()
+    finally:
+        worker.close()
+
+
+def test_real_uncertain_exchange_retry_cannot_duplicate_cargo(
+    root: tk.Tk, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    worker = WorldWorker(tmp_path / "retry.sqlite", load_world())
+    try:
+        worker.request("wait", seconds=16).result(timeout=10)
+        worker.request("wait", seconds=14).result(timeout=10)
+        first = worker.request("inspect").result(timeout=10).offers[0]
+        worker.request("supply", supply=first.action, request_key="accept").result(timeout=10)
+        window = WorldMapWindow(root, load_world(), worker, now_ns=lambda: 0)
+        _settle(root, window)
+        original_persist = SqliteCommitStore.persist
+        original_recover = SqliteCommitStore.recover
+        persisted = [False]
+        recovery_failed = [False]
+
+        def persist(store: SqliteCommitStore, turn: DurableTurn) -> CommitReceipt:
+            result = original_persist(store, turn)
+            if not persisted[0]:
+                persisted[0] = True
+                raise OSError("injected after actual supply SQLite commit")
+            return result
+
+        def recover(store: SqliteCommitStore, turn: DurableTurn) -> RecoveryResult:
+            if not recovery_failed[0]:
+                recovery_failed[0] = True
+                raise OSError("injected supply recovery unavailable")
+            return original_recover(store, turn)
+
+        monkeypatch.setattr(SqliteCommitStore, "persist", persist)
+        monkeypatch.setattr(SqliteCommitStore, "recover", recover)
+        window.offer_button.invoke()
+        _offer_button(window, "확인하고 진행").invoke()
+        _settle(root, window)
+        assert window.supply_error and window.supply_command is not None
+        window.buttons[0].invoke()
+        assert window.pending is None
+        key = window.supply_request_key
+        window.retry_supply.invoke()
+        _settle(root, window)
+        assert not window.supply_error and window.supply_request_key == key
+        assert window.update is not None and window.update.tick == 32
+        assert window.update.inventory.items == (("item:supply-p0-a", 1),)
+        window.offer_button.invoke()
+        _offer_button(window, "확인하고 진행").invoke()
+        _settle(root, window)
+        assert window.update.tick == 33
+        assert window.update.inventory.items == (("item:supply-p0-a", 2),)
+    finally:
+        worker.close()
+
+
+def test_supply_presentation_failure_retains_confirmation_for_exact_retry(
+    root: tk.Tk, tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    worker = WorldWorker(tmp_path / "ack.sqlite", load_world())
+    try:
+        worker.request("wait", seconds=16).result(timeout=10)
+        worker.request("wait", seconds=14).result(timeout=10)
+        window = WorldMapWindow(root, load_world(), worker, now_ns=lambda: 0)
+        _settle(root, window)
+        original = WorldMapWindow.render
+        failed = [False]
+
+        def render(w: WorldMapWindow, update: WorldUpdate) -> None:
+            if not failed[0]:
+                failed[0] = True
+                raise ValueError("injected presentation acknowledgement failure")
+            original(w, update)
+
+        monkeypatch.setattr(WorldMapWindow, "render", render)
+        window.offer_button.invoke()
+        _offer_button(window, "확인하고 진행").invoke()
+        _settle(root, window)
+        assert window.supply_error and window.supply_command is not None
+        window.retry_supply.invoke()
+        _settle(root, window)
+        assert not window.supply_error and window.supply_command is None
+        assert window.update is not None and window.update.tick == 31
+        assert window.update.offers[0].action.operation == "collect"
+    finally:
+        worker.close()
+
+
+def test_supply_controls_remain_reachable_at_minimum_window_width(root: tk.Tk) -> None:
+    window = WorldMapWindow(root, load_world())
+    root.geometry("780x560")
+    root.update()
+    for button in (*window.buttons, window.offer_button, window.retry_time):
+        assert button.winfo_rootx() >= root.winfo_rootx()
+        assert (
+            button.winfo_rootx() + button.winfo_width() <= root.winfo_rootx() + root.winfo_width()
+        )
+        assert (
+            button.winfo_rooty() + button.winfo_height() <= root.winfo_rooty() + root.winfo_height()
+        )

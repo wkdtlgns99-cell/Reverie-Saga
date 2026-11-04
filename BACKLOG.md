@@ -8,6 +8,14 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
+LATEST_STOP_BOUNDARY2026-11-04:director says finish ONE feature and stop. Finish
+RS-PLAY-001F supply slice with ordinary CI/PR/main synchronization,then pause the parent
+goal. Do not start live dialogue/local2D/transport. Parent D01-D07 remains incomplete.
+
+| Current slice | State | Observable scope / evidence |
+|---|---|---|
+| RS-PLAY-001F | LOCAL_ACCEPTED;Git/PR owns publication status | Fixed-world supply shortage changes stock/NPC activities;confirmed accept/collect/deliver conserves cargo/treasury,rewards once;expiry/stale terms,retry/save/restart/replay and seeded off-screen variants. Final related171PASS33.05s/static324/import3+1/pip PASS. [Receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
+
 IMPLEMENTATION_AUTHORITY2026-11-04 LATEST:the director explicitly supersedes the planning-only
 restriction and prior branch-only/main-merge hold. Implement all confirmed D01-D07 through
 usable gameplay,tests and integration;publish through required CI and ordinary protected PR
