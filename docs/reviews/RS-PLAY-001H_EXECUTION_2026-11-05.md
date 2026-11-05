@@ -1,6 +1,6 @@
 # RS-PLAY-001H — Execution Receipt
 
-2026-11-05 LOCAL_ACCEPTED / PUBLICATION_PENDING;self-review. Primary3internal data;
+2026-11-05 DELIVERED_PR38 / main0d954c7;self-review. Primary3internal data;
 related2/4/5/6/7. [READY contract](../work_orders/RS-PLAY-001H_FACTION_BASELINE.md).
 Baseline53914db,branch codex/world-faction-baseline-20261105. Latest QF01answer includes
 species,countries,regional groups and action effects;executor design delegated. Earlier
@@ -94,5 +94,12 @@ device,independent review and CP06/release holds remain. Parent goal remains inc
 
 ## Publication
 
-Pending scoped commit/push,required full CI at final head,ordinary protected PR merge and
-local/remote-main equality/clean-tree evidence. No direct-main push or protection bypass.
+Final head4f0f4708184dac892a11a2db08f0cf83bc4da57a. PR41948302526/job126985872678completed
+SUCCESS:3986fullPASS988.43s/32boundaryPASS6.98s. Push41948295707/job126985850701completed
+SUCCESS:3986fullPASS1079.92s/32boundaryPASS7.35s. All static steps succeeded;reviews/threads
+empty and base53914db/head unchanged immediately before ordinary protected PR38merge.
+Merged0d954c7ce15fa6a4156b5be9e9d41c38275a17b4. Fresh fetch/ff verified local main equals
+origin/main and is clean;merged and tested-head trees equal3d453c08083d9886124574af1c0e7fb0a683e84b.
+No direct-main push/protection bypass. [PR38](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/38)
+metadata carries final delivery evidence alongside the original premerge receipt snapshot.
+Subsequent owned documentation preparation belongs to the next transport draft branch.

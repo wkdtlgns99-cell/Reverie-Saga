@@ -20,6 +20,7 @@ from domain.world_supply import (
     supply_activity,
 )
 from domain.world_travel import WORLD_ACTOR, TravelerRecord, TravelState
+from domain.world_transport import JourneyRecord
 from domain.world_social import (
     HOSTILE_THRESHOLD,
     SocialCatalog,
@@ -189,6 +190,8 @@ def context_from_core(
     *,
     social: SocialCatalog | None = None,
 ) -> ConversationContext:
+    if any(isinstance(c, JourneyRecord) and c.state.phase != "idle" for c in core.components):
+        raise ValueError("DIALOGUE_OUT_OF_REACH")
     conversation = next(c.state for c in core.components if isinstance(c, ConversationRecord))
     travel = next(c.state for c in core.components if isinstance(c, TravelerRecord))
     local = next(

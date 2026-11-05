@@ -8,21 +8,19 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-LATEST_DIRECTOR_SCOPE2026-11-05:finish already answered requirements,then continue remaining
-backlog questions one at a time and implement each answer. This supersedes the earlier
-no-questions instruction and assistant-only finish-G/whole-goal-closure interpretation.
-PR37factual receipt now merged53914db;both final-head3955full/32boundaryPASS,localmain equal/
-clean and tested/merged tree equality verified. Gtask delivery is complete;the whole answered
-product goal is not. Published main still lacks initial faction relationships and special transport.
-Current Htask QF01answered2026-11-05:director requires species,countries,regional groups
-and action effects together;executor chooses suitable concrete design. Earlier country-only
-proposal/pending scope blocker superseded. [READY order](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md)
-owns data,ownership,actions,gates,compatibility and verification. Hlocal accepted:114combined
-PASS56.03s,then27socialPASS10.76s after typed validation cleanup;105governancePASS,strict346/
-Ruffboth/import3+1/pipPASS. Final actual Gemini responses correctly state nation friendship
-and hostile organization access limits,5.885/1.687s with zero generation time charge. Ordinary
-publication pending;not parent completion. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
-no agent/native/device/independent/release/administration waiver.
+LATEST_PRODUCT_DIRECTION2026-11-05:director approved Option C (complete authored base game,optional free-form NPC dialogue),API payment/access HOLD. Finish transport acceptance/PR/main synchronization FIRST,then actual data ownership A–J review and ranked proposals;no Qdrant/runtime expansion yet. [Accepted compromise and sequencing](docs/PRODUCT_DIRECTION_2026-11-05.md) supersede prior mandatory-live/BYOK-only product wording. Native/device/independent/release/agent holds remain.
+
+LATEST_DIRECTOR_SCOPE2026-11-05:finish answered requirements,then ask remaining material
+backlog decisions one at a time and implement each answer. QF01included species,countries,
+regional groups and action effects,with concrete design delegated. Hdelivered through
+ordinary PR38merge0d954c7. Both final-head4f0f470runs41948302526/41948295707completedSUCCESS,
+each3986full/32boundaryPASS. Fresh fetch/ff verified main equals origin/main and clean;
+merged/tested trees equal3d453c08083d9886124574af1c0e7fb0a683e84b. [Hreceipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
+Current codex/world-transport-20261105 executes [Iorder](docs/work_orders/RS-PLAY-001I_TRANSPORT.md).
+QI01answered:stop on a journey problem and let the player directly choose the response.
+No pending product question for this feature. READY contracts retain walking,add carriage/
+ship summary/closures/wait/return/recovery and exact endpoint supply catch-up in an isolated
+profile;explicit per-schema summary duration extends only the three scoped COREfiles while old profiles remain identical. Local acceptance4022full/41new/236affected/static PASS;Tk+SQLite max segment1.787s,total39.539s leaves30stotal TARGET open. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md). Publication/CI pending;full parent incomplete. No native/ComputerUse/device/independent/release/agent/administration waiver. Do not restart completed PR38delivery or re-ask settled travel mode.
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
@@ -43,7 +41,9 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
 | RS-PLAY-001G | MERGED_PR36 / main4ef3cbd | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Both final-head CI41854770228/41854837409each3955full/32boundaryPASS;ordinary PR36merged4ef3cbd and fresh localmain equality/clean verified. Gdelivery complete;latest scope/QF01above resumes remaining parent work. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
-| RS-PLAY-001H | LOCAL_ACCEPTED / PUBLICATION_PENDING | Director requires species,countries,regional groups and action effects;concrete design delegated. READY contracts cover distinct social profile,real reputation/access/dialogue/save integration;acceptance pending. [Draft](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md) |
+| RS-PLAY-001H | MERGED_PR38 / main0d954c7 | Six ancestries,six national/twelve city organizations,public diplomacy and actual action merit/access/dialogue/save/GUI integration. Both final CI each3986full/32boundaryPASS;ordinary merge/local-main equality/clean and tree equality verified. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md) |
+| RS-PLAY-001I | LOCAL_ACCEPTANCE / PUBLICATION_PENDING | Real carriage/ship summaries,player-controlled closures,exact catch-up,GUI/save/restart/recovery. Local4022full,41new,236affected/static PASS;six old profiles/save bytes preserved. Segment1.787s meets2sTARGET,total39.539s leaves30sTARGET open. [Receipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
+| RS-OWN-001 | NEXT_AFTER_TRANSPORT_MERGE | Director2026-11-05:actual ownership/mutation/visibility A–J review and ranked proposals before graphical expansion/Qdrant. Option C approved,payment/access HOLD. [Direction](docs/PRODUCT_DIRECTION_2026-11-05.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
@@ -52,13 +52,13 @@ Confirmed choices must not be re-asked. Product SSOT:[MASTER](docs/MASTER_GAME_A
 
 | Decision / question | Confirmed answer | Actual implementation / remaining boundary |
 |---|---|---|
-| D01 initial breadth,option1 | World-wide structure plus detailed starting area before play | Main:connected6continents/6countries/12major cities;starting city's details exist. Complete faction relations/loading qualification remain |
-| D02 elaboration,option1 | Large framework first;small places/details become concrete consistently during play | Main:saved destination residents/sites materialize on actual arrival. Caves/ruins/additional small settlements and broad historical consistency remain |
-| D03 simulation,between1and2 | Distant aggregate flows,nearby individuals;ordinary saved-data routines until relevant events | Main:12city supply aggregates plus4saved nearby residents,schedules and shortage overrides. Fine local movement,regional economy/factions/rumors and broader cognition remain |
+| D01 initial breadth,option1 | World-wide structure plus detailed starting area before play | Main:connected6continents/6countries/12major cities;starting city's details exist. Hinitial faction relations/earned reputation are merged;broader density/loading qualification remains |
+| D02 elaboration,option1 | Large framework first;small places/details become concrete consistently during play | Main:saved destination residents/sites materialize on actual arrival. Caves/ruins/small settlements are permitted examples,not mandatory D02targets;broader historical consistency remains |
+| D03 simulation,between1and2 | Distant aggregate flows,nearby individuals;ordinary saved-data routines until relevant events | Main:12city supply aggregates plus4saved nearby residents,schedules and shortage overrides. Hinitial factions/player merit are merged;fine local movement,regional economy,dynamic interstate relations/rumors and broader cognition remain |
 | D04 time | Actions/utterance duration;idle/read/think/type at real-time1/10;AI waiting excluded;no overlapping charge | Main:footstep/action duration and slow-clock/AI-wait hook. Gcheckpoint:codepoint/rate speech durations and16ssegments. Gcompletion qualifies actual provider-wait/UI integration;current idle resolution1s/fractional carry is session-only |
 | D05 menus,option1 | Only explicit ESC pause fully freezes;map/inventory retain1/10 | Main:actual Tk pause/map/inventory paths verified. Gcompletion dialogue panel connected and qualified |
 | D06 action agreement,option1 | Concrete supported terms then explicit confirmation;revalidate current conditions | Main:accept/collect/deliver summary and confirmation with resources/deadline/retry. Gcheckpoint:typed live proposal validation;Gcompletion inline confirmation connected and qualified |
-| D07 speech,option1 | Submitted words may cause response/memory without second confirmation;heard claim/belief/world fact remain distinct | Gcheckpoint:exact own utterances and accepted-reply provenance persist without resource effects. Gcompletion qualifies real role/personality context,own-memory recall and UI;broader interpretation remains. Numeric attitude/belief/rumor systems remain |
+| D07 speech,option1 | Submitted words may cause response/memory without second confirmation;heard claim/belief/world fact remain distinct | Gcheckpoint:exact own utterances and accepted-reply provenance persist without resource effects. Gcompletion qualifies real role/personality context,own-memory recall and UI;broader interpretation remains. Horganizational reputation/tone exists;individual belief/rumor/broader attitude systems remain |
 | World size and token cost |6continents/6countries/12major cities,distinct regional identities;one saved development world reused | Main:fixed UTF8/LFcatalog reused without provider generation per test;deterministic definition/route variation tested |
 | Inter-city travel | Default direct walking;carriage/train/other special transport uses time-summary journey with interruptions | Main:metre-step road traversal and return/arrival/save. Local2D exploration and actual transport/interruption mechanism remain |
 | First incident / varying tests | Supply disruption accepted;executor chooses better test approach | Main:representative shortage,delivery repair/reward and deterministic timing/duration/place variants. Other incident types not fabricated or implemented |

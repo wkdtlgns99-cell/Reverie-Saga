@@ -13,12 +13,13 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk
 
-from app.world_catalog import DEVELOPMENT_WORLD, load_social, load_world
+from app.world_catalog import DEVELOPMENT_WORLD, load_social, load_transport, load_world
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
 from app.world_supply import SupplyOffer, item_label
 from app.world_conversation import ConversationPanel, dialogue_notice
 from app.world_social import SocialPanel, city_standing, resident_membership, social_notice
+from app.world_transport import TransportPanel, transport_notice
 from contracts.dialogue import GenerationError
 from domain.world_conversation import validate_speech
 from contracts.world_supply import SupplyAction
@@ -150,6 +151,13 @@ class WorldMapWindow:
         self.social_key = ""
         self.social_sequence = 0
         self.social_error = False
+        self.transport_panel: TransportPanel | None = None
+        self.transport_command: tuple[str, str] | None = None
+        self.transport_key = ""
+        self.transport_sequence = 0
+        self.transport_running = False
+        self.transport_next = False
+        self.transport_error = False
         root.title("Reverie Saga — 세계 지도")
         root.geometry("1080x760")
         root.minsize(780, 560)
@@ -240,6 +248,18 @@ class WorldMapWindow:
             ttk.Button(
                 self.action_controls, text="종족·세력 관계", command=self.social_panel.show
             ).grid(row=2, column=0, columnspan=2, padx=4, pady=3)
+        if worker is not None and worker.transport is not None:
+            self.transport_panel = TransportPanel(
+                root,
+                catalog,
+                worker.transport,
+                self.confirm_transport,
+                partial(self.send, "transport"),
+                self.toggle_pause,
+            )
+            ttk.Button(self.action_controls, text="마차·선박", command=self.show_transport).grid(
+                row=2, column=2, columnspan=2, padx=4, pady=3
+            )
         ttk.Label(root, textvariable=self.resident_text, wraplength=1000, justify="left").pack(
             side="bottom", fill="x", padx=12, pady=4
         )
@@ -296,6 +316,9 @@ class WorldMapWindow:
             or self.social_command is not None
             or self.supply_error
             or self.wait_error
+            or self.transport_error
+            or self.transport_running
+            or self.in_transit
             or bool(self.reserved_seconds)
         ):
             return
@@ -306,6 +329,56 @@ class WorldMapWindow:
 
     def focus_road(self, event: tk.Event[tk.Misc]) -> None:
         self.road.focus_set()
+
+    def show_transport(self) -> None:
+        if self.transport_panel is not None:
+            self.transport_panel.show(self.route_ids.get(self.destination.get(), ""))
+            self.dialogue_controls()
+
+    def confirm_transport(self, operation: str, destination: str) -> None:
+        if (
+            self.pending is not None
+            or self.paused
+            or self.dialogue_running
+            or self.dialogue_recovery
+            or self.social_error
+            or self.supply_error
+            or self.wait_error
+            or self.transport_error
+            or self.transport_running
+            or self.transport_command is not None
+            or self.reserved_seconds
+        ):
+            return
+        self.clock.sample(self.now_ns())
+        self.transport_running = operation != "wait"
+        self.new_transport_stage(operation, destination, flush=True)
+
+    def new_transport_stage(
+        self, operation: str, destination: str = "", *, flush: bool = False
+    ) -> None:
+        self.transport_sequence += 1
+        self.transport_command = operation, destination
+        self.transport_key = f"ui-transport-{self.transport_sequence}"
+        if flush:
+            self.send("transport")
+        else:
+            self.start_request("transport")
+
+    def transport_ack(self, update: WorldUpdate) -> None:
+        if update.transport_committed is None or update.journey is None:
+            raise ValueError("TRANSPORT_ACK_MISSING")
+        continue_intent = self.transport_command is not None and self.transport_command[0] != "wait"
+        self.transport_error = False
+        self.transport_command = None
+        if self.transport_panel is not None:
+            self.transport_panel.proposal = None
+        self.transport_running = bool(
+            continue_intent
+            and update.transport_committed
+            and update.journey.phase not in ("idle", "blocked")
+        )
+        self.transport_next = self.transport_running
 
     def walk_key(self, event: tk.Event[tk.Misc]) -> str:
         if isinstance(event.state, int) and not event.state & (0x0004 | 0x0008 | 0x20000):
@@ -326,6 +399,14 @@ class WorldMapWindow:
         # This panel is nonmodal and retains the same slow-idle clock.
         panel.bind("<Escape>", self.toggle_pause)
 
+    @property
+    def in_transit(self) -> bool:
+        return (
+            self.update is not None
+            and self.update.journey is not None
+            and self.update.journey.phase != "idle"
+        )
+
     def _clock_mode(self) -> ClockMode:
         if self.paused:
             return "paused"
@@ -333,6 +414,8 @@ class WorldMapWindow:
             return "ai_wait"
         if (
             self.dialogue_running
+            or self.transport_running
+            or self.transport_command is not None
             or self.social_command is not None
             or (
                 self.update is not None
@@ -407,6 +490,8 @@ class WorldMapWindow:
             and not self.wait_error
             and not self.supply_error
             and not self.social_error
+            and not self.transport_error
+            and not self.transport_running
             and not self.dialogue_running
             and not self.dialogue_recovery
             and not (self.update.conversation and self.update.conversation.remaining)
@@ -426,6 +511,11 @@ class WorldMapWindow:
         return True
 
     def resume_deferred(self) -> None:
+        if self.transport_next and self.pending is None and not self.paused:
+            if not self.transport_error:
+                self.transport_next = False
+                self.new_transport_stage("advance")
+            return
         if self.dialogue_next is not None and self.pending is None and not self.paused:
             if not self.dialogue_recovery and not self.dialogue_cancelled:
                 action, self.dialogue_next = self.dialogue_next, None
@@ -464,6 +554,7 @@ class WorldMapWindow:
             "generate",
             "reply",
             "social",
+            "transport",
         ):
             raise ValueError("UNKNOWN_WORLD_ACTION")
         if self.dialogue_recovery or (
@@ -471,6 +562,14 @@ class WorldMapWindow:
         ):
             return
         self.clock.sample(self.now_ns())
+        if self.transport_error:
+            if action == "transport":
+                self.start_request("transport")
+            else:
+                self.status.set("먼저 같은 여정 처리를 재시도해 주세요.")
+            return
+        if self.transport_running and action not in ("transport", "wait"):
+            return
         if self.social_error:
             if action == "social":
                 self.start_request("social")
@@ -510,7 +609,14 @@ class WorldMapWindow:
             destination = self.update.state.destination_id
         self.pending_action = action
         self.clock.transition(self._clock_mode(), self.now_ns())
-        if action == "social":
+        if action == "transport":
+            if self.transport_command is None:
+                raise ValueError("TRANSPORT_CONFIRMATION_MISSING")
+            operation, target = self.transport_command
+            self.pending = self.worker.request(
+                action, target, request_key=self.transport_key, transport_operation=operation
+            )
+        elif action == "social":
             self.pending = self.worker.request(
                 action, social_action=self.social_command, request_key=self.social_key
             )
@@ -571,6 +677,8 @@ class WorldMapWindow:
             if action == "load" or self.update is None:
                 self.clock.reset(self.now_ns())
             self.render(update)
+            if action == "transport":
+                self.transport_ack(update)
             if action == "social":
                 self.social_command = None
                 self.social_error = False
@@ -591,6 +699,9 @@ class WorldMapWindow:
                 self.retry_supply.grid(row=1, column=4, padx=4, pady=3)
             if action == "social":
                 self.social_error = True
+            if action == "transport":
+                self.transport_error = True
+                self.transport_running = self.transport_next = False
             if action in ("say", "speech", "generate", "reply"):
                 self.failed_dialogue_action = action
                 self.dialogue_running = False
@@ -644,9 +755,15 @@ class WorldMapWindow:
             self.destination.set(values[0] if values else "")
         place = self.catalog.place(state.place_id)
         location = place.name
+        if update.journey is not None and update.journey.phase != "idle":
+            location = f"{self.catalog.place(update.journey.origin_id).name} → {self.catalog.place(update.journey.destination_id).name} · 여정 중"
         if state.destination_id:
             location += f" → {self.catalog.place(state.destination_id).name} · {state.offset_m}m"
-        self.status.set(f"{location} · 게임 시간 {update.tick}초 · {social_notice(update.notice)}")
+        self.status.set(
+            f"{location} · 게임 시간 {update.tick}초 · {transport_notice(social_notice(update.notice))}"
+        )
+        if self.transport_panel is not None:
+            self.transport_panel.render(update)
         if self.social_panel is not None and update.social is not None:
             self.social_panel.render(
                 update.social,
@@ -655,6 +772,17 @@ class WorldMapWindow:
             )
         self.inspect(self.map.selected)
         self.road.delete("all")
+        if self.dialogue is not None:
+            self.dialogue.render(update)
+        if update.journey is not None and update.journey.phase != "idle":
+            self.road.create_text(
+                330,
+                32,
+                text=f"{'마차' if update.journey.mode == 'carriage' else '선박'} · {update.journey.progress_m}m · {'통행 제한' if update.journey.phase == 'blocked' else '귀환' if update.journey.phase == 'returning' else '여정 진행'}",
+                fill="white",
+                tags=("journey",),
+            )
+            return
         # Local 30-metre view:walking changes the ground under the centered player.
         for meter in range(state.offset_m - 15, state.offset_m + 16):
             x = 330 + (meter - state.offset_m) * 20
@@ -662,10 +790,26 @@ class WorldMapWindow:
             if meter >= 0 and meter % 5 == 0:
                 self.road.create_text(x, 58, text=f"{meter}m", fill="white")
         self.road.create_oval(324, 24, 336, 42, fill="#ffe08a", tags=("player",))
-        if self.dialogue is not None:
-            self.dialogue.render(update)
 
     def dialogue_controls(self) -> None:
+        in_transit = (
+            self.update is not None
+            and self.update.journey is not None
+            and self.update.journey.phase != "idle"
+        )
+        if self.transport_panel is not None:
+            self.transport_panel.controls(
+                busy=self.paused
+                or self.pending is not None
+                or self.dialogue_running
+                or self.dialogue_recovery
+                or self.social_error
+                or self.supply_error
+                or self.wait_error
+                or self.transport_running
+                or bool(self.reserved_seconds),
+                recovery=self.transport_error,
+            )
         if self.social_panel is not None:
             self.social_panel.controls(
                 busy=self.paused
@@ -674,6 +818,8 @@ class WorldMapWindow:
                 or self.dialogue_recovery
                 or self.supply_error
                 or self.wait_error
+                or in_transit
+                or self.transport_error
                 or bool(self.reserved_seconds)
                 or (self.social_command is not None and not self.social_error),
                 recovery=self.social_error,
@@ -681,7 +827,11 @@ class WorldMapWindow:
         if self.dialogue is not None:
             self.dialogue.controls(
                 paused=self.paused,
-                busy=self.pending is not None or self.social_error or self.supply_error,
+                busy=self.pending is not None
+                or self.social_error
+                or self.supply_error
+                or in_transit
+                or self.transport_error,
                 running=self.dialogue_running,
                 recovery=self.dialogue_recovery,
                 generating=self.pending_action == "generate",
@@ -696,6 +846,9 @@ class WorldMapWindow:
             or self.dialogue_recovery
             or self.social_error
             or self.supply_error
+            or self.transport_error
+            or self.transport_running
+            or self.in_transit
         ):
             return
         normalized = unicodedata.normalize("NFC", text)
@@ -768,7 +921,13 @@ class WorldMapWindow:
             self.dialogue_cancelled = True
             self.dialogue_next = None
             return
-        if self.paused or self.pending is not None:
+        if (
+            self.paused
+            or self.pending is not None
+            or self.transport_error
+            or self.transport_running
+            or self.in_transit
+        ):
             return
         if action == "recover" and self.dialogue_recovery:
             if self.pending_action is not None:
@@ -831,6 +990,9 @@ class WorldMapWindow:
             or self.supply_command is not None
             or self.dialogue_running
             or self.dialogue_recovery
+            or self.transport_error
+            or self.transport_running
+            or self.in_transit
         ):
             return
         self.supply_command = offer.action
@@ -845,12 +1007,15 @@ def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
     try:
         catalog = load_world(catalog_path)
         social = load_social(catalog)
+        transport = load_transport(catalog)
     except (OSError, ValueError, TypeError) as error:
         logging.getLogger(__name__).exception("World catalog load failed")
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    worker = WorldWorker(Path("tmp/world-social-play/game.sqlite"), catalog, social=social)
+    worker = WorldWorker(
+        Path("tmp/world-transport-play/game.sqlite"), catalog, social=social, transport=transport
+    )
     try:
         WorldMapWindow(root, catalog, worker)
         root.mainloop()

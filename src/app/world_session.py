@@ -11,6 +11,7 @@ from app.world_population_registry import population_world_bundle
 from app.world_supply_registry import supply_world_bundle
 from app.world_conversation_registry import conversation_world_bundle
 from app.world_social_registry import social_world_bundle
+from app.world_transport_registry import transport_world_bundle
 from contracts.messages import CommandPayload
 from contracts.skeleton import FeatureBundle
 from contracts.persistence import DurableCheckpoint
@@ -25,6 +26,7 @@ from domain.world_travel import WORLD_ACTOR, TravelState, TravelerRecord
 from domain.world_supply import SupplyRecord, SupplyScenario, SupplyState
 from domain.world_conversation import ConversationRecord, ConversationState
 from domain.world_social import SocialCatalog, SocialRecord, initial_social
+from domain.world_transport import JourneyRecord, JourneyState, SupplyProgressRecord, TransportRules
 
 
 def _bundle(
@@ -35,7 +37,12 @@ def _bundle(
     supply: SupplyScenario | None,
     conversation: bool,
     social: SocialCatalog | None = None,
+    transport: TransportRules | None = None,
 ) -> FeatureBundle:
+    if transport is not None:
+        if social is None:
+            raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
+        return transport_world_bundle(world, social, transport, supply or SupplyScenario())
     if social is not None:
         return social_world_bundle(world, social, supply or SupplyScenario())
     if conversation:
@@ -55,11 +62,18 @@ def world_checkpoint(
     supply: SupplyScenario | None = None,
     conversation: bool = False,
     social: SocialCatalog | None = None,
+    transport: TransportRules | None = None,
 ) -> DurableCheckpoint:
     if social is not None:
         conversation = True
     bundle = _bundle(
-        world, timed=timed, living=living, supply=supply, conversation=conversation, social=social
+        world,
+        timed=timed,
+        living=living,
+        supply=supply,
+        conversation=conversation,
+        social=social,
+        transport=transport,
     )
     io = state_io((bundle,))
     identifier = (
@@ -116,6 +130,17 @@ def world_checkpoint(
                 key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
             )
         )
+    if transport is not None:
+        components = tuple(
+            sorted(
+                (
+                    *components,
+                    JourneyRecord(WORLD_ACTOR, JourneyState()),
+                    SupplyProgressRecord(WORLD_ACTOR, 0),
+                ),
+                key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
+            )
+        )
     core = CoreSnapshot(
         identifier,
         world.seed_hex,
@@ -140,6 +165,7 @@ def open_world_session(
     supply: SupplyScenario | None = None,
     conversation: bool = False,
     social: SocialCatalog | None = None,
+    transport: TransportRules | None = None,
 ) -> DurableSession:
     bundles = (
         _bundle(
@@ -149,6 +175,7 @@ def open_world_session(
             supply=supply,
             conversation=conversation,
             social=social,
+            transport=transport,
         ),
     )
     if path.exists():
@@ -162,6 +189,7 @@ def open_world_session(
             supply=supply,
             conversation=conversation,
             social=social,
+            transport=transport,
         ),
         bundles=bundles,
     )

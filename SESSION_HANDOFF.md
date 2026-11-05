@@ -15,21 +15,19 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-LATEST_DIRECTOR_SCOPE2026-11-05:finish already answered requirements,then continue remaining
-backlog questions one at a time and implement each answer. This supersedes the earlier
-no-questions instruction and assistant-only finish-G/whole-goal-closure interpretation.
-PR37factual receipt now merged53914db;both final-head3955full/32boundaryPASS,localmain equal/
-clean and tested/merged tree equality verified. Gtask delivery is complete;the whole answered
-product goal is not. Published main still lacks initial faction relationships and special transport.
-Current Htask QF01answered2026-11-05:director requires species,countries,regional groups
-and action effects together;executor chooses suitable concrete design. Earlier country-only
-proposal/pending scope blocker superseded. [READY order](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md)
-owns data,ownership,actions,gates,compatibility and verification. Hlocal accepted:114combined
-PASS56.03s,then27socialPASS10.76s after typed validation cleanup;105governancePASS,strict346/
-Ruffboth/import3+1/pipPASS. Final actual Gemini responses correctly state nation friendship
-and hostile organization access limits,5.885/1.687s with zero generation time charge. Ordinary
-publication pending;not parent completion. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
-no agent/native/device/independent/release/administration waiver.
+LATEST_PRODUCT_DIRECTION2026-11-05:director approved Option C (complete authored base game,optional free-form NPC dialogue),API payment/access HOLD. Finish transport acceptance/PR/main synchronization FIRST,then actual data ownership A–J review and ranked proposals;no Qdrant/runtime expansion yet. [Accepted compromise and sequencing](docs/PRODUCT_DIRECTION_2026-11-05.md) supersede prior mandatory-live/BYOK-only product wording. Native/device/independent/release/agent holds remain.
+
+LATEST_DIRECTOR_SCOPE2026-11-05:finish answered requirements,then ask remaining material
+backlog decisions one at a time and implement each answer. QF01included species,countries,
+regional groups and action effects,with concrete design delegated. Hdelivered through
+ordinary PR38merge0d954c7. Both final-head4f0f470runs41948302526/41948295707completedSUCCESS,
+each3986full/32boundaryPASS. Fresh fetch/ff verified main equals origin/main and clean;
+merged/tested trees equal3d453c08083d9886124574af1c0e7fb0a683e84b. [Hreceipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
+Current codex/world-transport-20261105 executes [Iorder](docs/work_orders/RS-PLAY-001I_TRANSPORT.md).
+QI01answered:stop on a journey problem and let the player directly choose the response.
+No pending product question for this feature. READY contracts retain walking,add carriage/
+ship summary/closures/wait/return/recovery and exact endpoint supply catch-up in an isolated
+profile;explicit per-schema summary duration extends only the three scoped COREfiles while old profiles remain identical. Local acceptance4022full/41new/236affected/static PASS;Tk+SQLite max segment1.787s,total39.539s leaves30stotal TARGET open. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md). Publication/CI pending;full parent incomplete. No native/ComputerUse/device/independent/release/agent/administration waiver. Do not restart completed PR38delivery or re-ask settled travel mode.
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
