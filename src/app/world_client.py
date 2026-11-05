@@ -13,14 +13,16 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk
 
-from app.world_catalog import DEVELOPMENT_WORLD, load_world
+from app.world_catalog import DEVELOPMENT_WORLD, load_social, load_world
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
 from app.world_supply import SupplyOffer, item_label
 from app.world_conversation import ConversationPanel, dialogue_notice
+from app.world_social import SocialPanel, city_standing, resident_membership, social_notice
 from contracts.dialogue import GenerationError
 from domain.world_conversation import validate_speech
 from contracts.world_supply import SupplyAction
+from contracts.world_social import SocialAction
 from domain.world import WorldCatalog
 
 
@@ -143,6 +145,11 @@ class WorldMapWindow:
         self.dialogue_npc = self.dialogue_text = self.dialogue_input = ""
         self.want_reply = False
         self.dialogue_cancelled = False
+        self.social_panel: SocialPanel | None = None
+        self.social_command: SocialAction | None = None
+        self.social_key = ""
+        self.social_sequence = 0
+        self.social_error = False
         root.title("Reverie Saga — 세계 지도")
         root.geometry("1080x760")
         root.minsize(780, 560)
@@ -221,6 +228,18 @@ class WorldMapWindow:
         ttk.Button(self.action_controls, text="소지품", command=self.show_inventory).grid(
             row=1, column=3, padx=4, pady=3
         )
+        if worker is not None and worker.social is not None:
+            self.social_panel = SocialPanel(
+                root,
+                catalog,
+                worker.social,
+                self.confirm_social,
+                partial(self.send, "social"),
+                self.toggle_pause,
+            )
+            ttk.Button(
+                self.action_controls, text="종족·세력 관계", command=self.social_panel.show
+            ).grid(row=2, column=0, columnspan=2, padx=4, pady=3)
         ttk.Label(root, textvariable=self.resident_text, wraplength=1000, justify="left").pack(
             side="bottom", fill="x", padx=12, pady=4
         )
@@ -255,6 +274,35 @@ class WorldMapWindow:
             f"환경: {continent.environment} · 생활: {country.livelihood}\n"
             f"생산: {country.export} · 수요: {country.need}\n연결: {neighbors}"
         )
+        if (
+            self.update is not None
+            and self.update.social is not None
+            and self.worker is not None
+            and self.worker.social is not None
+        ):
+            self.details.set(
+                self.details.get()
+                + "\n"
+                + city_standing(self.update.social, self.worker.social, place_id)
+            )
+
+    def confirm_social(self, payload: SocialAction) -> None:
+        if (
+            self.pending is not None
+            or self.paused
+            or self.dialogue_running
+            or self.dialogue_recovery
+            or self.social_error
+            or self.social_command is not None
+            or self.supply_error
+            or self.wait_error
+            or bool(self.reserved_seconds)
+        ):
+            return
+        self.social_command = payload
+        self.social_sequence += 1
+        self.social_key = f"ui-social-{self.social_sequence}"
+        self.send("social")
 
     def focus_road(self, event: tk.Event[tk.Misc]) -> None:
         self.road.focus_set()
@@ -285,12 +333,13 @@ class WorldMapWindow:
             return "ai_wait"
         if (
             self.dialogue_running
+            or self.social_command is not None
             or (
                 self.update is not None
                 and self.update.conversation is not None
                 and self.update.conversation.remaining
             )
-            or self.pending_action in ("walk", "supply", "say", "speech", "reply")
+            or self.pending_action in ("walk", "supply", "say", "speech", "reply", "social")
         ):
             return "action"
         return "idle"
@@ -357,6 +406,7 @@ class WorldMapWindow:
             and self.update is not None
             and not self.wait_error
             and not self.supply_error
+            and not self.social_error
             and not self.dialogue_running
             and not self.dialogue_recovery
             and not (self.update.conversation and self.update.conversation.remaining)
@@ -413,6 +463,7 @@ class WorldMapWindow:
             "speech",
             "generate",
             "reply",
+            "social",
         ):
             raise ValueError("UNKNOWN_WORLD_ACTION")
         if self.dialogue_recovery or (
@@ -420,6 +471,12 @@ class WorldMapWindow:
         ):
             return
         self.clock.sample(self.now_ns())
+        if self.social_error:
+            if action == "social":
+                self.start_request("social")
+            else:
+                self.status.set("먼저 같은 사회 행동의 반영을 재시도해 주세요.")
+            return
         if self.supply_error:
             if action == "supply":
                 self.start_request("supply")
@@ -453,7 +510,11 @@ class WorldMapWindow:
             destination = self.update.state.destination_id
         self.pending_action = action
         self.clock.transition(self._clock_mode(), self.now_ns())
-        if action == "supply":
+        if action == "social":
+            self.pending = self.worker.request(
+                action, social_action=self.social_command, request_key=self.social_key
+            )
+        elif action == "supply":
             self.pending = self.worker.request(
                 action, supply=self.supply_command, request_key=self.supply_request_key
             )
@@ -496,6 +557,8 @@ class WorldMapWindow:
         succeeded = False
         try:
             update = pending.result()
+            if action == "social" and update.social_committed is None:
+                raise ValueError("SOCIAL_ACK_MISSING")
             if action == "wait":
                 if update.wait_committed is None:
                     raise ValueError("WORLD_TIME_ACK_MISSING")
@@ -508,6 +571,11 @@ class WorldMapWindow:
             if action == "load" or self.update is None:
                 self.clock.reset(self.now_ns())
             self.render(update)
+            if action == "social":
+                self.social_command = None
+                self.social_error = False
+                if self.social_panel is not None:
+                    self.social_panel.proposal = None
             if action == "supply":
                 self.supply_command = None
                 self.retry_supply.grid_remove()
@@ -521,6 +589,8 @@ class WorldMapWindow:
             if action == "supply":
                 self.supply_error = True
                 self.retry_supply.grid(row=1, column=4, padx=4, pady=3)
+            if action == "social":
+                self.social_error = True
             if action in ("say", "speech", "generate", "reply"):
                 self.failed_dialogue_action = action
                 self.dialogue_running = False
@@ -555,6 +625,11 @@ class WorldMapWindow:
         self.resident_text.set(
             "\n".join(
                 f"{resident.name} · {resident.activity} · {resident.site}"
+                + (
+                    f" · {resident_membership(self.worker.social, resident.resident_id)}"
+                    if self.worker is not None and self.worker.social is not None
+                    else ""
+                )
                 for resident in update.residents
             )
         )
@@ -571,7 +646,14 @@ class WorldMapWindow:
         location = place.name
         if state.destination_id:
             location += f" → {self.catalog.place(state.destination_id).name} · {state.offset_m}m"
-        self.status.set(f"{location} · 게임 시간 {update.tick}초 · {update.notice}")
+        self.status.set(f"{location} · 게임 시간 {update.tick}초 · {social_notice(update.notice)}")
+        if self.social_panel is not None and update.social is not None:
+            self.social_panel.render(
+                update.social,
+                state.place_id,
+                update.notice if self.pending_action == "social" else "",
+            )
+        self.inspect(self.map.selected)
         self.road.delete("all")
         # Local 30-metre view:walking changes the ground under the centered player.
         for meter in range(state.offset_m - 15, state.offset_m + 16):
@@ -584,10 +666,22 @@ class WorldMapWindow:
             self.dialogue.render(update)
 
     def dialogue_controls(self) -> None:
+        if self.social_panel is not None:
+            self.social_panel.controls(
+                busy=self.paused
+                or self.pending is not None
+                or self.dialogue_running
+                or self.dialogue_recovery
+                or self.supply_error
+                or self.wait_error
+                or bool(self.reserved_seconds)
+                or (self.social_command is not None and not self.social_error),
+                recovery=self.social_error,
+            )
         if self.dialogue is not None:
             self.dialogue.controls(
                 paused=self.paused,
-                busy=self.pending is not None,
+                busy=self.pending is not None or self.social_error or self.supply_error,
                 running=self.dialogue_running,
                 recovery=self.dialogue_recovery,
                 generating=self.pending_action == "generate",
@@ -600,6 +694,8 @@ class WorldMapWindow:
             or self.paused
             or self.dialogue_running
             or self.dialogue_recovery
+            or self.social_error
+            or self.supply_error
         ):
             return
         normalized = unicodedata.normalize("NFC", text)
@@ -748,14 +844,13 @@ class WorldMapWindow:
 def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
     try:
         catalog = load_world(catalog_path)
+        social = load_social(catalog)
     except (OSError, ValueError, TypeError) as error:
         logging.getLogger(__name__).exception("World catalog load failed")
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    worker = WorldWorker(
-        Path("tmp/world-conversation-play/game.sqlite"), catalog, conversation=True
-    )
+    worker = WorldWorker(Path("tmp/world-social-play/game.sqlite"), catalog, social=social)
     try:
         WorldMapWindow(root, catalog, worker)
         root.mainloop()

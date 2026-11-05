@@ -115,10 +115,21 @@ $env:PYTHONPATH = "$PWD/src"
 
 The same stored world has6continents,6countries and12major cities. Map clicks inspect
 places;road buttons/Left-Right while the road has focus walk one metre per recorded second.
-Default progress is `tmp/world-conversation-play/game.sqlite`;save/load uses slot01.
-Earlier supply-only progress remains at its original separate path and pins.
+Default progress is `tmp/world-social-play/game.sqlite`;save/load uses slot01.
+Earlier conversation/supply-only progress remains at its original separate paths and pins.
 Idle,map,inventory and offer consideration advance one game second per ten real seconds;
 ESC pauses. Movement/confirmed interactions advance their recorded duration.
+
+**종족·세력 관계** opens nonmodal identity,city reputation and public diplomacy inspection.
+The retained social catalog defines6ancestries,6national and12city groups,and48resident
+identities. Choose ancestry/citizenship(or none) once with explicit confirmation;they do not
+replace personality or earned reputation. Confirmed protest costs5game seconds and changes
+local/national reputation by-15/-5;reconcile costs10seconds,repairs negative scores by5/1
+up to0,and preserves positive merit. A real supply delivery adds20/5once in its same COMMIT.
+National diplomacy and earned local/national scores govern entry/new-contract access at<=-30;
+existing cargo and return from a road remain usable. NPC context includes actual social facts.
+The same-action retry retains command identity after storage/presentation failure. This
+initial social slice does not implement interstate wars or a general trade/combat economy.
 
 At game30seconds the starting city's supply route is disrupted;market stock reaches0at90.
 Use **주민의 제안**:confirm the merchant's request,collect one crate twice from the courier,

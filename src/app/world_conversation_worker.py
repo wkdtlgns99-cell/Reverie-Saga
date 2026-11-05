@@ -13,6 +13,7 @@ from contracts.turn import GameCommand, TurnAborted, TurnCommitted
 from contracts.world_conversation import ConversationGenerator, GeneratedReply, NpcReply
 from domain.world import WorldCatalog
 from domain.world_supply import SupplyScenario
+from domain.world_social import SocialCatalog
 from orchestration.world_conversation_context import context_from_core
 
 
@@ -22,8 +23,11 @@ class ConversationCoordinator:
         world: WorldCatalog,
         scenario: SupplyScenario,
         generator_factory: Callable[[], ConversationGenerator],
+        *,
+        social: SocialCatalog | None = None,
     ) -> None:
         self.world, self.scenario, self.factory = world, scenario, generator_factory
+        self.social = social
         self._command: GameCommand | None = None
         self._command_key = ""
         self._attachment = ""
@@ -112,7 +116,7 @@ class ConversationCoordinator:
         if not key:
             raise ValueError("WORLD_DIALOGUE_REQUEST_KEY")
         attachment = owner.attachment_id
-        context = context_from_core(owner.snapshot(), self.world, self.scenario)
+        context = context_from_core(owner.snapshot(), self.world, self.scenario, social=self.social)
         if self._generated is not None and key == self._generation_key:
             if (
                 attachment != self._generation_attachment
@@ -147,7 +151,7 @@ class ConversationCoordinator:
             return previous
         if self._generated is None or owner.attachment_id != self._generation_attachment:
             raise ValueError("DIALOGUE_CONTEXT_STALE")
-        context = context_from_core(owner.snapshot(), self.world, self.scenario)
+        context = context_from_core(owner.snapshot(), self.world, self.scenario, social=self.social)
         reply = self._generated
         if context.sha256 != reply.context_sha256:
             raise ValueError("DIALOGUE_CONTEXT_STALE")
