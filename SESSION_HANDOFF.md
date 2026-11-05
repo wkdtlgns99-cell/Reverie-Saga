@@ -34,7 +34,10 @@ Controlled transport tests retain real domain/SQLite/GUI outcomes. Actual four G
 responses accepted:two personas,own-memory recall after restart and typed accept proposal
 with zero automatic resources.16.550/12.324/21.338/10.944s,two15sTARGET misses. Final
 affected207PASS34.25s with341inputs preserved,Ruffboth/format19/strict337/import3+1/pip PASS.
-Local acceptance complete;final published-head full CI/ordinary merge/localmain remain pending.
+Delivery complete:head1ab07d0,CI41854770228/41854837409each3955full/32boundaryPASS.
+Ordinary PR36merged4ef3cbdcdcc7bc7df8df0f2353fb00882a56a173;fresh fetch/fast-forward
+local main exactly matched origin/main and was clean. Later receipt-only commits may advance
+main;actual Git owns the latest SHA. No direct-main push or protection bypass.
 [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md).
 Latest director key follow-up explicitly authorizes runtime key1→2→3 fallback only after
 provider429;other failures stop,all exhausted explicit. Local .env has numbered names;
@@ -42,8 +45,9 @@ credentials never enter chat/tracked files/commands/saves/logs. Preparation defa
 [Completion order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) supersedes Gcheckpoint's
 pause/no-rotation/one-feature stop;goal ACTIVE for settled remaining parent requirements.
 No agents/native/ComputerUse/independent/device/release waiver. Latest director restricts
-execution to already asked/answered scope,without questions. Finish this accepted batch
-through ordinary CI/PR/main delivery;do not select new unanswered expansion features.
+execution to already asked/answered scope,without questions. This executable A–Gbatch is
+delivered through ordinary CI/PR/main synchronization. Finish only this factual receipt;
+then stop. Do not select new unanswered expansion features or mark the broad parent complete.
 
 RS-PLAY-001F MERGED_PR34_MAIN6b12f51:all12cities have registered supply aggregates;
 starting disruption changes real stock and saved resident activities. Confirmed offer
