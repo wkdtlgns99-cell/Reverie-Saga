@@ -17,11 +17,14 @@ from contracts.persistence import SaveError
 from contracts.world_time import WorldWait
 from contracts.world_supply import SupplyAction
 from contracts.world_social import SocialAction
+from contracts.world_transport import TransportAction
 from contracts.turn import GameCommand, TurnCommitted, TurnRejected
 from contracts.world_conversation import ConversationGenerator, ContinueSpeech, PlayerSay
 from domain.world_conversation import ConversationRecord, ConversationState
 from domain.world import WorldCatalog
 from domain.world_travel import TravelState, TravelerRecord
+from domain.world_transport import JourneyRecord, JourneyState, TransportRules, plan_journey
+from orchestration.world_transport import JOURNEY_ERRORS
 from domain.world_population import (
     InventoryRecord,
     InventoryState,
@@ -53,6 +56,8 @@ class WorldUpdate:
     speech_committed: bool | None = None
     social: SocialState | None = None
     social_committed: bool | None = None
+    journey: JourneyState | None = None
+    transport_committed: bool | None = None
 
 
 type WorldAction = Literal[
@@ -67,6 +72,7 @@ type WorldAction = Literal[
     "generate",
     "reply",
     "social",
+    "transport",
 ]
 DIALOGUE_ACTIONS = ("say", "speech", "generate", "reply")
 
@@ -80,12 +86,17 @@ class WorldWorker:
         scenario: SupplyScenario = SupplyScenario(),
         conversation: bool = False,
         social: SocialCatalog | None = None,
+        transport: TransportRules | None = None,
         generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
         self.world = world
         self.conversation = conversation or social is not None
         self.social = social
+        if transport is not None and social is None:
+            raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
+        self.transport = transport
+        self._transport_request: tuple[str, str, str] | None = None
         self._dialogue = ConversationCoordinator(world, scenario, generator_factory, social=social)
         self._owner: DurableSession | None = None
         self._pending_wait: GameCommand | None = None
@@ -110,6 +121,7 @@ class WorldWorker:
                 supply=self.scenario,
                 conversation=self.conversation,
                 social=self.social,
+                transport=self.transport,
             )
         return self._owner
 
@@ -125,6 +137,7 @@ class WorldWorker:
         npc_id: str = "",
         text: str = "",
         social_action: SocialAction | None = None,
+        transport_operation: str = "",
     ) -> Future[WorldUpdate]:
         if action == "wait" and not request_key:
             self._request_sequence += 1
@@ -142,6 +155,7 @@ class WorldWorker:
             npc_id,
             text,
             social_action,
+            transport_operation,
         )
 
     def _run(
@@ -155,6 +169,7 @@ class WorldWorker:
         npc_id: str,
         text: str,
         social_action: SocialAction | None,
+        transport_operation: str,
     ) -> WorldUpdate:
         if (
             action == "supply"
@@ -180,11 +195,16 @@ class WorldWorker:
         wait_committed: bool | None = None
         speech_committed: bool | None = None
         social_committed: bool | None = None
-        if self._dialogue.unresolved and action not in (*DIALOGUE_ACTIONS, "social"):
+        transport_committed: bool | None = None
+        if self._dialogue.unresolved and action not in (*DIALOGUE_ACTIONS, "social", "transport"):
             raise SaveError("WORLD_DIALOGUE_PENDING", "resolve the previous speech command first")
         if self._pending_wait is not None and action != "wait":
             raise SaveError("WORLD_TIME_PENDING", "resolve the previous time command first")
-        if action == "social":
+        if action == "transport":
+            transport_committed, notice = self._travel(
+                owner, transport_operation, destination, request_key
+            )
+        elif action == "social":
             if self.social is None or social_action is None:
                 raise ValueError("SOCIAL_CONFIRMATION_MISSING")
             social_committed, notice = self._dialogue.submit(owner, social_action, request_key)
@@ -223,6 +243,7 @@ class WorldWorker:
             notice = "저장했습니다."
         elif action == "load":
             self._dialogue.invalidate()
+            self._transport_request = None
             try:
                 owner.load("slot01")
             finally:
@@ -232,7 +253,9 @@ class WorldWorker:
             notice = "세계를 불러왔습니다."
         else:
             raise ValueError("UNKNOWN_WORLD_ACTION")
-        update = self._view(owner, notice, wait_committed, speech_committed, social_committed)
+        update = self._view(
+            owner, notice, wait_committed, speech_committed, social_committed, transport_committed
+        )
         if action == "wait":
             self._wait_update = update
         if action == "supply":
@@ -271,6 +294,7 @@ class WorldWorker:
         wait_committed: bool | None,
         speech_committed: bool | None,
         social_committed: bool | None = None,
+        transport_committed: bool | None = None,
     ) -> WorldUpdate:
         core = owner.snapshot()
         record = next(c for c in core.components if isinstance(c, TravelerRecord))
@@ -305,6 +329,10 @@ class WorldWorker:
             None,
         )
         social = next((c.state for c in core.components if isinstance(c, SocialRecord)), None)
+        journey = next((c.state for c in core.components if isinstance(c, JourneyRecord)), None)
+        in_transit = journey is not None and journey.phase != "idle"
+        if in_transit:
+            residents, offers = (), ()
         if (
             social is not None
             and self.social is not None
@@ -318,17 +346,54 @@ class WorldWorker:
             inventory.state,
             residents,
             wait_committed,
-            supply_status(city, self.scenario, record.state.place_id, core.tick),
+            "여정 중 · 주민과 도시 보급 정보는 도착 후 확인할 수 있습니다."
+            if in_transit
+            else supply_status(city, self.scenario, record.state.place_id, core.tick),
             offers,
             conversation,
             self._dialogue.reply_ready
+            and not in_transit
             and conversation is not None
             and bool(conversation.exchanges)
             and not conversation.exchanges[-1].reply_text,
             speech_committed,
             social,
             social_committed,
+            journey,
+            transport_committed,
         )
+
+    def _travel(
+        self, owner: DurableSession, operation: str, destination: str, key: str
+    ) -> tuple[bool, str]:
+        if self.transport is None or not key:
+            raise ValueError("TRANSPORT_CONFIRMATION_MISSING")
+        request = (key, operation, destination)
+        if (
+            self._transport_request is not None
+            and self._transport_request[0] == key
+            and self._transport_request != request
+        ):
+            raise SaveError("WORLD_TRANSPORT_PENDING", "retry must preserve the journey request")
+        previous = self._dialogue.retry_command(owner, key)
+        if previous is not None:
+            return previous[0], "여정을 반영했습니다." if previous[0] else previous[1]
+        self._transport_request = request
+        core = owner.snapshot()
+        journey = next(c.state for c in core.components if isinstance(c, JourneyRecord))
+        travel = next(c.state for c in core.components if isinstance(c, TravelerRecord))
+        try:
+            plan = plan_journey(
+                self.world, self.transport, journey, travel, core.tick, operation, destination
+            )
+        except ValueError as error:
+            if str(error) not in JOURNEY_ERRORS:
+                raise
+            return False, str(error)
+        committed, notice = self._dialogue.submit(
+            owner, TransportAction(operation, destination, plan.seconds), key
+        )
+        return committed, "여정을 반영했습니다." if committed else notice
 
     def cancel_conversation(self) -> None:
         self._dialogue.cancel()

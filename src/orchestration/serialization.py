@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, fields, is_dataclass
+from dataclasses import asdict, fields, is_dataclass, replace
 from collections.abc import Mapping
 import hashlib
 import re
@@ -363,6 +363,8 @@ class RegisteredStateIO:
     def _configure_execution(self) -> None:
         self._limits = ExecutionLimits(False, 1, 8, 512, 0)
         if "execution" not in self._rules_document:
+            if "time_summary" in self._rules_document:
+                raise BootstrapError("INVALID_EVENT_POLICY", "time summary requires simulation")
             return
         try:
             d = exact_fields(self._rules_document["execution"], ("enable_simulation", "max_duration_seconds", "cascade_waves", "max_events_per_tick", "max_pending"))
@@ -371,7 +373,8 @@ class RegisteredStateIO:
             numbers = tuple(int_value(d[k]) for k in ("max_duration_seconds", "cascade_waves", "max_events_per_tick", "max_pending"))
             for n, bound in zip(numbers, (16, 8, 512, 4096), strict=True):
                 require_integer(n, 1, bound)
-            self._limits = ExecutionLimits(True, *numbers)
+            self._limits = ExecutionLimits(True, numbers[0], numbers[1], numbers[2], numbers[3])
+            self._configure_time_summary()
             if canonical_json(self._schema_document.get("system")) != canonical_json({"clock_owner": "system.clock", "queue_owner": "system.events", "pending_format": "queued-event/v1"}):
                 raise ValueError("system ownership")
             if any(engine in ("system.clock", "system.events") for engine in self._manifests) or any(a.family.component in ("system.clock", "system.events") for m in self._manifests.values() for a in m.writes):
@@ -408,6 +411,21 @@ class RegisteredStateIO:
             raise
         except (ValueError, TypeError, KeyError) as error:
             raise BootstrapError("INVALID_EVENT_POLICY", str(error)) from error
+
+    def _configure_time_summary(self) -> None:
+        if "time_summary" not in self._rules_document:
+            return
+        row = exact_fields(self._rules_document["time_summary"], ("maximum_seconds", "commands"))
+        maximum = int_value(row["maximum_seconds"])
+        require_integer(maximum, 17, 3600)
+        commands = tuple(decode_key(value) for value in array_value(row["commands"]))
+        if not 1 <= len(commands) <= 32:
+            raise ValueError("time summary command count")
+        if commands != tuple(sorted(set(commands), key=lambda key: (key.kind, key.version))):
+            raise ValueError("time summary command order/duplicates")
+        if not set(commands).issubset(self._commands):
+            raise ValueError("time summary command is not registered")
+        self._limits = replace(self._limits, summary_max_seconds=maximum, summary_commands=commands)
 
     @property
     def execution_limits(self) -> ExecutionLimits:
@@ -755,7 +773,7 @@ class RegisteredStateIO:
     def _validate_effects(self, command: GameCommand, outcome: TurnOutcome, core: CoreSnapshot,
                          protocol: ProtocolSnapshot, facts: JsonValue, diff: JsonValue, *, core_hash: str | None = None) -> None:
         values = array_value(seal(facts))
-        if len(values) > self._limits.max_events_per_tick * self._limits.max_duration_seconds:
+        if len(values) > self._limits.max_events_per_tick * self._limits.duration_limit(command.payload.schema):
             raise ValueError("fact cap")
         if isinstance(outcome, TurnCommitted):
             retained = next((r for r in protocol.receipts if r.command.command_id == command.command_id), None)
@@ -845,7 +863,7 @@ class RegisteredStateIO:
             active = self._active[NodeKey(h.phase, h.producer_id)]
             if not (active.every_tick or (h.occurred_at == core.tick and command.payload.schema in active.action_kinds) or (active.on_matching_events and self._manifests[h.producer_id].consumes)):
                 raise ValueError("inactive event producer")
-            if not core.tick - self._limits.max_duration_seconds < h.occurred_at <= core.tick:
+            if not core.tick - self._limits.duration_limit(command.payload.schema) < h.occurred_at <= core.tick:
                 raise ValueError("event time range")
             if any(c in ids and c not in seen for c in h.caused_by):
                 raise ValueError("future emitted cause")

@@ -511,7 +511,7 @@ class Driver:
         ):
             raise CandidateError("INVALID_COMMAND", "admission plan")
         if limits.enable_simulation:
-            if target - core.tick > limits.max_duration_seconds:
+            if target - core.tick > limits.duration_limit(command.payload.schema):
                 raise CandidateError("TURN_LIMIT", "admission duration")
         elif target != core.tick + 1:
             raise CandidateError(

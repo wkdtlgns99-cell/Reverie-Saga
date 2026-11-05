@@ -1,0 +1,27 @@
+{
+  "format": "reverie-transport/v1",
+  "world_seed": "2026110420261104202611042026110420261104202611042026110420261104",
+  "carriage_mps": 5,
+  "ship_mps": 8,
+  "segment_seconds": 3600,
+  "closures": [
+    {
+      "id": "closure:road-inspection",
+      "origin_id": "place:p0-a",
+      "destination_id": "place:p0-b",
+      "checkpoint_m": 2500,
+      "start_tick": 400,
+      "end_tick": 800,
+      "reason": "도로 점검으로 통행을 잠시 통제합니다."
+    },
+    {
+      "id": "closure:sea-inspection",
+      "origin_id": "place:p0-b",
+      "destination_id": "place:p1-b",
+      "checkpoint_m": 2000,
+      "start_tick": 0,
+      "end_tick": 3600,
+      "reason": "항로 점검으로 통과를 잠시 통제합니다."
+    }
+  ]
+}

@@ -6,6 +6,8 @@ Updated: 2026-11-05 (director decisions in §0.4 and implementation authorizatio
 
 ## Current Project Overrides
 
+- Director2026-11-05:[accepted Option C and execution order](PRODUCT_DIRECTION_2026-11-05.md) supersede conflicting mandatory-provider/live-dialogue and BYOK-only statements. Complete authored base game without additional AI payment;optional state-grounded free-form conversations. API payment/access design is HOLD. Finish transport publication,then data ownership review before graphical integration/expansion;existing qualification holds remain.
+
 - Director implementation authorization2026-11-04 supersedes this session's earlier planning-only and branch-only restrictions:implement confirmed D01-D07 through actual playable behavior,verification and integration,then ordinary protected-main publication. Ask only blocking material product decisions one at a time;continue coding without repeated permission once answered. Historical review-only/no-coding statements below describe the earlier decision-recording stage,not a current prohibition. Individual new schemas/contracts must still be specified and verified before implementation. No gameplay completion is claimed by this authorization.
 - Workspace: `C:\ReverieSaga`. Reference: `C:\Quilltale`, read-only.
 - GPT-6.1 Sol owns architecture, all simple/complex coding, tests, diagnosis/repair, integration, and technical review. Astra: advice only when Sol is blocked; never mandatory. Earlier Sol/Luna split is superseded.
@@ -45,17 +47,17 @@ Generation success alone is not completion.
 ### 0.3 Production vs Runtime AI
 
 - Production AI generates and validates code/data/images/3D/animation/audio before shipping; suitable paid services are allowed.
-- Runtime LLM supports required live free-form NPC conversation (§0.4), plus optional new-game/world-generation, chapter transition, loading/preparation, or explicit large-content windows.
+- Runtime LLM supports optional live free-form NPC conversation (approved Option C,2026-11-05), plus optional new-game/world-generation, chapter transition, loading/preparation, or explicit large-content windows.
 - Runtime output: structured data → schema/rule validation → accept/reject → cache/persist → ordinary gameplay data.
-- Ordinary movement/combat turns require neither LLM prose nor live image/3D/audio generation. NPC conversation is a distinct required live-generation interaction.
+- Ordinary movement/combat turns require neither LLM prose nor live image/3D/audio generation. Optional free-form NPC conversation is a distinct live-generation interaction;state-aware scripted dialogue supports the complete base game.
 
 ### 0.4 Director Clarification — 2026-11-03
 
 Source:direct director answers during the product/design/implementation alignment review.
-This clarification supersedes conflicting optional-dialogue or generation-windows-only language in earlier design documents;it records intended product behavior,not completed implementation or a new coding order.
+Except for the superseding2026-11-05 Option C/payment decision,this clarification supersedes conflicting language in earlier design documents;it records intended product behavior,not completed implementation or a new coding order.
 
 - Highest-priority experience:a world and NPC society that change autonomously,player intervention,and later encounters with the consequences. The director may stop and redirect development after inspecting results.
-- Live free-form conversation reflecting each NPC's own memories and personality is a core requirement,not an optional prepared-dialogue experiment. Validated prepared lines alone do not complete it. LLM speech cannot directly overwrite objective world facts,damage,rewards or authoritative state;accepted dialogue/context must remain traceable and replay must not call a live provider.
+- Superseded2026-11-05:Option C requires a complete authored base game with state-aware scripted dialogue plus optional live free-form conversation reflecting each NPC's own memories and personality. Prepared lines alone do not complete the optional free-form capability;API absence must not block main-story completion. LLM speech cannot directly overwrite objective world facts,damage,rewards or authoritative state;accepted dialogue/context must remain traceable and replay must not call a live provider.
 - On pressing Play,the player expects a world-wide baseline already established to some degree. Subsequent player actions change the world and guide its further expansion. A starting-room-only world does not meet this requirement. This does not require every distant entity or visual detail to be materialized/simulated at full resolution.
 - RS-PLAN-001 D01 confirmed2026-11-04:the director selected option1,world-wide structure plus detailed starting area. Establish countries,major cities,roads and faction relationships before play;materialize local residents,buildings and incidents as areas become relevant,consistent with established facts. A distant trade city already exists on the map and can be affected by disrupted trade before the player visits. This settles the initial breadth/detail strategy;it does not require all distant residents or facilities to be generated at startup.
 - RS-PLAN-001 D02 confirmed2026-11-04:the director selected option1 and clarified that the large-scale structure is prepared first;smaller-scale structures and details of the large-scale structure become concrete as play progresses. Later elaboration may establish small settlements,caves,ruins and local settings within the existing framework,consistent with established geography,history and committed events. Elaboration is distinct from an actual world-changing event;the framework may change through gameplay consequences rather than being silently rewritten during elaboration. These examples specify permitted scope,not mandatory content or population targets.
@@ -66,6 +68,7 @@ This clarification supersedes conflicting optional-dialogue or generation-window
 - RS-PLAN-001 D07 confirmed2026-11-04:submitted dialogue is speech actually delivered to the NPC;social response and memory do not require a second confirmation. [Speech consequences](#26-speech-consequences--director-decision-2026-11-04) owns the distinction from D06 action execution.
 - RS-PLAY-001 world scale confirmed2026-11-04:6continents,6countries,12major cities,with clearly distinct regional characteristics. Generate and retain one development world for ongoing tests;do not regenerate AI setting text on every run. This supersedes earlier proposed numeric profiles.
 - RS-PLAY-001 travel decision confirmed2026-11-04:direct walking is the default;special transport such as carriage or train uses time-summary journeys with interruptions. Neither world-map inspection nor selecting a destination is on-foot teleportation. Particular transport implementations and balance remain separate from this chosen interaction model.
+- RS-PLAY-001I QI01 confirmed2026-11-05:when a time-summary journey encounters a problem,stop and let the player directly choose a supported response such as waiting or returning. Do not silently resolve the problem and continue. The existing walking-default/hybrid transport model remains binding;the bounded order owns precise event,time,persistence and interaction contracts.
 - RS-PLAY-001H QF01 answered2026-11-05:the director requires species,countries,regional groups and action consequences together,and delegates a suitable concrete design to the executor. The earlier country-only recommendation is not the selected scope. Keep ancestry,political membership and earned reputation distinct;implement observable reactions and persistence,not merely setting descriptions. The bounded social order owns initial content,balance,compatibility and verification;broader social simulation remains required beyond its actual acceptance.
 - RS-PLAY-001 first incident confirmed2026-11-04:the director accepts the proposed supply-disruption case and delegates the better testing approach. Preserve a fixed reusable world and representative regression while exercising deterministic variants of supported incidents;do not require fresh AI content generation for each test. Detailed balance and implementation contracts belong to the bounded incident order.
 - RS-PLAY-001G failure behavior confirmed2026-11-04:already delivered player speech and its elapsed time remain after an AI response error. Offer response-only retry or continuing without a reply;retry does not repeat the utterance or charge its speaking time again.
@@ -275,19 +278,19 @@ Maintain each NPC's identity consistency; field models need not render all portr
 
 ## 7. Runtime Content & BYOK
 
-### 7.1 Required Conversation / Optional Content Windows
+### 7.1 Complete Base Game / Optional Conversation and Content
 
-Required:live free-form NPC conversations grounded in each NPC's personality and memories (§0.4). Optional:world packages,chapter quests,NPC backgrounds,dialogue bundles and event content in explicit generation windows. No LLM per move/combat action. Existing preparation tools do not establish live-conversation completion.
+Approved2026-11-05 Option C:complete authored base campaign and state-aware scripted conversations without required API access;optional live free-form conversations grounded in each NPC's personality and memories. Optional world packages,chapter quests,NPC backgrounds and events use explicit generation windows. No LLM per move/combat action. Existing preparation tools do not establish live-conversation or complete-base-game acceptance. See [direction and sequencing](PRODUCT_DIRECTION_2026-11-05.md).
 
 ### 7.2 Business Rule
 
-Player supplies supported API key. No mandatory developer-paid central relay.
+HOLD2026-11-05:commercial API payment/service access is deferred. Prior mandatory player-key/BYOK rule is superseded;neither direct provider billing nor a developer-funded relay is selected. Existing developer-key use is qualification only. Complete base gameplay must not require additional AI payment. Resolve Steam/provider requirements before shipping a payment design.
 Provider/model/tier quotas are mutable, not fixed capacity promises. “1,500 turns/day” and “unlimited free play” are not guarantees.
 
 ### 7.3 Window UX
 
 New game / chapter transition → generate or load → validate → save/cache → play.
-For optional content windows:bounded retry,defer,accepted cached fallback,or explicit error/status;never fake success. Live-conversation provider/latency/failure UX requires its own design contract;these window options are not automatic approval to replace the required conversation with fixed lines.
+For optional content windows:bounded retry,defer,accepted cached fallback,or explicit error/status;never fake success. Optional live-conversation provider/latency/failure UX requires its own design contract;the complete base game uses authored,state-aware dialogue. Optional AI failure must not falsely appear to be generated speech.
 
 ## 8. Memory & Retrieval
 
@@ -368,7 +371,7 @@ Do not bulk-produce final assets before stable contracts/import gates.
 
 MASTER defines product outcomes; v2.6 prompt defines engineering invariants/decision freedom; Sol designs.
 Client, IPC, persistence, retrieval, and packaging infrastructure may be replaced with justified alternatives.
-Fixed: graphical HD-2D/2.5D turn RPG; deterministic truth; human-director/AI-production workflow; pre-generated 3D/audio/voice; SD1.5+LoRA+ADetailer; Windows standalone;no mandatory LLM per movement/combat turn;required memory/personality-grounded live NPC conversation and initial world baseline (§0.4).
+Fixed: graphical HD-2D/2.5D turn RPG; deterministic truth; human-director/AI-production workflow; pre-generated 3D/audio/voice; SD1.5+LoRA+ADetailer; Windows standalone;no mandatory LLM per movement/combat turn;complete authored base game,optional memory/personality-grounded live NPC conversation and initial world baseline (§0.4 and approved2026-11-05 direction).
 
 ## 15. Clarifications
 

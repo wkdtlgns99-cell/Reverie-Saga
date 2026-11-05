@@ -115,10 +115,21 @@ $env:PYTHONPATH = "$PWD/src"
 
 The same stored world has6continents,6countries and12major cities. Map clicks inspect
 places;road buttons/Left-Right while the road has focus walk one metre per recorded second.
-Default progress is `tmp/world-social-play/game.sqlite`;save/load uses slot01.
-Earlier conversation/supply-only progress remains at its original separate paths and pins.
+Default progress is `tmp/world-transport-play/game.sqlite`;save/load uses slot01.
+Earlier social/conversation/supply-only progress remains at its original separate paths and pins.
 Idle,map,inventory and offer consideration advance one game second per ten real seconds;
 ESC pauses. Movement/confirmed interactions advance their recorded duration.
+
+**마차·선박** shows adjacent boarding terms and explicit confirmation:public fare0,carriage5m/s
+on roads,ship8m/s on sea routes. The world map only inspects places. Journeys process bounded
+time summaries while keeping actual distance/time and world supply results. A checkpoint
+problem stops movement;choose waiting,continuation after clearance,or physical return.
+Waiting never silently resumes. ESC holds further segments;restarting an active journey
+requires explicit continuation. Local NPC/actions are unavailable in transit. Failed/uncertain
+storage or display acknowledgement retries the same command/duration,not a newly planned trip.
+Current-host actual Tk+SQLite carriage plus longest sea route:35commands/93851game seconds,
+39.539s total,max segment1.787s. Segment2sTARGET met;total30sTARGET remains OPEN. No speed/
+clock distortion or scheduler bypass. [Transport evidence](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
 
 **종족·세력 관계** opens nonmodal identity,city reputation and public diplomacy inspection.
 The retained social catalog defines6ancestries,6national and12city groups,and48resident
@@ -156,8 +167,13 @@ runtime has no artificial gap,no paid fallback and records each attempt in ignor
 `tmp/gemini-runtime-profile`. Never commit credentials or private progress.
 
 Live qualification on the current host accepted two personas,own-memory recall after
-restart and a supported action proposal. Four calls10.9–21.3s;two miss the15sTARGET.
-Local2D exploration,transport journeys,broader social mechanics and final native/device/
+restart and a supported action proposal. Earlier four calls10.9–21.3s;two miss the15sTARGET.
+Later two social-context calls5.885/1.687s passed that target;small samples are not a latency guarantee.
+Approved2026-11-05 product direction is a complete authored base game with optional free-form
+dialogue;commercial API payment/access remains HOLD. This prototype's development-key path
+does not establish the complete base campaign or a shipping payment design.
+[Direction and next ownership review](docs/PRODUCT_DIRECTION_2026-11-05.md).
+Local2D exploration,broader social mechanics and final native/device/
 release qualification remain open. Existing saves retain pins;no silent migration.
 [Conversation completion contract](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md).
 

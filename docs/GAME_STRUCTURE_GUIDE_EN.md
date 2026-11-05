@@ -21,7 +21,7 @@ Read this compact file for location questions;open detailed references only for 
 | 1 | 외부 제작 | Prepare images/portraits/icons,3D characters/equipment/environments,animation,BGM/SFX/short voice,lore/story/character premises. Candidate → validation/approval → import/build check. “External” means before ordinary play,not necessarily a remote service. |
 | 2 | 내부 계산 | Authoritative Python rules:movement/range/combat,materials/destruction,visibility/noise/weather,hazards/injury/disease/food/fatigue,clock/delayed events,economy/trade/factions,NPC cognition/off-screen actions,quest stages/rewards. Accepted formulas execute as code. VS Code only edits source. |
 | 3 | 내부 데이터 | Structured NPC/monster/item/equipment/skill/status/material/place/faction/quest/event/dialogue definitions;fields,IDs,conditions,effects and asset bindings. Examples are not finalized schemas. Text proposals require supported mechanics and valid bindings. |
-| 4 | 플레이 중 AI | Required live free-form NPC conversation grounded in each NPC's personality/memories;optional world/NPC/quest/event generation in new-game,chapter/loading/preparation windows. Context includes committed state,NPC goals/relations and retrieved records. Keyword/vector search/summaries supply derived context. Validate/accept/persist output before use. |
+| 4 | 플레이 중 AI | Approved Option C:optional live free-form NPC conversation grounded in each NPC's personality/memories alongside complete authored base dialogue;optional world/NPC/quest/event generation in new-game,chapter/loading/preparation windows. Context includes committed state,NPC goals/relations and retrieved records. Keyword/vector search/summaries supply derived context. Validate/accept/persist output before use. |
 | 5 | 화면·연출 | Graphical input → game commands;approved asset assembly,HD-2D/pixel/toon rendering,lighting,camera,animation/VFX,UI/portraits/dialogue and audio playback. Unity is the prototype;final engine needs qualification. Present committed facts. |
 | 6 | 저장 | Persist/restore world state,events,NPC memories,accepted content/packages;save/load/recovery/retry identity. Manage media/provenance and rebuildable search indexes separately. Large assets are not duplicated in each save. Standalone packaging hides backend/tool setup from players. |
 | 7 | 전체 연결 | Explain/verify an end-to-end playable flow across1–6. Not another simulation engine,and not the default label for every unit test. Identify the participating categories. |
@@ -42,12 +42,12 @@ Read this compact file for location questions;open detailed references only for 
 
 Authoritative visibility/noise effects are2;visual/audio expression is5. NPC factual memory/state
 belongs to2+6;retrieval for generation is4. AI-assisted engine coding still belongs to2.
-Ordinary movement/combat turns need no live LLM or live image/model/audio generation. Live NPC
-free-form conversation is a core requirement per MASTER §0.4;prepared dialogue alone does not meet it.
+Ordinary movement/combat turns need no live LLM or live image/model/audio generation.
+Option C (2026-11-05) makes free-form conversation optional beside the complete authored base game;prepared dialogue alone does not complete that optional capability. API payment/access remains HOLD.
 AI cannot overwrite objective damage,rewards or past facts;replay uses saved accepted content without
 live calls. Play requires an established world-wide baseline followed by action-driven change/expansion;
 initial coverage/detail and generation timing remain unresolved. User directs/approves production.
-Existing BYOK policy remains;provider/tier/quota and conversation failure UX require qualification.
+Payment/access design is deferred;developer BYOK qualification is not a release policy.
 
 ## Example Flow
 

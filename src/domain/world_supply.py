@@ -4,7 +4,7 @@ from dataclasses import dataclass, replace
 import hashlib
 import re
 
-from domain.primitives import EntityId, TypeKey, require_integer
+from domain.primitives import EntityId, MAX_INT, TypeKey, require_integer
 from domain.state_types import ComponentRecord
 from domain.world import Resident, WorldCatalog
 from domain.world_population import InventoryState, ResidentActivity, resident_activity
@@ -129,6 +129,25 @@ def advance_supply(
         received=received,
         missed=missed,
     )
+
+
+def advance_supply_interval(
+    before: SupplyState, scenario: SupplyScenario, place_id: str, start_tick: int, end_tick: int
+) -> SupplyState:
+    """Exact endpoint catch-up:non-boundary seconds cannot change this domain state."""
+    require_integer(start_tick)
+    require_integer(end_tick, start_tick, min(MAX_INT, start_tick + 3600))
+    boundaries: set[int] = set()
+    for interval in (CONSUMPTION_INTERVAL_SECONDS, SUPPLY_INTERVAL_SECONDS):
+        boundaries.update(range((start_tick // interval + 1) * interval, end_tick + 1, interval))
+    if place_id == scenario.place_id and before.stage not in (2, 3):
+        expiry = max(start_tick + 1, scenario.end_tick)
+        if expiry <= end_tick:
+            boundaries.add(expiry)
+    state = before
+    for tick in sorted(boundaries):
+        state = advance_supply(state, scenario, place_id, tick)
+    return state
 
 
 def supply_action(
