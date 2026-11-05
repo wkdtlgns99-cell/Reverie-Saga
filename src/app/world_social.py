@@ -152,6 +152,9 @@ class SocialPanel:
             (c.name for c in self.world.countries if c.id == state.country_id),
             "국적 없음" if state.country_id == "none" else "미선택",
         )
+        if state.ancestry_id:
+            self.ancestry.set(ancestry)
+            self.country.set(citizenship)
         lines = [
             f"내 종족: {ancestry} · 국적: {citizenship}",
             city_standing(state, self.catalog, place_id),

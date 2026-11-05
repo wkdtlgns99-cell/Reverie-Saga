@@ -34,6 +34,10 @@ one social-aware context factory;old profiles use identical default contexts.
   integration/Tk cases PASS10.76s afterward. Earlier unaffected evidence reused.
   Final UI recovery-control adjustment:6actual worker/Tk cases PASS4.05s;strict346/Ruffboth/
   scoped format/diff checks PASS afterward.
+  Publication self-review found saved identity selectors reverted visually to defaults on
+  restart while the authoritative label/state stayed correct. Actual reopen case1FAIL1.58s;
+  render now restores both selectors from saved identity. Final7worker/TkPASS4.80s,strict346/
+  Ruffboth/format/diff PASS. No pin/context/CORE/resource change;unaffected evidence reused.
 - Extended literal engine-independence configuration AND synthetic fixtures:105governance
   cases PASS112.48s. New engine forward/reverse independence and missing-input probes added;
   no guard weakened. Import contracts3inclusive/1runtime PASS,pip check PASS.

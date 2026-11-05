@@ -280,3 +280,33 @@ def test_hostility_keeps_existing_supply_collection_delivery_and_real_merit(tmp_
         assert dict(update.social.reputation)["faction:nation-k0"] == -5
     finally:
         worker.close()
+
+
+def test_reopened_panel_selectors_show_saved_identity(root: tk.Tk, tmp_path: Path) -> None:
+    world = load_world()
+    path = tmp_path / "reopened.sqlite"
+    first = WorldWorker(path, world, social=load_social(world))
+    try:
+        assert (
+            first.request(
+                "social",
+                social_action=SocialAction("identify", "ancestry:human", "country:k2"),
+                request_key="identify",
+            )
+            .result(10)
+            .social_committed
+        )
+    finally:
+        first.close()
+    reopened = WorldWorker(path, world, social=load_social(world))
+    try:
+        window = WorldMapWindow(root, world, reopened, now_ns=lambda: 0)
+        settle(root, window)
+        panel = window.social_panel
+        assert panel is not None
+        assert panel.ancestry.get() == "인간" and panel.country.get() == "백로 공국"
+        assert str(panel.ancestry_box["state"]) == "disabled"
+        assert str(panel.country_box["state"]) == "disabled"
+        window.dispose()
+    finally:
+        reopened.close()
