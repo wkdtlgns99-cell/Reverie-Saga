@@ -23,11 +23,10 @@ regional groups and action effects,with concrete design delegated. Hdelivered th
 ordinary PR38merge0d954c7. Both final-head4f0f470runs41948302526/41948295707completedSUCCESS,
 each3986full/32boundaryPASS. Fresh fetch/ff verified main equals origin/main and clean;
 merged/tested trees equal3d453c08083d9886124574af1c0e7fb0a683e84b. [Hreceipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
-Current codex/world-transport-20261105 executes [Iorder](docs/work_orders/RS-PLAY-001I_TRANSPORT.md).
-QI01answered:stop on a journey problem and let the player directly choose the response.
-No pending product question for this feature. READY contracts retain walking,add carriage/
-ship summary/closures/wait/return/recovery and exact endpoint supply catch-up in an isolated
-profile;explicit per-schema summary duration extends only the three scoped COREfiles while old profiles remain identical. Local acceptance4022full/41new/236affected/static PASS;Tk+SQLite max segment1.787s,total39.539s leaves30stotal TARGET open. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md). Publication/CI pending;full parent incomplete. No native/ComputerUse/device/independent/release/agent/administration waiver. Do not restart completed PR38delivery or re-ask settled travel mode.
+Transport PR39merged421de09 after both final-head2c58f357runs42038935289/42038877403
+completedSUCCESS,each4027full/32boundaryPASS. Fresh fetch/ff verified localmain=origin/main,
+clean,and merged/tested tree4a4bb4ee339e98bf7127e2c84fc8ba17901001a0. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
+Current codex/data-ownership-review-20261105 completed local [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) under [RS-OWN-001](docs/work_orders/RS-OWN-001_DATA_OWNERSHIP_REVIEW.md):8families/30records have matching registered writers;knowledge visibility/long-term retention/base-dialogue/client integration need bounded contracts. Focused90PASS25.43s. Review publication pending;no runtime/Qdrant implementation. Cdirection approved;commercial API payment/access HOLD. Transport30stotalTARGET remains open (actual39.539s);not a scheduler bypass or product-completion claim. Native/device/independent/release/agent holds remain. Full parent incomplete. Do not restart delivered I/H or re-ask settled choices.
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests

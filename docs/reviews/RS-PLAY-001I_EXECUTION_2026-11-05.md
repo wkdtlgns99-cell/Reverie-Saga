@@ -1,6 +1,6 @@
 # RS-PLAY-001I — Transport Execution Evidence
 
-LOCAL_ACCEPTANCE2026-11-05;publication/CI still pending at this snapshot. Self-review,not
+MERGED_PR392026-11-05;final publication evidence below supplements the original local snapshot. Self-review,not
 independent/native/device/release qualification. Primary2;related3/5/6/7.
 [READY contract](../work_orders/RS-PLAY-001I_TRANSPORT.md). Baseline0d954c7 on
 codex/world-transport-20261105. No existing save migration,dependency install or agent.
@@ -100,4 +100,11 @@ visibility A–J review and ranked proposals. No Qdrant or graphical expansion s
 
 ## Publication
 
-Local acceptance and self-review complete,with the explicit nonblocking30stotal TARGET open. Pending scoped commit/PR,required final-head CI and ordinary main sync.
+Final head2c58f3575cc4e63b7ace1fc02e232b34164f2d36. PR42038935289/job127284295813:
+4027fullPASS812.69s/32boundaryPASS6.10s. Push42038877403/job127284095072:
+4027fullPASS913.52s/32boundaryPASS6.40s. Both runs terminalSUCCESS/all steps success;fresh
+reviews/threads empty,head/base unchanged before ordinary [PR39](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/39)
+merge421de09dd13ddd56377aee2279599969386f99b4. Fetch/ff verified localmain=origin/main and
+clean;merged/tested tree4a4bb4ee339e98bf7127e2c84fc8ba17901001a0. No bypass/direct-main push.
+The30stotalTARGET remains open. Final metadata also records this evidence;subsequent factual
+document updates belong to the ownership-review branch,not an untested transport code change.
