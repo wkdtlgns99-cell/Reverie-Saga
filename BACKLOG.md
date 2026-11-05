@@ -8,7 +8,24 @@ Replace current rows when status changes;put execution detail in linked receipts
 
 ## Current Delivery
 
-DIRECTOR_CONTINUATION2026-11-05:latest scope is ONLY previously asked/answered work. The director is going to sleep and explicitly requests
+LATEST_DIRECTOR_SCOPE2026-11-05:finish already answered requirements,then continue remaining
+backlog questions one at a time and implement each answer. This supersedes the earlier
+no-questions instruction and assistant-only finish-G/whole-goal-closure interpretation.
+PR37factual receipt now merged53914db;both final-head3955full/32boundaryPASS,localmain equal/
+clean and tested/merged tree equality verified. Gtask delivery is complete;the whole answered
+product goal is not. Published main still lacks initial faction relationships and special transport.
+Current Htask QF01answered2026-11-05:director requires species,countries,regional groups
+and action effects together;executor chooses suitable concrete design. Earlier country-only
+proposal/pending scope blocker superseded. [READY order](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md)
+owns data,ownership,actions,gates,compatibility and verification. Hlocal accepted:114combined
+PASS56.03s,then27socialPASS10.76s after typed validation cleanup;105governancePASS,strict346/
+Ruffboth/import3+1/pipPASS. Final actual Gemini responses correctly state nation friendship
+and hostile organization access limits,5.885/1.687s with zero generation time charge. Ordinary
+publication pending;not parent completion. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
+no agent/native/device/independent/release/administration waiver.
+
+
+HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
 continuing autonomously without questions. This supersedes earlier ask-after-batch wording.
 Proceed with settled implementation,repair,verification and ordinary per-task PR/main delivery;
 record routine choices and actual limits. Preserve unresolved new-contract/native/device/
@@ -17,7 +34,7 @@ independent/release/agent boundaries;do not treat silence as approval. Native go
 
 LATEST_DELIVERY_SCOPE2026-11-04:director explicitly resumes PR35verification/repair,
 ordinary protected merge and local-main synchronization,then the remaining previously
-confirmed backlog implementation. The latest2026-11-05director instruction limits work to prior answers without questions;the current executable A–Gbatch is now delivered. Earlier PR-only pause is superseded.
+confirmed backlog implementation. Latest2026-11-05director resumes sequential clarification/implementation;Gis delivered and Hscope answered. Earlier PR-only pause is superseded.
 Current checkout C:/Reverie Saga. No agents/native/device/independent/release waiver.
 [PR35verification order](docs/work_orders/PR35_VERIFY_AND_MERGE_2026-11-04.md).
 PR35foundation acceptance does not complete the unfinished Gworker/UI/provider feature.
@@ -25,7 +42,8 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | Current slice | State | Observable scope / evidence |
 |---|---|---|
 | RS-PLAY-001F / A–E foundations | MERGED_PR34 / main6b12f51 | Fixed6/6/12world,map,road footsteps,durable progress,slow clock/ESC,local definitions/routines/inventory and conserved supply-delivery play. Both final CI runs each3891full+31boundaryPASS;local/remote main and tested tree equality verified. [PR34](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/34),[receipt](docs/reviews/RS-PLAY-001F_EXECUTION_2026-11-04.md) |
-| RS-PLAY-001G | PR35_FOUNDATION_MERGED / UI_LOCAL_ACCEPTED | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Both final-head CI41854770228/41854837409each3955full/32boundaryPASS;ordinary PR36merged4ef3cbd and fresh localmain equality/clean verified. Current answered batch closed;no new feature selection. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
+| RS-PLAY-001G | MERGED_PR36 / main4ef3cbd | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Both final-head CI41854770228/41854837409each3955full/32boundaryPASS;ordinary PR36merged4ef3cbd and fresh localmain equality/clean verified. Gdelivery complete;latest scope/QF01above resumes remaining parent work. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
+| RS-PLAY-001H | LOCAL_ACCEPTED / PUBLICATION_PENDING | Director requires species,countries,regional groups and action effects;concrete design delegated. READY contracts cover distinct social profile,real reputation/access/dialogue/save integration;acceptance pending. [Draft](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 
@@ -65,7 +83,7 @@ Actual Gemini four responses accepted:two personas,own-name recall after restart
 accept proposal with gold0/items empty before confirmation. Latencies16.550/12.324/21.338/
 10.944s;two15sTARGET misses explicit. Final affected207PASS/static337/import3+1qualified. Both published-head CI3955full/32boundaryPASS;PR36merged4ef3cbd,localmain equal/clean. Current answered batch delivered.
 [Completion order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) owns remaining acceptance.
-Latest director restricts work to already asked/answered scope and prohibits further questions.
+Historical pre-resume instruction limited work to already answered scope;latest scope/QF01above supersedes this.
 Ordinary publication/main synchronization of this accepted batch is complete;do not select new unanswered expansion
 features or invent missing contracts. Parent broader requirements retain their actual limits. Native/device/independent/
 CP06/release holds remain. Local2D/transport and broad social simulation remain incomplete.

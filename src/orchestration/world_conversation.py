@@ -76,6 +76,9 @@ from domain.world_population import resident_activity
 from domain.world_supply import SupplyScenario
 from domain.world_travel import WORLD_ACTOR, TravelerRecord
 from orchestration.world_conversation_context import context_from_read
+from domain.primitives import FieldFamily
+from contracts.world_social import SOCIAL_FAMILY
+from domain.world_social import SocialCatalog
 from orchestration.world_population import _StateView
 from orchestration.world_supply import SupplyCheckpointPolicy
 
@@ -145,10 +148,26 @@ def _local_npc(state: ReadPort, npc_id: str, tick: int) -> tuple[Resident, str]:
 
 
 class ConversationAdmission:
-    reads = (CONVERSATION_FAMILY, TRAVEL_FAMILY, SETTLEMENT_FAMILY, SUPPLY_FAMILY, INVENTORY_FAMILY)
+    reads: tuple[FieldFamily, ...] = (
+        CONVERSATION_FAMILY,
+        TRAVEL_FAMILY,
+        SETTLEMENT_FAMILY,
+        SUPPLY_FAMILY,
+        INVENTORY_FAMILY,
+    )
 
-    def __init__(self, world: WorldCatalog, scenario: SupplyScenario, schema: TypeKey) -> None:
+    def __init__(
+        self,
+        world: WorldCatalog,
+        scenario: SupplyScenario,
+        schema: TypeKey,
+        *,
+        social: SocialCatalog | None = None,
+    ) -> None:
         self.world, self.scenario, self.schema = world, scenario, schema
+        self.social = social
+        if social is not None:
+            self.reads = (*self.reads, SOCIAL_FAMILY)
 
     def admit(
         self, command: GameCommand, state: ReadPort, *, start_tick: Tick, world_id: str
@@ -175,7 +194,9 @@ class ConversationAdmission:
                 if not before.exchanges:
                     raise ValueError("DIALOGUE_NO_UTTERANCE")
                 resident, _ = _local_npc(state, before.exchanges[-1].npc_id, start_tick)
-                context = context_from_read(state, self.world, self.scenario, start_tick)
+                context = context_from_read(
+                    state, self.world, self.scenario, start_tick, social=self.social
+                )
                 if payload.context_sha256 != context.sha256:
                     raise ValueError("DIALOGUE_CONTEXT_STALE")
                 if payload.proposal != "none" and payload.proposal != context.available_action:

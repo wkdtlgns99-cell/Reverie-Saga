@@ -1,0 +1,528 @@
+{
+  "format": "reverie-social/v1",
+  "world_seed": "2026110420261104202611042026110420261104202611042026110420261104",
+  "ancestries": [
+    {
+      "id": "ancestry:emberkin",
+      "name": "불씨사람",
+      "culture": "가마와 열원을 다루는 공방 문화"
+    },
+    {
+      "id": "ancestry:human",
+      "name": "인간",
+      "culture": "여러 땅의 농업과 도시 교류 전통"
+    },
+    {
+      "id": "ancestry:reedkin",
+      "name": "갈대사람",
+      "culture": "강과 습지의 수로 공동관리 전통"
+    },
+    {
+      "id": "ancestry:stoneborn",
+      "name": "바위사람",
+      "culture": "광물 가공과 공동 작업 전통"
+    },
+    {
+      "id": "ancestry:sylvan",
+      "name": "숲사람",
+      "culture": "숲의 계절과 구전 기록 전통"
+    },
+    {
+      "id": "ancestry:tidekin",
+      "name": "물결사람",
+      "culture": "해안과 섬의 항해·조선 문화"
+    }
+  ],
+  "factions": [
+    {
+      "id": "faction:city-p0-a",
+      "name": "물버들 생활조합",
+      "country_id": "country:k0",
+      "place_id": "place:p0-a"
+    },
+    {
+      "id": "faction:city-p0-b",
+      "name": "여울항 항만조합",
+      "country_id": "country:k0",
+      "place_id": "place:p0-b"
+    },
+    {
+      "id": "faction:city-p1-a",
+      "name": "샘고리 생활조합",
+      "country_id": "country:k1",
+      "place_id": "place:p1-a"
+    },
+    {
+      "id": "faction:city-p1-b",
+      "name": "붉은돛 항만조합",
+      "country_id": "country:k1",
+      "place_id": "place:p1-b"
+    },
+    {
+      "id": "faction:city-p2-a",
+      "name": "흰벼랑 생활조합",
+      "country_id": "country:k2",
+      "place_id": "place:p2-a"
+    },
+    {
+      "id": "faction:city-p2-b",
+      "name": "해빙항 항만조합",
+      "country_id": "country:k2",
+      "place_id": "place:p2-b"
+    },
+    {
+      "id": "faction:city-p3-a",
+      "name": "비나루 생활조합",
+      "country_id": "country:k3",
+      "place_id": "place:p3-a"
+    },
+    {
+      "id": "faction:city-p3-b",
+      "name": "푸른하구 항만조합",
+      "country_id": "country:k3",
+      "place_id": "place:p3-b"
+    },
+    {
+      "id": "faction:city-p4-a",
+      "name": "불가마 생활조합",
+      "country_id": "country:k4",
+      "place_id": "place:p4-a"
+    },
+    {
+      "id": "faction:city-p4-b",
+      "name": "검은닻 항만조합",
+      "country_id": "country:k4",
+      "place_id": "place:p4-b"
+    },
+    {
+      "id": "faction:city-p5-a",
+      "name": "별돛 생활조합",
+      "country_id": "country:k5",
+      "place_id": "place:p5-a"
+    },
+    {
+      "id": "faction:city-p5-b",
+      "name": "바람문 항만조합",
+      "country_id": "country:k5",
+      "place_id": "place:p5-b"
+    },
+    {
+      "id": "faction:nation-k0",
+      "name": "여울 왕국 의회",
+      "country_id": "country:k0",
+      "place_id": ""
+    },
+    {
+      "id": "faction:nation-k1",
+      "name": "모래샘 연맹 의회",
+      "country_id": "country:k1",
+      "place_id": ""
+    },
+    {
+      "id": "faction:nation-k2",
+      "name": "백로 공국 의회",
+      "country_id": "country:k2",
+      "place_id": ""
+    },
+    {
+      "id": "faction:nation-k3",
+      "name": "비숲 연방 의회",
+      "country_id": "country:k3",
+      "place_id": ""
+    },
+    {
+      "id": "faction:nation-k4",
+      "name": "잿빛 자유국 의회",
+      "country_id": "country:k4",
+      "place_id": ""
+    },
+    {
+      "id": "faction:nation-k5",
+      "name": "별돛 동맹 의회",
+      "country_id": "country:k5",
+      "place_id": ""
+    }
+  ],
+  "diplomacy": [
+    {
+      "first": "country:k0",
+      "second": "country:k1",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k0",
+      "second": "country:k2",
+      "score": 20,
+      "reason": "곡물과 철광석 상호 공급 협정"
+    },
+    {
+      "first": "country:k0",
+      "second": "country:k3",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k0",
+      "second": "country:k4",
+      "score": 20,
+      "reason": "농기구와 곡물 교환 협정"
+    },
+    {
+      "first": "country:k0",
+      "second": "country:k5",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k1",
+      "second": "country:k2",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k1",
+      "second": "country:k3",
+      "score": 20,
+      "reason": "소금과 목재 대상 교역 협정"
+    },
+    {
+      "first": "country:k1",
+      "second": "country:k4",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k1",
+      "second": "country:k5",
+      "score": -20,
+      "reason": "항만 통행료와 대상 운송권 분쟁"
+    },
+    {
+      "first": "country:k2",
+      "second": "country:k3",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k2",
+      "second": "country:k4",
+      "score": -20,
+      "reason": "철광석 수출 가격과 제련소 계약 분쟁"
+    },
+    {
+      "first": "country:k2",
+      "second": "country:k5",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k3",
+      "second": "country:k4",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    },
+    {
+      "first": "country:k3",
+      "second": "country:k5",
+      "score": 20,
+      "reason": "선박 건조용 목재 공동 조달"
+    },
+    {
+      "first": "country:k4",
+      "second": "country:k5",
+      "score": 0,
+      "reason": "상호 주권을 인정하며 별도 동맹이나 제재는 없다."
+    }
+  ],
+  "residents": [
+    {
+      "npc_id": "resident:p0-a-0",
+      "place_id": "place:p0-a",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p0-a"
+    },
+    {
+      "npc_id": "resident:p0-a-1",
+      "place_id": "place:p0-a",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p0-a"
+    },
+    {
+      "npc_id": "resident:p0-a-2",
+      "place_id": "place:p0-a",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p0-a"
+    },
+    {
+      "npc_id": "resident:p0-a-3",
+      "place_id": "place:p0-a",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p0-a"
+    },
+    {
+      "npc_id": "resident:p0-b-0",
+      "place_id": "place:p0-b",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p0-b"
+    },
+    {
+      "npc_id": "resident:p0-b-1",
+      "place_id": "place:p0-b",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p0-b"
+    },
+    {
+      "npc_id": "resident:p0-b-2",
+      "place_id": "place:p0-b",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p0-b"
+    },
+    {
+      "npc_id": "resident:p0-b-3",
+      "place_id": "place:p0-b",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p0-b"
+    },
+    {
+      "npc_id": "resident:p1-a-0",
+      "place_id": "place:p1-a",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p1-a"
+    },
+    {
+      "npc_id": "resident:p1-a-1",
+      "place_id": "place:p1-a",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p1-a"
+    },
+    {
+      "npc_id": "resident:p1-a-2",
+      "place_id": "place:p1-a",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p1-a"
+    },
+    {
+      "npc_id": "resident:p1-a-3",
+      "place_id": "place:p1-a",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p1-a"
+    },
+    {
+      "npc_id": "resident:p1-b-0",
+      "place_id": "place:p1-b",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p1-b"
+    },
+    {
+      "npc_id": "resident:p1-b-1",
+      "place_id": "place:p1-b",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p1-b"
+    },
+    {
+      "npc_id": "resident:p1-b-2",
+      "place_id": "place:p1-b",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p1-b"
+    },
+    {
+      "npc_id": "resident:p1-b-3",
+      "place_id": "place:p1-b",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p1-b"
+    },
+    {
+      "npc_id": "resident:p2-a-0",
+      "place_id": "place:p2-a",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p2-a"
+    },
+    {
+      "npc_id": "resident:p2-a-1",
+      "place_id": "place:p2-a",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p2-a"
+    },
+    {
+      "npc_id": "resident:p2-a-2",
+      "place_id": "place:p2-a",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p2-a"
+    },
+    {
+      "npc_id": "resident:p2-a-3",
+      "place_id": "place:p2-a",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p2-a"
+    },
+    {
+      "npc_id": "resident:p2-b-0",
+      "place_id": "place:p2-b",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p2-b"
+    },
+    {
+      "npc_id": "resident:p2-b-1",
+      "place_id": "place:p2-b",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p2-b"
+    },
+    {
+      "npc_id": "resident:p2-b-2",
+      "place_id": "place:p2-b",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p2-b"
+    },
+    {
+      "npc_id": "resident:p2-b-3",
+      "place_id": "place:p2-b",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p2-b"
+    },
+    {
+      "npc_id": "resident:p3-a-0",
+      "place_id": "place:p3-a",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p3-a"
+    },
+    {
+      "npc_id": "resident:p3-a-1",
+      "place_id": "place:p3-a",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p3-a"
+    },
+    {
+      "npc_id": "resident:p3-a-2",
+      "place_id": "place:p3-a",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p3-a"
+    },
+    {
+      "npc_id": "resident:p3-a-3",
+      "place_id": "place:p3-a",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p3-a"
+    },
+    {
+      "npc_id": "resident:p3-b-0",
+      "place_id": "place:p3-b",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p3-b"
+    },
+    {
+      "npc_id": "resident:p3-b-1",
+      "place_id": "place:p3-b",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p3-b"
+    },
+    {
+      "npc_id": "resident:p3-b-2",
+      "place_id": "place:p3-b",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p3-b"
+    },
+    {
+      "npc_id": "resident:p3-b-3",
+      "place_id": "place:p3-b",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p3-b"
+    },
+    {
+      "npc_id": "resident:p4-a-0",
+      "place_id": "place:p4-a",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p4-a"
+    },
+    {
+      "npc_id": "resident:p4-a-1",
+      "place_id": "place:p4-a",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p4-a"
+    },
+    {
+      "npc_id": "resident:p4-a-2",
+      "place_id": "place:p4-a",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p4-a"
+    },
+    {
+      "npc_id": "resident:p4-a-3",
+      "place_id": "place:p4-a",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p4-a"
+    },
+    {
+      "npc_id": "resident:p4-b-0",
+      "place_id": "place:p4-b",
+      "ancestry_id": "ancestry:stoneborn",
+      "faction_id": "faction:city-p4-b"
+    },
+    {
+      "npc_id": "resident:p4-b-1",
+      "place_id": "place:p4-b",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p4-b"
+    },
+    {
+      "npc_id": "resident:p4-b-2",
+      "place_id": "place:p4-b",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p4-b"
+    },
+    {
+      "npc_id": "resident:p4-b-3",
+      "place_id": "place:p4-b",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p4-b"
+    },
+    {
+      "npc_id": "resident:p5-a-0",
+      "place_id": "place:p5-a",
+      "ancestry_id": "ancestry:sylvan",
+      "faction_id": "faction:city-p5-a"
+    },
+    {
+      "npc_id": "resident:p5-a-1",
+      "place_id": "place:p5-a",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p5-a"
+    },
+    {
+      "npc_id": "resident:p5-a-2",
+      "place_id": "place:p5-a",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p5-a"
+    },
+    {
+      "npc_id": "resident:p5-a-3",
+      "place_id": "place:p5-a",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p5-a"
+    },
+    {
+      "npc_id": "resident:p5-b-0",
+      "place_id": "place:p5-b",
+      "ancestry_id": "ancestry:tidekin",
+      "faction_id": "faction:city-p5-b"
+    },
+    {
+      "npc_id": "resident:p5-b-1",
+      "place_id": "place:p5-b",
+      "ancestry_id": "ancestry:emberkin",
+      "faction_id": "faction:city-p5-b"
+    },
+    {
+      "npc_id": "resident:p5-b-2",
+      "place_id": "place:p5-b",
+      "ancestry_id": "ancestry:human",
+      "faction_id": "faction:city-p5-b"
+    },
+    {
+      "npc_id": "resident:p5-b-3",
+      "place_id": "place:p5-b",
+      "ancestry_id": "ancestry:reedkin",
+      "faction_id": "faction:city-p5-b"
+    }
+  ]
+}

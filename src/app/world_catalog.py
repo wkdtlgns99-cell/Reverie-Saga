@@ -7,12 +7,18 @@ import sys
 
 from domain.canonical import canonical_json, decode_json, object_value
 from domain.world import WorldCatalog, decode_world, elaborate_place, generate_world
+from domain.world_social import SocialCatalog, decode_social
 
 DEVELOPMENT_WORLD = Path(__file__).resolve().parents[2] / "content/worlds/development-world-v1.json"
+DEVELOPMENT_SOCIAL = DEVELOPMENT_WORLD.with_name("development-social-v1.json")
 
 
 def load_world(path: Path = DEVELOPMENT_WORLD) -> WorldCatalog:
     return decode_world(object_value(decode_json(path.read_bytes())))
+
+
+def load_social(world: WorldCatalog, path: Path = DEVELOPMENT_SOCIAL) -> SocialCatalog:
+    return decode_social(object_value(decode_json(path.read_bytes())), world)
 
 
 def main(argv: Sequence[str] | None = None) -> int:

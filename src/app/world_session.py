@@ -10,6 +10,7 @@ from app.world_time_registry import timed_world_bundle
 from app.world_population_registry import population_world_bundle
 from app.world_supply_registry import supply_world_bundle
 from app.world_conversation_registry import conversation_world_bundle
+from app.world_social_registry import social_world_bundle
 from contracts.messages import CommandPayload
 from contracts.skeleton import FeatureBundle
 from contracts.persistence import DurableCheckpoint
@@ -23,6 +24,7 @@ from domain.world_population import InventoryRecord, InventoryState, SettlementR
 from domain.world_travel import WORLD_ACTOR, TravelState, TravelerRecord
 from domain.world_supply import SupplyRecord, SupplyScenario, SupplyState
 from domain.world_conversation import ConversationRecord, ConversationState
+from domain.world_social import SocialCatalog, SocialRecord, initial_social
 
 
 def _bundle(
@@ -32,7 +34,10 @@ def _bundle(
     living: bool,
     supply: SupplyScenario | None,
     conversation: bool,
+    social: SocialCatalog | None = None,
 ) -> FeatureBundle:
+    if social is not None:
+        return social_world_bundle(world, social, supply or SupplyScenario())
     if conversation:
         return conversation_world_bundle(world, supply or SupplyScenario())
     if supply is not None:
@@ -49,8 +54,13 @@ def world_checkpoint(
     living: bool = False,
     supply: SupplyScenario | None = None,
     conversation: bool = False,
+    social: SocialCatalog | None = None,
 ) -> DurableCheckpoint:
-    bundle = _bundle(world, timed=timed, living=living, supply=supply, conversation=conversation)
+    if social is not None:
+        conversation = True
+    bundle = _bundle(
+        world, timed=timed, living=living, supply=supply, conversation=conversation, social=social
+    )
     io = state_io((bundle,))
     identifier = (
         "w1-"
@@ -99,6 +109,13 @@ def world_checkpoint(
                 key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
             )
         )
+    if social is not None:
+        components = tuple(
+            sorted(
+                (*components, SocialRecord(WORLD_ACTOR, initial_social(social))),
+                key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
+            )
+        )
     core = CoreSnapshot(
         identifier,
         world.seed_hex,
@@ -122,16 +139,29 @@ def open_world_session(
     living: bool = False,
     supply: SupplyScenario | None = None,
     conversation: bool = False,
+    social: SocialCatalog | None = None,
 ) -> DurableSession:
     bundles = (
-        _bundle(world, timed=timed, living=living, supply=supply, conversation=conversation),
+        _bundle(
+            world,
+            timed=timed,
+            living=living,
+            supply=supply,
+            conversation=conversation,
+            social=social,
+        ),
     )
     if path.exists():
         return resume_durable(path, bundles=bundles)
     return create_durable(
         path,
         world_checkpoint(
-            world, timed=timed, living=living, supply=supply, conversation=conversation
+            world,
+            timed=timed,
+            living=living,
+            supply=supply,
+            conversation=conversation,
+            social=social,
         ),
         bundles=bundles,
     )

@@ -15,7 +15,24 @@ Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
 ## Checkout and Local Work
 
-DIRECTOR_CONTINUATION2026-11-05:latest scope is ONLY previously asked/answered work. The director is going to sleep and explicitly requests
+LATEST_DIRECTOR_SCOPE2026-11-05:finish already answered requirements,then continue remaining
+backlog questions one at a time and implement each answer. This supersedes the earlier
+no-questions instruction and assistant-only finish-G/whole-goal-closure interpretation.
+PR37factual receipt now merged53914db;both final-head3955full/32boundaryPASS,localmain equal/
+clean and tested/merged tree equality verified. Gtask delivery is complete;the whole answered
+product goal is not. Published main still lacks initial faction relationships and special transport.
+Current Htask QF01answered2026-11-05:director requires species,countries,regional groups
+and action effects together;executor chooses suitable concrete design. Earlier country-only
+proposal/pending scope blocker superseded. [READY order](docs/work_orders/RS-PLAY-001H_FACTION_BASELINE.md)
+owns data,ownership,actions,gates,compatibility and verification. Hlocal accepted:114combined
+PASS56.03s,then27socialPASS10.76s after typed validation cleanup;105governancePASS,strict346/
+Ruffboth/import3+1/pipPASS. Final actual Gemini responses correctly state nation friendship
+and hostile organization access limits,5.885/1.687s with zero generation time charge. Ordinary
+publication pending;not parent completion. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md).
+no agent/native/device/independent/release/administration waiver.
+
+
+HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
 continuing autonomously without questions. This supersedes earlier ask-after-batch wording.
 Proceed with settled implementation,repair,verification and ordinary per-task PR/main delivery;
 record routine choices and actual limits. Preserve unresolved new-contract/native/device/

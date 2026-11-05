@@ -17,9 +17,11 @@ ROOTS = ("app", "adapters", "orchestration", "engines", "contracts", "domain")
 ENGINE_MODULES = (
     "skeleton", "trial", "encounter", "watch", "quest", "npc_memory", "npc_work", "npc_cycle",
     "world_travel", "world_time", "world_population", "world_supply", "world_conversation",
+    "world_social",
 )
 WORLD_ENGINE_MODULES = (
     "world_travel", "world_time", "world_population", "world_supply", "world_conversation",
+    "world_social",
 )
 CONTRACT_NAMES = (
     ("rs-layers", "Reverie Saga six internal layers"),

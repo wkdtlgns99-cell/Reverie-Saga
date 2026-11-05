@@ -16,6 +16,7 @@ from adapters.world_conversation import development_generator
 from contracts.persistence import SaveError
 from contracts.world_time import WorldWait
 from contracts.world_supply import SupplyAction
+from contracts.world_social import SocialAction
 from contracts.turn import GameCommand, TurnCommitted, TurnRejected
 from contracts.world_conversation import ConversationGenerator, ContinueSpeech, PlayerSay
 from domain.world_conversation import ConversationRecord, ConversationState
@@ -28,6 +29,13 @@ from domain.world_population import (
     SettlementRecord,
 )
 from domain.world_supply import DELIVERY_REWARD, SupplyRecord, SupplyScenario, supply_activity
+from domain.world_social import (
+    HOSTILE_THRESHOLD,
+    SocialCatalog,
+    SocialRecord,
+    SocialState,
+    reaction,
+)
 
 
 @dataclass(frozen=True, slots=True)
@@ -43,6 +51,8 @@ class WorldUpdate:
     conversation: ConversationState | None = None
     reply_ready: bool = False
     speech_committed: bool | None = None
+    social: SocialState | None = None
+    social_committed: bool | None = None
 
 
 type WorldAction = Literal[
@@ -56,6 +66,7 @@ type WorldAction = Literal[
     "speech",
     "generate",
     "reply",
+    "social",
 ]
 DIALOGUE_ACTIONS = ("say", "speech", "generate", "reply")
 
@@ -68,12 +79,14 @@ class WorldWorker:
         *,
         scenario: SupplyScenario = SupplyScenario(),
         conversation: bool = False,
+        social: SocialCatalog | None = None,
         generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
         self.world = world
-        self.conversation = conversation
-        self._dialogue = ConversationCoordinator(world, scenario, generator_factory)
+        self.conversation = conversation or social is not None
+        self.social = social
+        self._dialogue = ConversationCoordinator(world, scenario, generator_factory, social=social)
         self._owner: DurableSession | None = None
         self._pending_wait: GameCommand | None = None
         self._wait_recovery = False
@@ -96,6 +109,7 @@ class WorldWorker:
                 self.world,
                 supply=self.scenario,
                 conversation=self.conversation,
+                social=self.social,
             )
         return self._owner
 
@@ -110,6 +124,7 @@ class WorldWorker:
         supply: SupplyAction | None = None,
         npc_id: str = "",
         text: str = "",
+        social_action: SocialAction | None = None,
     ) -> Future[WorldUpdate]:
         if action == "wait" and not request_key:
             self._request_sequence += 1
@@ -126,6 +141,7 @@ class WorldWorker:
             supply,
             npc_id,
             text,
+            social_action,
         )
 
     def _run(
@@ -138,6 +154,7 @@ class WorldWorker:
         supply: SupplyAction | None,
         npc_id: str,
         text: str,
+        social_action: SocialAction | None,
     ) -> WorldUpdate:
         if (
             action == "supply"
@@ -162,11 +179,22 @@ class WorldWorker:
         notice: str
         wait_committed: bool | None = None
         speech_committed: bool | None = None
-        if self._dialogue.unresolved and action not in DIALOGUE_ACTIONS:
+        social_committed: bool | None = None
+        if self._dialogue.unresolved and action not in (*DIALOGUE_ACTIONS, "social"):
             raise SaveError("WORLD_DIALOGUE_PENDING", "resolve the previous speech command first")
         if self._pending_wait is not None and action != "wait":
             raise SaveError("WORLD_TIME_PENDING", "resolve the previous time command first")
-        if action in DIALOGUE_ACTIONS:
+        if action == "social":
+            if self.social is None or social_action is None:
+                raise ValueError("SOCIAL_CONFIRMATION_MISSING")
+            social_committed, notice = self._dialogue.submit(owner, social_action, request_key)
+            if social_committed:
+                notice = {
+                    "identify": "종족과 국적을 기록했습니다.",
+                    "protest": "항의를 전달했습니다. 지역·국가 평판이 낮아졌습니다.",
+                    "reconcile": "화해를 요청했습니다. 나빠진 평판이 일부 회복됐습니다.",
+                }[social_action.operation]
+        elif action in DIALOGUE_ACTIONS:
             if not self.conversation:
                 raise ValueError("WORLD_CONVERSATION_DISABLED")
             speech_committed, notice = self._speak(owner, action, request_key, npc_id, text)
@@ -204,7 +232,7 @@ class WorldWorker:
             notice = "세계를 불러왔습니다."
         else:
             raise ValueError("UNKNOWN_WORLD_ACTION")
-        update = self._view(owner, notice, wait_committed, speech_committed)
+        update = self._view(owner, notice, wait_committed, speech_committed, social_committed)
         if action == "wait":
             self._wait_update = update
         if action == "supply":
@@ -242,6 +270,7 @@ class WorldWorker:
         notice: str,
         wait_committed: bool | None,
         speech_committed: bool | None,
+        social_committed: bool | None = None,
     ) -> WorldUpdate:
         core = owner.snapshot()
         record = next(c for c in core.components if isinstance(c, TravelerRecord))
@@ -275,6 +304,13 @@ class WorldWorker:
             (c.state for c in core.components if isinstance(c, ConversationRecord)),
             None,
         )
+        social = next((c.state for c in core.components if isinstance(c, SocialRecord)), None)
+        if (
+            social is not None
+            and self.social is not None
+            and reaction(social, self.social, record.state.place_id) <= HOSTILE_THRESHOLD
+        ):
+            offers = tuple(offer for offer in offers if offer.action.operation != "accept")
         return WorldUpdate(
             record.state,
             core.tick,
@@ -290,6 +326,8 @@ class WorldWorker:
             and bool(conversation.exchanges)
             and not conversation.exchanges[-1].reply_text,
             speech_committed,
+            social,
+            social_committed,
         )
 
     def cancel_conversation(self) -> None:
