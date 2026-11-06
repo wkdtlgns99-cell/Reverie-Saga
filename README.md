@@ -150,6 +150,16 @@ city treasury. Consideration is nonmodal;confirming after the deadline630rejects
 Inventory and resident activities show actual saved state. Tests vary supported incidents
 with deterministic seeds without regenerating the world or calling an AI provider.
 
+For the authored supply quest, launch `python -m app.client --world-authored` from the same
+environment. The quest opens after one game second. Select **보급 의뢰 대화**, accept the
+merchant's request, collect two crates from the courier and return them to the merchant. Each
+step asks for confirmation. The merchant thanks you after the delivery commits.
+
+The authored slice saves separately in `tmp/world-authored-supply-play/game.sqlite` and starts
+with AI dialogue off. Add `--npc-ai` to enable it on the same save. If generation fails, open
+**보급 의뢰 대화** to continue. If you reopen offline with unfinished recorded speech, use
+**저장된 대화** → **말 계속하기** to finish it. [Verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
+
 **주민과 대화** opens a nonmodal resident selector,free-text input and saved own transcript.
 Submitting speech records its duration once;AI waiting adds no game time. ESC holds further
 speech segments and reply acceptance. After restart,use **말 계속하기** for an unfinished

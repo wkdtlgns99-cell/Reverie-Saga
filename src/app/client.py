@@ -639,8 +639,15 @@ class PlayWindow:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="Provisional Reverie Saga playable harness")
-    parser.add_argument(
+    world_mode = parser.add_mutually_exclusive_group()
+    world_mode.add_argument(
         "--world", action="store_true", help="Open the persistent world catalog map"
+    )
+    world_mode.add_argument(
+        "--world-authored", action="store_true", help="Play the authored supply quest"
+    )
+    parser.add_argument(
+        "--npc-ai", action="store_true", help="Enable live dialogue in authored mode"
     )
     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
     parser.add_argument("--scenario", default="legacy")
@@ -661,11 +668,16 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-assistance-memory", action="store_true")
     selected_argv = list(argv) if argv is not None else sys.argv[1:]
     args = parser.parse_args(selected_argv)
-    if args.world and selected_argv != ["--world"]:
-        parser.error("--world cannot be combined with legacy room options")
-    if args.world:
+    if args.npc_ai and not args.world_authored:
+        parser.error("--npc-ai requires --world-authored")
+    if args.world or args.world_authored:
+        allowed = {"--world-authored", "--npc-ai"} if args.world_authored else {"--world"}
+        if not set(selected_argv) <= allowed or len(selected_argv) != len(set(selected_argv)):
+            parser.error("World modes cannot be combined with legacy room options or repeated")
         from app.world_client import launch_world
 
+        if args.world_authored:
+            return launch_world(authored_supply=True, live_npc=args.npc_ai)
         return launch_world()
     if args.npc_assistance_memory and not args.npc_reach_aid:
         raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")

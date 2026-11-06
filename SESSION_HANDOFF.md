@@ -28,7 +28,9 @@ completedSUCCESS,each4027full/32boundaryPASS. Fresh fetch/ff verified localmain=
 clean,and merged/tested tree4a4bb4ee339e98bf7127e2c84fc8ba17901001a0. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
 RS-OWN-001 completed through ordinary [PR40](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/40) merge `dc4e0de`. Both final CI runs passed 4027 full and 32 boundary tests. Local and remote main and tested and merged trees matched. [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md)
 
-RS-OWN-002 validates Claude's feedback against code and evidence, fixes implicit latest-memory exclusion and adds same-run transport timing. O1 is the next proposed implementation, followed by O2 knowledge and retention, then O3 integration. Commercial AI payment remains on hold. See the [feedback disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) for scope, evidence and acceptance.
+RS-OWN-002 merged through [PR41](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/41) at `a877236`. Both final CI runs passed 4027 full and 32 boundary tests each. Local and remote main and tested and merged trees matched. [Feedback disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md)
+
+Latest director scope on 2026-11-06 is O1 implementation, verification and ordinary PR delivery. Start the locally accepted quest with `python -m app.client --world-authored`. Add `--npc-ai` only to enable optional live dialogue in this profile. The delivery PR records final CI and main sync. O2 and O3 remain proposed. Commercial AI payment remains on hold. [O1 verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
