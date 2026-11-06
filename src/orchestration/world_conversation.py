@@ -23,10 +23,14 @@ from contracts.world_conversation import (
     CONVERSATION,
     CONVERSATION_FAMILY,
     CONVERSATION_OWNER,
+    KNOWLEDGE,
+    AssessedNpcReply,
     ConversationDelta,
     ConversationPatch,
     ConversationRead,
     ContinueSpeech,
+    KnowledgeDelta,
+    KnowledgePatch,
     NpcReply,
     PlayerSay,
     SpeechAdvanced,
@@ -37,6 +41,7 @@ from contracts.world_supply import SUPPLY_FAMILY
 from contracts.world_travel import TRAVELER, TRAVEL_FAMILY
 from domain.canonical import (
     JsonObject,
+    JsonValue,
     array_value,
     exact_fields,
     int_value,
@@ -59,17 +64,21 @@ from domain.primitives import (
 from domain.state_types import ComponentRecord, CoreSnapshot
 from domain.world import Resident, WorldCatalog, elaborate_place
 from domain.world_conversation import (
-    CONVERSATION_SCHEMA,
     MAX_EXCHANGES,
+    RECENT_EXCHANGES,
+    SALIENT_EXCHANGES,
     SPEECH_SEGMENT_SECONDS,
     ConversationRecord,
     ConversationState,
     Exchange,
+    SpeechJudgment,
     begin_reply,
     begin_speech,
     continue_speech,
     exchange_digest,
+    exchange_document,
     npc_rate,
+    retained_exchanges,
     speech_seconds,
 )
 from domain.world_population import resident_activity
@@ -82,7 +91,8 @@ from domain.world_social import SocialCatalog
 from orchestration.world_population import _StateView
 from orchestration.world_supply import SupplyCheckpointPolicy
 
-EXCHANGE_FIELDS = tuple(Exchange.__dataclass_fields__)
+EXCHANGE_FIELDS = tuple(field for field in Exchange.__dataclass_fields__ if field != "judgment")
+REPLY_FIELDS = ("speech_id", "text", "model", "context_sha256", "proposal")
 DELTA_FIELDS = (
     "entity_id",
     "before_count",
@@ -108,11 +118,18 @@ REJECTIONS = (
     "DIALOGUE_CONTEXT_STALE",
     "DIALOGUE_PROPOSAL",
     "DIALOGUE_REPLY_PROVENANCE",
+    "DIALOGUE_JUDGMENT",
 )
 
 
-def decode_exchange(data: JsonObject) -> Exchange:
-    d = exact_fields(data, EXCHANGE_FIELDS)
+def _decode_judgment(data: JsonValue) -> SpeechJudgment:
+    d = exact_fields(data, ("importance", "repeat_quote"))
+    return SpeechJudgment(int_value(d["importance"]), text_value(d["repeat_quote"]))
+
+
+def decode_exchange(data: JsonObject, *, knowledge: bool = False) -> Exchange:
+    d = exact_fields(data, (*EXCHANGE_FIELDS, "judgment") if knowledge else EXCHANGE_FIELDS)
+    judgment = d.get("judgment")
     return Exchange(
         text_value(d["speech_id"]),
         text_value(d["npc_id"]),
@@ -126,12 +143,15 @@ def decode_exchange(data: JsonObject) -> Exchange:
         text_value(d["model"]),
         text_value(d["context_sha256"]),
         text_value(d["proposal"]),
+        None if judgment is None else _decode_judgment(judgment),
     )
 
 
-def encode_exchange(entry: Exchange) -> JsonObject:
-    Exchange(**asdict(entry))
-    return object_value(seal(asdict(entry)))
+def encode_exchange(entry: Exchange, *, knowledge: bool = False) -> JsonObject:
+    replace(entry)
+    if entry.judgment is not None and not knowledge:
+        raise ValueError("DIALOGUE_JUDGMENT")
+    return exchange_document(entry, knowledge=knowledge)
 
 
 def _local_npc(state: ReadPort, npc_id: str, tick: int) -> tuple[Resident, str]:
@@ -163,9 +183,12 @@ class ConversationAdmission:
         schema: TypeKey,
         *,
         social: SocialCatalog | None = None,
+        knowledge: bool = False,
     ) -> None:
         self.world, self.scenario, self.schema = world, scenario, schema
         self.social = social
+        self.knowledge = knowledge
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
         if social is not None:
             self.reads = (*self.reads, SOCIAL_FAMILY)
 
@@ -175,7 +198,7 @@ class ConversationAdmission:
         if command.actor_id != WORLD_ACTOR:
             return TurnRejected(failure("UNAUTHORIZED_ACTOR"), command.expected_revision)
         payload = command.payload
-        before = state.component(CONVERSATION, WORLD_ACTOR).state
+        before = state.component(self.key, WORLD_ACTOR).state
         key = (
             "a1-"
             + hashlib.sha256(pack(("world-speech/v1", world_id, command.command_id))).hexdigest()
@@ -186,16 +209,29 @@ class ConversationAdmission:
                     raise ValueError("DIALOGUE_WRONG_NPC")
                 resident, place = _local_npc(state, payload.npc_id, start_tick)
                 _, duration = begin_speech(
-                    before, resident, place, payload.text, "speech:s" + key[3:], start_tick
+                    before,
+                    resident,
+                    place,
+                    payload.text,
+                    "speech:s" + key[3:],
+                    start_tick,
+                    knowledge=self.knowledge,
                 )
             elif type(payload) is ContinueSpeech and isinstance(payload, ContinueSpeech):
                 _, duration = continue_speech(before, payload.speech_id)
-            elif type(payload) is NpcReply and isinstance(payload, NpcReply):
+            elif type(payload) is (AssessedNpcReply if self.knowledge else NpcReply) and isinstance(
+                payload, NpcReply
+            ):
                 if not before.exchanges:
                     raise ValueError("DIALOGUE_NO_UTTERANCE")
                 resident, _ = _local_npc(state, before.exchanges[-1].npc_id, start_tick)
                 context = context_from_read(
-                    state, self.world, self.scenario, start_tick, social=self.social
+                    state,
+                    self.world,
+                    self.scenario,
+                    start_tick,
+                    social=self.social,
+                    knowledge=self.knowledge,
                 )
                 if payload.context_sha256 != context.sha256:
                     raise ValueError("DIALOGUE_CONTEXT_STALE")
@@ -210,6 +246,7 @@ class ConversationAdmission:
                     payload.context_sha256,
                     payload.proposal,
                     start_tick,
+                    judgment=payload.judgment if isinstance(payload, AssessedNpcReply) else None,
                 )
             else:
                 return TurnRejected(failure("INVALID_COMMAND"), command.expected_revision)
@@ -224,21 +261,24 @@ class ConversationAdmission:
 
 
 class SpeechGate:
-    def __init__(self, inner: CommandRoute) -> None:
+    def __init__(self, inner: CommandRoute, *, knowledge: bool = False) -> None:
         self.inner = inner
         self.schema = inner.schema
         self.reads = tuple(dict.fromkeys((*inner.reads, CONVERSATION_FAMILY)))
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
 
     def admit(
         self, command: GameCommand, state: ReadPort, *, start_tick: Tick, world_id: str
     ) -> AdmissionOutcome:
-        if state.component(CONVERSATION, WORLD_ACTOR).state.remaining:
+        if state.component(self.key, WORLD_ACTOR).state.remaining:
             return TurnRejected(failure("DIALOGUE_SPEAKING"), command.expected_revision)
         return self.inner.admit(command, state, start_tick=start_tick, world_id=world_id)
 
 
 class ConversationAdapter:
-    key = CONVERSATION
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.knowledge = knowledge
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
 
     def validate(self, record: ComponentRecord) -> None:
         if (
@@ -247,9 +287,24 @@ class ConversationAdapter:
             or record.entity_id != WORLD_ACTOR
             or type(record.entity_id) is not str
             or type(record.state) is not ConversationState
+            or record.knowledge is not self.knowledge
         ):
             raise ValueError("DIALOGUE_RECORD")
         ConversationState(record.state.exchanges, record.state.speaker, record.state.remaining)
+        by_npc: dict[str, list[Exchange]] = {}
+        for entry in record.state.exchanges:
+            if self.knowledge:
+                if bool(entry.reply_text) != (entry.judgment is not None):
+                    raise ValueError("DIALOGUE_JUDGMENT")
+                by_npc.setdefault(entry.npc_id, []).append(entry)
+            elif entry.judgment is not None:
+                raise ValueError("DIALOGUE_JUDGMENT")
+        for entries in by_npc.values():
+            older = entries[:-RECENT_EXCHANGES]
+            if len(older) > SALIENT_EXCHANGES or any(
+                e.judgment is None or e.judgment.importance == 0 for e in older
+            ):
+                raise ValueError("DIALOGUE_RETENTION")
 
     def wrap(self, record: ComponentRecord, access: ViewAccess) -> ConversationRead:
         self.validate(record)
@@ -259,15 +314,20 @@ class ConversationAdapter:
 
 
 class ConversationCodec:
-    schema = CONVERSATION_SCHEMA
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.adapter = ConversationAdapter(knowledge=knowledge)
+        self.schema = self.adapter.key.schema
 
     def encode(self, record: ComponentRecord) -> JsonObject:
-        ConversationAdapter().validate(record)
+        self.adapter.validate(record)
         if not isinstance(record, ConversationRecord):
             raise ValueError("DIALOGUE_RECORD")
         return {
             "state": {
-                "exchanges": tuple(encode_exchange(e) for e in record.state.exchanges),
+                "exchanges": tuple(
+                    encode_exchange(e, knowledge=self.adapter.knowledge)
+                    for e in record.state.exchanges
+                ),
                 "speaker": record.state.speaker,
                 "remaining": record.state.remaining,
             }
@@ -279,12 +339,16 @@ class ConversationCodec:
         record = ConversationRecord(
             entity_id,
             ConversationState(
-                tuple(decode_exchange(object_value(e)) for e in array_value(d["exchanges"])),
+                tuple(
+                    decode_exchange(object_value(e), knowledge=self.adapter.knowledge)
+                    for e in array_value(d["exchanges"])
+                ),
                 text_value(d["speaker"]),
                 int_value(d["remaining"]),
             ),
+            self.adapter.knowledge,
         )
-        ConversationAdapter().validate(record)
+        self.adapter.validate(record)
         return record
 
 
@@ -305,29 +369,38 @@ def _validate_change(delta: ConversationDelta) -> None:
         or type(delta.entry) is not Exchange
     ):
         raise ValueError("DIALOGUE_DELTA")
-    encode_exchange(delta.entry)
+    if isinstance(delta, KnowledgeDelta):
+        require_integer(delta.after_count, 1, MAX_EXCHANGES)
+    encode_exchange(delta.entry, knowledge=isinstance(delta, KnowledgeDelta))
 
 
 def _encode_change(delta: ConversationDelta) -> JsonObject:
     _validate_change(delta)
-    return object_value(seal(asdict(delta)))
+    data = asdict(delta)
+    data["entry"] = encode_exchange(delta.entry, knowledge=isinstance(delta, KnowledgeDelta))
+    return object_value(seal(data))
 
 
-def _decode_change(data: JsonObject) -> ConversationDelta:
-    d = exact_fields(data, DELTA_FIELDS)
+def _decode_change(data: JsonObject, *, knowledge: bool) -> ConversationDelta:
+    d = exact_fields(data, (*DELTA_FIELDS, "after_count") if knowledge else DELTA_FIELDS)
     append = d["append"]
     if type(append) is not bool:
         raise ValueError("DIALOGUE_DELTA")
-    delta = ConversationDelta(
+    parts = (
         EntityId(text_value(d["entity_id"])),
         int_value(d["before_count"]),
         text_value(d["before_digest"]),
         text_value(d["before_speaker"]),
         int_value(d["before_remaining"]),
-        decode_exchange(object_value(d["entry"])),
+        decode_exchange(object_value(d["entry"]), knowledge=knowledge),
         text_value(d["speaker"]),
         int_value(d["remaining"]),
         append,
+    )
+    delta = (
+        KnowledgeDelta(*parts, int_value(d["after_count"]))
+        if knowledge
+        else ConversationDelta(*parts)
     )
     _validate_change(delta)
     return delta
@@ -348,7 +421,7 @@ class ConversationPayloadCodec:
             if type(payload.speech_id) is not str:
                 raise ValueError("DIALOGUE_NO_SPEECH")
             return {"speech_id": payload.speech_id}
-        if type(payload) is NpcReply and isinstance(payload, NpcReply):
+        if type(payload) in (NpcReply, AssessedNpcReply) and isinstance(payload, NpcReply):
             if any(
                 type(v) is not str
                 for v in (
@@ -360,10 +433,20 @@ class ConversationPayloadCodec:
                 )
             ):
                 raise ValueError("DIALOGUE_REPLY_PROVENANCE")
+            if isinstance(payload, AssessedNpcReply):
+                if type(payload.judgment) is not SpeechJudgment:
+                    raise ValueError("DIALOGUE_JUDGMENT")
+                replace(payload.judgment)
             return object_value(seal(asdict(payload)))
-        if type(payload) is ConversationDelta and isinstance(payload, ConversationDelta):
+        if type(payload) in (ConversationDelta, KnowledgeDelta) and isinstance(
+            payload, ConversationDelta
+        ):
             return _encode_change(payload)
-        if type(payload) is ConversationPatch and isinstance(payload, ConversationPatch):
+        if type(payload) in (ConversationPatch, KnowledgePatch) and isinstance(
+            payload, ConversationPatch
+        ):
+            if isinstance(payload, KnowledgePatch) != (type(payload.change) is KnowledgeDelta):
+                raise ValueError("DIALOGUE_PATCH")
             return {"change": _encode_change(payload.change)}
         if type(payload) in (SpeechAdvanced, SpeechCue) and isinstance(
             payload, (SpeechAdvanced, SpeechCue)
@@ -383,20 +466,30 @@ class ConversationPayloadCodec:
             result = PlayerSay(text_value(d["npc_id"]), text_value(d["text"]))
         elif self.schema == ContinueSpeech.SCHEMA:
             result = ContinueSpeech(text_value(exact_fields(data, ("speech_id",))["speech_id"]))
-        elif self.schema == NpcReply.SCHEMA:
-            d = exact_fields(data, ("speech_id", "text", "model", "context_sha256", "proposal"))
-            result = NpcReply(
+        elif self.schema in (NpcReply.SCHEMA, AssessedNpcReply.SCHEMA):
+            assessed = self.schema == AssessedNpcReply.SCHEMA
+            d = exact_fields(data, (*REPLY_FIELDS, "judgment") if assessed else REPLY_FIELDS)
+            parts = (
                 text_value(d["speech_id"]),
                 text_value(d["text"]),
                 text_value(d["model"]),
                 text_value(d["context_sha256"]),
                 text_value(d["proposal"]),
             )
-        elif self.schema == ConversationDelta.SCHEMA:
-            result = _decode_change(data)
-        elif self.schema == ConversationPatch.SCHEMA:
-            result = ConversationPatch(
-                _decode_change(object_value(exact_fields(data, ("change",))["change"]))
+            result = (
+                AssessedNpcReply(*parts, _decode_judgment(d["judgment"]))
+                if assessed
+                else NpcReply(*parts)
+            )
+        elif self.schema in (ConversationDelta.SCHEMA, KnowledgeDelta.SCHEMA):
+            result = _decode_change(data, knowledge=self.schema == KnowledgeDelta.SCHEMA)
+        elif self.schema in (ConversationPatch.SCHEMA, KnowledgePatch.SCHEMA):
+            knowledge = self.schema == KnowledgePatch.SCHEMA
+            patch = KnowledgePatch if knowledge else ConversationPatch
+            result = patch(
+                _decode_change(
+                    object_value(exact_fields(data, ("change",))["change"]), knowledge=knowledge
+                )
             )
         elif self.schema in (SpeechAdvanced.SCHEMA, SpeechCue.SCHEMA):
             d = exact_fields(data, ("actor_id", "speech_id", "speaker", "start", "end"))
@@ -416,10 +509,11 @@ class ConversationPayloadCodec:
 
 def apply_change(before: ConversationState, delta: ConversationDelta) -> ConversationState:
     _validate_change(delta)
+    knowledge = isinstance(delta, KnowledgeDelta)
     old = before.exchanges[-1] if before.exchanges else None
     if (
         len(before.exchanges) != delta.before_count
-        or exchange_digest(old) != delta.before_digest
+        or exchange_digest(old, knowledge=knowledge) != delta.before_digest
         or before.speaker != delta.before_speaker
         or before.remaining != delta.before_remaining
     ):
@@ -429,6 +523,8 @@ def apply_change(before: ConversationState, delta: ConversationDelta) -> Convers
             raise ValueError("DIALOGUE_DELTA_TRANSITION")
         duration = delta.entry.player_end - delta.entry.player_start
         entries = (*before.exchanges, delta.entry)
+        if knowledge:
+            entries = retained_exchanges(entries, delta.entry.npc_id)
         speaker = "player"
         remaining = max(0, duration - SPEECH_SEGMENT_SECONDS)
     elif old is None:
@@ -451,6 +547,7 @@ def apply_change(before: ConversationState, delta: ConversationDelta) -> Convers
                 model="",
                 context_sha256="",
                 proposal="none",
+                judgment=None,
             )
             != old
         ):
@@ -461,15 +558,22 @@ def apply_change(before: ConversationState, delta: ConversationDelta) -> Convers
         remaining = max(0, duration - SPEECH_SEGMENT_SECONDS)
     if delta.remaining != remaining or delta.speaker != (speaker if remaining else ""):
         raise ValueError("DIALOGUE_DELTA_PROGRESS")
+    if isinstance(delta, KnowledgeDelta) and len(entries) != delta.after_count:
+        raise ValueError("DIALOGUE_DELTA_COUNT")
     return ConversationState(entries, delta.speaker, delta.remaining)
 
 
 class ConversationReducer:
-    schema = ConversationDelta.SCHEMA
     owner_id = CONVERSATION_OWNER
 
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.delta_type = KnowledgeDelta if knowledge else ConversationDelta
+        self.patch_type = KnowledgePatch if knowledge else ConversationPatch
+        self.schema = self.delta_type.SCHEMA
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
+
     def _delta(self, delta: StateDelta) -> ConversationDelta:
-        if type(delta) is not ConversationDelta or not isinstance(delta, ConversationDelta):
+        if type(delta) is not self.delta_type or not isinstance(delta, ConversationDelta):
             raise CandidateError("INVALID_DELTA", "conversation class")
         _validate_change(delta)
         return delta
@@ -477,11 +581,11 @@ class ConversationReducer:
     def stage(self, delta: StateDelta, before: ReadPort, editor: StagingEditor) -> None:
         value = self._delta(delta)
         try:
-            apply_change(before.component(CONVERSATION, value.entity_id).state, value)
+            apply_change(before.component(self.key, value.entity_id).state, value)
         except ValueError as error:
             raise CandidateError("INVALID_DELTA", str(error)) from error
         editor.apply_patch(
-            ComponentAddress(CONVERSATION_SCHEMA, value.entity_id), ConversationPatch(value)
+            ComponentAddress(self.key.schema, value.entity_id), self.patch_type(value)
         )
 
     def compose(self, changes: tuple[StateDelta, ...]) -> StateDelta:
@@ -495,9 +599,14 @@ class ConversationReducer:
 
     def validate_net(self, delta: StateDelta, after: ReadPort) -> None:
         value = self._delta(delta)
-        state = after.component(CONVERSATION, value.entity_id).state
+        state = after.component(self.key, value.entity_id).state
+        count = (
+            value.after_count
+            if isinstance(value, KnowledgeDelta)
+            else value.before_count + int(value.append)
+        )
         if (
-            len(state.exchanges) != value.before_count + int(value.append)
+            len(state.exchanges) != count
             or not state.exchanges
             or state.exchanges[-1] != value.entry
             or state.speaker != value.speaker
@@ -507,24 +616,33 @@ class ConversationReducer:
 
 
 class ConversationPatchRoute:
-    schema = ConversationPatch.SCHEMA
-    component_schema = CONVERSATION_SCHEMA
     family = CONVERSATION_FAMILY
+
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.knowledge = knowledge
+        self.patch_type = KnowledgePatch if knowledge else ConversationPatch
+        self.schema = self.patch_type.SCHEMA
+        self.component_schema = (KNOWLEDGE if knowledge else CONVERSATION).schema
 
     def apply(self, before: ComponentRecord, patch: ComponentPatch) -> ComponentRecord:
         if (
             type(before) is not ConversationRecord
             or not isinstance(before, ConversationRecord)
-            or type(patch) is not ConversationPatch
+            or before.knowledge is not self.knowledge
+            or type(patch) is not self.patch_type
             or not isinstance(patch, ConversationPatch)
+            or isinstance(patch.change, KnowledgeDelta) != self.knowledge
         ):
             raise ValueError("DIALOGUE_PATCH")
         return replace(before, state=apply_change(before.state, patch.change))
 
 
 class ConversationCheckpointPolicy:
-    def __init__(self, world: WorldCatalog, scenario: SupplyScenario) -> None:
+    def __init__(
+        self, world: WorldCatalog, scenario: SupplyScenario, *, knowledge: bool = False
+    ) -> None:
         self.world, self.scenario = world, scenario
+        self.adapter = ConversationAdapter(knowledge=knowledge)
 
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         records = tuple(c for c in core.components if isinstance(c, ConversationRecord))
@@ -540,7 +658,7 @@ class ConversationCheckpointPolicy:
             protocol,
         )
         record = records[0]
-        ConversationAdapter().validate(record)
+        self.adapter.validate(record)
         travel = next(c.state for c in core.components if isinstance(c, TravelerRecord))
         state = record.state
         for index, entry in enumerate(state.exchanges):
@@ -575,6 +693,9 @@ class ConversationCheckpointPolicy:
 
 
 class SpeechPresenter:
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
+
     def map(
         self, facts: tuple[WorldEvent, ...], receipt: CommitReceipt, committed: ReadPort
     ) -> tuple[PresentationEvent, ...]:
@@ -584,7 +705,7 @@ class SpeechPresenter:
             if type(p) is not SpeechAdvanced or not isinstance(p, SpeechAdvanced):
                 raise SchemaError("UNSUPPORTED_SCHEMA", "speech presenter")
             if (
-                committed.component(CONVERSATION, p.actor_id).state.exchanges[-1].speech_id
+                committed.component(self.key, p.actor_id).state.exchanges[-1].speech_id
                 != p.speech_id
             ):
                 raise ValueError("DIALOGUE_PRESENTATION_STATE")

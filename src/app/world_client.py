@@ -1029,7 +1029,11 @@ class WorldMapWindow:
 
 
 def launch_world(
-    catalog_path: Path = DEVELOPMENT_WORLD, *, authored_supply: bool = False, live_npc: bool = True
+    catalog_path: Path = DEVELOPMENT_WORLD,
+    *,
+    authored_supply: bool = False,
+    live_npc: bool = True,
+    knowledge: bool = False,
 ) -> int:
     try:
         catalog = load_world(catalog_path)
@@ -1040,7 +1044,13 @@ def launch_world(
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    directory = "world-authored-supply-play" if authored_supply else "world-transport-play"
+    directory = (
+        "world-knowledge-play"
+        if knowledge
+        else "world-authored-supply-play"
+        if authored_supply
+        else "world-transport-play"
+    )
     worker = WorldWorker(
         Path("tmp") / directory / "game.sqlite",
         catalog,
@@ -1049,6 +1059,7 @@ def launch_world(
         transport=transport,
         authored_supply=authored_supply,
         live_npc=live_npc,
+        knowledge=knowledge,
     )
     try:
         WorldMapWindow(root, catalog, worker)

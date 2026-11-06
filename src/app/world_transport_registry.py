@@ -50,9 +50,11 @@ def transport_world_bundle(
     social: SocialCatalog,
     transport: TransportRules,
     scenario: SupplyScenario = SupplyScenario(),
+    *,
+    knowledge: bool = False,
 ) -> FeatureBundle:
     transport.validate(world)
-    base = social_world_bundle(world, social, scenario)
+    base = social_world_bundle(world, social, scenario, knowledge=knowledge)
     kinds = (*tuple(r.schema for r in base.command_routes), TransportAction.SCHEMA)
     bindings = []
     for binding in base.bindings:
@@ -126,7 +128,7 @@ def transport_world_bundle(
     }
     return replace(
         base,
-        feature_id="world-transport-v1",
+        feature_id="world-transport-knowledge-v2" if knowledge else "world-transport-v1",
         bindings=tuple(bindings),
         read_adapters=(
             *base.read_adapters,
@@ -164,7 +166,7 @@ def transport_world_bundle(
         ),
         command_routes=(
             *(JourneyGate(r) for r in base.command_routes),
-            SpeechGate(TransportAdmission(world, transport, social)),
+            SpeechGate(TransportAdmission(world, transport, social), knowledge=knowledge),
         ),
         delta_routes=(
             *base.delta_routes,
@@ -185,5 +187,7 @@ def transport_world_bundle(
         rules_document=object_value(seal(rules)),
         component_codecs=(*base.component_codecs, JourneyCodec(), SupplyProgressCodec()),
         patch_routes=(*base.patch_routes, JourneyPatchRoute(), SupplyProgressPatchRoute()),
-        checkpoint_policy=TransportCheckpointPolicy(world, transport, social, scenario),
+        checkpoint_policy=TransportCheckpointPolicy(
+            world, transport, social, scenario, knowledge=knowledge
+        ),
     )

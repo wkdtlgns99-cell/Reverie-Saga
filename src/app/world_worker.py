@@ -89,13 +89,15 @@ class WorldWorker:
         transport: TransportRules | None = None,
         authored_supply: bool = False,
         live_npc: bool = True,
+        knowledge: bool = False,
         generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
         self.world = world
-        self.conversation = conversation or social is not None
+        self.conversation = conversation or knowledge or social is not None
         self.authored_supply = authored_supply
         self.live_npc = live_npc
+        self.knowledge = knowledge
         self.social = social
         if transport is not None and social is None:
             raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
@@ -126,6 +128,7 @@ class WorldWorker:
                 conversation=self.conversation,
                 social=self.social,
                 transport=self.transport,
+                knowledge=self.knowledge,
             )
         return self._owner
 

@@ -37,10 +37,14 @@ from orchestration.world_social import (
 
 
 def social_world_bundle(
-    world: WorldCatalog, catalog: SocialCatalog, scenario: SupplyScenario = SupplyScenario()
+    world: WorldCatalog,
+    catalog: SocialCatalog,
+    scenario: SupplyScenario = SupplyScenario(),
+    *,
+    knowledge: bool = False,
 ) -> FeatureBundle:
     catalog.validate(world)
-    base = conversation_world_bundle(world, scenario)
+    base = conversation_world_bundle(world, scenario, knowledge=knowledge)
     schema = dict(base.schema_document)
     schema["components"] = (
         *array_value(schema["components"]),
@@ -94,7 +98,9 @@ def social_world_bundle(
     routes = []
     for route in base.command_routes:
         if isinstance(route, ConversationAdmission):
-            route = ConversationAdmission(world, scenario, route.schema, social=catalog)
+            route = ConversationAdmission(
+                world, scenario, route.schema, social=catalog, knowledge=knowledge
+            )
         routes.append(SocialGate(route, catalog))
     specs = tuple(
         replace(s, consumers=tuple(sorted(set((*s.consumers, SOCIAL_OWNER)))))
@@ -104,7 +110,7 @@ def social_world_bundle(
     )
     return replace(
         base,
-        feature_id="world-social-v1",
+        feature_id="world-social-v2" if knowledge else "world-social-v1",
         bindings=(
             *base.bindings,
             EngineBinding(
@@ -139,7 +145,7 @@ def social_world_bundle(
                 4,
             ),
         ),
-        command_routes=(*routes, SpeechGate(SocialAdmission(catalog))),
+        command_routes=(*routes, SpeechGate(SocialAdmission(catalog), knowledge=knowledge)),
         delta_routes=(*base.delta_routes, SocialReducer(catalog)),
         codecs=(
             *base.codecs,
@@ -149,5 +155,5 @@ def social_world_bundle(
         rules_document=object_value(seal(rules)),
         component_codecs=(*base.component_codecs, SocialCodec(catalog)),
         patch_routes=(*base.patch_routes, SocialPatchRoute()),
-        checkpoint_policy=SocialCheckpointPolicy(world, scenario, catalog),
+        checkpoint_policy=SocialCheckpointPolicy(world, scenario, catalog, knowledge=knowledge),
     )

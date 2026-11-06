@@ -10,8 +10,14 @@ from contracts.dialogue import GenerationError
 from contracts.messages import CommandPayload
 from contracts.persistence import SaveError
 from contracts.turn import GameCommand, TurnAborted, TurnCommitted
-from contracts.world_conversation import ConversationGenerator, GeneratedReply, NpcReply
+from contracts.world_conversation import (
+    AssessedNpcReply,
+    ConversationGenerator,
+    GeneratedReply,
+    NpcReply,
+)
 from domain.world import WorldCatalog
+from domain.world_conversation import SpeechJudgment
 from domain.world_supply import SupplyScenario
 from domain.world_social import SocialCatalog
 from orchestration.world_conversation_context import context_from_core
@@ -139,6 +145,15 @@ class ConversationCoordinator:
                 raise GenerationError("GENERATION_CANCELLED")
             if owner.attachment_id != attachment or reply.context_sha256 != context.sha256:
                 raise ValueError("DIALOGUE_CONTEXT_STALE")
+            if context.knowledge:
+                if type(reply.judgment) is not SpeechJudgment:
+                    raise GenerationError("GENERATION_OUTPUT")
+                try:
+                    reply.judgment.validate_source(context.current.player_text)
+                except ValueError as error:
+                    raise GenerationError("GENERATION_OUTPUT") from error
+            elif reply.judgment is not None:
+                raise GenerationError("GENERATION_OUTPUT")
             self._generated = reply
         finally:
             with self._lock:
@@ -155,17 +170,19 @@ class ConversationCoordinator:
         reply = self._generated
         if context.sha256 != reply.context_sha256:
             raise ValueError("DIALOGUE_CONTEXT_STALE")
-        return self.submit(
-            owner,
-            NpcReply(
-                context.current.speech_id,
-                reply.text,
-                reply.model,
-                reply.context_sha256,
-                reply.proposal,
-            ),
-            key,
+        fields = (
+            context.current.speech_id,
+            reply.text,
+            reply.model,
+            reply.context_sha256,
+            reply.proposal,
         )
+        command = (
+            NpcReply(*fields)
+            if reply.judgment is None
+            else AssessedNpcReply(*fields, reply.judgment)
+        )
+        return self.submit(owner, command, key)
 
     def cancel(self) -> None:
         self._cancelled.set()

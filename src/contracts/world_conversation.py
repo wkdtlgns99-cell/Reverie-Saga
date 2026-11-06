@@ -8,7 +8,14 @@ from contracts.messages import CommandPayload, FactPayload, PresentationPayload,
 from contracts.read_views import ComponentKey, ComponentPatch
 from domain.canonical import JsonObject, canonical_json, object_value, seal
 from domain.primitives import EntityId, FieldAddress, FieldFamily, TypeKey
-from domain.world_conversation import CONVERSATION_SCHEMA, ConversationState, Exchange
+from domain.world_conversation import (
+    CONVERSATION_SCHEMA,
+    KNOWLEDGE_SCHEMA,
+    ConversationState,
+    Exchange,
+    SpeechJudgment,
+    exchange_document,
+)
 
 CONVERSATION_OWNER = "world.conversation"
 CONVERSATION_FAMILY = FieldFamily(CONVERSATION_SCHEMA.kind, "state")
@@ -20,6 +27,7 @@ class ConversationRead(Protocol):
 
 
 CONVERSATION = ComponentKey[ConversationRead](CONVERSATION_SCHEMA)
+KNOWLEDGE = ComponentKey[ConversationRead](KNOWLEDGE_SCHEMA)
 
 
 @dataclass(frozen=True, slots=True)
@@ -58,6 +66,12 @@ class NpcReply(CommandPayload):
 
 
 @dataclass(frozen=True, slots=True)
+class AssessedNpcReply(NpcReply):
+    judgment: SpeechJudgment
+    SCHEMA = TypeKey("world.npc-reply", 2)
+
+
+@dataclass(frozen=True, slots=True)
 class ConversationDelta(StateDelta):
     entity_id: EntityId
     before_count: int
@@ -80,6 +94,12 @@ class ConversationDelta(StateDelta):
 
 
 @dataclass(frozen=True, slots=True)
+class KnowledgeDelta(ConversationDelta):
+    after_count: int
+    SCHEMA = TypeKey("world.conversation-delta", 2)
+
+
+@dataclass(frozen=True, slots=True)
 class ConversationPatch(ComponentPatch):
     change: ConversationDelta
     SCHEMA = TypeKey("world.conversation-patch", 1)
@@ -87,6 +107,11 @@ class ConversationPatch(ComponentPatch):
     @property
     def schema(self) -> TypeKey:
         return self.SCHEMA
+
+
+@dataclass(frozen=True, slots=True)
+class KnowledgePatch(ConversationPatch):
+    SCHEMA = TypeKey("world.conversation-patch", 2)
 
 
 @dataclass(frozen=True, slots=True)
@@ -118,6 +143,26 @@ class SpeechCue(PresentationPayload):
 
 
 @dataclass(frozen=True, slots=True)
+class RumorMemory:
+    speech_id: str
+    player_id: str
+    direct_listener_id: str
+    direct_listener_name: str
+    place_id: str
+    heard_tick: int
+    learned_tick: int
+    quote: str
+
+
+@dataclass(frozen=True, slots=True)
+class SupplyObservation:
+    event: str
+    observer_id: str
+    place_id: str
+    tick: int
+
+
+@dataclass(frozen=True, slots=True)
 class ConversationContext:
     npc_id: str
     npc_name: str
@@ -134,9 +179,21 @@ class ConversationContext:
     available_action: str
     current: Exchange
     memories: tuple[Exchange, ...]
+    knowledge: bool = False
+    rumors: tuple[RumorMemory, ...] = ()
+    observations: tuple[SupplyObservation, ...] = ()
 
     def document(self) -> JsonObject:
-        return object_value(seal(asdict(self)))
+        data = asdict(self)
+        del data["knowledge"]
+        if not self.knowledge:
+            del data["rumors"]
+            del data["observations"]
+        data["current"] = exchange_document(self.current, knowledge=self.knowledge)
+        data["memories"] = tuple(
+            exchange_document(e, knowledge=self.knowledge) for e in self.memories
+        )
+        return object_value(seal(data))
 
     @property
     def sha256(self) -> str:
@@ -150,6 +207,7 @@ class GeneratedReply:
     model: str
     context_sha256: str
     total_tokens: int | None = None
+    judgment: SpeechJudgment | None = None
 
 
 class ConversationGenerator(Protocol):
@@ -163,6 +221,16 @@ CONVERSATION_PAYLOADS = (
     NpcReply,
     ConversationDelta,
     ConversationPatch,
+    SpeechAdvanced,
+    SpeechCue,
+)
+
+KNOWLEDGE_PAYLOADS = (
+    PlayerSay,
+    ContinueSpeech,
+    AssessedNpcReply,
+    KnowledgeDelta,
+    KnowledgePatch,
     SpeechAdvanced,
     SpeechCue,
 )

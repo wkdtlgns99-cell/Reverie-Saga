@@ -397,9 +397,11 @@ class TransportCheckpointPolicy:
         rules: TransportRules,
         social: SocialCatalog,
         scenario: SupplyScenario,
+        *,
+        knowledge: bool = False,
     ) -> None:
         self.world, self.rules = world, rules
-        self.base = SocialCheckpointPolicy(world, scenario, social)
+        self.base = SocialCheckpointPolicy(world, scenario, social, knowledge=knowledge)
 
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         journeys = tuple(c for c in core.components if isinstance(c, JourneyRecord))
