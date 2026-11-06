@@ -155,7 +155,9 @@ def build_context(
         tuple(facts),
         available,
         current,
-        retrieve_memories(conversation, resident.id, current.player_text),
+        retrieve_memories(
+            conversation, resident.id, current.player_text, exclude_speech_id=current.speech_id
+        ),
     )
 
 

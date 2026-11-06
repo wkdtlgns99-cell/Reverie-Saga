@@ -23,7 +23,7 @@ No new demonstrated gameplay-state corruption is claimed by this audit.
 | High,target gap | World transcript is one player-owned ConversationRecord capped at4096exchanges. SQLite replay compacts after4096steps and receipts retain1024. | Replay is not an unlimited historical-memory ledger. Define durable important observations/claims and retention before promising lifelong memory or rebuilding a complete historical index. |
 | High,integration hazard | Inventory is owned by world.supply;social reputation by world.social;fixed diplomacy is pinned catalog data. Separate quest/encounter demos are not part of this world bundle. | Combat loot,trade,authored quest rewards and diplomacy must not add competing writers or silently reuse unrelated profile state. Contract cross-owner requests and consequences first. |
 | High,product/integration gap | Option C is approved,but this world's live-dialogue path has no complete authored campaign/state-aware scripted equivalent. Unity still uses ClientWorker/engine_bridge,not WorldWorker. | Establish the shared conversation/action/content contract before authored content expansion or world-to-Unity integration. Existing prepared quest dialogue is useful precedent,not a complete base game. |
-| Medium,known performance limit | Actual transport Tk+SQLite total39.539s exceeds30sTARGET;instrumentation identifies per-second barrier/snapshot work. | Retain as an optimization item after this review;do not bypass phase barriers,validation or world time. Source/test evidence in the Ireceipt remains scoped to this PC. |
+| Medium,known performance limit | The original Tk+SQLite journey took 39.539s against a 30s target. Later wall-clock runs timed simulation and persistence within the same journey. | Keep the visible-window target open. The follow-up scopes the attribution and provides a reproducible probe. [RS-OWN-002](RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) |
 | Deferred,infrastructure | No Qdrant integration/indexer/outbox/rebuild schema exists. Current world search is bounded lexical own-transcript selection. | No vector database implementation now. Benchmark actual recall/missed facts first;add a derived index only with ownership/visibility/rebuild contracts. |
 
 These are distinct categories:missing product capabilities and future integration hazards are
@@ -268,9 +268,16 @@ migration. API billing remains HOLD;no commercial infrastructure is a prerequisi
   New review changes documentation only;no new runtime behavior/performance result is inferred.
 - Document guards11PASS4.63s;584local links resolve;A–J section coverage verified;diff
   whitespace clean. Git comparison to421de09 confirms no src/tests/content/config/CI changes.
-  Private witness:tmp/rs-own-001/document-check.json. Ordinary review publication/CI/main sync
-  pending at this checked-in snapshot. Independent/native/human UX/device/release
-  qualifications remain NOT_ESTABLISHED.
+  Private witness: `tmp/rs-own-001/document-check.json`.
+- PR40 merged `dc4e0dee50b8d06d34b28c7bfb60d86cbb8de05d` from tested head `ef15309`.
+  The [PR run](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/42043864344)
+  passed 4027 full and 32 boundary tests in 1126.19s and 9.27s respectively.
+  The [push run](https://github.com/wkdtlgns99-cell/Reverie-Saga/actions/runs/42043806471)
+  passed 4027 full and 32 boundary tests in 830.65s and 6.15s respectively.
+  Local and remote main matched after fetch and fast-forward. Tested and merged trees matched
+  `23bfb32a141fe18369cad6c7572940df968939de`. [PR40 delivery record](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/40)
+
+Independent/native/human UX/device/release qualifications remain open. See the [Claude feedback disposition](RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) for the subsequent source and evidence checks.
 
 No source/test/content/credential/provider/billing/native change. No external reviewer/provider
 call or agent;ordinary authorized PR publication is recorded separately.

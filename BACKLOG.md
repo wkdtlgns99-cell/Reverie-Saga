@@ -1,7 +1,7 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-11-05 | Current task/status/dependency SSOT.
+Updated:2026-11-06 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
@@ -19,7 +19,9 @@ merged/tested trees equal3d453c08083d9886124574af1c0e7fb0a683e84b. [Hreceipt](do
 Transport PR39merged421de09 after both final-head2c58f357runs42038935289/42038877403
 completedSUCCESS,each4027full/32boundaryPASS. Fresh fetch/ff verified localmain=origin/main,
 clean,and merged/tested tree4a4bb4ee339e98bf7127e2c84fc8ba17901001a0. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
-Current codex/data-ownership-review-20261105 completed local [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) under [RS-OWN-001](docs/work_orders/RS-OWN-001_DATA_OWNERSHIP_REVIEW.md):8families/30records have matching registered writers;knowledge visibility/long-term retention/base-dialogue/client integration need bounded contracts. Focused90PASS25.43s. Review publication pending;no runtime/Qdrant implementation. Cdirection approved;commercial API payment/access HOLD. Transport30stotalTARGET remains open (actual39.539s);not a scheduler bypass or product-completion claim. Native/device/independent/release/agent holds remain. Full parent incomplete. Do not restart delivered I/H or re-ask settled choices.
+RS-OWN-001 completed through ordinary [PR40](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/40) merge `dc4e0de`. Both final CI runs passed 4027 full and 32 boundary tests. Local and remote main and tested and merged trees matched. [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md)
+
+RS-OWN-002 validates Claude's feedback against code and evidence, fixes implicit latest-memory exclusion and adds same-run transport timing. O1 is the next proposed implementation, followed by O2 knowledge and retention, then O3 integration. Commercial AI payment remains on hold. See the [feedback disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) for scope, evidence and acceptance.
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
@@ -42,9 +44,10 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | RS-PLAY-001G | MERGED_PR36 / main4ef3cbd | FoundationPR35/main265fc4b. Completion branch now wires ordinary resident/free-text/own transcript,exact speech segments,retry/skip/cancel/pause and inline confirmed action. Final207affectedPASS34.25s,341inputs preserved;Ruffboth/format19/strict337/import3+1/pip PASS. Actual4Gemini replies:two personas,own-memory after restart,typed accept with no unconfirmed grant. Two15sTARGET misses. Ordered quota-only3key fallback qualified by controlled transport. Both final-head CI41854770228/41854837409each3955full/32boundaryPASS;ordinary PR36merged4ef3cbd and fresh localmain equality/clean verified. Gdelivery complete;latest scope/QF01above resumes remaining parent work. [Receipt](docs/reviews/RS-PLAY-001G_UI_EXECUTION_2026-11-05.md),[order](docs/work_orders/RS-PLAY-001G_UI_COMPLETION.md) |
 | RS-PLAY-001H | MERGED_PR38 / main0d954c7 | Six ancestries,six national/twelve city organizations,public diplomacy and actual action merit/access/dialogue/save/GUI integration. Both final CI each3986full/32boundaryPASS;ordinary merge/local-main equality/clean and tree equality verified. [Receipt](docs/reviews/RS-PLAY-001H_EXECUTION_2026-11-05.md) |
 | RS-PLAY-001I | MERGED_PR39 / main421de09 | Real carriage/ship summaries,player-controlled closures,exact catch-up,GUI/save/restart/recovery. Local4022full,41new,236affected/static PASS;six old profiles/save bytes preserved. Both final CI each4027full/32boundaryPASS;ordinary main sync/clean/tree equality verified. Segment1.787s meets2sTARGET,total39.539s leaves30sTARGET open. [Receipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
-| RS-OWN-001 | LOCAL_REVIEW_COMPLETE / PUBLICATION_PENDING | Actual A–J owner/transaction/visibility/retention map;8families/30records match writers,90focusedPASS. Current facts separated from proposed O1/O2base-dialogue and per-NPC knowledge contracts. [Review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) |
-| RS-OWN-NEXT | PROPOSED_CONTRACTS / NO_RUNTIME_ORDER | Review O1/O2:shared scripted/optional-dialogue action authority,immutable persona vs mutable knowledge,source/visibility/retention. Material belief/rumor/trust choices need clarification;no Qdrant/Unity/runtime implementation authorized by the review. |
-| RS-PLAY-001I-PERF | OPEN_TARGET / DEFERRED_OPTIMIZATION | Actual Tk+SQLite total39.539s versus30sTARGET,maxsegment1.787s versus2sTARGET. Main measured hot path:canonical barrier/snapshot processing;separate lawful CORE performance order required,not a scheduler/validation bypass. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
+| RS-OWN-001 | MERGED_PR40 / main dc4e0de | Actual A–J owner/transaction/visibility/retention map;8families/30records match writers,90focusedPASS. Current facts separated from proposed O1/O2base-dialogue and per-NPC knowledge contracts. [Review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) |
+| RS-OWN-002 | LOCAL_ACCEPTANCE / PUBLICATION_PENDING | Claude findings checked against code and evidence. Explicit current-utterance exclusion, reproducible transport stage timing and corrected PR40 publication evidence. [Disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) |
+| RS-OWN-NEXT | O1 FIRST / PROPOSED | Prove one authored supply offer through the existing typed action and with provider access disabled or failing. Then specify O2 per-NPC observation, claim, visibility and retention for the O3 two-NPC slice. [Acceptance proposal](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md#next-bounded-implementation-proposal) |
+| RS-PLAY-001I-PERF | OPEN_TARGET / DEFERRED_OPTIMIZATION | Actual Tk+SQLite total39.539s versus30sTARGET,maxsegment1.787s versus2sTARGET. Same-run wall-clock timings identify simulation as the largest measured stage with the Tk window withdrawn. Earlier visible-window timing remains open. [Follow-up](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 

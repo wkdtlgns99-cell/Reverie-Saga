@@ -63,10 +63,10 @@ PASS. These are small-world/current-device results,not minimum-spec or dense-his
 An actual3600ssegment on a separate copy of the performance save was instrumented with cProfile;
 original save bytes remained unchanged. Instrumentation timings are not production benchmarks.
 It records18000canonical phase barriers;_simulate5.092s of5.676sinstrumented submit,including
-repeated immutable snapshot validation/sorting;durable persistence0.390s. This identifies the
-remaining per-second CORE barrier/snapshot cost as the main measured hot path. Broader CORE
-optimization is deferred to a separately bounded order;no barrier,validation or outcome is
-removed to meet a target. The UI continues polling while the owned worker processes segments.
+repeated immutable snapshot validation and sorting. Durable persistence took 0.390s under
+the profiler. These timings describe an instrumented segment. The whole-journey attribution
+requires wall-clock stage timing within the same run. See the [reproducible follow-up](RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md).
+The UI continues polling while the owned worker processes segments.
 
 Native Unity/C#compile/render/build,manual UX/art,other-device/MIN-SPEC,independent checkpoints
 and release remain unqualified. Full parent project is incomplete. No new provider calls

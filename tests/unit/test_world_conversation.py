@@ -76,7 +76,13 @@ def test_retrieval_preserves_older_relevant_memory_and_excludes_other_npc() -> N
         tick += elapsed
     memories = retrieve_memories(state, residents[0].id, "내 비밀 암호 기억해?")
     assert any("파란도토리" in e.player_text for e in memories)
+    assert memories[-1] == state.exchanges[-1]
     assert all(e.npc_id == residents[0].id for e in memories)
     assert not any("붉은조개" in e.player_text for e in memories)
+    context_memories = retrieve_memories(
+        state, residents[0].id, "내 비밀 암호 기억해?", exclude_speech_id="speech:s9"
+    )
+    assert context_memories[-1] == state.exchanges[-2]
+    assert all(e.speech_id != "speech:s9" for e in context_memories)
     assert len(state.exchanges) == 10
     assert retrieve_memories(state, residents[0].id, "안녕", byte_budget=0) == ()

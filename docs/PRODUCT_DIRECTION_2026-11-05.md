@@ -63,3 +63,5 @@ does not authorize agents,native/ComputerUse operations,release,new dependencies
 Current Python prototype integration and past CI evidence do not establish commercial quality.
 
 Read-only ownership review:[actual A–J map,ranked gaps and bounded next contracts](reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md). This is review evidence/proposals,not new runtime/save/knowledge semantics or approval to release.
+
+The next implementation proposal is a small O1 proof using an authored supply offer and the existing confirmed action path. Its acceptance includes provider-disabled progression and equivalent gameplay effects at the same action boundary. [Claude feedback and next contract](reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md)

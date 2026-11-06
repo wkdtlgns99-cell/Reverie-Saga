@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-11-05 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-06 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -26,7 +26,9 @@ merged/tested trees equal3d453c08083d9886124574af1c0e7fb0a683e84b. [Hreceipt](do
 Transport PR39merged421de09 after both final-head2c58f357runs42038935289/42038877403
 completedSUCCESS,each4027full/32boundaryPASS. Fresh fetch/ff verified localmain=origin/main,
 clean,and merged/tested tree4a4bb4ee339e98bf7127e2c84fc8ba17901001a0. [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
-Current codex/data-ownership-review-20261105 completed local [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) under [RS-OWN-001](docs/work_orders/RS-OWN-001_DATA_OWNERSHIP_REVIEW.md):8families/30records have matching registered writers;knowledge visibility/long-term retention/base-dialogue/client integration need bounded contracts. Focused90PASS25.43s. Review publication pending;no runtime/Qdrant implementation. Cdirection approved;commercial API payment/access HOLD. Transport30stotalTARGET remains open (actual39.539s);not a scheduler bypass or product-completion claim. Native/device/independent/release/agent holds remain. Full parent incomplete. Do not restart delivered I/H or re-ask settled choices.
+RS-OWN-001 completed through ordinary [PR40](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/40) merge `dc4e0de`. Both final CI runs passed 4027 full and 32 boundary tests. Local and remote main and tested and merged trees matched. [A–J review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md)
+
+RS-OWN-002 validates Claude's feedback against code and evidence, fixes implicit latest-memory exclusion and adds same-run transport timing. O1 is the next proposed implementation, followed by O2 knowledge and retention, then O3 integration. Commercial AI payment remains on hold. See the [feedback disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) for scope, evidence and acceptance.
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
