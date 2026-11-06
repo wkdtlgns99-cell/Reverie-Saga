@@ -646,8 +646,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     world_mode.add_argument(
         "--world-authored", action="store_true", help="Play the authored supply quest"
     )
+    world_mode.add_argument(
+        "--world-knowledge", action="store_true", help="Play with NPC knowledge and rumor retention"
+    )
     parser.add_argument(
-        "--npc-ai", action="store_true", help="Enable live dialogue in authored mode"
+        "--npc-ai",
+        action="store_true",
+        help="Enable live dialogue in the authored or knowledge profile",
     )
     parser.add_argument("--working", type=Path, default=Path("tmp/client/game.sqlite"))
     parser.add_argument("--scenario", default="legacy")
@@ -668,16 +673,20 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser.add_argument("--npc-assistance-memory", action="store_true")
     selected_argv = list(argv) if argv is not None else sys.argv[1:]
     args = parser.parse_args(selected_argv)
-    if args.npc_ai and not args.world_authored:
-        parser.error("--npc-ai requires --world-authored")
-    if args.world or args.world_authored:
-        allowed = {"--world-authored", "--npc-ai"} if args.world_authored else {"--world"}
+    optional_ai_world = args.world_authored or args.world_knowledge
+    if args.npc_ai and not optional_ai_world:
+        parser.error("--npc-ai requires --world-authored or --world-knowledge")
+    if args.world or optional_ai_world:
+        mode = "--world-knowledge" if args.world_knowledge else "--world-authored"
+        allowed = {mode, "--npc-ai"} if optional_ai_world else {"--world"}
         if not set(selected_argv) <= allowed or len(selected_argv) != len(set(selected_argv)):
             parser.error("World modes cannot be combined with legacy room options or repeated")
         from app.world_client import launch_world
 
-        if args.world_authored:
-            return launch_world(authored_supply=True, live_npc=args.npc_ai)
+        if optional_ai_world:
+            return launch_world(
+                authored_supply=True, live_npc=args.npc_ai, knowledge=args.world_knowledge
+            )
         return launch_world()
     if args.npc_assistance_memory and not args.npc_reach_aid:
         raise ValueError("NPC_ASSISTANCE_MEMORY_CONTENT")

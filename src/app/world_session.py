@@ -38,15 +38,20 @@ def _bundle(
     conversation: bool,
     social: SocialCatalog | None = None,
     transport: TransportRules | None = None,
+    knowledge: bool = False,
 ) -> FeatureBundle:
     if transport is not None:
         if social is None:
             raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
-        return transport_world_bundle(world, social, transport, supply or SupplyScenario())
+        return transport_world_bundle(
+            world, social, transport, supply or SupplyScenario(), knowledge=knowledge
+        )
     if social is not None:
-        return social_world_bundle(world, social, supply or SupplyScenario())
+        return social_world_bundle(world, social, supply or SupplyScenario(), knowledge=knowledge)
     if conversation:
-        return conversation_world_bundle(world, supply or SupplyScenario())
+        return conversation_world_bundle(world, supply or SupplyScenario(), knowledge=knowledge)
+    if knowledge:
+        raise ValueError("WORLD_KNOWLEDGE_REQUIRES_CONVERSATION")
     if supply is not None:
         return supply_world_bundle(world, supply)
     if living:
@@ -63,6 +68,7 @@ def world_checkpoint(
     conversation: bool = False,
     social: SocialCatalog | None = None,
     transport: TransportRules | None = None,
+    knowledge: bool = False,
 ) -> DurableCheckpoint:
     if social is not None:
         conversation = True
@@ -74,6 +80,7 @@ def world_checkpoint(
         conversation=conversation,
         social=social,
         transport=transport,
+        knowledge=knowledge,
     )
     io = state_io((bundle,))
     identifier = (
@@ -119,7 +126,7 @@ def world_checkpoint(
     if conversation:
         components = tuple(
             sorted(
-                (*components, ConversationRecord(WORLD_ACTOR, ConversationState())),
+                (*components, ConversationRecord(WORLD_ACTOR, ConversationState(), knowledge)),
                 key=lambda c: (c.schema.kind, c.schema.version, c.entity_id),
             )
         )
@@ -166,6 +173,7 @@ def open_world_session(
     conversation: bool = False,
     social: SocialCatalog | None = None,
     transport: TransportRules | None = None,
+    knowledge: bool = False,
 ) -> DurableSession:
     bundles = (
         _bundle(
@@ -176,6 +184,7 @@ def open_world_session(
             conversation=conversation,
             social=social,
             transport=transport,
+            knowledge=knowledge,
         ),
     )
     if path.exists():
@@ -190,6 +199,7 @@ def open_world_session(
             conversation=conversation,
             social=social,
             transport=transport,
+            knowledge=knowledge,
         ),
         bundles=bundles,
     )

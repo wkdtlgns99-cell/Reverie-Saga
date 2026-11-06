@@ -160,6 +160,17 @@ with AI dialogue off. Add `--npc-ai` to enable it on the same save. If generatio
 **보급 의뢰 대화** to continue. If you reopen offline with unfinished recorded speech, use
 **저장된 대화** → **말 계속하기** to finish it. [Verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
 
+Run `python -m app.client --world-knowledge --npc-ai` to try NPC knowledge and rumor retention.
+Use the ordinary **주민과 대화** box. The addressed resident interprets the speech using their
+disposition and current situation. An accepted reply scores the speech from 0 to 3 and can select
+an exact quote to repeat. The first other resident learns it after 10 game seconds, with one more
+resident every 10 seconds in the same city. The quote has its original source and remains unverified.
+
+Each resident keeps 32 recent exchanges and up to 8 older positive-score memories. A real supply
+delivery remains available as the merchant's own observation. The profile saves separately in
+`tmp/world-knowledge-play/game.sqlite`. Omit `--npc-ai` for authored play with no new AI judgment.
+Previously accepted rumors still use game time. [Knowledge verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
+
 **주민과 대화** opens a nonmodal resident selector,free-text input and saved own transcript.
 Submitting speech records its duration once;AI waiting adds no game time. ESC holds further
 speech segments and reply acceptance. After restart,use **말 계속하기** for an unfinished

@@ -7,8 +7,11 @@ from contracts.world_conversation import (
     CONVERSATION,
     CONVERSATION_FAMILY,
     CONVERSATION_OWNER,
+    KNOWLEDGE,
+    AssessedNpcReply,
     ConversationDelta,
     ContinueSpeech,
+    KnowledgeDelta,
     NpcReply,
     PlayerSay,
     SpeechAdvanced,
@@ -29,6 +32,10 @@ from domain.world_conversation import (
 
 
 class WorldConversation:
+    def __init__(self, *, knowledge: bool = False) -> None:
+        self.knowledge = knowledge
+        self.key = KNOWLEDGE if knowledge else CONVERSATION
+
     @property
     def manifest(self) -> CapabilityManifest:
         return CapabilityManifest(
@@ -49,7 +56,7 @@ class WorldConversation:
         action = invocation.action
         if action is None:
             raise CandidateError("INVALID_COMMAND", "conversation invocation")
-        before = invocation.state.component(CONVERSATION, action.actor_id).state
+        before = invocation.state.component(self.key, action.actor_id).state
         payload = action.payload
         if isinstance(payload, ContinueSpeech):
             after, duration = continue_speech(before, payload.speech_id)
@@ -81,6 +88,7 @@ class WorldConversation:
                     payload.text,
                     "speech:s" + action.semantic_key.removeprefix("a1-"),
                     invocation.logical_tick - duration,
+                    knowledge=self.knowledge,
                 )
                 speaker = "player"
             elif isinstance(payload, NpcReply):
@@ -96,21 +104,29 @@ class WorldConversation:
                     payload.context_sha256,
                     payload.proposal,
                     invocation.logical_tick - duration,
+                    judgment=payload.judgment if isinstance(payload, AssessedNpcReply) else None,
                 )
                 speaker = "npc"
             else:
                 raise CandidateError("INVALID_COMMAND", "conversation payload")
         entry = after.exchanges[-1]
-        delta = ConversationDelta(
+        parts = (
             action.actor_id,
             len(before.exchanges),
-            exchange_digest(before.exchanges[-1] if before.exchanges else None),
+            exchange_digest(
+                before.exchanges[-1] if before.exchanges else None, knowledge=self.knowledge
+            ),
             before.speaker,
             before.remaining,
             entry,
             after.speaker,
             after.remaining,
-            len(after.exchanges) > len(before.exchanges),
+            isinstance(payload, PlayerSay),
+        )
+        delta = (
+            KnowledgeDelta(*parts, len(after.exchanges))
+            if self.knowledge
+            else ConversationDelta(*parts)
         )
         fact = SpeechAdvanced(
             action.actor_id,

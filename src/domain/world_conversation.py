@@ -6,14 +6,20 @@ import re
 import unicodedata
 from types import MappingProxyType
 
-from domain.canonical import canonical_json, seal
+from domain.canonical import JsonObject, canonical_json, object_value, seal
 from domain.primitives import EntityId, TypeKey, require_integer, require_namespace
 from domain.state_types import ComponentRecord
 from domain.world import Resident
 
 CONVERSATION_SCHEMA = TypeKey("world.conversation", 1)
+KNOWLEDGE_SCHEMA = TypeKey("world.conversation", 2)
 MAX_SPEECH_CHARACTERS = 512
 MAX_EXCHANGES = 4096
+RECENT_EXCHANGES = 32
+SALIENT_EXCHANGES = 8
+MAX_IMPORTANCE = 3
+MAX_RUMOR_CHARACTERS = 160
+RUMOR_INTERVAL_SECONDS = 10
 SPEECH_SEGMENT_SECONDS = 16
 PLAYER_CHARACTERS_PER_SECOND = 6
 NPC_RATES = MappingProxyType({"신중함": 4, "사교적": 6, "과묵함": 5, "호기심 많음": 7})
@@ -43,6 +49,27 @@ def npc_rate(resident: Resident) -> int:
 
 
 @dataclass(frozen=True, slots=True)
+class SpeechJudgment:
+    importance: int
+    repeat_quote: str
+
+    def __post_init__(self) -> None:
+        if (
+            type(self.importance) is not int
+            or not 0 <= self.importance <= MAX_IMPORTANCE
+            or type(self.repeat_quote) is not str
+            or len(self.repeat_quote) > MAX_RUMOR_CHARACTERS
+        ):
+            raise ValueError("DIALOGUE_JUDGMENT")
+        if self.repeat_quote:
+            validate_speech(self.repeat_quote)
+
+    def validate_source(self, player_text: str) -> None:
+        if self.repeat_quote and self.repeat_quote not in player_text:
+            raise ValueError("DIALOGUE_JUDGMENT")
+
+
+@dataclass(frozen=True, slots=True)
 class Exchange:
     speech_id: str
     npc_id: str
@@ -56,6 +83,7 @@ class Exchange:
     model: str = ""
     context_sha256: str = ""
     proposal: str = "none"
+    judgment: SpeechJudgment | None = None
 
     def __post_init__(self) -> None:
         for value in (
@@ -92,12 +120,17 @@ class Exchange:
                 or re.fullmatch(r"[0-9a-f]{64}", self.context_sha256) is None
             ):
                 raise ValueError("DIALOGUE_REPLY_PROVENANCE")
+            if self.judgment is not None:
+                if type(self.judgment) is not SpeechJudgment:
+                    raise ValueError("DIALOGUE_JUDGMENT")
+                self.judgment.validate_source(self.player_text)
         elif (
             self.reply_start
             or self.reply_end
             or self.model
             or self.context_sha256
             or self.proposal != "none"
+            or self.judgment is not None
         ):
             raise ValueError("DIALOGUE_REPLY_PROVENANCE")
 
@@ -116,7 +149,7 @@ class ConversationState:
         for exchange in self.exchanges:
             if type(exchange) is not Exchange:
                 raise ValueError("DIALOGUE_HISTORY")
-            Exchange(**asdict(exchange))
+            replace(exchange)
             if exchange.player_start < previous_end:
                 raise ValueError("DIALOGUE_ORDER")
             previous_end = exchange.reply_end or exchange.player_end
@@ -150,16 +183,43 @@ class ConversationState:
 class ConversationRecord(ComponentRecord):
     entity_id: EntityId
     state: ConversationState
+    knowledge: bool = False
 
     @property
     def schema(self) -> TypeKey:
-        return CONVERSATION_SCHEMA
+        return KNOWLEDGE_SCHEMA if self.knowledge else CONVERSATION_SCHEMA
 
 
-def exchange_digest(exchange: Exchange | None) -> str:
+def exchange_document(exchange: Exchange, *, knowledge: bool = False) -> JsonObject:
+    data = asdict(exchange)
+    if not knowledge:
+        del data["judgment"]
+    return object_value(seal(data))
+
+
+def exchange_digest(exchange: Exchange | None, *, knowledge: bool = False) -> str:
     return hashlib.sha256(
-        canonical_json(None if exchange is None else seal(asdict(exchange)))
+        canonical_json(
+            None if exchange is None else exchange_document(exchange, knowledge=knowledge)
+        )
     ).hexdigest()
+
+
+def retained_exchanges(entries: tuple[Exchange, ...], npc_id: str) -> tuple[Exchange, ...]:
+    own = [i for i, e in enumerate(entries) if e.npc_id == npc_id]
+    if len(own) <= RECENT_EXCHANGES:
+        return entries
+    older = own[:-RECENT_EXCHANGES]
+    ranked = sorted(
+        (
+            (judgment.importance, i)
+            for i in older
+            if (judgment := entries[i].judgment) is not None and judgment.importance > 0
+        ),
+        reverse=True,
+    )
+    expired = set(older) - {i for _, i in ranked[:SALIENT_EXCHANGES]}
+    return tuple(e for i, e in enumerate(entries) if i not in expired)
 
 
 def begin_speech(
@@ -169,6 +229,8 @@ def begin_speech(
     text: str,
     speech_id: str,
     start_tick: int,
+    *,
+    knowledge: bool = False,
 ) -> tuple[ConversationState, int]:
     if state.remaining:
         raise ValueError("DIALOGUE_SPEAKING")
@@ -178,9 +240,10 @@ def begin_speech(
     entry = Exchange(speech_id, resident.id, place_id, text, start_tick, start_tick + seconds)
     elapsed = min(SPEECH_SEGMENT_SECONDS, seconds)
     remaining = seconds - elapsed
-    return ConversationState(
-        (*state.exchanges, entry), "player" if remaining else "", remaining
-    ), elapsed
+    entries = (*state.exchanges, entry)
+    if knowledge:
+        entries = retained_exchanges(entries, resident.id)
+    return ConversationState(entries, "player" if remaining else "", remaining), elapsed
 
 
 def begin_reply(
@@ -192,6 +255,8 @@ def begin_reply(
     context_sha256: str,
     proposal: str,
     start_tick: int,
+    *,
+    judgment: SpeechJudgment | None = None,
 ) -> tuple[ConversationState, int]:
     if state.remaining:
         raise ValueError("DIALOGUE_SPEAKING")
@@ -211,6 +276,7 @@ def begin_reply(
         model=model,
         context_sha256=context_sha256,
         proposal=proposal,
+        judgment=judgment,
     )
     elapsed = min(SPEECH_SEGMENT_SECONDS, seconds)
     remaining = seconds - elapsed
@@ -259,7 +325,8 @@ def retrieve_memories(
     selected: list[int] = []
     used = 0
     for index in candidates:
-        size = len(canonical_json(seal(asdict(own[index]))))
+        entry = own[index]
+        size = len(canonical_json(exchange_document(entry, knowledge=entry.judgment is not None)))
         if len(selected) < limit and used + size <= byte_budget:
             selected.append(index)
             used += size

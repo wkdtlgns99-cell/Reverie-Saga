@@ -319,9 +319,14 @@ class SocialPatchRoute:
 
 class SocialCheckpointPolicy:
     def __init__(
-        self, world: WorldCatalog, scenario: SupplyScenario, catalog: SocialCatalog
+        self,
+        world: WorldCatalog,
+        scenario: SupplyScenario,
+        catalog: SocialCatalog,
+        *,
+        knowledge: bool = False,
     ) -> None:
-        self.base = ConversationCheckpointPolicy(world, scenario)
+        self.base = ConversationCheckpointPolicy(world, scenario, knowledge=knowledge)
         self.adapter = SocialAdapter(catalog)
 
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:

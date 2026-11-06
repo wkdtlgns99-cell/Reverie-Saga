@@ -1,7 +1,13 @@
 """One canonical own-knowledge context for generation and reply revalidation."""
 
 from contracts.read_views import ReadPort
-from contracts.world_conversation import CONVERSATION, ConversationContext
+from contracts.world_conversation import (
+    CONVERSATION,
+    KNOWLEDGE,
+    ConversationContext,
+    RumorMemory,
+    SupplyObservation,
+)
 from contracts.world_population import INVENTORY, SETTLEMENT
 from contracts.world_supply import SUPPLY
 from contracts.world_travel import TRAVELER
@@ -9,7 +15,12 @@ from contracts.world_social import SOCIAL
 from domain.primitives import EntityId
 from domain.state_types import CoreSnapshot
 from domain.world import LocalDetail, WorldCatalog
-from domain.world_conversation import ConversationRecord, ConversationState, retrieve_memories
+from domain.world_conversation import (
+    RUMOR_INTERVAL_SECONDS,
+    ConversationRecord,
+    ConversationState,
+    retrieve_memories,
+)
 from domain.world_population import InventoryRecord, InventoryState, SettlementRecord
 from domain.world_supply import (
     SupplyRecord,
@@ -30,6 +41,42 @@ from domain.world_social import (
 )
 
 
+def _heard_rumors(
+    conversation: ConversationState, local: LocalDetail, npc_id: str, tick: int
+) -> tuple[RumorMemory, ...]:
+    residents = {resident.id: resident.name for resident in local.residents}
+    order = sorted(residents)
+    listener = order.index(npc_id)
+    heard = []
+    for entry in reversed(conversation.exchanges):
+        if (
+            entry.place_id != local.place_id
+            or entry.npc_id == npc_id
+            or entry.npc_id not in residents
+            or entry.judgment is None
+            or not entry.judgment.repeat_quote
+        ):
+            continue
+        recipient_number = listener + int(listener < order.index(entry.npc_id))
+        learned = entry.reply_end + RUMOR_INTERVAL_SECONDS * recipient_number
+        if tick >= learned:
+            heard.append(
+                RumorMemory(
+                    entry.speech_id,
+                    WORLD_ACTOR,
+                    entry.npc_id,
+                    residents[entry.npc_id],
+                    local.place_id,
+                    entry.player_end,
+                    learned,
+                    entry.judgment.repeat_quote,
+                )
+            )
+            if len(heard) == 2:
+                break
+    return tuple(heard)
+
+
 def build_context(
     world: WorldCatalog,
     scenario: SupplyScenario,
@@ -42,6 +89,7 @@ def build_context(
     *,
     social: SocialCatalog | None = None,
     social_state: SocialState | None = None,
+    knowledge: bool = False,
 ) -> ConversationContext:
     if conversation.remaining:
         raise ValueError("DIALOGUE_SPEAKING")
@@ -140,6 +188,15 @@ def build_context(
         )
         if available == "accept" and city_score <= HOSTILE_THRESHOLD:
             available = "none"
+    observations = (
+        (
+            SupplyObservation(
+                "observed_supply_delivery", resident.id, place.id, supply.resolved_tick
+            ),
+        )
+        if knowledge and index == 1 and supply.stage == 2
+        else ()
+    )
     return ConversationContext(
         resident.id,
         resident.name,
@@ -158,6 +215,9 @@ def build_context(
         retrieve_memories(
             conversation, resident.id, current.player_text, exclude_speech_id=current.speech_id
         ),
+        knowledge,
+        _heard_rumors(conversation, local, resident.id, tick) if knowledge else (),
+        observations,
     )
 
 
@@ -168,13 +228,14 @@ def context_from_read(
     tick: int,
     *,
     social: SocialCatalog | None = None,
+    knowledge: bool = False,
 ) -> ConversationContext:
     travel = state.component(TRAVELER, WORLD_ACTOR).state
     entity = EntityId(travel.place_id)
     return build_context(
         world,
         scenario,
-        state.component(CONVERSATION, WORLD_ACTOR).state,
+        state.component(KNOWLEDGE if knowledge else CONVERSATION, WORLD_ACTOR).state,
         travel,
         state.component(SETTLEMENT, entity).state,
         state.component(SUPPLY, entity).state,
@@ -182,6 +243,7 @@ def context_from_read(
         tick,
         social=social,
         social_state=state.component(SOCIAL, WORLD_ACTOR).state if social is not None else None,
+        knowledge=knowledge,
     )
 
 
@@ -194,7 +256,7 @@ def context_from_core(
 ) -> ConversationContext:
     if any(isinstance(c, JourneyRecord) and c.state.phase != "idle" for c in core.components):
         raise ValueError("DIALOGUE_OUT_OF_REACH")
-    conversation = next(c.state for c in core.components if isinstance(c, ConversationRecord))
+    conversation = next(c for c in core.components if isinstance(c, ConversationRecord))
     travel = next(c.state for c in core.components if isinstance(c, TravelerRecord))
     local = next(
         c.state
@@ -211,7 +273,7 @@ def context_from_core(
     return build_context(
         world,
         scenario,
-        conversation,
+        conversation.state,
         travel,
         local,
         supply,
@@ -219,4 +281,5 @@ def context_from_core(
         core.tick,
         social=social,
         social_state=social_state,
+        knowledge=conversation.knowledge,
     )

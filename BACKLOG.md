@@ -23,7 +23,9 @@ RS-OWN-001 completed through ordinary [PR40](https://github.com/wkdtlgns99-cell/
 
 RS-OWN-002 merged through [PR41](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/41) at `a877236`. Both final CI runs passed 4027 full and 32 boundary tests each. Local and remote main and tested and merged trees matched. [Feedback disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md)
 
-RS-OWN-O1 implements and locally verifies the authored supply quest from offer to saved completion with AI off or a generation failure. O2 knowledge and retention is the next proposal, followed by O3 integration. Commercial AI payment remains on hold. [O1 verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
+RS-OWN-O1 merged through [PR42](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/42) at `9947f48`. Both final CI runs passed 4033 full and 32 boundary tests each. Local and remote main and tested and merged trees matched. [O1 verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
+
+RS-OWN-O2 locally verifies NPC-specific knowledge, delayed local rumors with their source, and bounded retention by importance in an isolated profile. The next proposal is O3 integration. Commercial AI payment remains on hold. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
@@ -48,8 +50,9 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | RS-PLAY-001I | MERGED_PR39 / main421de09 | Real carriage/ship summaries,player-controlled closures,exact catch-up,GUI/save/restart/recovery. Local4022full,41new,236affected/static PASS;six old profiles/save bytes preserved. Both final CI each4027full/32boundaryPASS;ordinary main sync/clean/tree equality verified. Segment1.787s meets2sTARGET,total39.539s leaves30sTARGET open. [Receipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
 | RS-OWN-001 | MERGED_PR40 / main dc4e0de | Actual A–J owner/transaction/visibility/retention map;8families/30records match writers,90focusedPASS. Current facts separated from proposed O1/O2base-dialogue and per-NPC knowledge contracts. [Review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) |
 | RS-OWN-002 | MERGED_PR41 / main a877236 | Explicit current-utterance exclusion, reproducible transport stage timing and corrected PR40 publication evidence. [Disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) |
-| RS-OWN-O1 | LOCAL_ACCEPTANCE / SEE DELIVERY PR | One authored supply quest uses the same confirmed action as AI suggestions. Tk and SQLite checks cover AI off, generation failure, retry, saved completion and replay. [Verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md) |
-| RS-OWN-NEXT | O2 THEN O3 / PROPOSED | Specify per-NPC observation, claim, visibility and retention for the O3 two-NPC slice. [Acceptance proposal](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md#next-bounded-implementation-proposal) |
+| RS-OWN-O1 | MERGED_PR42 / main 9947f48 | One authored supply quest uses the same confirmed action as AI suggestions. Tk and SQLite checks cover AI off, generation failure, retry, saved completion and replay. [Verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md) |
+| RS-OWN-O2 | LOCAL_ACCEPTANCE / SEE DELIVERY PR | Own speech, quoted delayed local rumors, observed delivery and 32 recent plus 8 ranked older exchanges per resident. [Verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md) |
+| RS-OWN-NEXT | O3 / PROPOSED | Integrate the two-NPC quest slice with authored and optional-AI play through the agreed knowledge boundaries. [Acceptance proposal](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md#next-bounded-implementation-proposal) |
 | RS-PLAY-001I-PERF | OPEN_TARGET / DEFERRED_OPTIMIZATION | Actual Tk+SQLite total39.539s versus30sTARGET,maxsegment1.787s versus2sTARGET. Same-run wall-clock timings identify simulation as the largest measured stage with the Tk window withdrawn. Earlier visible-window timing remains open. [Follow-up](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
