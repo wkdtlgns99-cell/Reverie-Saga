@@ -41,7 +41,10 @@ class ConversationPanel:
         action: Callable[[str], None],
         confirm: Callable[[SupplyOffer], None],
         pause: Callable[[tk.Event[tk.Misc]], str],
+        *,
+        live_npc: bool = True,
     ) -> None:
+        self.live_npc = live_npc
         self.panel = tk.Toplevel(root)
         self.panel.title("주민과 대화")
         self.panel.geometry("620x640")
@@ -97,6 +100,13 @@ class ConversationPanel:
             self.panel, text="조건을 확인하고 실행", command=self.confirm_offer
         )
         self.confirm.pack(pady=6)
+        if not live_npc:
+            self.panel.title("저장된 주민 대화")
+            self.status.set("AI 대화가 꺼져 있습니다. 보급 의뢰는 각본 대화로 진행할 수 있습니다.")
+            self.input.pack_forget()
+            self.confirm.pack_forget()
+            for name in ("send", "retry", "skip", "cancel"):
+                self.buttons[name].grid_remove()
         self.panel.bind("<Configure>", self.resize, add=True)
 
     def resize(self, event: tk.Event[tk.Misc]) -> None:
@@ -150,7 +160,7 @@ class ConversationPanel:
         finally:
             self.transcript.configure(state="disabled")
         self.offer = None
-        if state is not None and state.exchanges and not state.remaining:
+        if self.live_npc and state is not None and state.exchanges and not state.remaining:
             entry = state.exchanges[-1]
             self.offer = next(
                 (
@@ -174,11 +184,13 @@ class ConversationPanel:
         self._ready = ready
         unanswered = bool(state and state.exchanges and not state.exchanges[-1].reply_text)
         enabled = {
-            "send": ready and not state.remaining if state is not None else False,
-            "retry": ready and unanswered and not state.remaining if state is not None else False,
+            "send": self.live_npc and ready and not state.remaining if state is not None else False,
+            "retry": self.live_npc and ready and unanswered and not state.remaining
+            if state is not None
+            else False,
             "speech": ready and bool(state.remaining) if state is not None else False,
-            "skip": ready and unanswered,
-            "cancel": generating,
+            "skip": self.live_npc and ready and unanswered,
+            "cancel": self.live_npc and generating,
             "recover": recovery and not paused and not busy,
         }
         for name, button in self.buttons.items():

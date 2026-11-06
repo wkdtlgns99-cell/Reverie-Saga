@@ -18,7 +18,7 @@ from contracts.world_time import WorldWait
 from contracts.world_supply import SupplyAction
 from contracts.world_social import SocialAction
 from contracts.world_transport import TransportAction
-from contracts.turn import GameCommand, TurnCommitted, TurnRejected
+from contracts.turn import GameCommand, TurnAborted, TurnCommitted, TurnRejected
 from contracts.world_conversation import ConversationGenerator, ContinueSpeech, PlayerSay
 from domain.world_conversation import ConversationRecord, ConversationState
 from domain.world import WorldCatalog
@@ -87,11 +87,15 @@ class WorldWorker:
         conversation: bool = False,
         social: SocialCatalog | None = None,
         transport: TransportRules | None = None,
+        authored_supply: bool = False,
+        live_npc: bool = True,
         generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
         self.world = world
         self.conversation = conversation or social is not None
+        self.authored_supply = authored_supply
+        self.live_npc = live_npc
         self.social = social
         if transport is not None and social is None:
             raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
@@ -142,7 +146,7 @@ class WorldWorker:
         if action == "wait" and not request_key:
             self._request_sequence += 1
             request_key = f"auto-time-{self._request_sequence}"
-        if action == "generate":
+        if action == "generate" and self.live_npc:
             self._dialogue.prepare_generation(request_key)
         return self._executor.submit(
             self._run,
@@ -171,6 +175,8 @@ class WorldWorker:
         social_action: SocialAction | None,
         transport_operation: str,
     ) -> WorldUpdate:
+        if not self.live_npc and action in ("say", "generate", "reply"):
+            raise ValueError("WORLD_NPC_AI_DISABLED")
         if (
             action == "supply"
             and request_key
@@ -348,7 +354,9 @@ class WorldWorker:
             wait_committed,
             "여정 중 · 주민과 도시 보급 정보는 도착 후 확인할 수 있습니다."
             if in_transit
-            else supply_status(city, self.scenario, record.state.place_id, core.tick),
+            else supply_status(
+                city, self.scenario, record.state.place_id, core.tick, authored=self.authored_supply
+            ),
             offers,
             conversation,
             self._dialogue.reply_ready
@@ -417,6 +425,11 @@ class WorldWorker:
         self._supply_recovery = True
         result = owner.submit(self._pending_supply, attachment_id=owner.attachment_id)
         self._supply_recovery = False
+        if isinstance(result.outcome, TurnAborted):
+            code = result.outcome.failure.code
+            if code == "SAVE_UNAVAILABLE":
+                raise SaveError(code, "supply transaction was confirmed absent and can be retried")
+            raise RuntimeError("WORLD_SUPPLY_ABORTED: " + code)
         if isinstance(result.outcome, TurnCommitted):
             return {
                 "accept": "의뢰를 수락했습니다.",

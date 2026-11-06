@@ -16,12 +16,13 @@ from tkinter import ttk
 from app.world_catalog import DEVELOPMENT_WORLD, load_social, load_transport, load_world
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
-from app.world_supply import SupplyOffer, item_label
+from app.world_supply import SupplyOffer, authored_supply_line, item_label
 from app.world_conversation import ConversationPanel, dialogue_notice
 from app.world_social import SocialPanel, city_standing, resident_membership, social_notice
 from app.world_transport import TransportPanel, transport_notice
 from contracts.dialogue import GenerationError
 from domain.world_conversation import validate_speech
+from domain.world_supply import SupplyScenario
 from contracts.world_supply import SupplyAction
 from contracts.world_social import SocialAction
 from domain.world import WorldCatalog
@@ -213,7 +214,11 @@ class WorldMapWindow:
             side="bottom", fill="x", padx=12, pady=4
         )
         self.offer_button = ttk.Button(
-            self.action_controls, text="주민의 제안", command=self.show_supply_offer
+            self.action_controls,
+            text="보급 의뢰 대화"
+            if worker is not None and worker.authored_supply
+            else "주민의 제안",
+            command=self.show_supply_offer,
         )
         self.offer_button.grid(row=0, column=3, padx=4, pady=3)
         self.retry_supply = ttk.Button(
@@ -226,8 +231,13 @@ class WorldMapWindow:
                 self.conversation_action,
                 self.confirm_dialogue_supply,
                 self.toggle_pause,
+                live_npc=worker.live_npc,
             )
-            ttk.Button(self.action_controls, text="주민과 대화", command=self.dialogue.show).grid(
+            ttk.Button(
+                self.action_controls,
+                text="주민과 대화" if worker.live_npc else "저장된 대화",
+                command=self.dialogue.show,
+            ).grid(
                 row=1,
                 column=4,
                 padx=4,
@@ -711,7 +721,15 @@ class WorldMapWindow:
                 )
                 if self.dialogue is not None:
                     code = error.code if isinstance(error, GenerationError) else str(error)
-                    self.dialogue.status.set(dialogue_notice(code))
+                    notice = dialogue_notice(code)
+                    if (
+                        action == "generate"
+                        and not self.dialogue_recovery
+                        and self.worker is not None
+                        and self.worker.authored_supply
+                    ):
+                        notice += " 지도에서 ‘보급 의뢰 대화’를 열어 진행할 수 있습니다."
+                    self.dialogue.status.set(notice)
             self.status.set(f"처리하지 못했습니다: {error}")
         finally:
             self.clock.sample(self.now_ns())
@@ -840,6 +858,7 @@ class WorldMapWindow:
     def say(self, npc_id: str, text: str) -> None:
         if (
             self.dialogue is None
+            or not self.dialogue.live_npc
             or self.pending is not None
             or self.paused
             or self.dialogue_running
@@ -915,6 +934,8 @@ class WorldMapWindow:
     def conversation_action(self, action: str) -> None:
         if self.worker is None or self.dialogue is None:
             return
+        if not self.worker.live_npc and action not in ("speech", "recover"):
+            return
         if action == "cancel":
             self.worker.cancel_conversation()
             self.want_reply = False
@@ -972,6 +993,10 @@ class WorldMapWindow:
         panel = tk.Toplevel(self.root)
         self.offer_panel = panel
         panel.title(offer.npc_name + "의 제안")
+        if self.worker is not None and self.worker.authored_supply:
+            ttk.Label(panel, text=authored_supply_line(offer), wraplength=480, justify="left").pack(
+                padx=18, pady=(14, 0)
+            )
         ttk.Label(panel, text=offer.summary, wraplength=480, padding=18, justify="left").pack()
         ttk.Button(
             panel, text="확인하고 진행", command=partial(self.confirm_supply, offer, panel)
@@ -1003,7 +1028,9 @@ class WorldMapWindow:
         self.send("supply")
 
 
-def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
+def launch_world(
+    catalog_path: Path = DEVELOPMENT_WORLD, *, authored_supply: bool = False, live_npc: bool = True
+) -> int:
     try:
         catalog = load_world(catalog_path)
         social = load_social(catalog)
@@ -1013,8 +1040,15 @@ def launch_world(catalog_path: Path = DEVELOPMENT_WORLD) -> int:
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
+    directory = "world-authored-supply-play" if authored_supply else "world-transport-play"
     worker = WorldWorker(
-        Path("tmp/world-transport-play/game.sqlite"), catalog, social=social, transport=transport
+        Path("tmp") / directory / "game.sqlite",
+        catalog,
+        scenario=SupplyScenario(start_tick=1) if authored_supply else SupplyScenario(),
+        social=social,
+        transport=transport,
+        authored_supply=authored_supply,
+        live_npc=live_npc,
     )
     try:
         WorldMapWindow(root, catalog, worker)

@@ -24,6 +24,19 @@ class SupplyOffer:
     summary: str
 
 
+AUTHORED_SUPPLY_COMPLETE = "상인: “덕분에 보급로가 다시 열렸어요. 고맙습니다.”"
+
+
+def authored_supply_line(offer: SupplyOffer) -> str:
+    """Written lines for the action already offered by the committed world."""
+    line = {
+        "accept": f"길이 막혀 시장에 물자가 끊겼어요. 운송인에게 상자 {REPAIR_CRATES}개를 받아 제게 가져다주세요.",
+        "collect": "복구에 쓸 상자를 하나 내드릴게요. 필요한 만큼 받으면 상인에게 가져가세요.",
+        "deliver": "필요한 상자가 다 모였네요. 건네주시면 바로 길을 고치는 데 쓰겠습니다.",
+    }[offer.action.operation]
+    return f"{offer.npc_name}: “{line}”"
+
+
 def supply_offers(
     local: LocalDetail,
     state: SupplyState,
@@ -50,7 +63,14 @@ def supply_offers(
     return (SupplyOffer(SupplyAction(local.place_id, npc.id, operation), npc.name, summary),)
 
 
-def supply_status(state: SupplyState, scenario: SupplyScenario, place_id: str, tick: int) -> str:
+def supply_status(
+    state: SupplyState,
+    scenario: SupplyScenario,
+    place_id: str,
+    tick: int,
+    *,
+    authored: bool = False,
+) -> str:
     situation = (
         "보급로 복구 완료"
         if state.stage == 2
@@ -60,7 +80,12 @@ def supply_status(state: SupplyState, scenario: SupplyScenario, place_id: str, t
         if blocked(scenario, place_id, state, tick)
         else "보급 정상"
     )
-    return f"{situation} · 시장 재고 {state.stock}/{STOCK_CAP} · 창고 {state.warehouse}/{WAREHOUSE_CAP} · 미충족 수요 {state.missed}"
+    status = f"{situation} · 시장 재고 {state.stock}/{STOCK_CAP} · 창고 {state.warehouse}/{WAREHOUSE_CAP} · 미충족 수요 {state.missed}"
+    if authored and state.stage == 2:
+        return f"{status}\n{AUTHORED_SUPPLY_COMPLETE}"
+    if authored and place_id == scenario.place_id and tick < scenario.start_tick:
+        return f"{status}\n잠시 기다리면 상인의 보급 의뢰 대화가 열립니다."
+    return status
 
 
 def item_label(item_id: str) -> str:
