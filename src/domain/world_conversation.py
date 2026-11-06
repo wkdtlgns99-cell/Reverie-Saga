@@ -233,12 +233,19 @@ def _terms(text: str) -> frozenset[str]:
 
 
 def retrieve_memories(
-    state: ConversationState, npc_id: str, query: str, *, byte_budget: int = 4096, limit: int = 6
+    state: ConversationState,
+    npc_id: str,
+    query: str,
+    *,
+    exclude_speech_id: str | None = None,
+    byte_budget: int = 4096,
+    limit: int = 6,
 ) -> tuple[Exchange, ...]:
     require_integer(byte_budget)
     require_integer(limit, 0, 32)
-    # The current player's pending utterance is supplied separately,never duplicated as history.
-    own = tuple(e for e in state.exchanges[:-1] if e.npc_id == npc_id)
+    own = tuple(
+        e for e in state.exchanges if e.npc_id == npc_id and e.speech_id != exclude_speech_id
+    )
     terms = _terms(query)
     recent = list(range(max(0, len(own) - 2), len(own)))[::-1]
     relevant = sorted(
