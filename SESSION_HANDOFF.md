@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-11-06 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-07 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -32,7 +32,9 @@ RS-OWN-002 merged through [PR41](https://github.com/wkdtlgns99-cell/Reverie-Saga
 
 O1 merged through [PR42](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/42) at `9947f48`. Both final CI runs passed 4033 full and 32 boundary tests each. The original authored profile is available as `--world-authored`. [O1 verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
 
-Latest director scope on 2026-11-06 is O2 implementation, verification and ordinary PR delivery. The isolated `--world-knowledge` profile retains recent and salient NPC memories and propagates selected exact quotes on the game clock. Add `--npc-ai` to try natural language interpretation. The delivery PR records final CI and main sync. O3 remains proposed. Commercial AI payment remains on hold. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
+O2 merged through [PR43](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/43) at `ccf30bb`. Both final CI runs passed 4043 full and 32 boundary tests each. The isolated `--world-knowledge` profile retains recent and salient NPC memories and propagates selected exact quotes on the game clock. Add `--npc-ai` to try natural language interpretation. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
+
+Latest director scope on 2026-11-07 is O3, the merchant and courier quest integration proof and ordinary PR delivery. The existing knowledge profile now has a regression covering the full quest with an AI suggestion, with AI off and with a provider timeout. The delivery PR records final CI and main sync. O4 remains proposed. Commercial AI payment remains on hold. [O3 verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests

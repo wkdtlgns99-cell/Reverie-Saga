@@ -1,7 +1,7 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-11-06 | Current task/status/dependency SSOT.
+Updated:2026-11-07 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
@@ -25,7 +25,9 @@ RS-OWN-002 merged through [PR41](https://github.com/wkdtlgns99-cell/Reverie-Saga
 
 RS-OWN-O1 merged through [PR42](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/42) at `9947f48`. Both final CI runs passed 4033 full and 32 boundary tests each. Local and remote main and tested and merged trees matched. [O1 verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md)
 
-RS-OWN-O2 locally verifies NPC-specific knowledge, delayed local rumors with their source, and bounded retention by importance in an isolated profile. The next proposal is O3 integration. Commercial AI payment remains on hold. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
+RS-OWN-O2 merged through [PR43](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/43) at `ccf30bb`. Both final CI runs passed 4043 full and 32 boundary tests each. Local and remote main and tested and merged trees matched. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
+
+RS-OWN-O3 locally verifies the full merchant and courier supply quest in the knowledge profile. The authored, AI-suggested and provider-timeout paths agree on objective state when actions share the same game ticks. A sourced false rumor and false reply leave the actual route blocked until confirmed delivery. Commercial AI payment remains on hold. [O3 verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
@@ -51,8 +53,9 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | RS-OWN-001 | MERGED_PR40 / main dc4e0de | Actual A–J owner/transaction/visibility/retention map;8families/30records match writers,90focusedPASS. Current facts separated from proposed O1/O2base-dialogue and per-NPC knowledge contracts. [Review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md) |
 | RS-OWN-002 | MERGED_PR41 / main a877236 | Explicit current-utterance exclusion, reproducible transport stage timing and corrected PR40 publication evidence. [Disposition](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) |
 | RS-OWN-O1 | MERGED_PR42 / main 9947f48 | One authored supply quest uses the same confirmed action as AI suggestions. Tk and SQLite checks cover AI off, generation failure, retry, saved completion and replay. [Verification](docs/reviews/RS-OWN-O1_EXECUTION_2026-11-06.md) |
-| RS-OWN-O2 | LOCAL_ACCEPTANCE / SEE DELIVERY PR | Own speech, quoted delayed local rumors, observed delivery and 32 recent plus 8 ranked older exchanges per resident. [Verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md) |
-| RS-OWN-NEXT | O3 / PROPOSED | Integrate the two-NPC quest slice with authored and optional-AI play through the agreed knowledge boundaries. [Acceptance proposal](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md#next-bounded-implementation-proposal) |
+| RS-OWN-O2 | MERGED_PR43 / main ccf30bb | Own speech, quoted delayed local rumors, observed delivery and 32 recent plus 8 ranked older exchanges per resident. [Verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md) |
+| RS-OWN-O3 | LOCAL_ACCEPTANCE / SEE DELIVERY PR | Merchant and courier knowledge, false rumor with no objective change, authored completion with AI off or timing out, and exact delivery recovery, save, branch and replay checks. [Verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md) |
+| RS-OWN-NEXT | O4 / PROPOSED | Specify the read-only current-world client projection and subsequent bridge and native verification boundaries. [Ownership review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md#j-missing-contracts-and-bounded-next-order) |
 | RS-PLAY-001I-PERF | OPEN_TARGET / DEFERRED_OPTIMIZATION | Actual Tk+SQLite total39.539s versus30sTARGET,maxsegment1.787s versus2sTARGET. Same-run wall-clock timings identify simulation as the largest measured stage with the Tk window withdrawn. Earlier visible-window timing remains open. [Follow-up](docs/reviews/RS-OWN-002_CLAUDE_FEEDBACK_2026-11-06.md) [Ireceipt](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
