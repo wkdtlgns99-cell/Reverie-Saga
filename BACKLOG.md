@@ -1,7 +1,7 @@
 # Reverie Saga — Backlog
 
 
-Updated:2026-11-07 | Current task/status/dependency SSOT.
+Updated:2026-11-08 | Current task/status/dependency SSOT.
 Entry:[handoff](SESSION_HANDOFF.md). Execution:[rules](ENGINEERING_RULES.md). Product:[MASTER](docs/MASTER_GAME_ARCHITECTURE.md).
 Scope acceptance is local/self-reviewed unless explicitly identified as independent.
 Replace current rows when status changes;put execution detail in linked receipts,not another root chronology.
@@ -59,7 +59,7 @@ PR35foundation acceptance does not complete the unfinished Gworker/UI/provider f
 | RS-OWN-O3 | MERGED_PR44 / main dbebf68 | Merchant and courier knowledge, false rumor with no objective change, authored completion with AI off or timing out, and exact delivery recovery, save, branch and replay checks. [Verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md) |
 | RS-OWN-O4 | MERGED_PR45 / main 59a673c | Manual read-only refresh of current working progress, local transcripts and supply stage in Unity. [Verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md) |
 | RS-OWN-NEXT | BRIDGE AND GRAPHICS / PROPOSED | Define current-world command bridge and graphics qualification boundaries. [Ownership review](docs/reviews/RS-OWN-001_DATA_OWNERSHIP_2026-11-05.md#j-missing-contracts-and-bounded-next-order) |
-| RS-PLAY-001I-PERF | LOCAL_ACCEPTANCE / SEE DELIVERY PR | Matched hidden Tk and SQLite route median 23.9704 s → 6.5920 s. All 35 steps, checkpoint and SQLite bytes match. Visible-window 30 s qualification remains open. [Verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md) |
+| RS-PLAY-001I-PERF | MERGED_PR46 / CURRENT_HOST_TARGETS_MET | Matched hidden Tk and SQLite median 23.9704 s → 6.5920 s. Three post-merge visible runs took 11.4011–11.5649 s with maximum segment at most 0.4881 s. All 35 steps, checkpoint and SQLite bytes match. [Verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md) |
 
 ### Session decision and implementation inventory — 2026-11-04
 

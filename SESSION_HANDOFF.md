@@ -1,7 +1,7 @@
 # Reverie Saga — Session Handoff
 
 
-Updated:2026-11-07 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
+Updated:2026-11-08 | Resume context only;[BACKLOG](BACKLOG.md) owns task states.
 Current workspace `C:\ReverieSaga` (canonical MASTER location);reference `C:\Quilltale` is read-only.
 Observed current checkout:`C:\Reverie Saga`;run commands in the actual checkout.
 
@@ -38,7 +38,7 @@ O3 merged through [PR44](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/44
 
 O4 merged through [PR45](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/45) at `59a673c`. Both final CI runs passed 4052 full and 32 boundary tests each. Use the Unity editor's **Reverie → 현재 월드 보기 (읽기 전용)** menu to read active `--world-knowledge` progress. The director authorized native verification for that screen on this workstation. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
 
-Latest director scope is unattended work on settled tasks, beginning with transport performance. The candidate reduces empty barrier work while preserving each phase and the full durable trace. The current-host hidden-window median is 23.9704 s → 6.5920 s and full local regression passed. The delivery PR records final CI and main sync. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
+Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
