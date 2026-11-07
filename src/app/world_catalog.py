@@ -8,11 +8,14 @@ import sys
 from domain.canonical import canonical_json, decode_json, object_value
 from domain.world import WorldCatalog, decode_world, elaborate_place, generate_world
 from domain.world_social import SocialCatalog, decode_social
+from domain.world_supply import SupplyScenario
 from domain.world_transport import TransportRules, decode_transport
 
 DEVELOPMENT_WORLD = Path(__file__).resolve().parents[2] / "content/worlds/development-world-v1.json"
 DEVELOPMENT_SOCIAL = DEVELOPMENT_WORLD.with_name("development-social-v1.json")
 DEVELOPMENT_TRANSPORT = DEVELOPMENT_WORLD.with_name("development-transport-v1.json")
+KNOWLEDGE_WORLD_PATH = Path("tmp/world-knowledge-play/game.sqlite")
+AUTHORED_SUPPLY_SCENARIO = SupplyScenario(start_tick=1)
 
 
 def load_world(path: Path = DEVELOPMENT_WORLD) -> WorldCatalog:

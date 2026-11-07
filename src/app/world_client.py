@@ -13,7 +13,14 @@ import unicodedata
 import tkinter as tk
 from tkinter import ttk
 
-from app.world_catalog import DEVELOPMENT_WORLD, load_social, load_transport, load_world
+from app.world_catalog import (
+    AUTHORED_SUPPLY_SCENARIO,
+    DEVELOPMENT_WORLD,
+    KNOWLEDGE_WORLD_PATH,
+    load_social,
+    load_transport,
+    load_world,
+)
 from app.world_worker import WorldAction, WorldUpdate, WorldWorker
 from app.world_time import ClockMode, SlowClock
 from app.world_supply import SupplyOffer, authored_supply_line, item_label
@@ -1044,17 +1051,11 @@ def launch_world(
         print(f"세계를 불러오지 못했습니다: {error}", file=sys.stderr)
         return 2
     root = tk.Tk()
-    directory = (
-        "world-knowledge-play"
-        if knowledge
-        else "world-authored-supply-play"
-        if authored_supply
-        else "world-transport-play"
-    )
+    directory = "world-authored-supply-play" if authored_supply else "world-transport-play"
     worker = WorldWorker(
-        Path("tmp") / directory / "game.sqlite",
+        KNOWLEDGE_WORLD_PATH if knowledge else Path("tmp") / directory / "game.sqlite",
         catalog,
-        scenario=SupplyScenario(start_tick=1) if authored_supply else SupplyScenario(),
+        scenario=AUTHORED_SUPPLY_SCENARIO if authored_supply else SupplyScenario(),
         social=social,
         transport=transport,
         authored_supply=authored_supply,

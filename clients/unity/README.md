@@ -1,5 +1,16 @@
 # Unity Prototype
 
+## Read-only current world
+
+Start the Python world from the repository root with `python -m app.client --world-knowledge`.
+In the Unity editor, choose **Reverie → 현재 월드 보기 (읽기 전용)** without entering Play mode.
+Use **새로고침** after a conversation or supply action, and select a resident to view up to eight
+recent exchanges. The panel shows the current committed tick, supply stage, carried crates and
+completion tick. It follows the current working branch, including after loading a slot in Python.
+The same panel can read the last committed progress when the Python window is closed. If the save
+is unavailable or busy, the panel clears the previous view and offers another refresh.
+[O4 verification](../../docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
+
 F97source preparation only:strict `REVERIE_UNITY_NPC_ASSISTANCE_MEMORY=1` requires
 the existing reach-aid parent chain. Absent/0retains the old selection;other values
 report NPC_ASSISTANCE_MEMORY_SELECTION,and missing parent reports CONTENT before child
