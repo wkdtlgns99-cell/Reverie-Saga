@@ -240,6 +240,8 @@ save-format/native capability. Publication pending:both latest-head required CI 
 ordinary PR merge and local main equality/clean before completion. Finish F99only;holds retained.
 [Order](docs/work_orders/QT-F99_CANONICAL_SELECTION.md),[receipt](docs/reviews/QT-F99_EXECUTION_2026-11-03.md).
 
+2026-11-08 follow-up. The PR46 turn optimization has mixed paired timing differences for replay-backed activity and talk, with exact outputs and save parity. The 264-command case still exceeds its 2 s target. [Remeasurement](docs/reviews/QT-F99_EXECUTION_2026-11-03.md#paired-remeasurement-after-the-transport-optimization)
+
 QT-F98 LOCAL_ACCEPTED2026-11-03:self-review;primary5presentation support,related2/6/7.
 Current/saved persistent assistance memories now have four child-only comparison rows:
 exact cumulative count difference and common/current-only/saved-only retained anchors,

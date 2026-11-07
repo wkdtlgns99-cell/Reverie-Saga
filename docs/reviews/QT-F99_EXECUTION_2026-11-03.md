@@ -94,3 +94,20 @@ Actual PR/jobs/refs own later publication. Standing/current user authorization c
 commit/push,PR,both latest-head required full checks,ordinary merge and local main
 fast-forward equality/clean verification. Preserve actual evidence in ignored
 tmp/qtf99/publication/result.json. Finish one F99task;no further feature/goal/agent launch.
+
+## Paired remeasurement after the transport optimization
+
+2026-11-08. Local Windows source-mode measurement. The paired comparison used `59a673c` before the turn optimization and current `edf7882`. The only difference in source, tests and content was `src/orchestration/turn.py`. This follow-up records measurements. [Remeasurement order](../work_orders/QT-F99_REPLAY_QUERY_REMEASUREMENT.md).
+
+The existing QT-F96 reach-mode harness supplied the 132- and 264-command SQLite files, direct client and framed engine bridge. It ran three alternating fresh-process pairs for each history size and channel. The direct and framed processes asserted their selected source path and recorded its SHA-256. Input file SHA-256 was `50aa69b193c59d732cfac7abb89a4df04439ea6e0d95a2ecb81c221de2b4d255` at 132 and `1efb631f28ea3ecb04ddc18cb043ec5c6372a0883096c14e97252a14a4b89169` at 264. Each activity query left the working file byte-identical. Each talk committed, and its retry left the committed file unchanged.
+
+Across all 12 pairs, complete updates, encoded core and protocol, pins, SQL dumps, and the final working file SHA-256 matched. The harness normalizes working path and attachment ID across runs. The source files remained unchanged. The comparisons and raw timings are under the ignored `tmp/qt-f99-remeasure-20261108/` task directory.
+
+| History and channel | Activity median before → current, s | Talk median before → current, s |
+|---|---:|---:|
+| 132 direct | 3.036 → 3.223 | 3.421 → 3.254 |
+| 132 framed | 3.023 → 3.028 | 3.210 → 3.248 |
+| 264 direct | 8.546 → 8.430 | 8.941 → 8.951 |
+| 264 framed | 8.313 → 8.497 | 9.023 → 9.551 |
+
+All 48 timed requests completed under 10 s in this run, with a maximum of 9.784 s. The 264-command case still exceeds the 2 s target in both channels. Median changes ranged from 4.9% faster to 6.1% slower across cases. Three pairs per case do not establish a consistent query improvement or regression. These are controlled before/after results from this run. Absolute timings from the older child-mode or differently configured measurements are separate.
