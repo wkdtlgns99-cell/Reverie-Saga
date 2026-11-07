@@ -38,6 +38,8 @@ O3 merged through [PR44](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/44
 
 O4 merged through [PR45](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/45) at `59a673c`. Both final CI runs passed 4052 full and 32 boundary tests each. Use the Unity editor's **Reverie → 현재 월드 보기 (읽기 전용)** menu to read active `--world-knowledge` progress. The director authorized native verification for that screen on this workstation. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
 
+The O4 refresh audit reproduced a confirmed-absent Python save when the read transaction overlapped it. The registered supply worker completed the delivery once on same-key retry after the refresh. This is a measurement-only follow-up. [Overlap audit](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md#refresh-and-save-overlap-audit)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
