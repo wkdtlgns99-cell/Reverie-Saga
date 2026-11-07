@@ -130,9 +130,10 @@ problem stops movement;choose waiting,continuation after clearance,or physical r
 Waiting never silently resumes. ESC holds further segments;restarting an active journey
 requires explicit continuation. Local NPC/actions are unavailable in transit. Failed/uncertain
 storage or display acknowledgement retries the same command/duration,not a newly planned trip.
-Current-host actual Tk+SQLite carriage plus longest sea route:35commands/93851game seconds,
-39.539s total,max segment1.787s. Segment2sTARGET met;total30sTARGET remains OPEN. No speed/
-clock distortion or scheduler bypass. [Transport evidence](docs/reviews/RS-PLAY-001I_EXECUTION_2026-11-05.md).
+Current-host visible Tk and SQLite carriage plus longest sea route used 35 commands and
+93,851 game seconds. Three post-optimization runs took 11.4011–11.5649 s, with a maximum
+advance request of 0.4881 s. The current host met the 30 s journey and 2 s segment targets.
+[Transport performance evidence](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 **종족·세력 관계** opens nonmodal identity,city reputation and public diplomacy inspection.
 The retained social catalog defines6ancestries,6national and12city groups,and48resident
