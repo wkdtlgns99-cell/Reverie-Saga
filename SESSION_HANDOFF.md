@@ -34,7 +34,9 @@ O1 merged through [PR42](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/42
 
 O2 merged through [PR43](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/43) at `ccf30bb`. Both final CI runs passed 4043 full and 32 boundary tests each. The isolated `--world-knowledge` profile retains recent and salient NPC memories and propagates selected exact quotes on the game clock. Add `--npc-ai` to try natural language interpretation. [O2 verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
 
-Latest director scope on 2026-11-07 is O3, the merchant and courier quest integration proof and ordinary PR delivery. The existing knowledge profile now has a regression covering the full quest with an AI suggestion, with AI off and with a provider timeout. The delivery PR records final CI and main sync. O4 remains proposed. Commercial AI payment remains on hold. [O3 verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
+O3 merged through [PR44](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/44) at `dbebf68`. Both final CI runs passed 4046 full and 32 boundary tests each. [O3 verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
+
+Latest director scope on 2026-11-07 is the read-only O4 slice. Use the Unity editor's **Reverie → 현재 월드 보기 (읽기 전용)** menu to read the active `--world-knowledge` progress. The director authorized native verification for this screen on this workstation. The delivery PR records final CI and main sync. Current-world command bridge, other-device and release qualification remain separate. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
