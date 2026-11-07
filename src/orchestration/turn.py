@@ -243,6 +243,9 @@ class Driver:
         self._activations = {a.node: a for b in self._bindings.values() for a in b.activations}
         # Cache frozen registration metadata, never epoch-bound read ports or observations.
         self._manifests = {key: binding.engine.manifest for key, binding in self._bindings.items()}
+        self._phase_nodes = {
+            phase: tuple(node for node in schedule.nodes if node.phase == phase) for phase in Phase
+        }
         self._command_routes = {r.schema: r for b in bundles for r in b.command_routes}
         self._delta_routes = {r.schema: r for b in bundles for r in b.delta_routes}
         self._policies = {p.schema: p for b in bundles for p in b.events}
@@ -656,10 +659,11 @@ class Driver:
             return False
         deliveries: list[tuple[str, tuple[EventId, ...]]] = []
         # Every node/reducer reads pre-barrier state; publish staged component writes only below.
-        root = StoredRoot(candidate.components, self._token + 1)
+        barrier_token = self._token + 1
+        root: StoredRoot | None = None
         phase_changes: dict[ComponentAddress, ComponentRecord] = {}
         targets: set[FieldAddress] = set()
-        for node in self._schedule.nodes:
+        for node in self._phase_nodes[phase]:
             activation = self._activations[node]
             incoming = (
                 tuple(
@@ -674,7 +678,7 @@ class Driver:
                 tick == admission.plan.target_tick
                 and admission.action.payload.schema in activation.action_kinds
             )
-            if node.phase != phase or not (
+            if not (
                 activation.every_tick or action_active or activation.on_matching_events and incoming
             ):
                 continue
@@ -695,15 +699,18 @@ class Driver:
                     a.family for a in manifest.writes if a.phase == phase
                 ):
                     raise CandidateError("UNDECLARED_WRITE", "delta outside manifest")
+                if root is None:
+                    root = StoredRoot(candidate.components, barrier_token)
                 phase_changes.update(self._stage(delta, node, tick, wave, root))
                 candidate.changes.append(delta)
             self._emit(candidate, node, invocation, result)
             if bus is not None and incoming:
                 deliveries.append((node.engine_id, tuple(e.header.event_id for e in incoming)))
-        candidate.components = tuple(
-            phase_changes.get(ComponentAddress(c.schema, c.entity_id), c)
-            for c in candidate.components
-        )
+        if phase_changes:
+            candidate.components = tuple(
+                phase_changes.get(ComponentAddress(c.schema, c.entity_id), c)
+                for c in candidate.components
+            )
         if bus is not None and batch is not None:
             bus.complete(batch, tuple(deliveries))
         return True
