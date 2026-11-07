@@ -36,7 +36,9 @@ O2 merged through [PR43](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/43
 
 O3 merged through [PR44](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/44) at `dbebf68`. Both final CI runs passed 4046 full and 32 boundary tests each. [O3 verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
 
-Latest director scope on 2026-11-07 is the read-only O4 slice. Use the Unity editor's **Reverie → 현재 월드 보기 (읽기 전용)** menu to read the active `--world-knowledge` progress. The director authorized native verification for this screen on this workstation. The delivery PR records final CI and main sync. Current-world command bridge, other-device and release qualification remain separate. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
+O4 merged through [PR45](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/45) at `59a673c`. Both final CI runs passed 4052 full and 32 boundary tests each. Use the Unity editor's **Reverie → 현재 월드 보기 (읽기 전용)** menu to read active `--world-knowledge` progress. The director authorized native verification for that screen on this workstation. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
+
+Latest director scope is unattended work on settled tasks, beginning with transport performance. The candidate reduces empty barrier work while preserving each phase and the full durable trace. The current-host hidden-window median is 23.9704 s → 6.5920 s and full local regression passed. The delivery PR records final CI and main sync. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
 HISTORICAL_DIRECTOR_CONTINUATION2026-11-05(superseded by latest scope/QF01above):scope was ONLY previously asked/answered work. The director is going to sleep and explicitly requests
