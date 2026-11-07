@@ -357,6 +357,9 @@ validation or replay. Source-proven direct/framed dense264-command activity/talk
 retain exact outputs/persisted data;current-PC medians improve0.7–4.0percent to4.25–4.51s.
 The2sTARGET remains OPEN;these samples do not qualify other devices or MIN-SPEC.
 [Scope and measured evidence](docs/reviews/QT-F99_EXECUTION_2026-11-03.md).
+The later paired reach-mode remeasurement found exact output and save parity, with
+current 264-command medians of 8.43–9.55 s across the direct and framed paths.
+[Remeasurement](docs/reviews/QT-F99_EXECUTION_2026-11-03.md#paired-remeasurement-after-the-transport-optimization)
 The environment setup below applies to all commands,including both import checks.
 ```powershell
 $env:PYTHONPATH = "$PWD/src"
