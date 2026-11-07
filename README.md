@@ -171,6 +171,11 @@ delivery remains available as the merchant's own observation. The profile saves 
 `tmp/world-knowledge-play/game.sqlite`. Omit `--npc-ai` for authored play with no new AI judgment.
 Previously accepted rumors still use game time. [Knowledge verification](docs/reviews/RS-OWN-O2_EXECUTION_2026-11-06.md)
 
+The same profile has an end-to-end merchant and courier regression. A false claim about the
+route can reach the merchant as a rumor while the route is still blocked. Confirming delivery
+of both crates actually repairs it. The authored route completes with AI off or with an AI
+timeout. [Two-resident quest verification](docs/reviews/RS-OWN-O3_EXECUTION_2026-11-07.md)
+
 **주민과 대화** opens a nonmodal resident selector,free-text input and saved own transcript.
 Submitting speech records its duration once;AI waiting adds no game time. ESC holds further
 speech segments and reply acceptance. After restart,use **말 계속하기** for an unfinished
