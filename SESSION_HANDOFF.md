@@ -52,6 +52,8 @@ The director delegated the road-combat test setup and confirmed that a productio
 
 The director clarified that ordinary play continues when an opponent is merely seen. Turn-based combat starts after the opening attack resolves if at least one opponent noticed it, including deflection, evasion and hits. Off-screen threat noises are sound-only. The isolated trial switches its phase display after a committed attack and retaliation. Production perception, audio and entry remain open. [Resolution verification](docs/reviews/RS-OWN-COMBAT_RESOLUTION_ONSET_EXECUTION_2026-11-08.md)
 
+The director confirmed that ambush advantage and individual speed and readiness affect the first turn. The current trial runs a player command with a bundled retaliation. Production participants and their independent turn execution are prerequisites. [Initiative draft](docs/work_orders/RS-OWN-COMBAT_INITIATIVE.md)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
