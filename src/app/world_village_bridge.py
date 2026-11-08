@@ -9,6 +9,7 @@ import sys
 
 from app.engine_bridge import read_frame, write_frame
 from app.durable import DurableSession
+from app.road_combat_trial import RoadCombatTrial
 from app.world_catalog import (
     AUTHORED_SUPPLY_SCENARIO,
     KNOWLEDGE_WORLD_PATH,
@@ -65,6 +66,7 @@ class VillageBridge:
         self.name = name
         self._last: tuple[int, str, str, JsonObject] | None = None
         self._talking = ""
+        self._trial: RoadCombatTrial | None = None
 
     def request(self, body: bytes) -> JsonObject:
         row = exact_fields(decode_json(body), ("format", "id", "action", "value"))
@@ -78,7 +80,20 @@ class VillageBridge:
                 return last[3]
             return self._view(request_id, "STALE_REQUEST")
         error = ""
-        if action == "step" and value in DIRECTIONS:
+        if self._trial is not None:
+            if action == "combat" and value:
+                error = self._trial.act(value)
+            elif action == "return" and not value:
+                self.close()
+            elif action != "inspect" or value:
+                error = "VILLAGE_COMBAT_ACTIVE"
+        elif action == "road-test" and not value:
+            if self._at_entrance(self._scene()):
+                self._trial = RoadCombatTrial()
+                self._talking = ""
+            else:
+                error = "VILLAGE_ENTRANCE_REQUIRED"
+        elif action == "step" and value in DIRECTIONS:
             error = self._submit(VillageStep(value))
             if not error:
                 self._talking = ""
@@ -100,6 +115,15 @@ class VillageBridge:
         result = self._view(request_id, error)
         self._last = (request_id, action, value, result)
         return result
+
+    @staticmethod
+    def _at_entrance(scene: _Scene) -> bool:
+        return scene.available and scene.position == ENTRANCE
+
+    def close(self) -> None:
+        if self._trial is not None:
+            self._trial.close()
+            self._trial = None
 
     def _supply(self) -> VillageSupply:
         return village_supply(self.owner.snapshot(), self.scenario, self.social)
@@ -173,7 +197,7 @@ class VillageBridge:
             "id": request_id,
             "error": error,
             "name": self.name,
-            "available": scene.available,
+            "available": scene.available and self._trial is None,
             "status": (
                 "이 마을에 도착하면 걸을 수 있습니다."
                 if not scene.local
@@ -199,6 +223,9 @@ class VillageBridge:
                 if talking is not None
                 else None
             ),
+            "can_start_road_test": self._trial is None and self._at_entrance(scene),
+            "has_road_test": self._trial is not None,
+            "road_test": self._trial.wire() if self._trial is not None else None,
         }
 
 
@@ -214,8 +241,11 @@ def main(argv: Sequence[str] | None = None) -> int:
             args.working, world, scenario, social, load_transport(world), village=True
         ) as owner:
             bridge = VillageBridge(owner, scenario, social, world.place(scenario.place_id).name)
-            while (frame := read_frame(sys.stdin.buffer)) is not None:
-                write_frame(sys.stdout.buffer, bridge.request(frame))
+            try:
+                while (frame := read_frame(sys.stdin.buffer)) is not None:
+                    write_frame(sys.stdout.buffer, bridge.request(frame))
+            finally:
+                bridge.close()
     except SaveError as error:
         print(error.code, file=sys.stderr)
         return 2

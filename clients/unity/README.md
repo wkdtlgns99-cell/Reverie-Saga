@@ -20,6 +20,11 @@ The market marker and **시장 진열대** show committed stock as filled and em
 After delivery, the road indicator changes immediately. The shelf fills when the existing
 supply cycle transfers stock into the market. [Market recovery verification](../../docs/reviews/RS-OWN-UNITY_MARKET_RECOVERY_EXECUTION_2026-11-08.md)
 
+At the village entrance, choose **마을 밖 길목 전투 테스트** to open the existing
+turn-based encounter on a temporary save. Use the direction keys, **문 열기**, **공격** and
+**쉬기**. **마을로 돌아가기** discards the test and restores the village view.
+[Road combat verification](../../docs/reviews/RS-OWN-UNITY_ROAD_COMBAT_TRIAL_EXECUTION_2026-11-08.md)
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.

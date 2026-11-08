@@ -1,0 +1,9 @@
+# RS-OWN-UNITY-COMBAT-TRIAL — Road Combat Test Verification
+
+2026-11-08. Primary 7 integration verification with 2 rules, 5 presentation and 6 persistence. Current Windows workstation and local self-review. [Work order](../work_orders/RS-OWN-UNITY_ROAD_COMBAT_TRIAL.md).
+
+At the entrance in **Reverie → 마을 걷기**, the labeled road combat test immediately opens the registered legacy encounter on its own temporary durable attachment. Existing encounter admission and turn resolution determine the board, health, stamina, gates and outcome. The village retains its committed tick, position, quest and inventory during the test. Returning or closing discards the trial. The product decision about undetected ambushes is recorded separately. [Product authority](../MASTER_GAME_ARCHITECTURE.md#04-director-clarification--2026-11-03)
+
+The real framed integration ran out-of-range rejection, movement, opening the gate, attack retaliation, exhausted stamina, resting, victory and exact duplicate reply. It verified entrance-only launch, rejection of world time changes during the fight, identical village save bytes on return and reconnect, fresh encounter state on re-entry, and cleanup on normal return and connection close. The related suite passed 36 tests in 51.04 s.
+
+Pinned Unity 6000.3.25f1 compiled the editor and ran the production window and pipe. An initial batch harness opened the working SQLite file with a read-only sharing flag and hit a Windows sharing violation. The corrected harness shared the writer's access and verified directional inputs, the gate, first attack retaliation, victory at combat revision 8, return and byte-identical village state. Physical keyboard input, interactive appearance and production stealth/detection were outside the verification. The PR records exact protected CI and main synchronization.
