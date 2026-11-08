@@ -48,6 +48,8 @@ The world worker now publishes the prepared slot's working reference before swap
 
 The read-only observer detects `WORLD_VIEW_CHANGED` when a second slot load retires its selected source before validation. A separate refresh reads the new branch. [Branch-change verification](docs/reviews/RS-OWN-O4_REFRESH_BRANCH_CHANGE_EXECUTION_2026-11-09.md)
 
+The Python world map offers **이동 결과 확인** after a footstep returns `SAVE_UNCERTAIN`. It keeps movement and idle submits blocked while unresolved. Confirmation uses the existing durable proof and applies no additional footstep. [Movement recovery verification](docs/reviews/RS-WORLD-WALK-RECOVERY_EXECUTION_2026-11-09.md)
+
 The registered receipt validator now serializes selected fingerprint fields directly from the owned command document. Matched direct and framed activity and talk queries at 264 commands returned exact outputs and saves. Their medians decreased by 3.9–7.5%. The 2 s target remains open. [Replay query verification](docs/reviews/QT-REPLAY-RECEIPT-BYTES_EXECUTION_2026-11-09.md)
 
 The director selected the authored supply quest as the first interactive Unity flow. Use **Reverie → 보급 의뢰 플레이** with the Python game closed. Each confirmed action uses the same current-world Python owner and saves before the Unity panel shows the result. [Supply play verification](docs/reviews/RS-OWN-UNITY_SUPPLY_EXECUTION_2026-11-08.md)

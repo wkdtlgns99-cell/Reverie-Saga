@@ -389,6 +389,81 @@ def test_real_gui_uncertain_time_commit_retry_is_not_charged_twice(
         worker.close()
 
 
+@pytest.mark.parametrize("committed", (True, False))
+def test_real_gui_can_confirm_uncertain_footstep_without_resubmitting(
+    root: tk.Tk, tmp_path: Path, monkeypatch: pytest.MonkeyPatch, committed: bool
+) -> None:
+    path = tmp_path / "walk.sqlite"
+    world = load_world()
+    original_persist = SqliteCommitStore.persist
+    original_recover = SqliteCommitStore.recover
+    writes: list[DurableTurn] = []
+    attempts: list[DurableTurn] = []
+
+    def persist(store: SqliteCommitStore, turn: DurableTurn) -> CommitReceipt:
+        writes.append(turn)
+        if len(writes) != 1:
+            return original_persist(store, turn)
+        if committed:
+            original_persist(store, turn)
+        raise OSError("injected footstep write acknowledgement failure")
+
+    def recover(store: SqliteCommitStore, turn: DurableTurn) -> RecoveryResult:
+        attempts.append(turn)
+        if len(attempts) <= 2:
+            raise OSError("injected unavailable footstep recovery read")
+        return original_recover(store, turn)
+
+    monkeypatch.setattr(SqliteCommitStore, "persist", persist)
+    monkeypatch.setattr(SqliteCommitStore, "recover", recover)
+    sample = [0]
+    worker = WorldWorker(path, world)
+    try:
+        window = WorldMapWindow(root, world, worker, now_ns=lambda: sample[0])
+        _settle(root, window)
+        window.buttons[0].invoke()
+        _settle(root, window)
+        assert len(writes) == len(attempts) == 1
+        assert "이동 결과 확인" in window.status.get()
+        assert window.retry_walk.winfo_ismapped()
+
+        sample[0] = 30_000_000_000
+        window.advance_clock()
+        window.buttons[0].invoke()
+        assert window.pending is None and window.reserved_seconds == 0
+        with pytest.raises(SaveError, match="^WORLD_WALK_PENDING"):
+            worker.request("wait", seconds=1).result(timeout=10)
+
+        window.retry_walk.invoke()
+        _settle(root, window)
+        assert window.retry_walk.winfo_ismapped() and len(attempts) == 2
+        window.retry_walk.invoke()
+        _settle(root, window)
+        assert not window.retry_walk.winfo_ismapped() and attempts == [writes[0]] * 3
+        assert window.update is not None
+        expected = int(committed)
+        assert (window.update.tick, window.update.state.offset_m) == (expected, expected)
+        assert ("저장된 것을 확인" if committed else "반영되지 않았습니다") in window.status.get()
+        assert len(writes) == 1
+        repeated = worker.request("recover_walk").result(timeout=10)
+        assert repeated.protocol == window.update.protocol and len(attempts) == 3
+
+        window.buttons[0].invoke()
+        _settle(root, window)
+        assert (window.update.tick, window.update.state.offset_m) == (expected + 1, expected + 1)
+        assert len(writes) == 2
+        final = window.update
+    finally:
+        worker.close()
+
+    resumed = WorldWorker(path, world)
+    try:
+        restored = resumed.request("inspect").result(timeout=10)
+        assert (restored.state, restored.protocol) == (final.state, final.protocol)
+    finally:
+        resumed.close()
+
+
 def test_real_timer_callback_advances_clock_and_disposes_owned_handles(
     root: tk.Tk, tmp_path: Path
 ) -> None:
