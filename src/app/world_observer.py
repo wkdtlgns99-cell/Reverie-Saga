@@ -102,6 +102,11 @@ def _project(checkpoint: DurableCheckpoint, world: WorldCatalog) -> JsonObject:
     }
 
 
+def _require_current_source(working: Path, source: Path) -> None:
+    if current_world(working) != source:
+        raise SaveError("WORLD_VIEW_CHANGED", "active working branch changed")
+
+
 def read_world(working: Path = KNOWLEDGE_WORLD_PATH) -> JsonObject:
     source = current_world(working)
     world = load_world()
@@ -111,6 +116,8 @@ def read_world(working: Path = KNOWLEDGE_WORLD_PATH) -> JsonObject:
     try:
         checkpoint = validate_knowledge_world(source, bundle, AUTHORED_SUPPLY_SCENARIO.place_id)
     except SaveError as error:
+        # Loading a slot can retire the selected file before its validation starts.
+        _require_current_source(working, source)
         cause = error.__cause__
         if isinstance(cause, sqlite3.Error) and getattr(cause, "sqlite_errorcode", None) in (
             sqlite3.SQLITE_BUSY,
@@ -120,8 +127,7 @@ def read_world(working: Path = KNOWLEDGE_WORLD_PATH) -> JsonObject:
                 "WORLD_VIEW_BUSY", "refresh when the working save is available"
             ) from error
         raise
-    if current_world(working) != source:
-        raise SaveError("WORLD_VIEW_CHANGED", "active working branch changed")
+    _require_current_source(working, source)
     return _project(checkpoint, world)
 
 
