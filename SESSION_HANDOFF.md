@@ -44,6 +44,8 @@ The director selected the authored supply quest as the first interactive Unity f
 
 The director selected saved cardinal walking in the same world. **Reverie → 마을 걷기** owns one working attachment until closed. It walks the district at Mulbeodeul, advances the shared clock and resumes at the committed position. First entry upgrades legacy progress by publishing a separate working copy and retains the original. [Village verification](docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)
 
+The director selected talking from beside the resident. In **Reverie → 마을 걷기**, use E beside the marked merchant or courier to read their authored line and confirm the current supply action. The complete authored quest runs inside the walking window and uses the same durable Python supply commands. [Village supply verification](docs/reviews/RS-OWN-UNITY_VILLAGE_SUPPLY_EXECUTION_2026-11-08.md)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 

@@ -10,6 +10,12 @@ The first visit with a legacy save retains its original file and activates an up
 copy. The panel holds the sole write attachment until closed. Close it before playing supply
 actions or opening the Python game. [Village verification](../../docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)
 
+Stand one cardinal tile beside the merchant at the market or courier at the workshop
+and press **E**. Read the line and terms, then select the action's confirmation button.
+You can accept, receive two crates and deliver them in the walking window. Walking
+away closes the conversation. The panel shows current cargo and money.
+[Village supply verification](../../docs/reviews/RS-OWN-UNITY_VILLAGE_SUPPLY_EXECUTION_2026-11-08.md)
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.

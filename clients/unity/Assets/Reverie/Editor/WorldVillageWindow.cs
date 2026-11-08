@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.IO;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using UnityEditor;
 using UnityEngine;
@@ -22,6 +23,34 @@ namespace ReverieSaga
         }
 
         [Serializable]
+        sealed class Resident
+        {
+            public string id;
+            public string role;
+            public int x;
+            public int y;
+        }
+
+        [Serializable]
+        sealed class Supply
+        {
+            public string status;
+            public long cargo;
+            public int cargo_required;
+            public long gold;
+            public Resident[] residents;
+        }
+
+        [Serializable]
+        sealed class Interaction
+        {
+            public string line;
+            public string terms;
+            public string label;
+            public string token;
+        }
+
+        [Serializable]
         sealed class Snapshot
         {
             public string format;
@@ -38,6 +67,10 @@ namespace ReverieSaga
             public int entrance_y;
             public string[] rows;
             public Landmark[] landmarks;
+            public Supply supply;
+            public string nearby;
+            public bool has_interaction;
+            public Interaction interaction;
         }
 
         readonly List<KeyCode> keys = new List<KeyCode>();
@@ -51,6 +84,7 @@ namespace ReverieSaga
         long requestId;
         bool paused;
         bool escapeHeld;
+        bool talkHeld;
         bool pendingIdle;
         double lastSample;
         double idle;
@@ -58,6 +92,7 @@ namespace ReverieSaga
         double nextStep;
         double animationEnd;
         Vector2 animationFrom;
+        Vector2 scroll;
 
         [MenuItem("Reverie/마을 걷기")]
         public static void Open() => OpenWorking(null);
@@ -65,7 +100,7 @@ namespace ReverieSaga
         internal static WorldVillageWindow OpenWorking(string path)
         {
             var window = GetWindow<WorldVillageWindow>("마을 걷기");
-            window.minSize = new Vector2(480, 400);
+            window.minSize = new Vector2(500, 440);
             if (window.connection == null)
             {
                 window.workingPath = path;
@@ -124,6 +159,8 @@ namespace ReverieSaga
                     animationFrom = new Vector2(snapshot.x, snapshot.y);
                     animationEnd = now + StepInterval;
                 }
+                if (next.has_interaction != (snapshot?.has_interaction ?? false))
+                    scroll.y = next.has_interaction ? 10000 : 0;
                 snapshot = next;
                 error = next.error;
                 if (pendingIdle && error == "SAVE_UNAVAILABLE")
@@ -179,6 +216,23 @@ namespace ReverieSaga
                     landmark.x < 0 || landmark.x >= width ||
                     landmark.y < 0 || landmark.y >= state.rows.Length)
                     throw new IOException("VILLAGE_RESPONSE");
+            if (state.supply == null || state.supply.status == null || state.supply.residents == null ||
+                state.supply.cargo < 0 || state.supply.cargo_required < 1 ||
+                state.supply.gold < 0 || state.nearby == null)
+                throw new IOException("VILLAGE_SUPPLY_RESPONSE");
+            foreach (var npc in state.supply.residents)
+                if (npc == null || String.IsNullOrEmpty(npc.id) || String.IsNullOrEmpty(npc.role) ||
+                    npc.x < 0 || npc.x >= width || npc.y < 0 || npc.y >= state.rows.Length)
+                    throw new IOException("VILLAGE_SUPPLY_RESPONSE");
+            if (state.has_interaction)
+            {
+                var dialog = state.interaction;
+                if (dialog == null || String.IsNullOrEmpty(dialog.line) || dialog.terms == null ||
+                    dialog.label == null || dialog.token == null ||
+                    (dialog.token.Length != 0 && (!Regex.IsMatch(dialog.token, @"\A[0-9a-f]{64}\z") ||
+                        dialog.terms.Length == 0 || dialog.label.Length == 0)))
+                    throw new IOException("VILLAGE_SUPPLY_RESPONSE");
+            }
         }
 
         void Tick()
@@ -252,6 +306,19 @@ namespace ReverieSaga
                 input.Use();
                 return;
             }
+            if (input.keyCode == KeyCode.E)
+            {
+                if (input.type == EventType.KeyDown && !talkHeld &&
+                    !input.alt && !input.control && !input.command)
+                {
+                    talkHeld = true;
+                    Talk();
+                }
+                if (input.type == EventType.KeyUp)
+                    talkHeld = false;
+                input.Use();
+                return;
+            }
             string direction = Direction(input.keyCode);
             if (direction.Length == 0)
                 return;
@@ -267,6 +334,25 @@ namespace ReverieSaga
                     Walk(now);
             }
             input.Use();
+        }
+
+        bool CanInteract() => !paused && snapshot != null && snapshot.available &&
+            pending == null && EditorApplication.timeSinceStartup >= animationEnd;
+
+        void Talk()
+        {
+            if (CanInteract() && snapshot.nearby.Length != 0)
+            {
+                keys.Clear();
+                queuedDirection = null;
+                Send("talk", snapshot.nearby);
+            }
+        }
+
+        void Confirm()
+        {
+            if (CanInteract() && snapshot.has_interaction && snapshot.interaction.token.Length != 0)
+                Send("confirm", snapshot.interaction.token);
         }
 
         void OnGUI()
@@ -285,10 +371,39 @@ namespace ReverieSaga
             EditorGUILayout.LabelField(
                 $"{snapshot.name} · 게임 {snapshot.tick}초 · 기록 {snapshot.revision}", text);
             EditorGUILayout.LabelField(
-                paused ? "일시정지 · ESC로 재개" : "WASD 또는 방향키로 걷기 · ESC로 일시정지", text);
+                paused ? "일시정지 · ESC로 재개" : "WASD / 방향키로 걷기 · E로 말 걸기 · ESC로 일시정지", text);
             string notice = String.IsNullOrEmpty(error) ? snapshot.status : ErrorText(error);
             EditorGUILayout.LabelField(String.IsNullOrEmpty(notice) ? " " : notice, text);
+            scroll = EditorGUILayout.BeginScrollView(scroll);
             DrawMap(text);
+            DrawSupply(text);
+            EditorGUILayout.EndScrollView();
+        }
+
+        void DrawSupply(GUIStyle text)
+        {
+            var supply = snapshot.supply;
+            var button = new GUIStyle(GUI.skin.button) { font = font };
+            EditorGUILayout.LabelField(supply.status, text);
+            EditorGUILayout.LabelField($"복구품 {supply.cargo}/{supply.cargo_required} · 소지금 {supply.gold}금", text);
+            using (new EditorGUI.DisabledScope(!CanInteract()))
+            {
+                if (snapshot.has_interaction)
+                {
+                    var dialog = snapshot.interaction;
+                    EditorGUILayout.LabelField(dialog.line, text);
+                    if (dialog.token.Length != 0)
+                    {
+                        EditorGUILayout.LabelField(dialog.terms, text);
+                        if (GUILayout.Button(dialog.label + " 확인", button))
+                            Confirm();
+                    }
+                    if (GUILayout.Button("대화 닫기", button))
+                        Send("close", "");
+                }
+                else if (snapshot.nearby.Length != 0 && GUILayout.Button("E · 말 걸기", button))
+                    Talk();
+            }
         }
 
         static string ErrorText(string code)
@@ -297,7 +412,9 @@ namespace ReverieSaga
             {
                 case "SAVE_LOCKED": return "다른 화면에서 진행본을 사용 중입니다. 해당 화면을 닫고 다시 연결하세요.";
                 case "VILLAGE_BLOCKED": return "길이 막혀 있습니다.";
-                case "SAVE_UNAVAILABLE": return "걸음을 저장하지 못했습니다. 다시 걸어 보세요.";
+                case "SAVE_UNAVAILABLE": return "행동을 저장하지 못했습니다. 다시 시도해 주세요.";
+                case "VILLAGE_NPC_OUT_OF_REACH": return "주민의 바로 옆 칸에서 말을 걸어 주세요.";
+                case "VILLAGE_OFFER_STALE": return "의뢰 조건이 달라졌습니다. 화면의 내용을 다시 확인해 주세요.";
                 default: return code;
             }
         }
@@ -329,6 +446,15 @@ namespace ReverieSaga
             foreach (var landmark in snapshot.landmarks)
                 GUI.Label(new Rect(area.x + landmark.x * size + 2, area.y + landmark.y * size,
                     size * 2, size), landmark.name, label);
+            if (snapshot.available)
+                foreach (var npc in snapshot.supply.residents)
+                {
+                    float x = area.x + npc.x * size;
+                    float y = area.y + npc.y * size + size * .62f;
+                    var marker = new Color(.99f, .79f, .32f);
+                    EditorGUI.DrawRect(new Rect(x + 2, y + 4, 7, 7), marker);
+                    GUI.Label(new Rect(x + 11, y, size * 2, 22), npc.role, label);
+                }
             GUI.Label(new Rect(area.x + snapshot.entrance_x * size + 2,
                 area.y + snapshot.entrance_y * size, size * 2, size), "입구", label);
             if (!snapshot.available)
@@ -361,6 +487,7 @@ namespace ReverieSaga
             keys.Clear();
             queuedDirection = null;
             escapeHeld = false;
+            talkHeld = false;
         }
 
         void OnDisable()
