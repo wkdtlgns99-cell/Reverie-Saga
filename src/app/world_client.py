@@ -28,6 +28,7 @@ from app.world_conversation import ConversationPanel, dialogue_notice
 from app.world_social import SocialPanel, city_standing, resident_membership, social_notice
 from app.world_transport import TransportPanel, transport_notice
 from contracts.dialogue import GenerationError
+from contracts.persistence import SaveError
 from domain.world_conversation import validate_speech
 from domain.world_supply import SupplyScenario
 from contracts.world_supply import SupplyAction
@@ -136,6 +137,7 @@ class WorldMapWindow:
         self.reservation_key = ""
         self.reservation_sequence = 0
         self.wait_error = False
+        self.walk_error = False
         self.supply_error = False
         self.supply_command: SupplyAction | None = None
         self.supply_request_key = ""
@@ -213,6 +215,9 @@ class WorldMapWindow:
             self.action_controls, text="시간 반영 재시도", command=partial(self.send, "wait")
         )
         self.retry_time.grid(row=1, column=2, padx=4, pady=3)
+        self.retry_walk = ttk.Button(
+            self.action_controls, text="이동 결과 확인", command=partial(self.send, "recover_walk")
+        )
         self.inventory_panel: tk.Toplevel | None = None
         self.inventory_text = tk.StringVar(root, "")
         self.resident_text = tk.StringVar(root, "")
@@ -333,6 +338,7 @@ class WorldMapWindow:
             or self.social_command is not None
             or self.supply_error
             or self.wait_error
+            or self.walk_error
             or self.transport_error
             or self.transport_running
             or self.in_transit
@@ -361,6 +367,7 @@ class WorldMapWindow:
             or self.social_error
             or self.supply_error
             or self.wait_error
+            or self.walk_error
             or self.transport_error
             or self.transport_running
             or self.transport_command is not None
@@ -431,6 +438,7 @@ class WorldMapWindow:
             return "ai_wait"
         if (
             self.dialogue_running
+            or self.walk_error
             or self.transport_running
             or self.transport_command is not None
             or self.social_command is not None
@@ -505,6 +513,7 @@ class WorldMapWindow:
             and self.pending is None
             and self.update is not None
             and not self.wait_error
+            and not self.walk_error
             and not self.supply_error
             and not self.social_error
             and not self.transport_error
@@ -544,6 +553,7 @@ class WorldMapWindow:
             and not self.paused
             and not self.ai_waiting
             and not self.wait_error
+            and not self.walk_error
             and not self.supply_error
         ):
             action, direction = self.deferred
@@ -562,6 +572,7 @@ class WorldMapWindow:
         if action not in (
             "inspect",
             "walk",
+            "recover_walk",
             "save",
             "load",
             "wait",
@@ -579,6 +590,12 @@ class WorldMapWindow:
         ):
             return
         self.clock.sample(self.now_ns())
+        if self.walk_error:
+            if action == "recover_walk":
+                self.start_request("recover_walk")
+            else:
+                self.status.set("먼저 ‘이동 결과 확인’을 눌러 주세요.")
+            return
         if self.transport_error:
             if action == "transport":
                 self.start_request("transport")
@@ -694,6 +711,9 @@ class WorldMapWindow:
             if action == "load" or self.update is None:
                 self.clock.reset(self.now_ns())
             self.render(update)
+            if action == "recover_walk":
+                self.walk_error = False
+                self.retry_walk.grid_remove()
             if action == "transport":
                 self.transport_ack(update)
             if action == "social":
@@ -737,7 +757,14 @@ class WorldMapWindow:
                     ):
                         notice += " 지도에서 ‘보급 의뢰 대화’를 열어 진행할 수 있습니다."
                     self.dialogue.status.set(notice)
-            self.status.set(f"처리하지 못했습니다: {error}")
+            if action == "recover_walk" or (
+                action == "walk" and isinstance(error, SaveError) and error.code == "SAVE_UNCERTAIN"
+            ):
+                self.walk_error = True
+                self.retry_walk.grid(row=2, column=0, padx=4, pady=3)
+                self.status.set(f"‘이동 결과 확인’을 눌러 주세요. {error}")
+            else:
+                self.status.set(f"처리하지 못했습니다: {error}")
         finally:
             self.clock.sample(self.now_ns())
             self.pending_action = None
@@ -831,6 +858,7 @@ class WorldMapWindow:
                 or self.social_error
                 or self.supply_error
                 or self.wait_error
+                or self.walk_error
                 or self.transport_running
                 or bool(self.reserved_seconds),
                 recovery=self.transport_error,
@@ -843,6 +871,7 @@ class WorldMapWindow:
                 or self.dialogue_recovery
                 or self.supply_error
                 or self.wait_error
+                or self.walk_error
                 or in_transit
                 or self.transport_error
                 or bool(self.reserved_seconds)
@@ -853,6 +882,7 @@ class WorldMapWindow:
             self.dialogue.controls(
                 paused=self.paused,
                 busy=self.pending is not None
+                or self.walk_error
                 or self.social_error
                 or self.supply_error
                 or in_transit
@@ -868,6 +898,7 @@ class WorldMapWindow:
             or not self.dialogue.live_npc
             or self.pending is not None
             or self.paused
+            or self.walk_error
             or self.dialogue_running
             or self.dialogue_recovery
             or self.social_error
@@ -952,6 +983,7 @@ class WorldMapWindow:
         if (
             self.paused
             or self.pending is not None
+            or self.walk_error
             or self.transport_error
             or self.transport_running
             or self.in_transit
@@ -1018,6 +1050,7 @@ class WorldMapWindow:
             or self.pending is not None
             or self.supply_error
             or self.wait_error
+            or self.walk_error
             or self.reserved_seconds
             or self.supply_command is not None
             or self.dialogue_running

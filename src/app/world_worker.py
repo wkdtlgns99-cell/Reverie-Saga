@@ -65,6 +65,7 @@ class WorldUpdate:
 type WorldAction = Literal[
     "inspect",
     "walk",
+    "recover_walk",
     "save",
     "load",
     "wait",
@@ -109,6 +110,7 @@ class WorldWorker:
         self._transport_request: tuple[str, str, str] | None = None
         self._dialogue = ConversationCoordinator(world, scenario, generator_factory, social=social)
         self._owner: DurableSession | None = None
+        self._walk_needs_recovery = False
         self._pending_wait: GameCommand | None = None
         self._wait_recovery = False
         self._wait_key = ""
@@ -190,6 +192,10 @@ class WorldWorker:
         social_action: SocialAction | None,
         transport_operation: str,
     ) -> WorldUpdate:
+        if action == "recover_walk":
+            return self._recover_walk(self._session())
+        if self._walk_needs_recovery:
+            raise SaveError("WORLD_WALK_PENDING", "confirm the previous footstep first")
         if not self.live_npc and action in ("say", "generate", "reply"):
             raise ValueError("WORLD_NPC_AI_DISABLED")
         if (
@@ -249,16 +255,7 @@ class WorldWorker:
             self._wait_update = None
             wait_committed, notice = self._wait(owner, seconds)
         elif action == "walk":
-            result = owner.submit(
-                foot_command(owner.protocol(), destination, direction),
-                attachment_id=owner.attachment_id,
-            )
-            if isinstance(result.outcome, TurnRejected):
-                notice = result.outcome.failure.code
-            elif isinstance(result.outcome, TurnCommitted):
-                notice = "한 걸음 이동했습니다."
-            else:
-                notice = "이동을 완료하지 못했습니다: " + result.outcome.failure.code
+            notice = self._walk(owner, destination, direction)
         elif action == "save":
             owner.export("slot01")
             notice = "저장했습니다."
@@ -285,6 +282,33 @@ class WorldWorker:
         if action == "supply":
             self._supply_update = update
         return update
+
+    def _walk(self, owner: DurableSession, destination: str, direction: int) -> str:
+        command = foot_command(owner.protocol(), destination, direction)
+        attachment = owner.attachment_id
+        try:
+            result = owner.submit(command, attachment_id=attachment)
+        except SaveError as error:
+            self._walk_needs_recovery = error.code == "SAVE_UNCERTAIN"
+            raise
+        if isinstance(result.outcome, TurnRejected):
+            return result.outcome.failure.code
+        if isinstance(result.outcome, TurnCommitted):
+            return "한 걸음 이동했습니다."
+        return "이동을 완료하지 못했습니다: " + result.outcome.failure.code
+
+    def _recover_walk(self, owner: DurableSession) -> WorldUpdate:
+        notice = "확인할 이동 결과가 없습니다."
+        if self._walk_needs_recovery:
+            outcome = owner.recover().outcome
+            if isinstance(outcome, TurnCommitted):
+                notice = "이전 이동이 저장된 것을 확인했습니다."
+            elif isinstance(outcome, TurnAborted) and outcome.failure.code == "SAVE_UNAVAILABLE":
+                notice = "이전 이동이 반영되지 않았습니다. 다시 이동할 수 있습니다."
+            else:
+                raise RuntimeError("WORLD_WALK_INVALID_RECOVERY_OUTCOME")
+            self._walk_needs_recovery = False
+        return self._view(owner, notice, None, None)
 
     def _speak(
         self,
