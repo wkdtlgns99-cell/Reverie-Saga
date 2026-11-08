@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from dataclasses import dataclass
 import os
 from pathlib import Path
@@ -303,26 +304,40 @@ def _decode_rows(rows: _SaveRows, io: StateIO) -> tuple[DurableCheckpoint, SaveS
     return current, segment
 
 
-def _read_file(path: Path, io: StateIO) -> tuple[DurableCheckpoint, SaveSegment]:
+def _read_file(path: Path) -> _SaveRows:
     try:
         target = safe_path(path)
         classify_file(target)
         con = _connect(target, readonly=True)
         try:
-            rows = _capture_rows(con)
+            return _capture_rows(con)
         finally:
             con.close()
+    except (sqlite3.Error, OSError, ValueError, TypeError, KeyError) as error:
+        raise SaveError("SAVE_CORRUPT", str(error)) from error
+
+
+def _decode_file_rows(rows: _SaveRows, io: StateIO) -> tuple[DurableCheckpoint, SaveSegment]:
+    try:
         return _decode_rows(rows, io)
     except (sqlite3.Error, OSError, ValueError, TypeError, KeyError) as error:
         raise SaveError("SAVE_CORRUPT", str(error)) from error
 
 
-def validate_save(path: Path, *, io: StateIO) -> DurableCheckpoint:
-    return _read_file(path, io)[0]
+def validate_save(
+    path: Path, *, io: StateIO, fallback_io: Callable[[], StateIO] | None = None
+) -> DurableCheckpoint:
+    rows = _read_file(path)
+    try:
+        return _decode_file_rows(rows, io)[0]
+    except SaveError as error:
+        if error.code != "UNSUPPORTED_RULESET" or fallback_io is None:
+            raise
+    return _decode_file_rows(rows, fallback_io())[0]
 
 
 def read_segment(path: Path, *, io: StateIO) -> SaveSegment:
-    return _read_file(path, io)[1]
+    return _decode_file_rows(_read_file(path), io)[1]
 
 
 def _attachment(path: Path) -> sqlite3.Connection:
