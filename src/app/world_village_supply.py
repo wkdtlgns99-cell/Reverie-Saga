@@ -16,7 +16,14 @@ from domain.state_types import CoreSnapshot
 from domain.world import Resident
 from domain.world_population import InventoryRecord, SettlementRecord
 from domain.world_social import HOSTILE_THRESHOLD, SocialCatalog, SocialRecord, reaction
-from domain.world_supply import REPAIR_CRATES, SupplyRecord, SupplyScenario, supply_item
+from domain.world_supply import (
+    STOCK_CAP,
+    REPAIR_CRATES,
+    SupplyRecord,
+    SupplyScenario,
+    blocked,
+    supply_item,
+)
 from domain.world_village import VILLAGE_LANDMARKS, VillagePosition
 
 
@@ -41,6 +48,8 @@ class VillageSupply:
     cargo: int
     gold: int
     completed: bool
+    stock: int
+    road_blocked: bool
 
     def interaction(
         self, npc: VillageResident, position: VillagePosition, protocol: ProtocolSnapshot
@@ -73,12 +82,14 @@ class VillageSupply:
         return {"line": line, "terms": "", "label": "", "token": ""}
 
     def wire(self, *, local: bool) -> JsonObject:
+        road = "blocked" if self.road_blocked else "restored" if self.completed else "open"
         return {
             "status": self.status if local else "마을에 도착하면 보급 의뢰를 확인할 수 있습니다.",
             "cargo": self.cargo,
             "cargo_required": REPAIR_CRATES,
             "gold": self.gold,
             "residents": tuple(npc.wire() for npc in self.residents) if local else (),
+            "market": {"stock": self.stock, "capacity": STOCK_CAP, "road": road} if local else None,
         }
 
 
@@ -116,4 +127,6 @@ def village_supply(
         dict(inventory.items).get(supply_item(place), 0),
         inventory.gold,
         city.stage == 2,
+        city.stock,
+        blocked(scenario, place, city, core.tick),
     )

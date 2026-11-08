@@ -90,6 +90,8 @@ Movement and time are committed to the current knowledge world. Close the walkin
 before resuming the Python game or the supply panel. [Village verification](docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)
 Press **E** beside the merchant or courier to talk and confirm the authored supply quest
 in the walking window. [Village supply verification](docs/reviews/RS-OWN-UNITY_VILLAGE_SUPPLY_EXECUTION_2026-11-08.md)
+The market stall and shelf show the committed road status and actual stock.
+[Market recovery verification](docs/reviews/RS-OWN-UNITY_MARKET_RECOVERY_EXECUTION_2026-11-08.md)
 No-selector Unity starts the approved harbor-memory preset in a catalog-pin-specific save directory;
 explicit legacy/scenario/quest selectors preserve their existing modes.
 Independent control/history scrolling is qualified at1101x506on the observed host.
