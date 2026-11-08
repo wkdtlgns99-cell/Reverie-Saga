@@ -16,7 +16,7 @@ from app.world_catalog import (
     load_transport,
     load_world,
 )
-from app.world_supply import authored_supply_line
+from app.world_supply import SUPPLY_ACTION_LABELS, authored_supply_line
 from app.world_worker import WorldUpdate, WorldWorker
 from contracts.persistence import SaveError
 from contracts.world_supply import SupplyAction
@@ -24,7 +24,6 @@ from domain.canonical import JsonObject, canonical_json, hash_document
 from domain.world_supply import REPAIR_CRATES, supply_item
 
 FORMAT = "reverie-world-supply/v1"
-LABELS = {"accept": "의뢰 받기", "collect": "상자 받기", "deliver": "상자 전달하기"}
 
 
 @dataclass(frozen=True, slots=True)
@@ -66,7 +65,10 @@ def _offer(update: WorldUpdate) -> _Offer | None:
     if update.offers:
         (offer,) = update.offers
         return _Offer(
-            offer.action, LABELS[offer.action.operation], authored_supply_line(offer), offer.summary
+            offer.action,
+            SUPPLY_ACTION_LABELS[offer.action.operation],
+            authored_supply_line(offer),
+            offer.summary,
         )
     if update.tick < scenario.start_tick:
         return _Offer(

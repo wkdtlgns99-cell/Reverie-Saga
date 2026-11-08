@@ -23,7 +23,7 @@ from contracts.replay import ReplayFixture
 from contracts.turn import TurnCommitted
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
-from domain.canonical import JsonObject, decode_json, object_value, text_value
+from domain.canonical import JsonObject, array_value, decode_json, object_value, text_value
 from domain.world import elaborate_place
 from domain.world_village import ENTRANCE, VillagePosition, VillageRecord
 from tests.integration.test_world_knowledge import commit
@@ -227,3 +227,99 @@ def test_failed_active_reference_switch_preserves_the_old_save(
     assert (path.read_bytes(), set(tmp_path.iterdir())) == before
     with open_knowledge_world(*args) as owner:
         assert owner.working_path == path and owner.snapshot().tick == 2
+
+
+def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> None:
+    path = tmp_path / "game.sqlite"
+    with pipe(path) as streams:
+        sequence = 0
+
+        def act(action: str, value: str = "") -> JsonObject:
+            nonlocal sequence
+            sequence += 1
+            return send(streams, sequence, action, value)
+
+        def walk(*directions: str) -> None:
+            for direction in directions:
+                assert act("step", direction)["error"] == ""
+
+        def talk(npc: str, label: str) -> str:
+            view = act("talk", npc)
+            assert view["error"] == "" and view["has_interaction"] is True
+            offer = object_value(view["interaction"])
+            assert offer["label"] == label and text_value(offer["terms"])
+            return text_value(offer["token"])
+
+        def inventory(view: JsonObject) -> tuple[object, object]:
+            row = object_value(view["supply"])
+            return row["cargo"], row["gold"]
+
+        start = act("inspect")
+        roster = {
+            npc["role"]: text_value(npc["id"])
+            for npc in map(object_value, array_value(object_value(start["supply"])["residents"]))
+        }
+        merchant, courier = roster["상인"], roster["운송인"]
+        denied = act("talk", merchant)
+        assert denied["error"] == "VILLAGE_NPC_OUT_OF_REACH" and denied["revision"] == 0
+        walk(*("right",) * 5, *("up",) * 5, "left")
+        assert act("talk", merchant)["error"] == "VILLAGE_NPC_OUT_OF_REACH"  # diagonal
+        walk("right")
+        token = talk(merchant, "의뢰 받기")
+        canceled = act("close")
+        assert canceled["has_interaction"] is False
+        assert act("confirm", token)["error"] == "VILLAGE_OFFER_STALE"
+        token = talk(merchant, "의뢰 받기")
+        walk("left")
+        assert act("confirm", token)["error"] == "VILLAGE_OFFER_STALE"
+        walk("right")
+        token = talk(merchant, "의뢰 받기")
+        waited = act("idle", "1")
+        assert waited["has_interaction"] is True
+        assert act("confirm", token)["error"] == "VILLAGE_OFFER_STALE"
+        refreshed = text_value(object_value(waited["interaction"])["token"])
+        assert act("confirm", refreshed)["error"] == ""
+        walk("down", "right", "right", "down")
+        first = talk(courier, "상자 받기")
+        collected = act("confirm", first)
+        assert inventory(collected) == (1, 0)
+        assert send(streams, sequence, "confirm", first) == collected
+        assert act("confirm", first)["error"] == "VILLAGE_OFFER_STALE"
+        assert inventory(act("confirm", talk(courier, "상자 받기"))) == (2, 0)
+        walk("up", "left", "left", "up")
+        final = talk(merchant, "상자 전달하기")
+        delivered = act("confirm", final)
+        assert inventory(delivered) == (0, 5)
+        assert delivered["has_interaction"] is False
+        assert act("confirm", final)["revision"] == delivered["revision"]
+
+    assert read_world(path)["quest_phase"] == "완료"
+    with pipe(path) as streams:
+        reopened = send(streams, 1, "inspect")
+        assert inventory(reopened) == (0, 5)
+        assert (reopened["x"], reopened["y"], reopened["revision"]) == (6, 2, delivered["revision"])
+    world = load_world()
+    scenario, social, transport = (
+        AUTHORED_SUPPLY_SCENARIO,
+        load_social(world),
+        load_transport(world),
+    )
+    bundle = village_world_bundle(
+        transport_world_bundle(world, social, transport, scenario, knowledge=True),
+        scenario.place_id,
+    )
+    with open_knowledge_world(path, world, scenario, social, transport) as owner:
+        segment = owner.retained_segment()
+        actions = tuple(
+            step.command.payload.operation
+            for step in segment.trace.steps
+            if isinstance(step.command.payload, SupplyAction)
+        )
+        assert actions == ("accept", "collect", "collect", "deliver")
+        assert (
+            replay_runner(
+                ReplayFixture(segment.checkpoint.core, segment.checkpoint.protocol, segment.trace),
+                bundles=(bundle,),
+            ).run(segment.trace)
+            == ()
+        )

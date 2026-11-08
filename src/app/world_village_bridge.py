@@ -2,6 +2,7 @@
 
 import argparse
 from collections.abc import Sequence
+from dataclasses import dataclass
 import logging
 from pathlib import Path
 import sys
@@ -17,13 +18,17 @@ from app.world_catalog import (
 )
 from app.world_session import world_command
 from app.world_village_session import open_knowledge_world
+from app.world_village_supply import VillageResident, VillageSupply, village_supply
 from contracts.persistence import SaveError
 from contracts.turn import TurnCommitted, TurnOutcome
+from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
 from contracts.world_village import VillageStep
 from domain.canonical import JsonObject, decode_json, exact_fields, int_value, text_value
 from domain.primitives import MAX_INT
 from domain.world_conversation import ConversationRecord
+from domain.world_social import SocialCatalog
+from domain.world_supply import SupplyScenario
 from domain.world_transport import JourneyRecord
 from domain.world_travel import TravelerRecord
 from domain.world_village import (
@@ -31,18 +36,35 @@ from domain.world_village import (
     ENTRANCE,
     VILLAGE_LANDMARKS,
     VILLAGE_ROWS,
+    VillagePosition,
     VillageRecord,
 )
 
 FORMAT = "reverie-world-village/v1"
 
 
+@dataclass(frozen=True, slots=True)
+class _Scene:
+    position: VillagePosition
+    local: bool
+    speaking: bool
+    tick: int
+
+    @property
+    def available(self) -> bool:
+        return self.local and not self.speaking
+
+
 class VillageBridge:
-    def __init__(self, owner: DurableSession, place_id: str, name: str) -> None:
+    def __init__(
+        self, owner: DurableSession, scenario: SupplyScenario, social: SocialCatalog, name: str
+    ) -> None:
         self.owner = owner
-        self.place_id = place_id
+        self.scenario = scenario
+        self.social = social
         self.name = name
         self._last: tuple[int, str, str, JsonObject] | None = None
+        self._talking = ""
 
     def request(self, body: bytes) -> JsonObject:
         row = exact_fields(decode_json(body), ("format", "id", "action", "value"))
@@ -58,18 +80,63 @@ class VillageBridge:
         error = ""
         if action == "step" and value in DIRECTIONS:
             error = self._submit(VillageStep(value))
+            if not error:
+                self._talking = ""
         elif action == "idle" and value == "1":
-            current = self._view(request_id, "")
-            error = (
-                self._submit(WorldWait(1)) if current["available"] is True else "VILLAGE_INACTIVE"
-            )
+            error = self._submit(WorldWait(1)) if self._scene().available else "VILLAGE_INACTIVE"
+        elif action == "talk" and value:
+            scene = self._scene()
+            npc = self._nearby(scene, self._supply(), value)
+            if npc is None:
+                error = "VILLAGE_NPC_OUT_OF_REACH"
+            else:
+                self._talking = npc.resident.id
+        elif action == "close" and not value:
+            self._talking = ""
+        elif action == "confirm" and value:
+            error = self._confirm(value)
         elif action != "inspect" or value:
             error = "INVALID_COMMAND"
         result = self._view(request_id, error)
         self._last = (request_id, action, value, result)
         return result
 
-    def _submit(self, payload: VillageStep | WorldWait) -> str:
+    def _supply(self) -> VillageSupply:
+        return village_supply(self.owner.snapshot(), self.scenario, self.social)
+
+    @staticmethod
+    def _nearby(scene: _Scene, supply: VillageSupply, target: str = "") -> VillageResident | None:
+        if not scene.available:
+            return None
+        return next(
+            (
+                npc
+                for npc in supply.residents
+                if (not target or npc.resident.id == target) and npc.adjacent(scene.position)
+            ),
+            None,
+        )
+
+    def _confirm(self, token: str) -> str:
+        if not self._talking:
+            return "VILLAGE_OFFER_STALE"
+        scene, supply = self._scene(), self._supply()
+        npc = self._nearby(scene, supply, self._talking)
+        if npc is None:
+            return "VILLAGE_NPC_OUT_OF_REACH"
+        offer = supply.offer
+        if (
+            offer is None
+            or offer.action.npc_id != npc.resident.id
+            or token != supply.interaction(npc, scene.position, self.owner.protocol())["token"]
+        ):
+            return "VILLAGE_OFFER_STALE"
+        error = self._submit(offer.action)
+        if not error:
+            self._talking = ""
+        return error
+
+    def _submit(self, payload: VillageStep | WorldWait | SupplyAction) -> str:
         command = world_command(self.owner.protocol(), payload)
         outcome: TurnOutcome
         try:
@@ -80,7 +147,7 @@ class VillageBridge:
             outcome = self.owner.recover().outcome
         return "" if isinstance(outcome, TurnCommitted) else outcome.failure.code
 
-    def _view(self, request_id: int, error: str) -> JsonObject:
+    def _scene(self) -> _Scene:
         core = self.owner.snapshot()
         position = next(item.state for item in core.components if isinstance(item, VillageRecord))
         travel = next(item.state for item in core.components if isinstance(item, TravelerRecord))
@@ -89,32 +156,48 @@ class VillageBridge:
             item.state for item in core.components if isinstance(item, ConversationRecord)
         )
         local = (
-            travel.place_id == self.place_id
+            travel.place_id == self.scenario.place_id
             and not travel.destination_id
             and journey.phase == "idle"
         )
+        return _Scene(position, local, bool(speech.remaining), core.tick)
+
+    def _view(self, request_id: int, error: str) -> JsonObject:
+        scene = self._scene()
+        supply = self._supply()
+        protocol = self.owner.protocol()
+        nearby = self._nearby(scene, supply)
+        talking = self._nearby(scene, supply, self._talking) if self._talking else None
         return {
             "format": FORMAT,
             "id": request_id,
             "error": error,
             "name": self.name,
-            "available": local and not speech.remaining,
+            "available": scene.available,
             "status": (
                 "이 마을에 도착하면 걸을 수 있습니다."
-                if not local
+                if not scene.local
                 else "진행 중인 발언을 Python 화면에서 먼저 마쳐 주세요."
-                if speech.remaining
+                if scene.speaking
                 else ""
             ),
-            "tick": core.tick,
-            "revision": self.owner.protocol().revision,
-            "x": position.x,
-            "y": position.y,
+            "tick": scene.tick,
+            "revision": protocol.revision,
+            "x": scene.position.x,
+            "y": scene.position.y,
             "entrance_x": ENTRANCE.x,
             "entrance_y": ENTRANCE.y,
             "rows": VILLAGE_ROWS,
             "landmarks": tuple(
                 {"name": name, "x": x, "y": y} for _, name, x, y in VILLAGE_LANDMARKS
+            ),
+            "supply": supply.wire(local=scene.local),
+            "nearby": nearby.resident.id if nearby is not None else "",
+            "has_interaction": talking is not None,
+            "interaction": (
+                supply.interaction(talking, scene.position, protocol)
+                if talking is not None
+                else None
             ),
         }
 
@@ -126,10 +209,11 @@ def main(argv: Sequence[str] | None = None) -> int:
     try:
         world = load_world()
         scenario = AUTHORED_SUPPLY_SCENARIO
+        social = load_social(world)
         with open_knowledge_world(
-            args.working, world, scenario, load_social(world), load_transport(world), village=True
+            args.working, world, scenario, social, load_transport(world), village=True
         ) as owner:
-            bridge = VillageBridge(owner, scenario.place_id, world.place(scenario.place_id).name)
+            bridge = VillageBridge(owner, scenario, social, world.place(scenario.place_id).name)
             while (frame := read_frame(sys.stdin.buffer)) is not None:
                 write_frame(sys.stdout.buffer, bridge.request(frame))
     except SaveError as error:

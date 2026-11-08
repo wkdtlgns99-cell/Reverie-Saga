@@ -25,6 +25,7 @@ class SupplyOffer:
 
 
 AUTHORED_SUPPLY_COMPLETE = "상인: “덕분에 보급로가 다시 열렸어요. 고맙습니다.”"
+SUPPLY_ACTION_LABELS = {"accept": "의뢰 받기", "collect": "상자 받기", "deliver": "상자 전달하기"}
 
 
 def authored_supply_line(offer: SupplyOffer) -> str:
