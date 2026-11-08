@@ -34,18 +34,18 @@ from orchestration.scheduler import compile_schedule
 from tests.unit.encounter_fixtures import reference, session, views
 
 
-def test_turn_based_onset_requires_an_attack_noticed_by_an_opponent() -> None:
-    assert not starts_turn_based_combat(attack_started=False, opposing_observers=0)
-    assert not starts_turn_based_combat(attack_started=False, opposing_observers=1)
-    assert not starts_turn_based_combat(attack_started=True, opposing_observers=0)
-    assert starts_turn_based_combat(attack_started=True, opposing_observers=1)
-    assert starts_turn_based_combat(attack_started=True, opposing_observers=4)
-    with pytest.raises(ValueError, match="ATTACK_STARTED_TYPE"):
-        starts_turn_based_combat(attack_started=cast(bool, 1), opposing_observers=1)
+def test_turn_based_onset_requires_resolution_and_an_opposing_observer() -> None:
+    assert not starts_turn_based_combat(attack_resolved=False, opposing_observers=0)
+    assert not starts_turn_based_combat(attack_resolved=False, opposing_observers=1)
+    assert not starts_turn_based_combat(attack_resolved=True, opposing_observers=0)
+    assert starts_turn_based_combat(attack_resolved=True, opposing_observers=1)
+    assert starts_turn_based_combat(attack_resolved=True, opposing_observers=4)
+    with pytest.raises(ValueError, match="ATTACK_RESOLVED_TYPE"):
+        starts_turn_based_combat(attack_resolved=cast(bool, 1), opposing_observers=1)
     with pytest.raises(ValueError, match="integer outside declared range"):
-        starts_turn_based_combat(attack_started=True, opposing_observers=True)
+        starts_turn_based_combat(attack_resolved=True, opposing_observers=True)
     with pytest.raises(ValueError, match="integer outside declared range"):
-        starts_turn_based_combat(attack_started=True, opposing_observers=-1)
+        starts_turn_based_combat(attack_resolved=True, opposing_observers=-1)
 
 
 def test_literal_pins_and_records() -> None:

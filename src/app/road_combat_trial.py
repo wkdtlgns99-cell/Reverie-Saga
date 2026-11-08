@@ -35,7 +35,7 @@ class RoadCombatTrial:
             )
             # The only opponent in this trial confirms awareness by retaliating.
             self._engaged = starts_turn_based_combat(
-                attack_started=True,
+                attack_resolved=True,
                 opposing_observers=int(attack.actor_hp_after < attack.actor_hp_before),
             )
         return ""

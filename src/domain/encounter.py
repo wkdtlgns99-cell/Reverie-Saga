@@ -64,12 +64,12 @@ def adjacent_cells(first: int, second: int) -> bool:
     return abs(x - tx) + abs(z - tz) == 1000
 
 
-def starts_turn_based_combat(*, attack_started: bool, opposing_observers: int) -> bool:
-    """Count opponents who noticed this attack, regardless of which side began it."""
-    if type(attack_started) is not bool:
-        raise ValueError("ATTACK_STARTED_TYPE")
+def starts_turn_based_combat(*, attack_resolved: bool, opposing_observers: int) -> bool:
+    """Require the noticed opening attack to finish, regardless of its outcome."""
+    if type(attack_resolved) is not bool:
+        raise ValueError("ATTACK_RESOLVED_TYPE")
     require_integer(opposing_observers, 0)
-    return attack_started and opposing_observers > 0
+    return attack_resolved and opposing_observers > 0
 
 
 def resolve_basic_attack(actor_hp: int, target_hp: int, stamina: int) -> tuple[int, int, int]:
