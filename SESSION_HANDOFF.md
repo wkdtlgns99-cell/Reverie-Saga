@@ -40,6 +40,8 @@ O4 merged through [PR45](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/45
 
 The O4 refresh audit reproduced a confirmed-absent Python save when the read transaction overlapped it. The registered supply worker completed the delivery once on same-key retry after the refresh. This is a measurement-only follow-up. [Overlap audit](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md#refresh-and-save-overlap-audit)
 
+O4's SQLite reader now releases its transaction after bounded row capture and validates the snapshot in Python afterward. The registered delivery committed while the observer paused at checkpoint decoding. Median read-lock time fell from 194.24 ms to 2.08 ms on the same 300-command fixture. SQL capture can still overlap a writer. [Lock-scope verification](docs/reviews/RS-OWN-O4_REFRESH_LOCK_EXECUTION_2026-11-09.md)
+
 The director selected the authored supply quest as the first interactive Unity flow. Use **Reverie → 보급 의뢰 플레이** with the Python game closed. Each confirmed action uses the same current-world Python owner and saves before the Unity panel shows the result. [Supply play verification](docs/reviews/RS-OWN-UNITY_SUPPLY_EXECUTION_2026-11-08.md)
 
 The director selected saved cardinal walking in the same world. **Reverie → 마을 걷기** owns one working attachment until closed. It walks the district at Mulbeodeul, advances the shared clock and resumes at the committed position. First entry upgrades legacy progress by publishing a separate working copy and retains the original. [Village verification](docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)

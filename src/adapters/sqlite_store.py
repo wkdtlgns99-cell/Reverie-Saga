@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 import os
 from pathlib import Path
 import sqlite3
@@ -168,15 +169,54 @@ def _limits(con: sqlite3.Connection) -> None:
         raise SaveError("SAVE_LIMIT", "aggregate body bytes")
 
 
-def _read(con: sqlite3.Connection, io: StateIO) -> tuple[DurableCheckpoint, SaveSegment]:
-    _schema(con)
-    _limits(con)
-    if _rows(con, "PRAGMA integrity_check") != (("ok",),) or _rows(con, "PRAGMA foreign_key_check"):
-        raise SaveError("SAVE_CORRUPT", "SQLite integrity")
-    head = _one(con, "SELECT singleton,format_version,core_meta,protocol_meta,core_hash,protocol_hash,checkpoint_revision FROM save_head")
+@dataclass(frozen=True, slots=True)
+class _SaveRows:
+    head: SqlRow
+    checkpoint: SqlRow
+    components: tuple[SqlRow, ...]
+    pending: tuple[SqlRow, ...]
+    streams: tuple[SqlRow, ...]
+    receipts: tuple[SqlRow, ...]
+    replay: tuple[SqlRow, ...]
+
+
+def _capture_rows(con: sqlite3.Connection) -> _SaveRows:
+    con.execute("BEGIN")
+    try:
+        _schema(con)
+        _limits(con)
+        if _rows(con, "PRAGMA integrity_check") != (("ok",),) or _rows(con, "PRAGMA foreign_key_check"):
+            raise SaveError("SAVE_CORRUPT", "SQLite integrity")
+        return _SaveRows(
+            head=_one(
+                con,
+                "SELECT singleton,format_version,core_meta,protocol_meta,"
+                "core_hash,protocol_hash,checkpoint_revision FROM save_head",
+            ),
+            checkpoint=_one(con, "SELECT singleton,body,sha256 FROM checkpoint"),
+            components=_rows(
+                con, "SELECT kind,version,entity_id,body,sha256 FROM components "
+                "ORDER BY kind,version,entity_id",
+            ),
+            pending=_rows(
+                con, "SELECT event_id,ordinal,body,sha256 FROM pending ORDER BY ordinal",
+            ),
+            streams=_rows(con, "SELECT stream_id,body FROM streams ORDER BY stream_id"),
+            receipts=_rows(
+                con, "SELECT command_id,revision,body FROM receipts ORDER BY revision,command_id",
+            ),
+            replay=_rows(con, "SELECT revision,body,sha256 FROM replay ORDER BY revision"),
+        )
+    finally:
+        if con.in_transaction:
+            con.execute("ROLLBACK")
+
+
+def _decode_rows(rows: _SaveRows, io: StateIO) -> tuple[DurableCheckpoint, SaveSegment]:
+    head = rows.head
     if head[:2] != (1, 1):
         raise SaveError("SAVE_CORRUPT", "head singleton/version")
-    cp = _one(con, "SELECT singleton,body,sha256 FROM checkpoint")
+    cp = rows.checkpoint
     document = canonical_object(_blob(cp[1], MAX_CHECKPOINT))
     if cp[0] != 1 or hash_document("save-checkpoint/v1", document) != cp[2]:
         raise SaveError("SAVE_CORRUPT", "checkpoint checksum")
@@ -184,42 +224,44 @@ def _read(con: sqlite3.Connection, io: StateIO) -> tuple[DurableCheckpoint, Save
     if initial.protocol.revision != _integer(head[6]):
         raise SaveError("SAVE_CORRUPT", "checkpoint revision")
     components = []
-    for row in _rows(con, "SELECT kind,version,entity_id,body,sha256 FROM components ORDER BY kind,version,entity_id"):
+    for row in rows.components:
         child = canonical_object(_blob(row[3]))
         schema = object_value(child["schema"])
         if (schema["kind"], schema["version"], child["entity_id"]) != row[:3] or hash_document("component/v1", child) != row[4]:
             raise SaveError("SAVE_CORRUPT", "component key/checksum")
         components.append(child)
     pending = []
-    for index, row in enumerate(_rows(con, "SELECT event_id,ordinal,body,sha256 FROM pending ORDER BY ordinal")):
+    for index, row in enumerate(rows.pending):
         child = canonical_object(_blob(row[2]))
         header = object_value(object_value(child["event"])["header"])
         if header["event_id"] != row[0] or row[1] != index or hash_document("pending-event/v1", child) != row[3]:
             raise SaveError("SAVE_CORRUPT", "pending key/order/checksum")
         pending.append(child)
     streams = []
-    for row in _rows(con, "SELECT stream_id,body FROM streams ORDER BY stream_id"):
+    for row in rows.streams:
         child = canonical_object(_blob(row[1]))
         if child["stream_id"] != row[0]:
             raise SaveError("SAVE_CORRUPT", "stream key")
         streams.append(child)
     receipts = []
-    for row in _rows(con, "SELECT command_id,revision,body FROM receipts ORDER BY revision,command_id"):
+    for row in rows.receipts:
         child = canonical_object(_blob(row[2]))
         if object_value(child["command"])["command_id"] != row[0] or object_value(child["receipt"])["revision"] != row[1]:
             raise SaveError("SAVE_CORRUPT", "receipt key/revision")
         receipts.append(child)
-    core = {**canonical_object(_blob(head[2])), "components": tuple(components), "pending": tuple(pending)}
-    protocol = {**canonical_object(_blob(head[3])), "streams": tuple(streams), "receipts": tuple(receipts)}
+    core_meta = canonical_object(_blob(head[2]))
+    protocol_meta = canonical_object(_blob(head[3]))
     # Meta documents may not shadow the row arrays with duplicate authorities.
-    if set(canonical_object(_blob(head[2]))) != set(core) - {"components", "pending"} or set(canonical_object(_blob(head[3]))) != set(protocol) - {"streams", "receipts"}:
+    if {"components", "pending"}.intersection(core_meta) or {"streams", "receipts"}.intersection(protocol_meta):
         raise SaveError("SAVE_CORRUPT", "metadata row arrays")
+    core = {**core_meta, "components": tuple(components), "pending": tuple(pending)}
+    protocol = {**protocol_meta, "streams": tuple(streams), "receipts": tuple(receipts)}
     header = {**object_value(document["header"]), "initial_core_hash": _text(head[4]), "initial_protocol_hash": _text(head[5])}
     current = decode_checkpoint({"core": core, "protocol": protocol, "header": header}, io=io)
     if current.protocol.branch_id != initial.protocol.branch_id:
         raise SaveError("SAVE_CORRUPT", "checkpoint branch differs")
     bodies = []
-    for index, row in enumerate(_rows(con, "SELECT revision,body,sha256 FROM replay ORDER BY revision")):
+    for index, row in enumerate(rows.replay):
         body = _blob(row[1])
         if row[0] != initial.protocol.revision + index + 1 or hash_document("save-step/v1", canonical_object(body)) != row[2]:
             raise SaveError("SAVE_CORRUPT", "retained replay key/checksum")
@@ -267,10 +309,10 @@ def _read_file(path: Path, io: StateIO) -> tuple[DurableCheckpoint, SaveSegment]
         classify_file(target)
         con = _connect(target, readonly=True)
         try:
-            con.execute("BEGIN")
-            return _read(con, io)
+            rows = _capture_rows(con)
         finally:
             con.close()
+        return _decode_rows(rows, io)
     except (sqlite3.Error, OSError, ValueError, TypeError, KeyError) as error:
         raise SaveError("SAVE_CORRUPT", str(error)) from error
 
@@ -398,13 +440,9 @@ class SqliteCommitStore:
     def _read_all(self) -> tuple[DurableCheckpoint, SaveSegment]:
         self._guard()
         try:
-            self._con.execute("BEGIN")
-            return _read(self._con, self._io)
+            return _decode_rows(_capture_rows(self._con), self._io)
         except (sqlite3.Error, OSError, ValueError, TypeError, KeyError) as error:
             raise SaveError("SAVE_CORRUPT", str(error)) from error
-        finally:
-            if self._con.in_transaction:
-                self._con.execute("ROLLBACK")
 
     def load(self) -> DurableCheckpoint:
         return self._read_all()[0]

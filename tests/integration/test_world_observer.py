@@ -1,23 +1,29 @@
 """Read the current knowledge world through its real registered durable state."""
 
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 import sqlite3
 import subprocess
 import sys
+from threading import Event, current_thread
 
 import pytest
 
+from adapters import sqlite_store
 from adapters.world_attachment import remember_world
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
 from app.world_observer import read_world
-from app.world_session import open_world_session
-from contracts.persistence import SaveError
+from app.world_session import open_world_session, world_command
+from contracts.persistence import DurableCheckpoint, SaveError
+from contracts.state_io import StateIO
+from contracts.turn import TurnCommitted
 from contracts.world_conversation import AssessedNpcReply, ContinueSpeech, PlayerSay
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
 from domain.canonical import JsonObject, array_value, decode_json, object_value
 from domain.world import elaborate_place
 from domain.world_conversation import SpeechJudgment
+from orchestration.persistence import decode_checkpoint
 from orchestration.world_conversation_context import context_from_core
 from tests.integration.test_world_knowledge import commit, conversation
 
@@ -203,3 +209,59 @@ def test_reader_reports_a_busy_save_and_can_refresh_after_release(tmp_path: Path
             writer.close()
         assert read_world(path)["tick"] == 0
         assert (path.read_bytes(), set(tmp_path.iterdir())) == before
+
+
+def test_observer_releases_read_lock_before_validating_captured_rows(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    world = load_world()
+    scenario = AUTHORED_SUPPLY_SCENARIO
+    place = scenario.place_id
+    courier, merchant, *_ = elaborate_place(world, place).residents
+    path = tmp_path / "game.sqlite"
+    decoding, release = Event(), Event()
+    writer_thread = current_thread()
+
+    def pause_reader(document: JsonObject, *, io: StateIO) -> DurableCheckpoint:
+        if current_thread() is not writer_thread and not decoding.is_set():
+            decoding.set()
+            if not release.wait(timeout=10):
+                raise TimeoutError("checkpoint decode barrier timed out")
+        return decode_checkpoint(document, io=io)
+
+    with open_world_session(
+        path,
+        world,
+        supply=scenario,
+        social=load_social(world),
+        transport=load_transport(world),
+        knowledge=True,
+    ) as owner:
+        commit(owner, SupplyAction(place, merchant.id, "accept"))
+        commit(owner, SupplyAction(place, courier.id, "collect"))
+        commit(owner, SupplyAction(place, courier.id, "collect"))
+        before = set(tmp_path.iterdir())
+        delivery = world_command(owner.protocol(), SupplyAction(place, merchant.id, "deliver"))
+        monkeypatch.setattr(sqlite_store, "decode_checkpoint", pause_reader)
+        with ThreadPoolExecutor(max_workers=1) as reader:
+            pending = reader.submit(read_world, path)
+            try:
+                assert decoding.wait(timeout=10)
+                result = owner.submit(delivery, attachment_id=owner.attachment_id)
+                assert isinstance(result.outcome, TurnCommitted), result.outcome
+            finally:
+                release.set()
+            captured = pending.result(timeout=10)
+
+        assert (captured["revision"], captured["quest_phase"], captured["cargo"]) == (
+            3,
+            "진행 중",
+            2,
+        )
+        fresh = read_world(path)
+        assert (fresh["revision"], fresh["quest_phase"], fresh["cargo"]) == (4, "완료", 0)
+        saved = path.read_bytes()
+        duplicate = owner.submit(delivery, attachment_id=owner.attachment_id)
+        assert duplicate.outcome == result.outcome
+        assert owner.protocol().revision == 4 and path.read_bytes() == saved
+        assert set(tmp_path.iterdir()) == before
