@@ -263,12 +263,15 @@ class WorldWorker:
             owner.export("slot01")
             notice = "저장했습니다."
         elif action == "load":
-            self._dialogue.invalidate()
-            self._transport_request = None
+            former = owner.attachment_id
             try:
-                owner.load("slot01")
+                owner.load(
+                    "slot01", publish_working=lambda active: remember_world(self.path, active)
+                )
             finally:
-                remember_world(self.path, owner.working_path)
+                if owner.attachment_id != former:
+                    self._dialogue.invalidate()
+                    self._transport_request = None
             notice = "저장한 위치를 불러왔습니다."
         elif action == "inspect":
             notice = "세계를 불러왔습니다."

@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import argparse
-from collections.abc import Iterator, Sequence
+from collections.abc import Callable, Iterator, Sequence
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass
 import logging
@@ -123,10 +123,18 @@ class DurableSession:
         with self._operation():
             return self._attachment.slots.inspect(slot_id, previous=previous)
 
-    def load(self, slot_id: str, *, previous: bool = False) -> SaveLoadReceipt:
+    def load(
+        self,
+        slot_id: str,
+        *,
+        previous: bool = False,
+        publish_working: Callable[[Path], None] | None = None,
+    ) -> SaveLoadReceipt:
+        """Prepare the attachment before an optional atomic working-reference switch."""
         with self._operation():
             former = self._attachment
             store = former.slots.stage_load(slot_id, previous=previous)
+            self._owned_clones.add(store.path)
             try:
                 prepared = _Attachment(
                     _owner(store, self._bundles, self._io),
@@ -142,18 +150,24 @@ class DurableSession:
                     hash_document("protocol/v1", self._io.encode_protocol(checkpoint.protocol)),
                     prepared.token,
                 )
+                if publish_working is not None:
+                    publish_working(store.path)
             except (ValueError, TypeError, RuntimeError, OSError, sqlite3.Error) as error:
-                store.close()
-                cleanup_owned_clone(store.path, former.store.path.parent)
+                try:
+                    self._retire(store)
+                except (ValueError, TypeError, RuntimeError, OSError, sqlite3.Error):
+                    self._logger.exception("failed to retire an unpublished working clone")
                 raise SaveError("SAVE_LOAD_FAILED", "prepared attachment failed") from error
             self._attachment = prepared  # Single app owner/token/driver/store swap.
-            self._owned_clones.add(store.path)
-            self._retired_stores.append(former.store)
             former.owner._driver.detach()
-            former.store.close()
-            self._retired_stores.remove(former.store)
-            self._cleanup_superseded(former.store)
+            self._retire(former.store)
             return receipt
+
+    def _retire(self, store: SqliteCommitStore) -> None:
+        self._retired_stores.append(store)
+        store.close()
+        self._retired_stores.remove(store)
+        self._cleanup_superseded(store)
 
     def _cleanup_superseded(self, store: SqliteCommitStore) -> None:
         if store.path in self._owned_clones:
