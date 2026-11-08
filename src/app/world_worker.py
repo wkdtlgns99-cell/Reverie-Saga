@@ -10,6 +10,7 @@ from typing import Literal
 from adapters.world_attachment import current_world, remember_world
 from app.durable import DurableSession
 from app.world_session import foot_command, open_world_session, world_command
+from app.world_village_session import open_knowledge_world
 from app.world_supply import SupplyOffer, supply_notice, supply_offers, supply_status
 from app.world_conversation_worker import ConversationCoordinator
 from adapters.world_conversation import development_generator
@@ -125,6 +126,12 @@ class WorldWorker:
         if self._owner is None:
             if not self.require_existing:
                 self.path.parent.mkdir(parents=True, exist_ok=True)
+            if self.knowledge and self.social is not None and self.transport is not None:
+                self._owner = open_knowledge_world(
+                    self.path, self.world, self.scenario, self.social, self.transport,
+                    require_existing=self.require_existing,
+                )
+                return self._owner
             self._owner = open_world_session(
                 current_world(self.path),
                 self.world,

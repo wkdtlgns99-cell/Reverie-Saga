@@ -307,17 +307,27 @@ class SqliteCommitStore:
 
     @classmethod
     def create(cls, path: Path, checkpoint: DurableCheckpoint, *, io: StateIO) -> SqliteCommitStore:
+        target = safe_path(path)
+        return cls._create(target, checkpoint, io=io, reserved=False)
+
+    @classmethod
+    def _create(
+        cls, target: Path, checkpoint: DurableCheckpoint, *, io: StateIO, reserved: bool
+    ) -> SqliteCommitStore:
         projection = project_rows(checkpoint, io=io)
         body = canonical_json(checkpoint_document(checkpoint, io=io))
-        target = safe_path(path)
         target.parent.mkdir(parents=True, exist_ok=True)
-        try:
-            descriptor = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
-        except FileExistsError as error:
-            raise SaveError("SAVE_EXISTS", "working file exists") from error
-        except OSError as error:
-            raise SaveError("SAVE_UNAVAILABLE", str(error)) from error
-        os.close(descriptor)
+        if reserved:
+            if target.stat().st_size != 0:
+                raise SaveError("SAVE_EXISTS", "reserved file already initialized")
+        else:
+            try:
+                descriptor = os.open(target, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            except FileExistsError as error:
+                raise SaveError("SAVE_EXISTS", "working file exists") from error
+            except OSError as error:
+                raise SaveError("SAVE_UNAVAILABLE", str(error)) from error
+            os.close(descriptor)
         lock: sqlite3.Connection | None = None
         con: sqlite3.Connection | None = None
         try:

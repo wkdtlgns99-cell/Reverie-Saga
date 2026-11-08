@@ -6,9 +6,7 @@ from pathlib import Path
 import sqlite3
 import sys
 
-from adapters.sqlite_store import validate_save
 from adapters.world_attachment import current_world
-from app.headless import state_io
 from app.world_catalog import (
     AUTHORED_SUPPLY_SCENARIO,
     KNOWLEDGE_WORLD_PATH,
@@ -18,6 +16,7 @@ from app.world_catalog import (
 )
 from app.world_supply import supply_status
 from app.world_transport_registry import transport_world_bundle
+from app.world_village_session import validate_knowledge_world
 from contracts.persistence import DurableCheckpoint, SaveError
 from domain.canonical import JsonObject, canonical_json
 from domain.world import WorldCatalog
@@ -110,7 +109,7 @@ def read_world(working: Path = KNOWLEDGE_WORLD_PATH) -> JsonObject:
         world, load_social(world), load_transport(world), AUTHORED_SUPPLY_SCENARIO, knowledge=True
     )
     try:
-        checkpoint = validate_save(source, io=state_io((bundle,)))
+        checkpoint = validate_knowledge_world(source, bundle, AUTHORED_SUPPLY_SCENARIO.place_id)
     except SaveError as error:
         cause = error.__cause__
         if isinstance(cause, sqlite3.Error) and getattr(cause, "sqlite_errorcode", None) in (

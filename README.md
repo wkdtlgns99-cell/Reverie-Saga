@@ -85,6 +85,9 @@ quest status. [O4 verification](docs/reviews/RS-OWN-O4_EXECUTION_2026-11-07.md)
 Choose **Reverie → 보급 의뢰 플레이** to accept the authored quest, collect two crates
 and deliver them through the current working world. Close the Python game before confirming
 actions in Unity. [Supply play verification](docs/reviews/RS-OWN-UNITY_SUPPLY_EXECUTION_2026-11-08.md)
+Choose **Reverie → 마을 걷기** to walk the Mulbeodeul district using WASD or arrows.
+Movement and time are committed to the current knowledge world. Close the walking window
+before resuming the Python game or the supply panel. [Village verification](docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)
 No-selector Unity starts the approved harbor-memory preset in a catalog-pin-specific save directory;
 explicit legacy/scenario/quest selectors preserve their existing modes.
 Independent control/history scrolling is qualified at1101x506on the observed host.
