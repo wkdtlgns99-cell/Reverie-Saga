@@ -10,11 +10,12 @@ from threading import Event, current_thread
 import pytest
 
 from adapters import sqlite_store
-from adapters.world_attachment import remember_world
+from adapters.world_attachment import current_world, remember_world
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
 from app.world_observer import read_world
 from app.world_session import open_world_session, world_command
 from app.world_village_session import open_knowledge_world
+from app.world_worker import WorldWorker
 from contracts.persistence import DurableCheckpoint, SaveError
 from contracts.state_io import StateIO
 from contracts.turn import TurnCommitted
@@ -22,7 +23,7 @@ from contracts.world_conversation import AssessedNpcReply, ContinueSpeech, Playe
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
 from domain.canonical import JsonObject, array_value, decode_json, object_value
-from domain.world import elaborate_place
+from domain.world import WorldCatalog, elaborate_place
 from domain.world_conversation import SpeechJudgment
 from orchestration.persistence import decode_checkpoint
 from orchestration.world_conversation_context import context_from_core
@@ -185,6 +186,58 @@ def test_reader_drops_snapshot_if_the_active_branch_changes(
         monkeypatch.setattr("app.world_observer.current_world", lambda _: next(files))
         with pytest.raises(SaveError, match="^WORLD_VIEW_CHANGED"):
             read_world(path)
+
+
+def test_refresh_reports_branch_change_when_slot_load_retires_selected_source(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    world = load_world()
+    path = tmp_path / "game.sqlite"
+    worker = WorldWorker(
+        path,
+        world,
+        scenario=AUTHORED_SUPPLY_SCENARIO,
+        social=load_social(world),
+        transport=load_transport(world),
+        knowledge=True,
+    )
+    selected, release = Event(), Event()
+
+    def pause_after_selection() -> WorldCatalog:
+        selected.set()
+        if not release.wait(timeout=10):
+            raise TimeoutError("observer source selection barrier timed out")
+        return world
+
+    try:
+        worker.request("wait", seconds=1).result(timeout=10)
+        worker.request("save").result(timeout=10)
+        worker.request("load").result(timeout=10)
+        worker.request("wait", seconds=2).result(timeout=10)
+        former = current_world(path)
+        assert former != path
+
+        with monkeypatch.context() as patch, ThreadPoolExecutor(max_workers=1) as reader:
+            patch.setattr("app.world_observer.load_world", pause_after_selection)
+            refresh = reader.submit(read_world, path)
+            try:
+                assert selected.wait(timeout=10)
+                loaded = worker.request("load").result(timeout=10)
+                active = current_world(path)
+                assert active != former and not former.exists()
+                before = active.read_bytes(), set(tmp_path.iterdir())
+            finally:
+                release.set()
+            with pytest.raises(SaveError, match="^WORLD_VIEW_CHANGED"):
+                refresh.result(timeout=10)
+
+        view = read_world(path)
+        assert (view["tick"], view["revision"]) == (loaded.tick, loaded.protocol.revision) == (1, 1)
+        assert (active.read_bytes(), set(tmp_path.iterdir())) == before
+        advanced = worker.request("wait", seconds=1).result(timeout=10)
+        assert read_world(path)["tick"] == advanced.tick == 2
+    finally:
+        worker.close()
 
 
 def test_reader_reports_a_busy_save_and_can_refresh_after_release(tmp_path: Path) -> None:

@@ -46,6 +46,8 @@ O4 refresh now reuses the captured rows when the legacy ruleset differs and the 
 
 The world worker now publishes the prepared slot's working reference before swapping attachments and retiring the former store. A failed pointer replacement preserves the previous working clone, and a close failure after publication preserves the new active clone. [Slot-load verification](docs/reviews/RS-WORLD-LOAD-REFERENCE_EXECUTION_2026-11-09.md)
 
+The read-only observer detects `WORLD_VIEW_CHANGED` when a second slot load retires its selected source before validation. A separate refresh reads the new branch. [Branch-change verification](docs/reviews/RS-OWN-O4_REFRESH_BRANCH_CHANGE_EXECUTION_2026-11-09.md)
+
 The registered receipt validator now serializes selected fingerprint fields directly from the owned command document. Matched direct and framed activity and talk queries at 264 commands returned exact outputs and saves. Their medians decreased by 3.9–7.5%. The 2 s target remains open. [Replay query verification](docs/reviews/QT-REPLAY-RECEIPT-BYTES_EXECUTION_2026-11-09.md)
 
 The director selected the authored supply quest as the first interactive Unity flow. Use **Reverie → 보급 의뢰 플레이** with the Python game closed. Each confirmed action uses the same current-world Python owner and saves before the Unity panel shows the result. [Supply play verification](docs/reviews/RS-OWN-UNITY_SUPPLY_EXECUTION_2026-11-08.md)
