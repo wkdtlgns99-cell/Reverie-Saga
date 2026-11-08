@@ -376,16 +376,19 @@ def test_road_combat_runs_real_turns_without_changing_the_village(
         entered = act("road-test")
         assert entered["has_road_test"] is True and entered["available"] is False
         assert object_value(entered["road_test"])["revision"] == 0
+        assert object_value(entered["road_test"])["engaged"] is False
         assert act("idle", "1")["error"] == "VILLAGE_COMBAT_ACTIVE"
         early = object_value(act("combat", "attack")["road_test"])
-        assert (early["status"], early["revision"]) == ("OUT_OF_RANGE", 0)
+        assert (early["status"], early["revision"], early["engaged"]) == ("OUT_OF_RANGE", 0, False)
         for direction in ("down", "open", "right", "down"):
             view = object_value(act("combat", direction)["road_test"])
             assert view["status"] == "COMMITTED"
+            assert view["engaged"] is False
         assert view["actor_cell"] == 7 and view["gate_open"] is True
         first = act("combat", "attack")
         hit = object_value(first["road_test"])
         assert (hit["actor_hp"], hit["enemy_hp"], hit["stamina"]) == (2, 3, 1)
+        assert hit["engaged"] is True
         assert send(streams, sequence, "combat", "attack") == first
         act("combat", "attack")
         refused = object_value(act("combat", "attack")["road_test"])
@@ -393,11 +396,13 @@ def test_road_combat_runs_real_turns_without_changing_the_village(
         act("combat", "rest")
         won = object_value(act("combat", "attack")["road_test"])
         assert (won["actor_hp"], won["enemy_hp"], won["stamina"], won["revision"]) == (1, 0, 0, 8)
+        assert won["engaged"] is True
         returned = act("return")
         assert returned == {**village, "id": sequence}
         assert path.read_bytes() == before and not tuple(trials.iterdir())
         abandoned = act("road-test")
         assert object_value(abandoned["road_test"])["revision"] == 0
+        assert object_value(abandoned["road_test"])["engaged"] is False
     assert path.read_bytes() == before and not tuple(trials.iterdir())
     with pipe(path) as streams:
         assert send(streams, 1, "inspect") == {**village, "id": 1}

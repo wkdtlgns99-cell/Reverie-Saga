@@ -20,7 +20,7 @@ from contracts.turn import NodeActivation, NodeKey
 from domain.canonical import JsonObject, array_value, canonical_json, hash_document, int_value, object_value, text_value
 from domain.encounter import (
     ATTACK_PROFILE_ID, ENEMY_ID, GATE_ID, GateRecord, HitPointsRecord, StaminaRecord,
-    adjacent_cells, life_status, resolve_basic_attack, stamina_status,
+    adjacent_cells, life_status, resolve_basic_attack, stamina_status, starts_turn_based_combat,
 )
 from domain.primitives import ComponentAddress, EntityId, FieldAddress, FieldFamily, FrozenPayload, Phase, TypeKey
 from domain.trial import ACTOR_ID, SPACE_ID
@@ -32,6 +32,20 @@ from orchestration.encounter import (
 )
 from orchestration.scheduler import compile_schedule
 from tests.unit.encounter_fixtures import reference, session, views
+
+
+def test_turn_based_onset_requires_an_attack_noticed_by_an_opponent() -> None:
+    assert not starts_turn_based_combat(attack_started=False, opposing_observers=0)
+    assert not starts_turn_based_combat(attack_started=False, opposing_observers=1)
+    assert not starts_turn_based_combat(attack_started=True, opposing_observers=0)
+    assert starts_turn_based_combat(attack_started=True, opposing_observers=1)
+    assert starts_turn_based_combat(attack_started=True, opposing_observers=4)
+    with pytest.raises(ValueError, match="ATTACK_STARTED_TYPE"):
+        starts_turn_based_combat(attack_started=cast(bool, 1), opposing_observers=1)
+    with pytest.raises(ValueError, match="integer outside declared range"):
+        starts_turn_based_combat(attack_started=True, opposing_observers=True)
+    with pytest.raises(ValueError, match="integer outside declared range"):
+        starts_turn_based_combat(attack_started=True, opposing_observers=-1)
 
 
 def test_literal_pins_and_records() -> None:

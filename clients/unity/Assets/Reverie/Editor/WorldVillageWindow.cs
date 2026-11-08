@@ -71,7 +71,7 @@ namespace ReverieSaga
         {
             public int width, height, actor_cell, gate_cell, enemy_cell, actor_hp, enemy_hp, stamina;
             public int[] walls;
-            public bool gate_open;
+            public bool gate_open, engaged;
             public long tick, revision;
             public string status;
             public string[] messages;
@@ -462,8 +462,9 @@ namespace ReverieSaga
             var button = new GUIStyle(GUI.skin.button) { font = font };
             EditorGUILayout.LabelField("마을 밖 길목 전투 테스트", text);
             EditorGUILayout.LabelField($"내 체력 {battle.actor_hp} · 기력 {battle.stamina} · 적 체력 {battle.enemy_hp}", text);
+            string phase = battle.engaged ? "턴제 전투" : "길목 탐색";
             EditorGUILayout.LabelField(paused ? "일시정지 · ESC로 재개" :
-                $"전투 시간 {battle.tick}초 · 방향키로 한 턴씩 이동", text);
+                $"{phase} · {battle.tick}초 · 방향키로 이동", text);
             for (int y = 0; y < battle.height; y++)
             {
                 EditorGUILayout.BeginHorizontal();

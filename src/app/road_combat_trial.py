@@ -7,7 +7,9 @@ from typing import cast
 
 from app.client_session import ClientSession
 from contracts.client import ClientAction
+from contracts.encounter import AttackResolved
 from domain.canonical import JsonObject
+from domain.encounter import starts_turn_based_combat
 
 TRIAL_ACTIONS = ("up", "down", "left", "right", "open", "attack", "rest")
 
@@ -20,11 +22,22 @@ class RoadCombatTrial:
             cleanup.callback(self._client.close)
             self._latest = self._client.update()
             self._cleanup = cleanup.pop_all()
+        self._engaged = False
 
     def act(self, action: str) -> str:
         if action not in TRIAL_ACTIONS:
             return "INVALID_COMMAND"
         self._latest = self._client.act(cast(ClientAction, action))
+        if action == "attack" and self._latest.status == "COMMITTED" and not self._engaged:
+            facts = self._client.owner.last_publication().facts
+            attack = next(
+                event.payload for event in facts if isinstance(event.payload, AttackResolved)
+            )
+            # The only opponent in this trial confirms awareness by retaliating.
+            self._engaged = starts_turn_based_combat(
+                attack_started=True,
+                opposing_observers=int(attack.actor_hp_after < attack.actor_hp_before),
+            )
         return ""
 
     def wire(self) -> JsonObject:
@@ -45,6 +58,7 @@ class RoadCombatTrial:
             "tick": view.tick,
             "revision": view.revision,
             "status": self._latest.status,
+            "engaged": self._engaged,
             "messages": self._latest.messages,
         }
 
