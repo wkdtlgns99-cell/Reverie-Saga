@@ -216,7 +216,9 @@ namespace ReverieSaga
             return text.ToString();
         }
 
-        static async Task<string> ReadAsync(string root, string path, CancellationToken token)
+        internal static async Task<string> ReadAsync(
+            string root, string path, CancellationToken token,
+            string module = "app.world_observer", string confirmation = null)
         {
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             if (!File.Exists(python))
@@ -227,7 +229,8 @@ namespace ReverieSaga
             {
                 FileName = python,
                 WorkingDirectory = root,
-                Arguments = "-B -m app.world_observer" + (path == null ? "" : " --working \"" + path + "\""),
+                Arguments = "-B -m " + module + (path == null ? "" : " --working \"" + path + "\"") +
+                    (confirmation == null ? "" : " --confirm " + confirmation),
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
