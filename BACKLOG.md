@@ -282,6 +282,8 @@ ordinary PR merge and local main equality/clean before completion. Finish F99onl
 
 2026-11-08 follow-up. Paired replay-query measurement after PR46 preserved outputs and save bytes. Current 264-command activity and talk medians were 8.43–9.55 s across direct and framed callers. The 2 s target remains open. [Remeasurement](docs/reviews/QT-F99_EXECUTION_2026-11-03.md#paired-remeasurement-after-the-transport-optimization)
 
+QT-REPLAY-RECEIPT-BYTES reduced canonical receipt fingerprint overhead in the registered query paths. Matched 264-command activity and talk medians improved by 3.9–7.5% with exact output and save parity. The 2 s target remains open. [Verification](docs/reviews/QT-REPLAY-RECEIPT-BYTES_EXECUTION_2026-11-09.md)
+
 QT-F98 LOCAL_ACCEPTED2026-11-03:self-review;primary5presentation support,related2/6/7.
 Current/saved persistent assistance memories now have four child-only comparison rows:
 exact cumulative count difference and common/current-only/saved-only retained anchors,

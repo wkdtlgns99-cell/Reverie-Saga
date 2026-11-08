@@ -950,7 +950,7 @@ class RegisteredStateIO:
                 raise ValueError("receipt stream ownership/high-water")
             if receipt.command_id != command.command_id or receipt.previous_revision != command.expected_revision or receipt.revision > revision or receipt.tick > core.tick:
                 raise ValueError("receipt command/revision/tick")
-            fingerprint = tagged_hash("command/v1", command_document.select(("actor_id", "expected_revision", "schema", "payload")).to_bytes())
+            fingerprint = tagged_hash("command/v1", command_document.selected_bytes(("actor_id", "expected_revision", "schema", "payload")))
             if _hex(r["command_fingerprint"]) != fingerprint:
                 raise ValueError("receipt fingerprint")
             if receipt.revision == revision and (receipt.core_hash != (self.hash_core(core) if head_hash is None else head_hash) or receipt.tick != core.tick):

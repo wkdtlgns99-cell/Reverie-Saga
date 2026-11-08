@@ -115,7 +115,7 @@ class CanonicalDocument:
         object.__setattr__(self, "value", cast(JsonValue, owned))
         object.__setattr__(self, "_depth", maximum[0])
 
-    def select(self, keys: tuple[str, ...]) -> CanonicalDocument:
+    def _selected_fields(self, keys: tuple[str, ...]) -> dict[str, JsonValue]:
         source = object_value(self.value)
         values: dict[str, JsonValue] = {}
         for key in keys:
@@ -123,11 +123,18 @@ class CanonicalDocument:
                 raise ValueError("JSON object keys must be strings")
             _checked_text(key)
             values[key] = source[key]
-        owned = MappingProxyType(values)
+        return values
+
+    def select(self, keys: tuple[str, ...]) -> CanonicalDocument:
+        owned = MappingProxyType(self._selected_fields(keys))
         result = object.__new__(CanonicalDocument)
         object.__setattr__(result, "value", owned)
         object.__setattr__(result, "_depth", _owned_height(owned))
         return result
+
+    def selected_bytes(self, keys: tuple[str, ...]) -> bytes:
+        """Serialize a checked projection of this owned document."""
+        return _json_bytes(self._selected_fields(keys))
 
     def to_bytes(self) -> bytes:
         return _json_bytes(self.value)
