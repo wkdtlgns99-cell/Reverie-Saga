@@ -32,6 +32,21 @@ namespace ReverieSaga
         }
 
         [Serializable]
+        sealed class Market
+        {
+            public int stock;
+            public int capacity;
+            public string road;
+
+            public bool Visible => capacity > 0;
+
+            public bool Valid => capacity == 0
+                ? stock == 0 && String.IsNullOrEmpty(road)
+                : capacity > 0 && capacity <= 32 && stock >= 0 && stock <= capacity &&
+                    (road == "blocked" || road == "restored" || road == "open");
+        }
+
+        [Serializable]
         sealed class Supply
         {
             public string status;
@@ -39,6 +54,7 @@ namespace ReverieSaga
             public int cargo_required;
             public long gold;
             public Resident[] residents;
+            public Market market;
         }
 
         [Serializable]
@@ -218,7 +234,8 @@ namespace ReverieSaga
                     throw new IOException("VILLAGE_RESPONSE");
             if (state.supply == null || state.supply.status == null || state.supply.residents == null ||
                 state.supply.cargo < 0 || state.supply.cargo_required < 1 ||
-                state.supply.gold < 0 || state.nearby == null)
+                state.supply.gold < 0 || state.nearby == null ||
+                (state.supply.market != null && !state.supply.market.Valid))
                 throw new IOException("VILLAGE_SUPPLY_RESPONSE");
             foreach (var npc in state.supply.residents)
                 if (npc == null || String.IsNullOrEmpty(npc.id) || String.IsNullOrEmpty(npc.role) ||
@@ -385,6 +402,14 @@ namespace ReverieSaga
             var supply = snapshot.supply;
             var button = new GUIStyle(GUI.skin.button) { font = font };
             EditorGUILayout.LabelField(supply.status, text);
+            var market = supply.market;
+            if (market != null && market.Visible)
+            {
+                string road = market.road == "blocked" ? "보급로 막힘" :
+                    market.road == "restored" ? "보급로 복구됨" : "보급로 정상";
+                EditorGUILayout.LabelField($"시장 진열대 · {market.stock}/{market.capacity} · {road}", text);
+                DrawMarketShelf(GUILayoutUtility.GetRect(144, 24, GUILayout.ExpandWidth(false)), market);
+            }
             EditorGUILayout.LabelField($"복구품 {supply.cargo}/{supply.cargo_required} · 소지금 {supply.gold}금", text);
             using (new EditorGUI.DisabledScope(!CanInteract()))
             {
@@ -425,6 +450,7 @@ namespace ReverieSaga
             int height = snapshot.rows.Length;
             float size = Mathf.Clamp((position.width - 30) / width, 18, 38);
             var area = GUILayoutUtility.GetRect(width * size, height * size, GUILayout.ExpandWidth(false));
+            Rect marketTile = default;
             for (int y = 0; y < height; y++)
                 for (int x = 0; x < width; x++)
                 {
@@ -434,7 +460,10 @@ namespace ReverieSaga
                     switch (tile)
                     {
                         case 'H': color = new Color(.48f, .26f, .22f); break;
-                        case 'M': color = new Color(.71f, .43f, .19f); break;
+                        case 'M':
+                            color = new Color(.71f, .43f, .19f);
+                            marketTile = cell;
+                            break;
                         case 'A': color = new Color(.27f, .41f, .55f); break;
                         case 'W': color = new Color(.43f, .33f, .22f); break;
                         case '#': color = new Color(.19f, .31f, .24f); break;
@@ -442,6 +471,10 @@ namespace ReverieSaga
                     }
                     EditorGUI.DrawRect(cell, color);
                 }
+            var market = snapshot.supply.market;
+            if (market != null && market.Visible && marketTile.width > 0)
+                DrawMarketShelf(new Rect(marketTile.x, marketTile.y - size * .45f,
+                    size * 1.45f, size * .36f), market);
             var label = new GUIStyle(text) { normal = { textColor = Color.white } };
             foreach (var landmark in snapshot.landmarks)
                 GUI.Label(new Rect(area.x + landmark.x * size + 2, area.y + landmark.y * size,
@@ -466,6 +499,27 @@ namespace ReverieSaga
             float py = area.y + (point.y + .5f) * size;
             EditorGUI.DrawRect(new Rect(px - 7, py - 2, 14, 11), new Color(.10f, .34f, .75f));
             EditorGUI.DrawRect(new Rect(px - 4, py - 9, 8, 8), new Color(1, .81f, .62f));
+        }
+
+        static void DrawMarketShelf(Rect area, Market market)
+        {
+            var rail = market.road == "blocked" ? new Color(.72f, .29f, .23f) :
+                market.road == "restored" ? new Color(.27f, .67f, .42f) : new Color(.44f, .57f, .65f);
+            EditorGUI.DrawRect(area, new Color(.18f, .15f, .12f));
+            EditorGUI.DrawRect(new Rect(area.x, area.yMax - 2, area.width, 2), rail);
+            float slotWidth = area.width / market.capacity;
+            float gap = Mathf.Min(2, slotWidth * .2f);
+            for (int slot = 0; slot < market.capacity; slot++)
+            {
+                var cell = new Rect(area.x + slot * slotWidth + gap, area.y + 2,
+                    slotWidth - gap * 2, area.height - 5);
+                bool filled = slot < market.stock;
+                EditorGUI.DrawRect(cell, filled ? new Color(.85f, .64f, .30f) :
+                    new Color(.29f, .26f, .22f));
+                if (filled)
+                    EditorGUI.DrawRect(new Rect(cell.center.x - 1, cell.y, 2, cell.height),
+                        new Color(.55f, .36f, .16f));
+            }
         }
 
         void Disconnect()

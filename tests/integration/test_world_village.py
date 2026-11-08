@@ -23,7 +23,14 @@ from contracts.replay import ReplayFixture
 from contracts.turn import TurnCommitted
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
-from domain.canonical import JsonObject, array_value, decode_json, object_value, text_value
+from domain.canonical import (
+    JsonObject,
+    array_value,
+    decode_json,
+    int_value,
+    object_value,
+    text_value,
+)
 from domain.world import elaborate_place
 from domain.world_village import ENTRANCE, VillagePosition, VillageRecord
 from tests.integration.test_world_knowledge import commit
@@ -199,6 +206,7 @@ def test_village_requires_exclusive_owner_and_does_not_walk_on_the_road(tmp_path
     with pipe(path) as streams:
         start = send(streams, 1, "inspect")
         assert start["available"] is False and start["tick"] == 1
+        assert object_value(start["supply"])["market"] is None
         assert send(streams, 2, "step", "right") == {
             **start,
             "id": 2,
@@ -254,7 +262,11 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
             row = object_value(view["supply"])
             return row["cargo"], row["gold"]
 
+        def market(view: JsonObject) -> JsonObject:
+            return object_value(object_value(view["supply"])["market"])
+
         start = act("inspect")
+        assert market(start) == {"stock": 3, "capacity": 3, "road": "open"}
         roster = {
             npc["role"]: text_value(npc["id"])
             for npc in map(object_value, array_value(object_value(start["supply"])["residents"]))
@@ -287,17 +299,32 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
         assert act("confirm", first)["error"] == "VILLAGE_OFFER_STALE"
         assert inventory(act("confirm", talk(courier, "상자 받기"))) == (2, 0)
         walk("up", "left", "left", "up")
+        at_market = act("inspect")
+        for _ in range(30 - int_value(at_market["tick"])):
+            at_market = act("idle", "1")
+        assert at_market["tick"] == 30
+        assert market(at_market) == {"stock": 2, "capacity": 3, "road": "blocked"}
         final = talk(merchant, "상자 전달하기")
         delivered = act("confirm", final)
+        assert delivered["tick"] == 31
+        assert market(delivered) == {"stock": 2, "capacity": 3, "road": "restored"}
         assert inventory(delivered) == (0, 5)
         assert delivered["has_interaction"] is False
         assert act("confirm", final)["revision"] == delivered["revision"]
+        walk("down")
+        for _ in range(7):
+            waiting = act("idle", "1")
+            assert market(waiting) == market(delivered)
+        returned = act("step", "up")
+        assert (returned["x"], returned["y"], returned["tick"]) == (6, 2, 40)
+        assert market(returned) == {"stock": 3, "capacity": 3, "road": "restored"}
 
     assert read_world(path)["quest_phase"] == "완료"
     with pipe(path) as streams:
         reopened = send(streams, 1, "inspect")
         assert inventory(reopened) == (0, 5)
-        assert (reopened["x"], reopened["y"], reopened["revision"]) == (6, 2, delivered["revision"])
+        assert (reopened["x"], reopened["y"], reopened["revision"]) == (6, 2, returned["revision"])
+        assert market(reopened) == market(returned)
     world = load_world()
     scenario, social, transport = (
         AUTHORED_SUPPLY_SCENARIO,

@@ -16,6 +16,10 @@ You can accept, receive two crates and deliver them in the walking window. Walki
 away closes the conversation. The panel shows current cargo and money.
 [Village supply verification](../../docs/reviews/RS-OWN-UNITY_VILLAGE_SUPPLY_EXECUTION_2026-11-08.md)
 
+The market marker and **시장 진열대** show committed stock as filled and empty slots.
+After delivery, the road indicator changes immediately. The shelf fills when the existing
+supply cycle transfers stock into the market. [Market recovery verification](../../docs/reviews/RS-OWN-UNITY_MARKET_RECOVERY_EXECUTION_2026-11-08.md)
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.
