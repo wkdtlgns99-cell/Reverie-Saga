@@ -156,9 +156,8 @@ def open_knowledge_world(
 
 
 def validate_knowledge_world(path: Path, old: FeatureBundle, place_id: str) -> DurableCheckpoint:
-    try:
-        return validate_save(path, io=state_io((old,)))
-    except SaveError as error:
-        if error.code != "UNSUPPORTED_RULESET":
-            raise
-    return validate_save(path, io=state_io((village_world_bundle(old, place_id),)))
+    return validate_save(
+        path,
+        io=state_io((old,)),
+        fallback_io=lambda: state_io((village_world_bundle(old, place_id),)),
+    )

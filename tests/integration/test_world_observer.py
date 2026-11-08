@@ -14,6 +14,7 @@ from adapters.world_attachment import remember_world
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
 from app.world_observer import read_world
 from app.world_session import open_world_session, world_command
+from app.world_village_session import open_knowledge_world
 from contracts.persistence import DurableCheckpoint, SaveError
 from contracts.state_io import StateIO
 from contracts.turn import TurnCommitted
@@ -265,3 +266,39 @@ def test_observer_releases_read_lock_before_validating_captured_rows(
         assert duplicate.outcome == result.outcome
         assert owner.protocol().revision == 4 and path.read_bytes() == saved
         assert set(tmp_path.iterdir()) == before
+
+
+@pytest.mark.parametrize("village", (False, True))
+def test_observer_validates_profiles_from_one_sqlite_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, village: bool
+) -> None:
+    world = load_world()
+    scenario = AUTHORED_SUPPLY_SCENARIO
+    path = tmp_path / "game.sqlite"
+    connect = sqlite_store._connect
+    read_paths: list[Path] = []
+
+    def track_connect(source: Path, *, readonly: bool = False) -> sqlite3.Connection:
+        if readonly:
+            read_paths.append(source)
+        return connect(source, readonly=readonly)
+
+    with open_knowledge_world(
+        path, world, scenario, load_social(world), load_transport(world), village=village
+    ) as owner:
+        commit(owner, WorldWait(1))
+        before = path.read_bytes(), set(tmp_path.iterdir())
+        monkeypatch.setattr(sqlite_store, "_connect", track_connect)
+        view = read_world(path)
+        assert (view["tick"], view["revision"]) == (1, 1)
+        assert read_paths == [path.resolve()]
+        assert (path.read_bytes(), set(tmp_path.iterdir())) == before
+
+
+def test_observer_rejects_an_unsupported_world_without_modifying_it(tmp_path: Path) -> None:
+    path = tmp_path / "game.sqlite"
+    with open_world_session(path, load_world()):
+        before = path.read_bytes(), set(tmp_path.iterdir())
+        with pytest.raises(SaveError, match="^UNSUPPORTED_RULESET"):
+            read_world(path)
+        assert (path.read_bytes(), set(tmp_path.iterdir())) == before
