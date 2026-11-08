@@ -67,6 +67,17 @@ namespace ReverieSaga
         }
 
         [Serializable]
+        sealed class RoadTest
+        {
+            public int width, height, actor_cell, gate_cell, enemy_cell, actor_hp, enemy_hp, stamina;
+            public int[] walls;
+            public bool gate_open;
+            public long tick, revision;
+            public string status;
+            public string[] messages;
+        }
+
+        [Serializable]
         sealed class Snapshot
         {
             public string format;
@@ -87,6 +98,9 @@ namespace ReverieSaga
             public string nearby;
             public bool has_interaction;
             public Interaction interaction;
+            public bool can_start_road_test;
+            public bool has_road_test;
+            public RoadTest road_test;
         }
 
         readonly List<KeyCode> keys = new List<KeyCode>();
@@ -177,6 +191,12 @@ namespace ReverieSaga
                 }
                 if (next.has_interaction != (snapshot?.has_interaction ?? false))
                     scroll.y = next.has_interaction ? 10000 : 0;
+                if (next.has_road_test != (snapshot?.has_road_test ?? false))
+                {
+                    keys.Clear();
+                    queuedDirection = null;
+                    scroll = Vector2.zero;
+                }
                 snapshot = next;
                 error = next.error;
                 if (pendingIdle && error == "SAVE_UNAVAILABLE")
@@ -250,6 +270,24 @@ namespace ReverieSaga
                         dialog.terms.Length == 0 || dialog.label.Length == 0)))
                     throw new IOException("VILLAGE_SUPPLY_RESPONSE");
             }
+            if (state.has_road_test)
+                ValidateRoadTest(state.road_test);
+        }
+
+        static void ValidateRoadTest(RoadTest battle)
+        {
+            if (battle == null || battle.width < 1 || battle.width > 32 ||
+                battle.height < 1 || battle.height > 32 || battle.walls == null ||
+                battle.messages == null || String.IsNullOrEmpty(battle.status) ||
+                battle.tick < 0 || battle.revision < 0 || battle.actor_hp < 0 ||
+                battle.enemy_hp < 0 || battle.stamina < 0)
+                throw new IOException("VILLAGE_ROAD_TEST_RESPONSE");
+            int cells = battle.width * battle.height;
+            if (battle.actor_cell < 0 || battle.actor_cell >= cells ||
+                battle.enemy_cell < 0 || battle.enemy_cell >= cells ||
+                battle.gate_cell < 0 || battle.gate_cell >= cells ||
+                Array.Exists(battle.walls, wall => wall < 0 || wall >= cells))
+                throw new IOException("VILLAGE_ROAD_TEST_RESPONSE");
         }
 
         void Tick()
@@ -345,10 +383,15 @@ namespace ReverieSaga
                 !keys.Contains(input.keyCode))
             {
                 keys.Add(input.keyCode);
-                queuedDirection = direction;
-                double now = EditorApplication.timeSinceStartup;
-                if (snapshot != null && snapshot.available && pending == null && now >= animationEnd)
-                    Walk(now);
+                if (snapshot != null && snapshot.has_road_test)
+                    CombatAction(direction);
+                else
+                {
+                    queuedDirection = direction;
+                    double now = EditorApplication.timeSinceStartup;
+                    if (snapshot != null && snapshot.available && pending == null && now >= animationEnd)
+                        Walk(now);
+                }
             }
             input.Use();
         }
@@ -372,6 +415,13 @@ namespace ReverieSaga
                 Send("confirm", snapshot.interaction.token);
         }
 
+        void CombatAction(string action)
+        {
+            if (!paused && pending == null && snapshot != null && snapshot.has_road_test &&
+                snapshot.road_test.actor_hp > 0 && snapshot.road_test.enemy_hp > 0)
+                Send("combat", action);
+        }
+
         void OnGUI()
         {
             HandleInput(Event.current);
@@ -385,6 +435,11 @@ namespace ReverieSaga
                     Connect();
                 return;
             }
+            if (snapshot.has_road_test)
+            {
+                DrawRoadTest(text);
+                return;
+            }
             EditorGUILayout.LabelField(
                 $"{snapshot.name} · 게임 {snapshot.tick}초 · 기록 {snapshot.revision}", text);
             EditorGUILayout.LabelField(
@@ -394,7 +449,52 @@ namespace ReverieSaga
             scroll = EditorGUILayout.BeginScrollView(scroll);
             DrawMap(text);
             DrawSupply(text);
+            using (new EditorGUI.DisabledScope(!CanInteract()))
+                if (snapshot.can_start_road_test &&
+                    GUILayout.Button("마을 밖 길목 전투 테스트", new GUIStyle(GUI.skin.button) { font = font }))
+                    Send("road-test", "");
             EditorGUILayout.EndScrollView();
+        }
+
+        void DrawRoadTest(GUIStyle text)
+        {
+            var battle = snapshot.road_test;
+            var button = new GUIStyle(GUI.skin.button) { font = font };
+            EditorGUILayout.LabelField("마을 밖 길목 전투 테스트", text);
+            EditorGUILayout.LabelField($"내 체력 {battle.actor_hp} · 기력 {battle.stamina} · 적 체력 {battle.enemy_hp}", text);
+            EditorGUILayout.LabelField(paused ? "일시정지 · ESC로 재개" :
+                $"전투 시간 {battle.tick}초 · 방향키로 한 턴씩 이동", text);
+            for (int y = 0; y < battle.height; y++)
+            {
+                EditorGUILayout.BeginHorizontal();
+                for (int x = 0; x < battle.width; x++)
+                {
+                    int cell = y * battle.width + x;
+                    string label = cell == battle.actor_cell ? "나" :
+                        cell == battle.enemy_cell && battle.enemy_hp > 0 ? "적" :
+                        cell == battle.gate_cell ? (battle.gate_open ? "열린 문" : "닫힌 문") :
+                        Array.IndexOf(battle.walls, cell) >= 0 ? "벽" : "·";
+                    GUILayout.Label(label, button, GUILayout.Width(64));
+                }
+                EditorGUILayout.EndHorizontal();
+            }
+            if (!String.IsNullOrEmpty(error))
+                EditorGUILayout.LabelField(ErrorText(error), text);
+            foreach (string message in battle.messages)
+                EditorGUILayout.LabelField(message, text);
+            if (battle.enemy_hp == 0 || battle.actor_hp == 0)
+                EditorGUILayout.LabelField(battle.enemy_hp == 0 ? "전투 승리" : "전투 패배", text);
+            using (new EditorGUI.DisabledScope(paused || pending != null || battle.actor_hp == 0 || battle.enemy_hp == 0))
+            {
+                EditorGUILayout.BeginHorizontal();
+                if (GUILayout.Button("문 열기", button)) CombatAction("open");
+                if (GUILayout.Button("공격", button)) CombatAction("attack");
+                if (GUILayout.Button("쉬기", button)) CombatAction("rest");
+                EditorGUILayout.EndHorizontal();
+            }
+            using (new EditorGUI.DisabledScope(pending != null))
+                if (GUILayout.Button("마을로 돌아가기", button))
+                    Send("return", "");
         }
 
         void DrawSupply(GUIStyle text)
@@ -440,6 +540,7 @@ namespace ReverieSaga
                 case "SAVE_UNAVAILABLE": return "행동을 저장하지 못했습니다. 다시 시도해 주세요.";
                 case "VILLAGE_NPC_OUT_OF_REACH": return "주민의 바로 옆 칸에서 말을 걸어 주세요.";
                 case "VILLAGE_OFFER_STALE": return "의뢰 조건이 달라졌습니다. 화면의 내용을 다시 확인해 주세요.";
+                case "VILLAGE_ENTRANCE_REQUIRED": return "마을 입구에서 전투 테스트를 열 수 있습니다.";
                 default: return code;
             }
         }

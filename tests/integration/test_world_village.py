@@ -350,3 +350,54 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
             ).run(segment.trace)
             == ()
         )
+
+
+def test_road_combat_runs_real_turns_without_changing_the_village(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "game.sqlite"
+    trials = tmp_path / "trials"
+    trials.mkdir()
+    monkeypatch.setenv("TMPDIR", str(trials))
+    with pipe(path) as streams:
+        sequence = 0
+
+        def act(action: str, value: str = "") -> JsonObject:
+            nonlocal sequence
+            sequence += 1
+            return send(streams, sequence, action, value)
+
+        act("step", "right")
+        denied = act("road-test")
+        assert denied["error"] == "VILLAGE_ENTRANCE_REQUIRED" and denied["has_road_test"] is False
+        village = act("step", "left")
+        assert village["can_start_road_test"] is True and village["tick"] == 2
+        before = path.read_bytes()
+        entered = act("road-test")
+        assert entered["has_road_test"] is True and entered["available"] is False
+        assert object_value(entered["road_test"])["revision"] == 0
+        assert act("idle", "1")["error"] == "VILLAGE_COMBAT_ACTIVE"
+        early = object_value(act("combat", "attack")["road_test"])
+        assert (early["status"], early["revision"]) == ("OUT_OF_RANGE", 0)
+        for direction in ("down", "open", "right", "down"):
+            view = object_value(act("combat", direction)["road_test"])
+            assert view["status"] == "COMMITTED"
+        assert view["actor_cell"] == 7 and view["gate_open"] is True
+        first = act("combat", "attack")
+        hit = object_value(first["road_test"])
+        assert (hit["actor_hp"], hit["enemy_hp"], hit["stamina"]) == (2, 3, 1)
+        assert send(streams, sequence, "combat", "attack") == first
+        act("combat", "attack")
+        refused = object_value(act("combat", "attack")["road_test"])
+        assert refused["status"] == "INSUFFICIENT_STAMINA"
+        act("combat", "rest")
+        won = object_value(act("combat", "attack")["road_test"])
+        assert (won["actor_hp"], won["enemy_hp"], won["stamina"], won["revision"]) == (1, 0, 0, 8)
+        returned = act("return")
+        assert returned == {**village, "id": sequence}
+        assert path.read_bytes() == before and not tuple(trials.iterdir())
+        abandoned = act("road-test")
+        assert object_value(abandoned["road_test"])["revision"] == 0
+    assert path.read_bytes() == before and not tuple(trials.iterdir())
+    with pipe(path) as streams:
+        assert send(streams, 1, "inspect") == {**village, "id": 1}
