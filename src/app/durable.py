@@ -10,7 +10,7 @@ import secrets
 import sqlite3
 import sys
 
-from adapters.save_slots import SqliteSlots, cleanup_owned_clone
+from adapters.save_slots import LegacySlotProfile, SqliteSlots, cleanup_owned_clone
 from adapters.sqlite_store import SqliteCommitStore
 from app.feature_registry import rng_purposes
 from app.headless import _Session, _restore, state_io
@@ -46,10 +46,14 @@ def _owner(store: SqliteCommitStore, bundles: tuple[FeatureBundle, ...], io: Sta
 
 
 class DurableSession:
-    def __init__(self, store: SqliteCommitStore, bundles: tuple[FeatureBundle, ...], io: StateIO) -> None:
+    def __init__(
+        self, store: SqliteCommitStore, bundles: tuple[FeatureBundle, ...], io: StateIO,
+        *, legacy: LegacySlotProfile | None = None,
+    ) -> None:
         self._bundles, self._io = bundles, io
+        self._legacy = legacy
         self._attachment = _Attachment(_owner(store, bundles, io), store,
-                                       SqliteSlots(store, store.path.parent / "slots", io=io),
+                                       SqliteSlots(store, store.path.parent / "slots", io=io, legacy=legacy),
                                        secrets.token_hex(16))
         self._busy = False
         self._closed = False
@@ -127,7 +131,7 @@ class DurableSession:
                 prepared = _Attachment(
                     _owner(store, self._bundles, self._io),
                     store,
-                    SqliteSlots(store, former.slots.root, io=self._io),
+                    SqliteSlots(store, former.slots.root, io=self._io, legacy=self._legacy),
                     secrets.token_hex(16),
                 )
                 checkpoint = store.load()

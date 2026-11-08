@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from collections.abc import Callable
+from dataclasses import dataclass
 import logging
 import os
 from pathlib import Path
@@ -59,12 +61,22 @@ def cleanup_owned_clone(path: Path, root: Path) -> None:
         target.unlink(missing_ok=True)
 
 
+@dataclass(frozen=True, slots=True)
+class LegacySlotProfile:
+    io: StateIO
+    upgrade: Callable[[DurableCheckpoint], DurableCheckpoint]
+
+
 class SqliteSlots:
-    def __init__(self, store: SqliteCommitStore, root: Path, *, io: StateIO) -> None:
+    def __init__(
+        self, store: SqliteCommitStore, root: Path, *, io: StateIO,
+        legacy: LegacySlotProfile | None = None,
+    ) -> None:
         # Validate ancestors using a nonexistent file; a directory itself is not a save file.
         self.root = safe_path(root / ".slot-path-check").parent
         self.root.mkdir(parents=True, exist_ok=True)
         self._store, self._io = store, io
+        self._legacy = legacy
         self._busy = False
         self._owned: set[Path] = set()
         self._logger = logging.getLogger(__name__)
@@ -114,10 +126,11 @@ class SqliteSlots:
         replaced = False
         attempted = False
         old_sha: str | None = None
+        old_io = self._io
         try:
             pinned = self._store.load()
             if current.exists():
-                validate_save(current, io=self._io)
+                _, old_io = self._read_profile(current)
                 old_sha = file_sha256(current)
             temp = self._reserve(self.root, ".export-")
             temporaries.append(temp)
@@ -128,7 +141,7 @@ class SqliteSlots:
             if current.exists():
                 retained = self._reserve(self.root, ".previous-")
                 temporaries.append(retained)
-                _backup_file_reserved(current, retained, io=self._io)
+                _backup_file_reserved(current, retained, io=old_io)
                 sync_file(retained)
                 os.replace(retained, previous)
             attempted = True
@@ -168,9 +181,17 @@ class SqliteSlots:
         current, backup = self._paths(slot_id)
         return backup if previous else current
 
-    def _validate_source(self, path: Path, previous: bool) -> DurableCheckpoint:
+    def _read_profile(self, path: Path) -> tuple[DurableCheckpoint, StateIO]:
         try:
-            return validate_save(path, io=self._io)
+            return validate_save(path, io=self._io), self._io
+        except SaveError as error:
+            if error.code != "UNSUPPORTED_RULESET" or self._legacy is None:
+                raise
+        return validate_save(path, io=self._legacy.io), self._legacy.io
+
+    def _validate_source(self, path: Path, previous: bool) -> tuple[DurableCheckpoint, StateIO]:
+        try:
+            return self._read_profile(path)
         except SaveError as error:
             if previous and error.code == "SAVE_NOT_FOUND":
                 raise SaveError(
@@ -185,11 +206,36 @@ class SqliteSlots:
         self._busy = True
         try:
             self._store.load()
-            return self._validate_source(current, previous)
+            return self._validate_source(current, previous)[0]
         except (sqlite3.Error, OSError) as error:
             raise SaveError("SAVE_INSPECT_FAILED", str(error)) from error
         finally:
             self._busy = False
+
+    def _reserve_clone(self) -> Path:
+        root = self._store.path.parent
+        if sum(
+            1 for child in root.glob(".loaded-*.sqlite")
+            if re.fullmatch(r"\.loaded-[0-9a-f]{32}\.sqlite", child.name)
+            and child.is_file() and not child.is_symlink()
+        ) >= 8:
+            raise SaveError("SAVE_LIMIT", "managed working clone count")
+        return self._reserve(root, ".loaded-")
+
+    def stage_checkpoint(self, checkpoint: DurableCheckpoint) -> SqliteCommitStore:
+        path = self._reserve_clone()
+        try:
+            store = SqliteCommitStore._create(path, checkpoint, io=self._io, reserved=True)
+        except (sqlite3.Error, OSError, ValueError, TypeError, RuntimeError):
+            self._cleanup_clone(path)
+            raise
+        self._owned.remove(path)
+        return store
+
+    def _cleanup_clone(self, path: Path) -> None:
+        sidecar = Path(str(path) + ".lock.sqlite")
+        self._owned.add(sidecar)
+        self._cleanup((path, sidecar))
 
     def stage_load(self, slot_id: str, *, previous: bool = False) -> SqliteCommitStore:
         current = self._source(slot_id, previous)
@@ -199,29 +245,17 @@ class SqliteSlots:
         path: Path | None = None
         try:
             self._store.load()
-            self._validate_source(current, previous)
-            root = self._store.path.parent
-            # Count working clones, not their SQLite lock sidecars or unrelated entries.
-            if (
-                sum(
-                    1
-                    for child in root.glob(".loaded-*.sqlite")
-                    if re.fullmatch(r"\.loaded-[0-9a-f]{32}\.sqlite", child.name)
-                    and child.is_file()
-                    and not child.is_symlink()
-                )
-                >= 8
-            ):
-                raise SaveError("SAVE_LIMIT", "managed working clone count")
-            path = self._reserve(root, ".loaded-")
+            checkpoint, source_io = self._validate_source(current, previous)
+            if self._legacy is not None and source_io is self._legacy.io:
+                return self.stage_checkpoint(self._legacy.upgrade(checkpoint))
+            path = self._reserve_clone()
             _backup_file_reserved(current, path, io=self._io)
             store = SqliteCommitStore.open(path, io=self._io)
             self._owned.remove(path)
             return store
         except (sqlite3.Error, OSError, ValueError, TypeError, RuntimeError) as error:
             if path is not None:
-                self._owned.add(Path(str(path) + ".lock.sqlite"))
-                self._cleanup((path, Path(str(path) + ".lock.sqlite")))
+                self._cleanup_clone(path)
             if isinstance(error, SaveError):
                 raise
             raise SaveError("SAVE_LOAD_FAILED", str(error)) from error

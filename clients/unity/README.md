@@ -1,5 +1,15 @@
 # Unity Prototype
 
+## Walk the current village
+
+Close the Python game and open **Reverie → 마을 걷기** in the Unity editor. Walk around
+the marked district in 물버들 with WASD or arrows. Hold a direction to keep walking and
+press ESC to pause or resume. Each accepted step takes one game second. Focused idle time
+advances at one game second per ten real seconds. Reopening restores the last committed tile.
+The first visit with a legacy save retains its original file and activates an upgraded working
+copy. The panel holds the sole write attachment until closed. Close it before playing supply
+actions or opening the Python game. [Village verification](../../docs/reviews/RS-OWN-UNITY_VILLAGE_EXECUTION_2026-11-08.md)
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.
