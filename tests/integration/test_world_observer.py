@@ -9,7 +9,7 @@ from threading import Event, current_thread
 
 import pytest
 
-from adapters import sqlite_store
+from adapters import sqlite_store, world_attachment
 from adapters.world_attachment import current_world, remember_world
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
 from app.world_observer import read_world
@@ -188,8 +188,9 @@ def test_reader_drops_snapshot_if_the_active_branch_changes(
             read_world(path)
 
 
+@pytest.mark.parametrize("before_target_lookup", (False, True))
 def test_refresh_reports_branch_change_when_slot_load_retires_selected_source(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, before_target_lookup: bool
 ) -> None:
     world = load_world()
     path = tmp_path / "game.sqlite"
@@ -203,10 +204,13 @@ def test_refresh_reports_branch_change_when_slot_load_retires_selected_source(
     )
     selected, release = Event(), Event()
 
-    def pause_after_selection() -> WorldCatalog:
+    def wait_for_replacement() -> None:
         selected.set()
         if not release.wait(timeout=10):
             raise TimeoutError("observer source selection barrier timed out")
+
+    def pause_after_selection() -> WorldCatalog:
+        wait_for_replacement()
         return world
 
     try:
@@ -216,9 +220,18 @@ def test_refresh_reports_branch_change_when_slot_load_retires_selected_source(
         worker.request("wait", seconds=2).result(timeout=10)
         former = current_world(path)
         assert former != path
+        target = world_attachment._target
+
+        def pause_before_target(base: Path, name: str) -> Path:
+            if name == former.name:
+                wait_for_replacement()
+            return target(base, name)
 
         with monkeypatch.context() as patch, ThreadPoolExecutor(max_workers=1) as reader:
-            patch.setattr("app.world_observer.load_world", pause_after_selection)
+            if before_target_lookup:
+                patch.setattr(world_attachment, "_target", pause_before_target)
+            else:
+                patch.setattr("app.world_observer.load_world", pause_after_selection)
             refresh = reader.submit(read_world, path)
             try:
                 assert selected.wait(timeout=10)

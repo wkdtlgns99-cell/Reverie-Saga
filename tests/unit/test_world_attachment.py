@@ -50,3 +50,16 @@ def test_malformed_reference_is_not_overwritten(tmp_path: Path) -> None:
     with pytest.raises(SaveError, match="WORLD_ATTACHMENT_INVALID"):
         current_world(base)
     assert reference.read_bytes() == b"{}"
+
+
+def test_current_world_reference_size_limit(tmp_path: Path) -> None:
+    base = tmp_path / "game.sqlite"
+    base.write_bytes(b"original")
+    remember_world(base, base)
+    reference = tmp_path / "game.sqlite.active.json"
+    body = reference.read_bytes().ljust(1024, b" ")
+    reference.write_bytes(body)
+    assert current_world(base) == base
+    reference.write_bytes(body + b" ")
+    with pytest.raises(SaveError, match="^WORLD_ATTACHMENT_INVALID: reference too large$"):
+        current_world(base)
