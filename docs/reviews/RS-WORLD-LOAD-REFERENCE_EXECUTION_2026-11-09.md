@@ -1,0 +1,9 @@
+# RS-WORLD-LOAD-REFERENCE — Verification
+
+2026-11-09. Primary 6 persistence with 5 player input and 7 integration. Local self-review on Windows and Python 3.13.12. Baseline `34f5d553ce03067f7cb729492856b86d6956d2f8`. [Work order](../work_orders/RS-WORLD-LOAD-REFERENCE.md)
+
+The registered world worker prepares and validates a slot clone before atomically switching the current-world reference. The durable owner adopts the prepared attachment only after that switch succeeds, then detaches and retires the former store. A reference failure returns `SAVE_LOAD_FAILED`, preserves the former attachment and retires only the unpublished clone. Failure while closing a former store after publication keeps that store available for cleanup and keeps the new attachment authoritative.
+
+On the baseline, a permission failure at the reference `os.replace` during a second slot load left the pointer targeting a removed clone. The real reference reader raised `WORLD_ATTACHMENT_MISSING`. With the fix, the old pointer, save bytes, protocol and directory inventory match. The registered worker continues to offset 3, retries the load to offset 1 and restarts from the newly loaded protocol. A separate close-failure test observes the new reference from inside the retired store's close call and verifies subsequent play and restart agree. Both cases use isolated saves and inject only the stated I/O boundary failure. [Worker integration](../../tests/integration/test_world_client.py)
+
+The attachment, world-client, conversation, observer, village, supply bridge, slot, client reconciliation, durable turn, replay and rulebook selection passed 132 tests in 80.42 s. The final fault and document guard rerun passed 13 tests in 4.95 s. Both Ruff profiles, scoped formatting, strict mypy across 372 files, four import contracts, `pip check` and staged whitespace passed. There was no native Unity run. The PR records the protected checks and main synchronization.

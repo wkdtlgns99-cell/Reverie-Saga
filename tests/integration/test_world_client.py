@@ -1,8 +1,10 @@
 """Actual Tk map selection over the shared,unchanged development world."""
 
 from collections.abc import Iterator
+import os
 from pathlib import Path
 import gc
+import sqlite3
 import tkinter as tk
 from tkinter import ttk
 import time
@@ -13,6 +15,7 @@ from app.world_catalog import DEVELOPMENT_WORLD, load_world
 from app.world_client import WorldMapWindow, launch_world
 from app.world_worker import WorldUpdate, WorldWorker
 from adapters.sqlite_store import SqliteCommitStore
+from adapters.world_attachment import current_world
 from contracts.persistence import DurableTurn, RecoveryResult
 from contracts.persistence import SaveError
 from contracts.turn import CommitReceipt
@@ -163,6 +166,96 @@ def test_actual_worker_restart_after_slot_load_follows_loaded_progress(tmp_path:
     try:
         actual = resumed.request("inspect").result(timeout=10)
         assert (actual.state, actual.tick) == (expected.state, expected.tick)
+    finally:
+        resumed.close()
+
+
+def test_failed_load_reference_replace_preserves_the_active_working_clone(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "world.sqlite"
+    world = load_world()
+    worker = WorldWorker(path, world)
+    try:
+        worker.request("walk", "place:p0-b").result(timeout=10)
+        worker.request("save").result(timeout=10)
+        worker.request("load").result(timeout=10)
+        advanced = worker.request("walk", "place:p0-b").result(timeout=10)
+        active = current_world(path)
+        assert active != path and advanced.state.offset_m == 2
+        reference = path.with_name(path.name + ".active.json")
+        before = active.read_bytes(), reference.read_bytes(), set(tmp_path.iterdir())
+        replace = os.replace
+
+        def reject_reference(source: str | Path, target: str | Path) -> None:
+            if target == reference:
+                raise PermissionError("working reference replace denied")
+            replace(source, target)
+
+        with monkeypatch.context() as patch:
+            patch.setattr("adapters.world_attachment.os.replace", reject_reference)
+            with pytest.raises((OSError, SaveError)) as failed:
+                worker.request("load").result(timeout=10)
+        assert current_world(path) == active
+        assert (active.read_bytes(), reference.read_bytes(), set(tmp_path.iterdir())) == before
+        assert worker.request("inspect").result(timeout=10).protocol == advanced.protocol
+        assert isinstance(failed.value, SaveError) and failed.value.code == "SAVE_LOAD_FAILED"
+
+        continued = worker.request("walk", "place:p0-b").result(timeout=10)
+        assert continued.state.offset_m == 3
+        loaded = worker.request("load").result(timeout=10)
+        assert loaded.state.offset_m == 1 and current_world(path) != active
+    finally:
+        worker.close()
+
+    resumed = WorldWorker(path, world)
+    try:
+        actual = resumed.request("inspect").result(timeout=10)
+        assert (actual.state, actual.tick, actual.protocol) == (
+            loaded.state,
+            loaded.tick,
+            loaded.protocol,
+        )
+    finally:
+        resumed.close()
+
+
+def test_failed_retired_store_close_preserves_the_new_working_reference(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    path = tmp_path / "world.sqlite"
+    world = load_world()
+    worker = WorldWorker(path, world)
+    try:
+        worker.request("walk", "place:p0-b").result(timeout=10)
+        worker.request("save").result(timeout=10)
+        worker.request("walk", "place:p0-b").result(timeout=10)
+        close = SqliteCommitStore.close
+        calls: list[Path] = []
+
+        def fail_retired_close(store: SqliteCommitStore) -> None:
+            if store.path == path and not calls:
+                calls.append(current_world(path))
+                raise sqlite3.OperationalError("retired close failed")
+            close(store)
+
+        with monkeypatch.context() as patch:
+            patch.setattr(SqliteCommitStore, "close", fail_retired_close)
+            with pytest.raises(sqlite3.OperationalError, match="retired close failed"):
+                worker.request("load").result(timeout=10)
+            active = current_world(path)
+            assert active != path and calls == [active]
+            loaded = worker.request("inspect").result(timeout=10)
+            assert loaded.state.offset_m == 1 and loaded.tick == 1
+            continued = worker.request("walk", "place:p0-b", -1).result(timeout=10)
+            assert continued.state.offset_m == 0 and continued.tick == 2
+    finally:
+        worker.close()
+
+    resumed = WorldWorker(path, world)
+    try:
+        actual = resumed.request("inspect").result(timeout=10)
+        assert actual.protocol == continued.protocol and actual.state == continued.state
     finally:
         resumed.close()
 

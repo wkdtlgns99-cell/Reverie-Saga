@@ -56,5 +56,6 @@ def remember_world(base: Path, active: Path) -> None:
             stream.flush()
             os.fsync(stream.fileno())
         os.replace(temporary, reference)
-    finally:
+    except BaseException:
         temporary.unlink(missing_ok=True)
+        raise
