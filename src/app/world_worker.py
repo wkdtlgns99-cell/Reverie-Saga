@@ -18,7 +18,7 @@ from contracts.world_time import WorldWait
 from contracts.world_supply import SupplyAction
 from contracts.world_social import SocialAction
 from contracts.world_transport import TransportAction
-from contracts.turn import GameCommand, TurnAborted, TurnCommitted, TurnRejected
+from contracts.turn import GameCommand, ProtocolSnapshot, TurnAborted, TurnCommitted, TurnRejected
 from contracts.world_conversation import ConversationGenerator, ContinueSpeech, PlayerSay
 from domain.world_conversation import ConversationRecord, ConversationState
 from domain.world import WorldCatalog
@@ -48,6 +48,7 @@ class WorldUpdate:
     notice: str
     inventory: InventoryState
     residents: tuple[ResidentActivity, ...]
+    protocol: ProtocolSnapshot
     wait_committed: bool | None = None
     supply_text: str = ""
     offers: tuple[SupplyOffer, ...] = ()
@@ -90,6 +91,7 @@ class WorldWorker:
         authored_supply: bool = False,
         live_npc: bool = True,
         knowledge: bool = False,
+        require_existing: bool = False,
         generator_factory: Callable[[], ConversationGenerator] = development_generator,
     ) -> None:
         self.path = path
@@ -98,6 +100,7 @@ class WorldWorker:
         self.authored_supply = authored_supply
         self.live_npc = live_npc
         self.knowledge = knowledge
+        self.require_existing = require_existing
         self.social = social
         if transport is not None and social is None:
             raise ValueError("TRANSPORT_SOCIAL_REQUIRED")
@@ -120,7 +123,8 @@ class WorldWorker:
 
     def _session(self) -> DurableSession:
         if self._owner is None:
-            self.path.parent.mkdir(parents=True, exist_ok=True)
+            if not self.require_existing:
+                self.path.parent.mkdir(parents=True, exist_ok=True)
             self._owner = open_world_session(
                 current_world(self.path),
                 self.world,
@@ -129,6 +133,7 @@ class WorldWorker:
                 social=self.social,
                 transport=self.transport,
                 knowledge=self.knowledge,
+                require_existing=self.require_existing,
             )
         return self._owner
 
@@ -354,6 +359,7 @@ class WorldWorker:
             notice,
             inventory.state,
             residents,
+            owner.protocol(),
             wait_committed,
             "여정 중 · 주민과 도시 보급 정보는 도착 후 확인할 수 있습니다."
             if in_transit

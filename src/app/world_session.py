@@ -174,6 +174,7 @@ def open_world_session(
     social: SocialCatalog | None = None,
     transport: TransportRules | None = None,
     knowledge: bool = False,
+    require_existing: bool = False,
 ) -> DurableSession:
     bundles = (
         _bundle(
@@ -187,7 +188,7 @@ def open_world_session(
             knowledge=knowledge,
         ),
     )
-    if path.exists():
+    if require_existing or path.exists():
         return resume_durable(path, bundles=bundles)
     return create_durable(
         path,

@@ -1,5 +1,15 @@
 # Unity Prototype
 
+## Play the current world's supply quest
+
+In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.
+Close the Python game if it owns the current `--world-knowledge` save. On a new game,
+confirm **1초 기다리기** to open the authored quest. Confirm the merchant's offer, collect
+one crate twice from the courier, and confirm delivery to the merchant. The panel shows the
+committed cargo and money after each action. It follows the active working branch and asks
+for a new confirmation when progress changes. The flow works without an AI provider.
+[Supply play verification](../../docs/reviews/RS-OWN-UNITY_SUPPLY_EXECUTION_2026-11-08.md)
+
 ## Read-only current world
 
 Start the Python world from the repository root with `python -m app.client --world-knowledge`.
