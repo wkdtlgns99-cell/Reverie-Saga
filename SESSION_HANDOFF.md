@@ -50,6 +50,8 @@ The director selected visible market recovery. The Unity village stall and shelf
 
 The director delegated the road-combat test setup and confirmed that a production ambush starts combat automatically when it occurs undetected. The village entrance opens an isolated encounter using the existing Python combat path. Returning discards the test attachment. [Road combat verification](docs/reviews/RS-OWN-UNITY_ROAD_COMBAT_TRIAL_EXECUTION_2026-11-08.md)
 
+The director clarified that ordinary play continues when an opponent is merely seen. Turn-based combat starts when either side initiates an attack and at least one opponent notices it. Off-screen threat noises are sound-only. The isolated trial switches its phase display after a registered attack and retaliation. Production perception, audio and entry remain open. [Onset verification](docs/reviews/RS-OWN-COMBAT_ONSET_EXECUTION_2026-11-08.md)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
