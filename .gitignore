@@ -36,4 +36,6 @@ clients/unity/Obj/
 clients/unity/Logs/
 clients/unity/UserSettings/
 clients/unity/Builds/
+/clients/unity/Assets/Reverie/LocalVillageArt/
+/clients/unity/Assets/Reverie/LocalVillageArt.meta
 

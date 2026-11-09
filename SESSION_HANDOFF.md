@@ -80,6 +80,8 @@ On 2026-11-09 the director confirmed that each completed action in a nearby figh
 
 The director selected an ambush for the first authored encounter. In **Reverie → 마을 걷기**, walking east along the southern lane triggers the attack on the current save. The bandit, player and nearby courier get separate turns. The world advances by one second per committed action. Reopening restores the saved turn, and a pending ambush is recovered without duplicating movement. Local checks and the pinned Unity editor batch passed. [Verification](docs/reviews/RS-OWN-COMBAT_WORLD_FIRST_EXECUTION.md)
 
+The village's **3D 도트 화면** uses 320 × 180 point filtering, local Mixamo Y Bot, Kenney pieces and a sword trail sampled from the actual hand motion. The existing village and combat pipe remains authoritative. The native graphics batch verified a fresh save, movement, the ambush, a committed sword hit and reconnect. New machines need the local Mixamo FBX files. [Verification](docs/reviews/RS-OWN-UNITY_VILLAGE_3D_EXECUTION.md)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 

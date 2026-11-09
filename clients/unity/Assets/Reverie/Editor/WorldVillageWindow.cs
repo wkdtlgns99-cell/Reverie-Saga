@@ -137,6 +137,9 @@ namespace ReverieSaga
         double animationEnd;
         Vector2 animationFrom;
         Vector2 scroll;
+        Village3DPreview preview;
+        bool show3D = true;
+        bool previewFailed;
 
         [MenuItem("Reverie/마을 걷기")]
         public static void Open() => OpenWorking(null);
@@ -216,6 +219,18 @@ namespace ReverieSaga
                     keys.Clear();
                     queuedDirection = null;
                     idle = 0;
+                }
+                var prior = snapshot?.Battle;
+                var battle = next.Battle;
+                if (preview != null && show3D && prior != null && battle != null &&
+                    next.revision > snapshot.revision)
+                {
+                    bool playerHit = battle.bandit_hp < prior.bandit_hp;
+                    if (playerHit || battle.player_hp < prior.player_hp)
+                    {
+                        preview.Hit(playerHit, now);
+                        nextCombatAction = Math.Max(nextCombatAction, now + .55);
+                    }
                 }
                 snapshot = next;
                 error = next.error;
@@ -325,7 +340,7 @@ namespace ReverieSaga
             lastSample = now;
             bool wasPending = pending != null;
             Receive(now);
-            if (now < animationEnd)
+            if (now < animationEnd || (show3D && (preview?.IsPlaying(now) ?? false)))
                 Repaint();
             if (focusedWindow == this)
                 AdvanceInput(now, elapsed, wasPending);
@@ -487,7 +502,9 @@ namespace ReverieSaga
             string notice = String.IsNullOrEmpty(error) ? snapshot.status : ErrorText(error);
             EditorGUILayout.LabelField(String.IsNullOrEmpty(notice) ? " " : notice, text);
             scroll = EditorGUILayout.BeginScrollView(scroll);
-            DrawMap(text);
+            show3D = EditorGUILayout.ToggleLeft("3D 도트 화면", show3D);
+            if (!show3D || !Draw3D(text))
+                DrawMap(text);
             DrawWorldCombat(text);
             DrawSupply(text);
             using (new EditorGUI.DisabledScope(!CanInteract()))
@@ -495,6 +512,45 @@ namespace ReverieSaga
                     GUILayout.Button("마을 밖 길목 전투 테스트", new GUIStyle(GUI.skin.button) { font = font }))
                     Send("road-test", "");
             EditorGUILayout.EndScrollView();
+        }
+
+        bool Draw3D(GUIStyle text)
+        {
+            if (previewFailed || (preview == null && !Village3DPreview.HasRig))
+            {
+                EditorGUILayout.LabelField(previewFailed ? "3D 화면을 열지 못했습니다." :
+                    Village3DPreview.RigInstructions, text);
+                return false;
+            }
+            var area = GUILayoutUtility.GetAspectRect(16f / 9f, GUILayout.ExpandWidth(true));
+            if (Event.current.type != EventType.Repaint)
+                return true;
+            try
+            {
+                if (preview == null)
+                    preview = new Village3DPreview(snapshot.rows);
+                foreach (var npc in snapshot.supply.residents)
+                    preview.SetResident(npc.id, npc.x, npc.y);
+                double now = EditorApplication.timeSinceStartup;
+                var target = new Vector2(snapshot.x, snapshot.y);
+                var direction = target - animationFrom;
+                var point = Vector2.Lerp(animationFrom, target, 1 - (float)((animationEnd - now) / StepInterval));
+                var battle = snapshot.Battle;
+                bool bandit = battle != null && (battle.active || preview.ShowDefeated(now));
+                var image = preview.Render(point, direction, now < animationEnd,
+                    snapshot.available || bandit, bandit,
+                    battle == null ? Vector2.zero : new Vector2(battle.bandit_x, battle.bandit_y), now);
+                GUI.DrawTexture(area, image, ScaleMode.ScaleToFit, false);
+            }
+            catch (Exception failure) when (ExpectedFailure(failure))
+            {
+                Debug.LogException(failure);
+                preview?.Dispose();
+                preview = null;
+                previewFailed = true;
+                Repaint();
+            }
+            return true;
         }
 
         void DrawWorldCombat(GUIStyle text)
@@ -517,7 +573,8 @@ namespace ReverieSaga
                 string action = combat.last_action == "open" ? "첫 공격" :
                     combat.last_action == "attack" ? "공격" : "자리 지킴";
                 EditorGUILayout.LabelField($"{combat.last_actor} · {action}", text);
-                using (new EditorGUI.DisabledScope(paused || pending != null))
+                using (new EditorGUI.DisabledScope(paused || pending != null ||
+                    (show3D && (preview?.IsPlaying(EditorApplication.timeSinceStartup) ?? false))))
                 {
                     if (combat.player_turn)
                     {
@@ -707,6 +764,9 @@ namespace ReverieSaga
 
         void Disconnect()
         {
+            preview?.Dispose();
+            preview = null;
+            previewFailed = false;
             keys.Clear();
             queuedDirection = null;
             VillageConnection.Observe(pending);
