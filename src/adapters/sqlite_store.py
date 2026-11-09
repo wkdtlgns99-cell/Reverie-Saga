@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable
+from contextlib import closing
 from dataclasses import dataclass
 import os
 from pathlib import Path
@@ -584,13 +585,9 @@ def backup_file(source: Path, destination: Path, *, io: StateIO) -> None:
 def _backup_file_reserved(source: Path, destination: Path, *, io: StateIO) -> None:
     original, target = safe_path(source), safe_path(destination)
     validate_save(original, io=io)
-    source_con = _connect(original, readonly=True)
-    target_con: sqlite3.Connection | None = None
-    try:
-        target_con = _connect(target)
+    with (
+        closing(_connect(original, readonly=True)) as source_con,
+        closing(_connect(target)) as target_con,
+    ):
         source_con.backup(target_con, pages=128)
-    finally:
-        source_con.close()
-        if target_con is not None:
-            target_con.close()
     validate_save(target, io=io)
