@@ -32,6 +32,14 @@ their own turns automatically while the window is focused. Closing the window pr
 fight and reopening resumes at the saved turn. Each action advances the shared game clock.
 [Encounter rules](../../docs/work_orders/RS-OWN-COMBAT_WORLD_FIRST.md)
 
+The **3D 도트 화면** toggle shows the same saved village in a 320 × 180 point-filtered
+viewport. The editor draws controls and text at display resolution. Place the following
+locally obtained FBX files in `Assets/Reverie/LocalVillageArt/`: `Y Bot.fbx`,
+`Y Bot@Sword And Shield Idle.fbx`, and `Y Bot@Sword And Shield Attack.fbx`. Unity imports
+the files when the folder is refreshed. Git excludes this local folder. The 2D view remains
+available when a local model or animation is missing. The map pieces, sword and spark are
+included as [CC0 assets](VILLAGE_ART_SOURCES.md).
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.
