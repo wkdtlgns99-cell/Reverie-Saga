@@ -1,0 +1,9 @@
+# RS-OWN-ROAD-ATTACK-RECOVERY — Recover a Road Trial Turn Through the Existing Pipe
+
+**READY 2026-11-09.** Clean baseline `2879d3e385fa6d5850faed6baf81dffe9717b81b`. Primary 7 integration with 2 combat and 6 persistence. Local self-review. [Trial contract](RS-OWN-UNITY_ROAD_COMBAT_TRIAL.md) and [opening resolution](RS-OWN-COMBAT_RESOLUTION_ONSET.md).
+
+When the private road trial's existing `ClientSession.act` reports `SAVE_UNCERTAIN`, call `ClientSession.recover()` once in the same framed request. A proved commit updates the trial from the recovered view and facts, including an attack's normal engagement rule. A proved absent action returns the prior trial state and `SAVE_UNAVAILABLE`. Submit no extra command and preserve ordered response and duplicate request semantics. Other save errors and unresolved recovery propagate through the existing connection error path. Keep the wire, combat and onset contracts, isolated trial ownership, village state, and current UI unchanged.
+
+Read `app/road_combat_trial.py`, `app/world_village_bridge.py`, `app/client_session.py`, `app/durable.py`, and the linked contracts. Modify only the road trial, village pipe integration test, root progress trio, this order and its matching receipt in `C:/Reverie Saga`. Use the installed Windows Python 3.13 and isolated saves. No native Unity, independent checkpoint or production combat change.
+
+Exercise the registered village pipe with a real opening attack in both post-commit and absent-write fault cases, and inject a first failed recovery read. Verify that the ordinary baseline disconnects, recovery returns the exact proved trial view, duplicate frames cannot submit twice, the test can finish and return, and village bytes and trial cleanup are preserved. Run related world, encounter, replay, durability and document tests, plus lint, types and dependencies. Publish through the ordinary protected PR path and synchronize main after both full CI runs pass.

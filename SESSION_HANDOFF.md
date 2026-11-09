@@ -64,6 +64,8 @@ The director selected visible market recovery. The Unity village stall and shelf
 
 The director delegated the road-combat test setup and confirmed that a production ambush starts combat automatically when it occurs undetected. The village entrance opens an isolated encounter using the existing Python combat path. Returning discards the test attachment. [Road combat verification](docs/reviews/RS-OWN-UNITY_ROAD_COMBAT_TRIAL_EXECUTION_2026-11-08.md)
 
+The road combat trial now uses the existing client recovery when the first proof of a submitted action is unavailable. A recovered opening attack sets the same engagement state as an ordinary commit. An absent attack preserves the prior trial state. [Recovery verification](docs/reviews/RS-OWN-ROAD-ATTACK-RECOVERY_EXECUTION_2026-11-09.md)
+
 The director clarified that ordinary play continues when an opponent is merely seen. Turn-based combat starts after the opening attack resolves if at least one opponent noticed it, including deflection, evasion and hits. Off-screen threat noises are sound-only. The isolated trial switches its phase display after a committed attack and retaliation. Production perception, audio and entry remain open. [Resolution verification](docs/reviews/RS-OWN-COMBAT_RESOLUTION_ONSET_EXECUTION_2026-11-08.md)
 
 The director confirmed that all nearby characters enter the initial turn order when combat starts. Individual speed, readiness and earned initiative advantage affect the order. The current trial runs a player command with a bundled retaliation on a separate attachment. The production encounter area, participant inputs and independently executable turns remain prerequisites. [Initiative draft](docs/work_orders/RS-OWN-COMBAT_INITIATIVE.md)
