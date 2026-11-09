@@ -50,6 +50,8 @@ The read-only observer detects `WORLD_VIEW_CHANGED` when a second slot load reti
 
 The working-reference reader now detects branch retirement during the initial target lookup as well. It rechecks a missing target against the bounded reference bytes and retains the missing-save error when the reference stayed the same. [Reference-read verification](docs/reviews/RS-WORLD-REFERENCE-READ_EXECUTION_2026-11-09.md)
 
+If the slot replacement fails and its absence proof cannot be read, the save adapter reports `SAVE_EXPORT_UNCERTAIN` with the replacement error as its cause. Diagnostic read errors are logged and owned temporary files still go through cleanup. [Slot proof verification](docs/reviews/RS-SLOT-EXPORT-PROOF_EXECUTION_2026-11-09.md)
+
 The Python world map offers **이동 결과 확인** after a footstep returns `SAVE_UNCERTAIN`. It keeps movement and idle submits blocked while unresolved. Confirmation uses the existing durable proof and applies no additional footstep. [Movement recovery verification](docs/reviews/RS-WORLD-WALK-RECOVERY_EXECUTION_2026-11-09.md)
 
 The registered receipt validator now serializes selected fingerprint fields directly from the owned command document. Matched direct and framed activity and talk queries at 264 commands returned exact outputs and saves. Their medians decreased by 3.9–7.5%. The 2 s target remains open. [Replay query verification](docs/reviews/QT-REPLAY-RECEIPT-BYTES_EXECUTION_2026-11-09.md)
