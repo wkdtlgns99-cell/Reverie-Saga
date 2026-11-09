@@ -16,6 +16,7 @@ from app.world_catalog import (
     load_social,
     load_transport,
     load_world,
+    seeded_world,
 )
 from app.world_session import world_command
 from app.world_village_session import open_knowledge_world
@@ -30,6 +31,7 @@ from domain.canonical import JsonObject, decode_json, exact_fields, int_value, t
 from domain.primitives import MAX_INT
 from domain.world_combat import BANDIT, BANDIT_POSITION, CombatRecord, CombatState
 from domain.world_conversation import ConversationRecord
+from domain.world import WorldCatalog
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
 from domain.world_transport import JourneyRecord
@@ -42,6 +44,7 @@ from domain.world_village import (
     VillagePosition,
     VillageRecord,
 )
+from domain.world_village_layout import village_layout
 
 FORMAT = "reverie-world-village/v1"
 
@@ -69,12 +72,17 @@ class _Scene:
 
 class VillageBridge:
     def __init__(
-        self, owner: DurableSession, scenario: SupplyScenario, social: SocialCatalog, name: str
+        self,
+        owner: DurableSession,
+        scenario: SupplyScenario,
+        social: SocialCatalog,
+        world: WorldCatalog,
     ) -> None:
         self.owner = owner
         self.scenario = scenario
         self.social = social
-        self.name = name
+        self.name = world.place(scenario.place_id).name
+        self.layout = village_layout(world, scenario.place_id)
         self._last: tuple[int, str, str, JsonObject] | None = None
         self._talking = ""
         self._trial: RoadCombatTrial | None = None
@@ -263,6 +271,7 @@ class VillageBridge:
             "entrance_x": ENTRANCE.x,
             "entrance_y": ENTRANCE.y,
             "rows": VILLAGE_ROWS,
+            "layout": self.layout,
             "landmarks": tuple(
                 {"name": name, "x": x, "y": y} for _, name, x, y in VILLAGE_LANDMARKS
             ),
@@ -286,16 +295,24 @@ class VillageBridge:
 
 def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--working", type=Path, default=KNOWLEDGE_WORLD_PATH)
+    parser.add_argument("--working", type=Path)
+    parser.add_argument("--seed", help="Open a generated world using a 64-digit lowercase hex seed")
     args = parser.parse_args(argv)
     try:
-        world = load_world()
         scenario = AUTHORED_SUPPLY_SCENARIO
-        social = load_social(world)
+        if args.seed is None:
+            world = load_world()
+            social, transport = load_social(world), load_transport(world)
+            working = args.working or KNOWLEDGE_WORLD_PATH
+        else:
+            world, social, transport = seeded_world(args.seed)
+            working = (
+                args.working or Path("tmp/generated-village/v1") / world.seed_hex / "game.sqlite"
+            )
         with open_knowledge_world(
-            args.working, world, scenario, social, load_transport(world), combat=True
+            working, world, scenario, social, transport, combat=True
         ) as owner:
-            bridge = VillageBridge(owner, scenario, social, world.place(scenario.place_id).name)
+            bridge = VillageBridge(owner, scenario, social, world)
             try:
                 while (frame := read_frame(sys.stdin.buffer)) is not None:
                     write_frame(sys.stdout.buffer, bridge.request(frame))

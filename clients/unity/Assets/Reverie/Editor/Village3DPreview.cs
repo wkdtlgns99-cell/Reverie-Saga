@@ -15,6 +15,7 @@ namespace ReverieSaga
         const string Rig = "Assets/Reverie/LocalVillageArt/";
         internal const string RigInstructions = "3D 모델 준비: LocalVillageArt에 Y Bot 및 검·방패 FBX 3개를 넣어 주세요.";
         const float StrikeSeconds = .54f;
+        static readonly Vector3 DungeonOffset = new Vector3(64, 0, 0);
         readonly Scene scene;
         readonly Camera camera;
         readonly RenderTexture target;
@@ -44,7 +45,7 @@ namespace ReverieSaga
             Rig + "Y Bot@Sword And Shield " + action + ".fbx").OfType<AnimationClip>()
             .FirstOrDefault(clip => !clip.name.StartsWith("__preview__", StringComparison.Ordinal));
 
-        internal Village3DPreview(string[] rows)
+        internal Village3DPreview(string[] rows, VillageLayout layout)
         {
             model = AssetDatabase.LoadAssetAtPath<GameObject>(Rig + "Y Bot.fbx");
             idle = Clip("Idle");
@@ -67,7 +68,8 @@ namespace ReverieSaga
                 Light(new Vector3(22, 145, 0), new Color(.62f, .79f, 1f), .55f);
                 var town = Material("Standard", Color.white);
                 town.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "colormap.png");
-                BuildTown(rows, town);
+                BuildTown(rows, layout, town);
+                BuildDungeon(layout);
                 blue = Material("Standard", new Color(.24f, .62f, 1f));
                 red = Material("Standard", new Color(.89f, .30f, .20f));
                 player = Actor("Player", blue, out playerRig);
@@ -143,7 +145,8 @@ namespace ReverieSaga
             return go;
         }
 
-        GameObject Fit(GameObject asset, Vector3 position, float height, Material material, Transform parent)
+        GameObject Fit(GameObject asset, Vector3 position, float size, Material material, Transform parent,
+            bool horizontal = false)
         {
             var go = Object.Instantiate(asset);
             SceneManager.MoveGameObjectToScene(go, scene);
@@ -157,7 +160,8 @@ namespace ReverieSaga
                 if (material != null)
                     renderer.sharedMaterials = renderer.sharedMaterials.Select(_ => material).ToArray();
             }
-            float scale = height / Mathf.Max(.001f, bounds.size.y);
+            float span = horizontal ? Mathf.Max(bounds.size.x, bounds.size.z) : bounds.size.y;
+            float scale = size / Mathf.Max(.001f, span);
             go.transform.SetParent(parent, false);
             go.transform.localScale *= scale;
             go.transform.localPosition = position - scale * new Vector3(bounds.center.x, bounds.min.y, bounds.center.z);
@@ -173,12 +177,14 @@ namespace ReverieSaga
 
         internal static Vector3 Tile(float x, float y) => new Vector3(x, 0, -y);
 
-        void BuildTown(string[] rows, Material material)
+        void BuildTown(string[] rows, VillageLayout layout, Material material)
         {
-            var grass = Material("Standard", new Color(.21f, .30f, .19f));
-            var dirt = Material("Standard", new Color(.45f, .31f, .22f));
-            var paving = Material("Standard", new Color(.51f, .40f, .32f));
-            var plaster = Material("Standard", new Color(.65f, .45f, .31f));
+            var grass = Material("Standard", layout.terrain.Contains("범람원") ?
+                new Color(.21f, .30f, .19f) : new Color(.28f, .30f, .22f));
+            var roads = new[] { new Color(.45f, .31f, .22f), new Color(.51f, .40f, .32f),
+                new Color(.48f, .36f, .28f) }.Select(color => Material("Standard", color)).ToArray();
+            var walls = new[] { new Color(.65f, .45f, .31f), new Color(.54f, .39f, .30f),
+                new Color(.70f, .55f, .37f) }.Select(color => Material("Standard", color)).ToArray();
             int width = rows[0].Length;
             Primitive("Ground", PrimitiveType.Cube, Tile((width - 1) * .5f, (rows.Length - 1) * .5f)
                 + Vector3.down * .14f, new Vector3(width + 5, .24f, rows.Length + 4), grass);
@@ -187,27 +193,81 @@ namespace ReverieSaga
             var roof = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "roof.fbx");
             var tree = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "tree.fbx");
             var rock = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "rock-small.fbx");
-            for (int y = 1; y < rows.Length - 1; y++)
-                for (int x = 1; x < width - 1; x++)
+            var gate = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "dungeon-gate.fbx");
+            var dungeonMaterial = Material("Standard", Color.white);
+            dungeonMaterial.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "sword-colormap.png");
+            foreach (var item in layout.village)
+            {
+                var tile = Tile(item.x, item.y);
+                switch (item.kind)
                 {
-                    var tile = Tile(x, y);
-                    char cell = rows[y][x];
-                    if (cell == '.')
+                    case "road":
                         Primitive("Path", PrimitiveType.Cube, tile + Vector3.down * .04f,
-                            new Vector3(.99f, .08f, .99f), y == rows.Length - 2 && x % 3 != 0 ? paving : dirt);
-                    else if (cell == '#')
+                            new Vector3(.99f, .08f, .99f), roads[item.variant]);
+                        break;
+                    case "wall":
                         Fit(wall, tile, .65f, material, null);
-                    else
-                    {
+                        break;
+                    case "house":
+                        var facing = Quaternion.Euler(0, -90f * item.facing, 0);
+                        float height = .78f + .06f * item.variant;
                         Primitive("Building body", PrimitiveType.Cube, tile + Vector3.up * .43f,
-                            new Vector3(.86f, .86f, .82f), plaster);
-                        Fit(door, tile + Vector3.back * .43f, .86f, material, null);
-                        Fit(roof, tile + Vector3.up * .86f, .35f, material, null);
-                    }
+                            new Vector3(.86f, height, .82f), walls[item.variant]);
+                        Fit(door, tile + facing * Vector3.back * .43f, height, material, null)
+                            .transform.rotation = facing;
+                        Fit(roof, tile + Vector3.up * height, .35f, material, null)
+                            .transform.rotation = facing;
+                        break;
+                    case "gate":
+                        var entrance = Fit(gate, tile, 1.18f, dungeonMaterial, null);
+                        entrance.transform.rotation = Quaternion.Euler(0, 180, 0);
+                        entrance.name = "Dungeon entrance";
+                        break;
+                    case "tree":
+                        Fit(tree, tile, .9f, material, null);
+                        break;
+                    case "rock":
+                        Fit(rock, tile, .22f, material, null);
+                        break;
                 }
-            for (int x = 1; x < width - 1; x++)
-                Fit(x % 3 == 0 ? tree : rock, Tile(x, rows.Length - 1),
-                    x % 3 == 0 ? .9f : .22f, material, null);
+            }
+        }
+
+        void BuildDungeon(VillageLayout layout)
+        {
+            var material = Material("Standard", Color.white);
+            material.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "sword-colormap.png");
+            var wall = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "dungeon-wall.fbx");
+            var orc = AssetDatabase.LoadAssetAtPath<GameObject>(Art + "dungeon-orc.fbx");
+            var floors = new[] {
+                AssetDatabase.LoadAssetAtPath<GameObject>(Art + "dungeon-floor.fbx"),
+                AssetDatabase.LoadAssetAtPath<GameObject>(Art + "dungeon-floor-detail.fbx")
+            };
+            foreach (var item in layout.dungeon)
+            {
+                var tile = DungeonOffset + Tile(item.x, item.y);
+                if (item.kind == "orc")
+                {
+                    Fit(orc, tile + Vector3.up * .14f, 1.05f, material, null).name = "Dungeon orc";
+                    continue;
+                }
+                Fit(floors[item.variant], tile, 1f, material, null, horizontal: true);
+                if (item.kind == "dungeon-wall")
+                {
+                    var piece = Fit(wall, tile + Vector3.up * .12f, .85f, material, null);
+                    if (item.x == 0 || item.x == VillageLayout.RoomSize - 1)
+                        piece.transform.rotation = Quaternion.Euler(0, 90, 0);
+                }
+            }
+        }
+
+        internal RenderTexture RenderDungeon()
+        {
+            var focus = DungeonOffset + Tile(2, 2);
+            camera.transform.position = focus + new Vector3(2.4f, 6.2f, -6.1f);
+            camera.transform.LookAt(focus + Vector3.up * .1f);
+            camera.Render();
+            return target;
         }
 
         internal void Hit(bool playerAttacked, double now)
