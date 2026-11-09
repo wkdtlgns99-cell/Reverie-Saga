@@ -13,6 +13,7 @@ from app import world_village_session
 from app.engine_bridge import read_exact, write_frame
 from app.headless import replay_runner
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
+from app.world_combat_registry import combat_world_bundle
 from app.world_observer import read_world
 from app.world_session import foot_command
 from app.world_supply_bridge import exchange
@@ -32,6 +33,7 @@ from domain.canonical import (
     text_value,
 )
 from domain.world import elaborate_place
+from domain.world_combat import CombatRecord
 from domain.world_village import ENTRANCE, VillagePosition, VillageRecord
 from tests.integration.test_world_knowledge import commit
 
@@ -41,8 +43,10 @@ import sys
 from adapters.sqlite_store import SqliteCommitStore
 from app.world_village_bridge import main
 from contracts.encounter import AttackCommand
+from contracts.world_combat import CombatAction
 
 mode = sys.argv.pop(1)
+ambush = mode.startswith("ambush-")
 original_persist = SqliteCommitStore.persist
 original_recover = SqliteCommitStore.recover
 faulted = False
@@ -50,9 +54,14 @@ recovery_failed = False
 
 def persist(store, turn):
     global faulted
-    if not faulted and isinstance(turn.command.payload, AttackCommand):
+    payload = turn.command.payload
+    matches = (
+        isinstance(payload, CombatAction) and payload.operation == "ambush"
+        if ambush else isinstance(payload, AttackCommand)
+    )
+    if not faulted and matches:
         faulted = True
-        if mode == 'committed':
+        if mode.endswith('committed'):
             original_persist(store, turn)
         raise OSError('opening attack acknowledgement unavailable')
     return original_persist(store, turn)
@@ -177,11 +186,14 @@ def test_upgrade_preserves_legacy_world_and_slots_and_supports_replay(tmp_path: 
         upgraded = retained.checkpoint.core
         assert upgraded.tick == before.tick and upgraded.pending == before.pending
         assert (
-            tuple(c for c in upgraded.components if not isinstance(c, VillageRecord))
+            tuple(c for c in upgraded.components if not isinstance(c, (VillageRecord, CombatRecord)))
             == before.components
         )
-        bundle = village_world_bundle(
-            transport_world_bundle(world, social, transport, scenario, knowledge=True),
+        bundle = combat_world_bundle(
+            village_world_bundle(
+                transport_world_bundle(world, social, transport, scenario, knowledge=True),
+                scenario.place_id,
+            ),
             scenario.place_id,
         )
         assert (
@@ -370,8 +382,11 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
         load_social(world),
         load_transport(world),
     )
-    bundle = village_world_bundle(
-        transport_world_bundle(world, social, transport, scenario, knowledge=True),
+    bundle = combat_world_bundle(
+        village_world_bundle(
+            transport_world_bundle(world, social, transport, scenario, knowledge=True),
+            scenario.place_id,
+        ),
         scenario.place_id,
     )
     with open_knowledge_world(path, world, scenario, social, transport) as owner:

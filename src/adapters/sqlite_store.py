@@ -326,15 +326,17 @@ def _decode_file_rows(rows: _SaveRows, io: StateIO) -> tuple[DurableCheckpoint, 
 
 
 def validate_save(
-    path: Path, *, io: StateIO, fallback_io: Callable[[], StateIO] | None = None
+    path: Path, *, io: StateIO, fallbacks: tuple[Callable[[], StateIO], ...] = (),
 ) -> DurableCheckpoint:
     rows = _read_file(path)
-    try:
-        return _decode_file_rows(rows, io)[0]
-    except SaveError as error:
-        if error.code != "UNSUPPORTED_RULESET" or fallback_io is None:
-            raise
-    return _decode_file_rows(rows, fallback_io())[0]
+    for fallback in fallbacks:
+        try:
+            return _decode_file_rows(rows, io)[0]
+        except SaveError as error:
+            if error.code != "UNSUPPORTED_RULESET":
+                raise
+        io = fallback()
+    return _decode_file_rows(rows, io)[0]
 
 
 def read_segment(path: Path, *, io: StateIO) -> SaveSegment:

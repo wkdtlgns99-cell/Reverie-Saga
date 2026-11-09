@@ -25,6 +25,9 @@ VILLAGE_LANDMARKS = (
 )
 DIRECTIONS = {"up": (0, -1), "down": (0, 1), "left": (-1, 0), "right": (1, 0)}
 STEP_SECONDS = 1
+SUPPLY_RESIDENT_TILES = tuple(
+    (x, y) for site in ("W", "M") for kind, _, x, y in VILLAGE_LANDMARKS if kind == site
+)
 
 
 @dataclass(frozen=True, slots=True)

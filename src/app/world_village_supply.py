@@ -24,7 +24,7 @@ from domain.world_supply import (
     blocked,
     supply_item,
 )
-from domain.world_village import VILLAGE_LANDMARKS, VillagePosition
+from domain.world_village import SUPPLY_RESIDENT_TILES, VillagePosition
 
 
 @dataclass(frozen=True, slots=True)
@@ -112,10 +112,9 @@ def village_supply(
     residents: tuple[VillageResident, ...] = ()
     offers: tuple[SupplyOffer, ...] = ()
     if local is not None:
-        sites = {kind: (x, y) for kind, _, x, y in VILLAGE_LANDMARKS}
-        residents = (
-            VillageResident(local.residents[0], *sites["W"]),
-            VillageResident(local.residents[1], *sites["M"]),
+        residents = tuple(
+            VillageResident(resident, x, y)
+            for resident, (x, y) in zip(local.residents[:2], SUPPLY_RESIDENT_TILES, strict=True)
         )
         offers = supply_offers(local, city, inventory, scenario, core.tick)
         if reaction(opinion, social, place) <= HOSTILE_THRESHOLD:

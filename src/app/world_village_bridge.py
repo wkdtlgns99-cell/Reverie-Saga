@@ -22,16 +22,18 @@ from app.world_village_session import open_knowledge_world
 from app.world_village_supply import VillageResident, VillageSupply, village_supply
 from contracts.persistence import SaveError
 from contracts.turn import TurnCommitted, TurnOutcome
+from contracts.world_combat import CombatAction
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
 from contracts.world_village import VillageStep
 from domain.canonical import JsonObject, decode_json, exact_fields, int_value, text_value
 from domain.primitives import MAX_INT
+from domain.world_combat import BANDIT, BANDIT_POSITION, CombatRecord, CombatState
 from domain.world_conversation import ConversationRecord
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
 from domain.world_transport import JourneyRecord
-from domain.world_travel import TravelerRecord
+from domain.world_travel import WORLD_ACTOR, TravelerRecord
 from domain.world_village import (
     DIRECTIONS,
     ENTRANCE,
@@ -50,10 +52,19 @@ class _Scene:
     local: bool
     speaking: bool
     tick: int
+    combat: CombatState | None
 
     @property
     def available(self) -> bool:
         return self.local and not self.speaking
+
+    @property
+    def fighting(self) -> bool:
+        return self.combat is not None and bool(self.combat.order)
+
+    @property
+    def ambush_due(self) -> bool:
+        return self.available and self.combat is not None and self.combat.ambush_due(self.position)
 
 
 class VillageBridge:
@@ -80,6 +91,7 @@ class VillageBridge:
                 return last[3]
             return self._view(request_id, "STALE_REQUEST")
         error = ""
+        scene = self._scene()
         if self._trial is not None:
             if action == "combat" and value:
                 error = self._trial.act(value)
@@ -87,8 +99,18 @@ class VillageBridge:
                 self.close()
             elif action != "inspect" or value:
                 error = "VILLAGE_COMBAT_ACTIVE"
+        elif action == "inspect" and not value and scene.ambush_due:
+            error = self._submit(CombatAction("ambush"))
+        elif scene.ambush_due:
+            error = "VILLAGE_AMBUSH_PENDING"
+        elif action == "world-combat" and scene.combat is not None and value != "ambush":
+            error = self._submit(CombatAction(value))
+            if not error:
+                self._talking = ""
+        elif scene.fighting and (action != "inspect" or value):
+            error = "VILLAGE_COMBAT_ACTIVE"
         elif action == "road-test" and not value:
-            if self._at_entrance(self._scene()):
+            if self._at_entrance(scene):
                 self._trial = RoadCombatTrial()
                 self._talking = ""
             else:
@@ -97,10 +119,11 @@ class VillageBridge:
             error = self._submit(VillageStep(value))
             if not error:
                 self._talking = ""
+                if self._scene().ambush_due:
+                    error = self._submit(CombatAction("ambush"))
         elif action == "idle" and value == "1":
-            error = self._submit(WorldWait(1)) if self._scene().available else "VILLAGE_INACTIVE"
+            error = self._submit(WorldWait(1)) if scene.available else "VILLAGE_INACTIVE"
         elif action == "talk" and value:
-            scene = self._scene()
             npc = self._nearby(scene, self._supply(), value)
             if npc is None:
                 error = "VILLAGE_NPC_OUT_OF_REACH"
@@ -160,7 +183,7 @@ class VillageBridge:
             self._talking = ""
         return error
 
-    def _submit(self, payload: VillageStep | WorldWait | SupplyAction) -> str:
+    def _submit(self, payload: VillageStep | WorldWait | SupplyAction | CombatAction) -> str:
         command = world_command(self.owner.protocol(), payload)
         outcome: TurnOutcome
         try:
@@ -184,7 +207,33 @@ class VillageBridge:
             and not travel.destination_id
             and journey.phase == "idle"
         )
-        return _Scene(position, local, bool(speech.remaining), core.tick)
+        combat = next(
+            (item.state for item in core.components if isinstance(item, CombatRecord)), None
+        )
+        return _Scene(position, local, bool(speech.remaining), core.tick, combat)
+
+    @staticmethod
+    def _combat(scene: _Scene, supply: VillageSupply) -> JsonObject | None:
+        state = scene.combat
+        if state is None or not scene.local:
+            return None
+        names = {
+            WORLD_ACTOR: "나",
+            BANDIT: "도적",
+            **{npc.resident.id: npc.resident.occupation for npc in supply.residents},
+        }
+        return {
+            "active": scene.fighting,
+            "ambush_pending": scene.ambush_due,
+            "player_turn": state.current == WORLD_ACTOR,
+            "player_hp": state.player_hp,
+            "bandit_hp": state.bandit_hp,
+            "bandit_x": BANDIT_POSITION.x,
+            "bandit_y": BANDIT_POSITION.y,
+            "order": tuple(names[actor] for actor in state.order),
+            "last_actor": names.get(state.last_actor, ""),
+            "last_action": state.last_action,
+        }
 
     def _view(self, request_id: int, error: str) -> JsonObject:
         scene = self._scene()
@@ -197,7 +246,9 @@ class VillageBridge:
             "id": request_id,
             "error": error,
             "name": self.name,
-            "available": scene.available and self._trial is None,
+            "available": scene.available
+            and self._trial is None
+            and not (scene.fighting or scene.ambush_due),
             "status": (
                 "이 마을에 도착하면 걸을 수 있습니다."
                 if not scene.local
@@ -223,9 +274,13 @@ class VillageBridge:
                 if talking is not None
                 else None
             ),
-            "can_start_road_test": self._trial is None and self._at_entrance(scene),
+            "can_start_road_test": self._trial is None
+            and not scene.fighting
+            and self._at_entrance(scene),
             "has_road_test": self._trial is not None,
             "road_test": self._trial.wire() if self._trial is not None else None,
+            "has_world_combat": scene.combat is not None and scene.local,
+            "world_combat": self._combat(scene, supply),
         }
 
 
@@ -238,7 +293,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         scenario = AUTHORED_SUPPLY_SCENARIO
         social = load_social(world)
         with open_knowledge_world(
-            args.working, world, scenario, social, load_transport(world), village=True
+            args.working, world, scenario, social, load_transport(world), combat=True
         ) as owner:
             bridge = VillageBridge(owner, scenario, social, world.place(scenario.place_id).name)
             try:
