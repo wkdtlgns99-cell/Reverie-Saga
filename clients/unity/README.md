@@ -25,6 +25,13 @@ turn-based encounter on a temporary save. Use the direction keys, **문 열기**
 **쉬기**. **마을로 돌아가기** discards the test and restores the village view.
 [Road combat verification](../../docs/reviews/RS-OWN-UNITY_ROAD_COMBAT_TRIAL_EXECUTION_2026-11-08.md)
 
+Walk east along the south edge from the entrance to reach the authored bandit ambush. The
+first attack resolves automatically in the current world save. The turn list shows who acts
+next. Choose **공격** or **자리 지키기** on your turn. Nearby residents and the bandit take
+their own turns automatically while the window is focused. Closing the window preserves the
+fight and reopening resumes at the saved turn. Each action advances the shared game clock.
+[Encounter rules](../../docs/work_orders/RS-OWN-COMBAT_WORLD_FIRST.md)
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.

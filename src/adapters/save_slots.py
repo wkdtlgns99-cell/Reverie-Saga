@@ -65,6 +65,7 @@ def cleanup_owned_clone(path: Path, root: Path) -> None:
 class LegacySlotProfile:
     io: StateIO
     upgrade: Callable[[DurableCheckpoint], DurableCheckpoint]
+    older: "LegacySlotProfile | None" = None
 
 
 class SqliteSlots:
@@ -191,7 +192,15 @@ class SqliteSlots:
         except SaveError as error:
             if error.code != "UNSUPPORTED_RULESET" or self._legacy is None:
                 raise
-        return validate_save(path, io=self._legacy.io), self._legacy.io
+        profile = self._legacy
+        while profile.older is not None:
+            try:
+                return validate_save(path, io=profile.io), profile.io
+            except SaveError as error:
+                if error.code != "UNSUPPORTED_RULESET":
+                    raise
+            profile = profile.older
+        return validate_save(path, io=profile.io), profile.io
 
     def _validate_source(self, path: Path, previous: bool) -> tuple[DurableCheckpoint, StateIO]:
         try:
@@ -250,8 +259,11 @@ class SqliteSlots:
         try:
             self._store.load()
             checkpoint, source_io = self._validate_source(current, previous)
-            if self._legacy is not None and source_io is self._legacy.io:
-                return self.stage_checkpoint(self._legacy.upgrade(checkpoint))
+            profile = self._legacy
+            while profile is not None:
+                if source_io is profile.io:
+                    return self.stage_checkpoint(profile.upgrade(checkpoint))
+                profile = profile.older
             path = self._reserve_clone()
             _backup_file_reserved(current, path, io=self._io)
             store = SqliteCommitStore.open(path, io=self._io)

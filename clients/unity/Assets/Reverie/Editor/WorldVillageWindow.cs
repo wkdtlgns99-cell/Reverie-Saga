@@ -78,6 +78,15 @@ namespace ReverieSaga
         }
 
         [Serializable]
+        sealed class WorldCombat
+        {
+            public bool active, ambush_pending, player_turn;
+            public int player_hp, bandit_hp, bandit_x, bandit_y;
+            public string[] order;
+            public string last_actor, last_action;
+        }
+
+        [Serializable]
         sealed class Snapshot
         {
             public string format;
@@ -101,6 +110,10 @@ namespace ReverieSaga
             public bool can_start_road_test;
             public bool has_road_test;
             public RoadTest road_test;
+            public bool has_world_combat;
+            public WorldCombat world_combat;
+
+            public WorldCombat Battle => has_world_combat ? world_combat : null;
         }
 
         readonly List<KeyCode> keys = new List<KeyCode>();
@@ -120,6 +133,7 @@ namespace ReverieSaga
         double idle;
         double nextIdle;
         double nextStep;
+        double nextCombatAction;
         double animationEnd;
         Vector2 animationFrom;
         Vector2 scroll;
@@ -146,7 +160,7 @@ namespace ReverieSaga
             requestId = 0;
             paused = false;
             idle = 0;
-            nextStep = animationEnd = nextIdle = 0;
+            nextStep = animationEnd = nextIdle = nextCombatAction = 0;
             lastSample = EditorApplication.timeSinceStartup;
             try
             {
@@ -196,6 +210,12 @@ namespace ReverieSaga
                     keys.Clear();
                     queuedDirection = null;
                     scroll = Vector2.zero;
+                }
+                if ((next.Battle?.active ?? false) != (snapshot?.Battle?.active ?? false))
+                {
+                    keys.Clear();
+                    queuedDirection = null;
+                    idle = 0;
                 }
                 snapshot = next;
                 error = next.error;
@@ -272,6 +292,14 @@ namespace ReverieSaga
             }
             if (state.has_road_test)
                 ValidateRoadTest(state.road_test);
+            var combat = state.Battle;
+            if (state.has_world_combat && (combat == null ||
+                combat.order == null || combat.order.Length > 4 ||
+                combat.active != (combat.order.Length > 0) ||
+                combat.player_turn && !combat.active || combat.player_hp < 0 ||
+                combat.bandit_hp < 0 || !Walkable(state, combat.bandit_x, combat.bandit_y) ||
+                combat.last_actor == null || combat.last_action == null))
+                throw new IOException("WORLD_COMBAT_RESPONSE");
         }
 
         static void ValidateRoadTest(RoadTest battle)
@@ -305,8 +333,20 @@ namespace ReverieSaga
 
         void AdvanceInput(double now, double elapsed, bool wasPending)
         {
-            if (paused || snapshot == null || !snapshot.available || connection == null ||
+            if (paused || snapshot == null || connection == null ||
                 wasPending || pending != null || now < animationEnd)
+                return;
+            var combat = snapshot.Battle;
+            if (combat != null && combat.active)
+            {
+                if (!combat.player_turn && String.IsNullOrEmpty(error) && now >= nextCombatAction)
+                {
+                    nextCombatAction = now + .35;
+                    Send("world-combat", "advance");
+                }
+                return;
+            }
+            if (!snapshot.available)
                 return;
             if (queuedDirection != null || keys.Count > 0)
             {
@@ -448,12 +488,48 @@ namespace ReverieSaga
             EditorGUILayout.LabelField(String.IsNullOrEmpty(notice) ? " " : notice, text);
             scroll = EditorGUILayout.BeginScrollView(scroll);
             DrawMap(text);
+            DrawWorldCombat(text);
             DrawSupply(text);
             using (new EditorGUI.DisabledScope(!CanInteract()))
                 if (snapshot.can_start_road_test &&
                     GUILayout.Button("마을 밖 길목 전투 테스트", new GUIStyle(GUI.skin.button) { font = font }))
                     Send("road-test", "");
             EditorGUILayout.EndScrollView();
+        }
+
+        void DrawWorldCombat(GUIStyle text)
+        {
+            var combat = snapshot.Battle;
+            if (combat == null)
+                return;
+            var button = new GUIStyle(GUI.skin.button) { font = font };
+            if (combat.ambush_pending)
+            {
+                using (new EditorGUI.DisabledScope(paused || pending != null))
+                    if (GUILayout.Button("행동 결과 다시 확인", button)) Send("inspect", "");
+                return;
+            }
+            if (combat.active)
+            {
+                EditorGUILayout.LabelField(
+                    $"턴제 전투 · 내 체력 {combat.player_hp} · 도적 체력 {combat.bandit_hp}", text);
+                EditorGUILayout.LabelField(String.Join(" → ", combat.order), text);
+                string action = combat.last_action == "open" ? "첫 공격" :
+                    combat.last_action == "attack" ? "공격" : "자리 지킴";
+                EditorGUILayout.LabelField($"{combat.last_actor} · {action}", text);
+                using (new EditorGUI.DisabledScope(paused || pending != null))
+                {
+                    if (combat.player_turn)
+                    {
+                        if (GUILayout.Button("공격", button)) Send("world-combat", "attack");
+                        if (GUILayout.Button("자리 지키기", button)) Send("world-combat", "hold");
+                    }
+                    else if (!String.IsNullOrEmpty(error) && GUILayout.Button("행동 다시 시도", button))
+                        Send("world-combat", "advance");
+                }
+            }
+            else if (combat.last_action.Length != 0)
+                EditorGUILayout.LabelField(combat.bandit_hp == 0 ? "전투 승리" : "전투 패배", text);
         }
 
         void DrawRoadTest(GUIStyle text)
@@ -581,7 +657,8 @@ namespace ReverieSaga
             foreach (var landmark in snapshot.landmarks)
                 GUI.Label(new Rect(area.x + landmark.x * size + 2, area.y + landmark.y * size,
                     size * 2, size), landmark.name, label);
-            if (snapshot.available)
+            bool showActors = snapshot.available || (snapshot.Battle?.active ?? false);
+            if (showActors)
                 foreach (var npc in snapshot.supply.residents)
                 {
                     float x = area.x + npc.x * size;
@@ -592,7 +669,11 @@ namespace ReverieSaga
                 }
             GUI.Label(new Rect(area.x + snapshot.entrance_x * size + 2,
                 area.y + snapshot.entrance_y * size, size * 2, size), "입구", label);
-            if (!snapshot.available)
+            var combat = snapshot.Battle;
+            if (combat != null && combat.bandit_hp > 0 && combat.active)
+                GUI.Label(new Rect(area.x + combat.bandit_x * size,
+                    area.y + combat.bandit_y * size, size * 2, size), "도적", label);
+            if (!showActors)
                 return;
             var target = new Vector2(snapshot.x, snapshot.y);
             float progress = 1 - (float)((animationEnd - EditorApplication.timeSinceStartup) / StepInterval);
