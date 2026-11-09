@@ -110,6 +110,46 @@ def test_export_fault_matrix(tmp_path: Path, monkeypatch: pytest.MonkeyPatch, po
         assert not tuple((tmp_path / "slots").glob(".export-*.sqlite"))
 
 
+def test_export_reports_uncertainty_when_old_slot_proof_cannot_be_read(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from adapters import save_slots
+
+    path = tmp_path / "work.sqlite"
+    with create_durable(path, checkpoint(), bundles=(watch_bundle(),)) as owner:
+        owner.export("slot01")
+        slot = tmp_path / "slots/slot01.sqlite"
+        old_slot = slot.read_bytes()
+        owner.submit(command(WaitCommand(2)), attachment_id=owner.attachment_id)
+        before = owner.snapshot(), owner.protocol(), owner.attachment_id, path.read_bytes()
+        replace = os.replace
+        attempted = False
+
+        def fail_replace(source: Path, target: Path) -> None:
+            nonlocal attempted
+            if target == slot:
+                attempted = True
+                raise OSError("final replacement unavailable")
+            replace(source, target)
+
+        def fail_proof(target: Path) -> str:
+            if attempted and target == slot:
+                raise PermissionError("old slot hash unavailable")
+            return file_sha256(target)
+
+        with monkeypatch.context() as patch:
+            patch.setattr(os, "replace", fail_replace)
+            patch.setattr(save_slots, "file_sha256", fail_proof)
+            with pytest.raises(SaveError, match="^SAVE_EXPORT_UNCERTAIN") as failure:
+                owner.export("slot01")
+        assert str(failure.value.__cause__) == "final replacement unavailable"
+        assert (owner.snapshot(), owner.protocol(), owner.attachment_id, path.read_bytes()) == before
+        assert slot.read_bytes() == old_slot
+        assert set(slot.parent.iterdir()) == {slot, slot.with_name("slot01.previous.sqlite")}
+        assert owner.export("slot01").revision == 1
+        assert validate_save(slot, io=io()) == DurableCheckpoint(before[0], before[1])
+
+
 @pytest.mark.parametrize("change,code", [("future", "NEWER_SAVE_VERSION"), ("older", "UNSUPPORTED_SAVE_VERSION"), ("legacy", "UNSUPPORTED_LEGACY_SAVE"), ("schema", "SAVE_CORRUPT"), ("pins", "UNSUPPORTED_RULESET")])
 def test_version_pin_rejection_keeps_active_world(tmp_path: Path, change: str, code: str) -> None:
     from domain.canonical import canonical_json

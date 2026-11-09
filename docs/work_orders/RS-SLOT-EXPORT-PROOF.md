@@ -1,0 +1,9 @@
+# RS-SLOT-EXPORT-PROOF — Preserve Export Uncertainty When Proof Cannot Be Read
+
+**READY 2026-11-09.** Clean baseline `71a0765660e96f2a33a09758085564da96607a70`. Primary 6 persistence with 7 integration. Local self-review. See section 7 of the [existing slot contract](RS-P1-CORE_05_DURABILITY_SAVE.md) and the [boundary repair](RS-REVIEW-CP01_REPAIR.md).
+
+After an attempted final replace, use the existing temporary and old-slot checks to prove absence. If that evidence cannot be read, log the proof error and return `SAVE_EXPORT_UNCERTAIN` chained to the original operation error. A failed diagnostic read of the destination cannot overwrite this classification. Keep the existing confirmed-failure and success codes, slot naming and generations, byte format, owned cleanup and live attachment. No automatic replay, slot restore or overwrite is authorized.
+
+Read `adapters/save_slots.py`, `app/durable.py`, the existing fault matrix, the slot contract and the related client reconciliation. Modify only `src/adapters/save_slots.py`, `tests/integration/test_save_slots.py`, the root progress trio, this order and its matching receipt under `C:/Reverie Saga`. Use the installed Windows Python 3.13 environment and isolated SQLite files. Native, independent checkpoint and release work remain outside scope.
+
+Reproduce the final-replace exception followed by a failing old-slot hash read through `DurableSession.export`. Verify the uncertain code and original cause, a clean temporary inventory, unchanged working state and old current slot bytes, and a successful explicit save after the injected failures are removed. Preserve the ordinary final-replace failure and committed-uncertain paths in the existing matrix. Run slot, client, replay and durability integration, formatting, lint, strict types and import checks. Publish through the protected PR path after both full checks and synchronize main.

@@ -156,17 +156,21 @@ class SqliteSlots:
         except (sqlite3.Error, OSError, ValueError, TypeError, RuntimeError) as error:
             if attempted:
                 # A failed syscall with an unchanged old file AND still-present temp proves absence.
-                absent = not replaced and bool(temporaries) and temporaries[0].exists()
-                if absent and old_sha is not None:
-                    absent = current.exists() and file_sha256(current) == old_sha
-                elif absent:
-                    absent = not current.exists()
+                try:
+                    absent = not replaced and bool(temporaries) and temporaries[0].exists()
+                    if absent and old_sha is not None:
+                        absent = current.exists() and file_sha256(current) == old_sha
+                    elif absent:
+                        absent = not current.exists()
+                except (OSError, SaveError):
+                    self._logger.warning("slot replacement proof unavailable", exc_info=True)
+                    absent = False
                 if not absent:
-                    if current.exists():
-                        try:
+                    try:
+                        if current.exists():
                             validate_save(current, io=self._io)
-                        except SaveError:
-                            self._logger.error("slot validation failed after possible replacement", exc_info=True)
+                    except (OSError, SaveError):
+                        self._logger.error("slot validation failed after possible replacement", exc_info=True)
                     raise SaveError("SAVE_EXPORT_UNCERTAIN", "replacement or directory durability unresolved") from error
             if isinstance(error, SaveError):
                 raise
