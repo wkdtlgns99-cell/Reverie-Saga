@@ -118,3 +118,36 @@ def test_actual_village_pipe_opens_dungeon_and_commits_player_attack(tmp_path: P
         room = object_value(end["dungeon"])
         assert room["inside"] is False and room["orc_hp"] == 0
         assert (end["x"], end["y"], end["tick"]) == (5, 7, 14)
+
+
+def test_pommel_is_saved_once_and_spends_the_orcs_separate_turn(tmp_path: Path) -> None:
+    path = tmp_path / "dungeon.sqlite"
+    seed = "3" * 64
+    with pipe(path, seed=seed) as streams:
+        for request in range(1, 5):
+            send(streams, request, "step", "right")
+        send(streams, 5, "dungeon", "enter")
+        opened = send(streams, 6, "dungeon", "engage")
+        opening = object_value(opened["dungeon"])
+        assert (opening["weapon"], opening["pommel_damage"], opening["pommel_used"]) == (
+            "짧은 검", 1, False
+        )
+        hit = send(streams, 7, "dungeon", "pommel")
+        hit_room = object_value(hit["dungeon"])
+        assert (hit["tick"], hit_room["orc_hp"], hit_room["player_hp"]) == (7, 2, 5)
+        assert hit_room["pommel_used"] is True and hit_room["player_turn"] is False
+        assert hit_room["last_action"] == "pommel"
+        assert send(streams, 7, "dungeon", "pommel") == hit
+        assert send(streams, 8, "dungeon", "pommel")["error"] == "COMBAT_WRONG_TURN"
+    with pipe(path, seed=seed) as streams:
+        resumed = send(streams, 1, "inspect")
+        assert resumed["dungeon"] == hit_room and resumed["tick"] == 7
+        skipped = send(streams, 2, "dungeon", "advance")
+        room = object_value(skipped["dungeon"])
+        assert (room["last_action"], room["player_hp"], room["player_turn"]) == ("stagger", 5, True)
+        assert (room["x"], room["y"]) == (opening["x"], opening["y"])
+        rejected = send(streams, 3, "dungeon", "pommel")
+        assert rejected["error"] == "DUNGEON_SKILL_SPENT"
+        assert (rejected["tick"], rejected["revision"]) == (8, skipped["revision"])
+        won = send(streams, 4, "dungeon", "attack")
+        assert object_value(won["dungeon"])["orc_hp"] == 0 and won["tick"] == 9

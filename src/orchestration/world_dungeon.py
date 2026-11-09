@@ -33,7 +33,7 @@ from domain.canonical import JsonObject, array_value, exact_fields, hash_documen
 from domain.canonical import object_value, text_value
 from domain.primitives import ComponentAddress, EntityId, FrozenPayload, Tick, TypeKey
 from domain.state_types import ComponentRecord, CoreSnapshot
-from domain.world_combat import ACTION_SECONDS
+from domain.world_combat import ACTION_SECONDS, POMMEL
 from domain.world_dungeon import (
     DUNGEON_SCHEMA,
     ENTRY,
@@ -51,16 +51,23 @@ from orchestration.world_population import _StateView
 
 
 def _encode(state: DungeonState) -> JsonObject:
-    return {"tile": state.tile, "combat": encode_combat(state.combat)}
+    combat = encode_combat(state.combat)
+    if state.pommel_used:
+        combat = {**combat, "pommel_used": True}
+    return {"tile": state.tile, "combat": combat}
 
 
 def _decode(value: JsonObject) -> DungeonState:
     row = exact_fields(value, ("tile", "combat"))
+    combat = dict(object_value(row["combat"]))
+    used = "pommel_used" in combat
+    if used and combat.pop("pommel_used") is not True:
+        raise ValueError("DUNGEON_SKILL")
     tile = None
     if row["tile"] is not None:
         x, y = array_value(row["tile"])
         tile = int_value(x), int_value(y)
-    return DungeonState(tile, decode_combat(object_value(row["combat"]), ORC))
+    return DungeonState(tile, decode_combat(combat, ORC), used)
 
 
 class DungeonAdapter:
@@ -169,13 +176,11 @@ class DungeonAdmission:
             return "DUNGEON_OUTSIDE"
         fight = room.combat
         if fight.order:
-            if operation not in ("advance", "attack", "hold"):
+            if operation not in ("advance", "attack", "hold", POMMEL):
                 return "DUNGEON_COMBAT_ACTIVE"
-            return (
-                "COMBAT_WRONG_TURN"
-                if (operation == "advance") == (fight.current == WORLD_ACTOR)
-                else ""
-            )
+            if (operation == "advance") == (fight.current == WORLD_ACTOR):
+                return "COMBAT_WRONG_TURN"
+            return "DUNGEON_SKILL_SPENT" if operation == POMMEL and room.pommel_used else ""
         if operation == "exit":
             return "" if room.tile == ENTRY else "DUNGEON_GATE"
         if operation == "wait":

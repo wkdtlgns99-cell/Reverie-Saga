@@ -89,10 +89,10 @@ namespace ReverieSaga
         [Serializable]
         sealed class DungeonView
         {
-            public bool inside, can_enter, can_exit, can_engage, active, player_turn;
-            public int x, y, orc_x, orc_y, player_hp, orc_hp;
+            public bool inside, can_enter, can_exit, can_engage, active, player_turn, pommel_used;
+            public int x, y, orc_x, orc_y, player_hp, orc_hp, pommel_damage;
             public string[] order;
-            public string last_action;
+            public string last_action, weapon, pommel_name;
         }
 
         [Serializable]
@@ -277,7 +277,7 @@ namespace ReverieSaga
                         prior != null && battle != null && battle.player_hp < prior.player_hp;
                     if (playerHit || enemyHit)
                     {
-                        preview.Hit(playerHit, now);
+                        preview.Hit(playerHit, now, next.InDungeon && next.Room.last_action == "pommel");
                         nextCombatAction = Math.Max(nextCombatAction, now + .55);
                     }
                 }
@@ -336,7 +336,9 @@ namespace ReverieSaga
             if (state.has_dungeon && (state.Room == null || state.Room.order == null ||
                 state.Room.order.Length > 2 || !Interior(state.Room.x, state.Room.y) ||
                 !Interior(state.Room.orc_x, state.Room.orc_y) || state.Room.player_hp < 0 ||
-                state.Room.orc_hp < 0 || state.Room.last_action == null))
+                state.Room.orc_hp < 0 || state.Room.last_action == null ||
+                String.IsNullOrEmpty(state.Room.weapon) || String.IsNullOrEmpty(state.Room.pommel_name) ||
+                state.Room.pommel_damage < 1))
                 throw new IOException("DUNGEON_RESPONSE");
             if (!Walkable(state, state.x, state.y) ||
                 !Walkable(state, state.entrance_x, state.entrance_y))
@@ -609,16 +611,27 @@ namespace ReverieSaga
                 }
             }
             EditorGUILayout.LabelField($"내 체력 {room.player_hp} · 오크 체력 {room.orc_hp}", text);
+            EditorGUILayout.LabelField($"장착 무기 · {room.weapon}", text);
             if (room.active)
                 EditorGUILayout.LabelField(String.Join(" → ", room.order), text);
             else if (room.orc_hp == 0 || room.player_hp == 0)
                 EditorGUILayout.LabelField(room.orc_hp == 0 ? "전투 승리" : "전투 패배", text);
+            if (room.last_action == "pommel" && room.active)
+                EditorGUILayout.LabelField("오크가 비틀거립니다.", text);
+            else if (room.last_action == "stagger")
+                EditorGUILayout.LabelField("오크가 균형을 잃어 차례를 넘겼습니다.", text);
             using (new EditorGUI.DisabledScope(paused || pending != null ||
                 (preview?.IsPlaying(EditorApplication.timeSinceStartup) ?? false)))
             {
                 if (room.active && room.player_turn)
                 {
-                    if (GUILayout.Button("공격")) Send("dungeon", "attack");
+                    if (GUILayout.Button("베기")) Send("dungeon", "attack");
+                    using (new EditorGUI.DisabledScope(room.pommel_used))
+                    {
+                        string skill = room.pommel_used ? $"{room.pommel_name} · 사용함" :
+                            $"{room.pommel_name} · 피해 {room.pommel_damage}, 오크 차례 넘기기";
+                        if (GUILayout.Button(skill)) Send("dungeon", "pommel");
+                    }
                     if (GUILayout.Button("자리 지키기")) Send("dungeon", "hold");
                 }
                 else if (room.active && !String.IsNullOrEmpty(error) && GUILayout.Button("행동 다시 시도"))
@@ -799,6 +812,7 @@ namespace ReverieSaga
                 case "DUNGEON_WALL": return "석굴 벽에 막혔습니다.";
                 case "DUNGEON_OCCUPIED": return "오크가 서 있는 칸입니다.";
                 case "DUNGEON_GATE": return "입구 바로 앞에서 이용할 수 있습니다.";
+                case "DUNGEON_SKILL_SPENT": return "이번 전투에서 이미 사용한 기술입니다.";
                 case "OUT_OF_RANGE": return "공격하려면 대상에게 더 가까이 가세요.";
                 case "SAVE_UNAVAILABLE": return "행동을 저장하지 못했습니다. 다시 시도해 주세요.";
                 case "VILLAGE_NPC_OUT_OF_REACH": return "주민의 바로 옆 칸에서 말을 걸어 주세요.";

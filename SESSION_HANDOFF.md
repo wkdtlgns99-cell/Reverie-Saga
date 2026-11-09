@@ -84,6 +84,8 @@ The village's **3D 도트 화면** uses 320 × 180 point filtering, local Mixamo
 
 **Reverie → 시드로 새 마을 열기** opens a separate generated world for the selected seed. From the tile north of the southern gate, **던전 들어가기** enters the saved stone room. Walk with WASD or the arrow keys. A player-initiated strike from an adjacent tile resolves before the orc turn order starts. The existing combat cadence applies, and reopening resumes the room and encounter. [Verification](docs/reviews/RS-OWN-UNITY_DUNGEON_PLAY_EXECUTION.md)
 
+In the stone room, **짧은 검** is equipped. **베기** deals 2 HP. **칼자루 치기** deals 1 HP once per fight and costs the surviving orc its next action. Unity uses anchored poses and pre-sampled body bounds, while Python commits the damage, skill use and turn. Both bodies recoil in the preview after a hit. [Verification](docs/reviews/RS-OWN-DUNGEON_CONTACT_EXECUTION.md)
+
 Latest director scope is unattended work on settled tasks, beginning with transport performance. [PR46](https://github.com/wkdtlgns99-cell/Reverie-Saga/pull/46) merged at `c6484d8`. Both final CI runs passed 4052 full and 32 boundary tests each. The hidden-window median was 23.9704 s → 6.5920 s, and three visible runs after merge met the current-host 30 s journey and 2 s segment targets with exact trace and save parity. Defer unanswered product decisions and retain current-world command bridge, other-device and release boundaries. [Performance verification](docs/reviews/RS-PLAY-001I-PERF_EXECUTION_2026-11-07.md)
 
 
