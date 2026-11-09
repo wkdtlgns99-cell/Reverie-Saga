@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from collections.abc import Callable
 from pathlib import Path
 import os
 import sqlite3
@@ -148,6 +149,69 @@ def test_export_reports_uncertainty_when_old_slot_proof_cannot_be_read(
         assert set(slot.parent.iterdir()) == {slot, slot.with_name("slot01.previous.sqlite")}
         assert owner.export("slot01").revision == 1
         assert validate_save(slot, io=io()) == DurableCheckpoint(before[0], before[1])
+
+
+def test_failed_backup_source_close_still_closes_the_destination(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    from adapters import sqlite_store
+
+    path = tmp_path / "work.sqlite"
+    slot = tmp_path / "slots/slot01.sqlite"
+    destinations: list[sqlite3.Connection] = []
+    connect = sqlite_store._connect
+
+    class SourceConnection(sqlite3.Connection):
+        copied = False
+
+        def backup(
+            self,
+            target: sqlite3.Connection,
+            *,
+            pages: int = -1,
+            progress: Callable[[int, int, int], object] | None = None,
+            name: str = "main",
+            sleep: float = 0.250,
+        ) -> None:
+            super().backup(target, pages=pages, progress=progress, name=name, sleep=sleep)
+            self.copied = True
+            destinations.append(target)
+
+        def close(self) -> None:
+            super().close()
+            if self.copied:
+                raise sqlite3.OperationalError("source close acknowledgement failed")
+
+    def connect_with_fault(target: Path, *, readonly: bool = False) -> sqlite3.Connection:
+        if target == slot and readonly:
+            return sqlite3.connect(
+                target.as_uri() + "?mode=ro",
+                uri=True,
+                autocommit=True,
+                timeout=0,
+                factory=SourceConnection,
+            )
+        return connect(target, readonly=readonly)
+
+    with create_durable(path, checkpoint(), bundles=(watch_bundle(),)) as owner:
+        owner.export("slot01")
+        owner.submit(command(WaitCommand(2)), attachment_id=owner.attachment_id)
+        before = owner.snapshot(), owner.protocol(), owner.attachment_id, path.read_bytes()
+        saved = slot.read_bytes()
+        try:
+            with monkeypatch.context() as patch:
+                patch.setattr(sqlite_store, "_connect", connect_with_fault)
+                with pytest.raises(SaveError, match="^SAVE_LOAD_FAILED: source close"):
+                    owner.load("slot01")
+            (destination,) = destinations
+            with pytest.raises(sqlite3.ProgrammingError, match="closed database"):
+                destination.execute("PRAGMA page_count")
+        finally:
+            for destination in destinations:
+                destination.close()
+        assert (owner.snapshot(), owner.protocol(), owner.attachment_id, path.read_bytes()) == before
+        assert slot.read_bytes() == saved and not tuple(tmp_path.glob(".loaded-*"))
+        assert owner.load("slot01").revision == 0
 
 
 @pytest.mark.parametrize("change,code", [("future", "NEWER_SAVE_VERSION"), ("older", "UNSUPPORTED_SAVE_VERSION"), ("legacy", "UNSUPPORTED_LEGACY_SAVE"), ("schema", "SAVE_CORRUPT"), ("pins", "UNSUPPORTED_RULESET")])

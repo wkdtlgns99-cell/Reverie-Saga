@@ -52,6 +52,8 @@ The working-reference reader now detects branch retirement during the initial ta
 
 If the slot replacement fails and its absence proof cannot be read, the save adapter reports `SAVE_EXPORT_UNCERTAIN` with the replacement error as its cause. Diagnostic read errors are logged and owned temporary files still go through cleanup. [Slot proof verification](docs/reviews/RS-SLOT-EXPORT-PROOF_EXECUTION_2026-11-09.md)
 
+The slot backup now gives its source and destination independent SQLite connection scopes. A source close fault during a real load no longer keeps the staging file open or prevents owned-clone cleanup. [Backup close verification](docs/reviews/RS-SLOT-BACKUP-CLOSE_EXECUTION_2026-11-09.md)
+
 The Python world map offers **이동 결과 확인** after a footstep returns `SAVE_UNCERTAIN`. It keeps movement and idle submits blocked while unresolved. Confirmation uses the existing durable proof and applies no additional footstep. [Movement recovery verification](docs/reviews/RS-WORLD-WALK-RECOVERY_EXECUTION_2026-11-09.md)
 
 The registered receipt validator now serializes selected fingerprint fields directly from the owned command document. Matched direct and framed activity and talk queries at 264 commands returned exact outputs and saves. Their medians decreased by 3.9–7.5%. The 2 s target remains open. [Replay query verification](docs/reviews/QT-REPLAY-RECEIPT-BYTES_EXECUTION_2026-11-09.md)
