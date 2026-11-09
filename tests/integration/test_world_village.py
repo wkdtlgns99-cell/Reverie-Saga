@@ -36,10 +36,49 @@ from domain.world_village import ENTRANCE, VillagePosition, VillageRecord
 from tests.integration.test_world_knowledge import commit
 
 
+_OPENING_FAULT = """
+import sys
+from adapters.sqlite_store import SqliteCommitStore
+from app.world_village_bridge import main
+from contracts.encounter import AttackCommand
+
+mode = sys.argv.pop(1)
+original_persist = SqliteCommitStore.persist
+original_recover = SqliteCommitStore.recover
+faulted = False
+recovery_failed = False
+
+def persist(store, turn):
+    global faulted
+    if not faulted and isinstance(turn.command.payload, AttackCommand):
+        faulted = True
+        if mode == 'committed':
+            original_persist(store, turn)
+        raise OSError('opening attack acknowledgement unavailable')
+    return original_persist(store, turn)
+
+def recover(store, turn):
+    global recovery_failed
+    if faulted and not recovery_failed and isinstance(turn.command.payload, AttackCommand):
+        recovery_failed = True
+        raise OSError('first recovery read unavailable')
+    return original_recover(store, turn)
+
+SqliteCommitStore.persist = persist
+SqliteCommitStore.recover = recover
+raise SystemExit(main())
+"""
+
+
 @contextmanager
-def pipe(path: Path) -> Iterator[tuple[IO[bytes], IO[bytes]]]:
+def pipe(path: Path, *, opening_fault: str = "") -> Iterator[tuple[IO[bytes], IO[bytes]]]:
+    entry = (
+        ("-c", _OPENING_FAULT, opening_fault)
+        if opening_fault
+        else ("-m", "app.world_village_bridge")
+    )
     with subprocess.Popen(
-        [sys.executable, "-B", "-m", "app.world_village_bridge", "--working", str(path)],
+        [sys.executable, "-B", *entry, "--working", str(path)],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -352,14 +391,15 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
         )
 
 
+@pytest.mark.parametrize("opening_fault", ("", "committed", "absent"))
 def test_road_combat_runs_real_turns_without_changing_the_village(
-    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch, opening_fault: str
 ) -> None:
     path = tmp_path / "game.sqlite"
     trials = tmp_path / "trials"
     trials.mkdir()
     monkeypatch.setenv("TMPDIR", str(trials))
-    with pipe(path) as streams:
+    with pipe(path, opening_fault=opening_fault) as streams:
         sequence = 0
 
         def act(action: str, value: str = "") -> JsonObject:
@@ -386,8 +426,18 @@ def test_road_combat_runs_real_turns_without_changing_the_village(
             assert view["engaged"] is False
         assert view["actor_cell"] == 7 and view["gate_open"] is True
         first = act("combat", "attack")
+        if opening_fault == "absent":
+            absent = dict(object_value(first["road_test"]))
+            assert absent.pop("status") == "SAVE_UNAVAILABLE"
+            assert array_value(absent.pop("messages"))
+            assert absent == {
+                key: value for key, value in view.items() if key not in ("status", "messages")
+            }
+            assert send(streams, sequence, "combat", "attack") == first
+            first = act("combat", "attack")
         hit = object_value(first["road_test"])
         assert (hit["actor_hp"], hit["enemy_hp"], hit["stamina"]) == (2, 3, 1)
+        assert (hit["revision"], hit["tick"], hit["status"]) == (5, 5, "COMMITTED")
         assert hit["engaged"] is True
         assert send(streams, sequence, "combat", "attack") == first
         act("combat", "attack")

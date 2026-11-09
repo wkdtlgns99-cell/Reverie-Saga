@@ -8,6 +8,7 @@ from typing import cast
 from app.client_session import ClientSession
 from contracts.client import ClientAction
 from contracts.encounter import AttackResolved
+from contracts.persistence import SaveError
 from domain.canonical import JsonObject
 from domain.encounter import starts_turn_based_combat
 
@@ -27,7 +28,12 @@ class RoadCombatTrial:
     def act(self, action: str) -> str:
         if action not in TRIAL_ACTIONS:
             return "INVALID_COMMAND"
-        self._latest = self._client.act(cast(ClientAction, action))
+        try:
+            self._latest = self._client.act(cast(ClientAction, action))
+        except SaveError as error:
+            if error.code != "SAVE_UNCERTAIN":
+                raise
+            self._latest = self._client.recover()
         if action == "attack" and self._latest.status == "COMMITTED" and not self._engaged:
             facts = self._client.owner.last_publication().facts
             attack = next(
