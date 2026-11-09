@@ -9,6 +9,8 @@ from adapters.sqlite_store import safe_path
 from contracts.persistence import SaveError
 from domain.canonical import canonical_json, decode_json, exact_fields, text_value
 
+_REFERENCE_MAX_BYTES = 1024
+
 
 def _reference(base: Path) -> Path:
     return safe_path(base.with_name(base.name + ".active.json"))
@@ -23,23 +25,36 @@ def _target(base: Path, name: str) -> Path:
     return target
 
 
+def _read_reference(reference: Path) -> bytes | None:
+    try:
+        with reference.open("rb") as stream:
+            body = stream.read(_REFERENCE_MAX_BYTES + 1)
+    except FileNotFoundError:
+        return None
+    if len(body) > _REFERENCE_MAX_BYTES:
+        raise SaveError("WORLD_ATTACHMENT_INVALID", "reference too large")
+    return body
+
+
 def current_world(base: Path) -> Path:
     base = safe_path(base)
     reference = _reference(base)
-    if not reference.exists():
+    body = _read_reference(reference)
+    if body is None:
         return base
-    if reference.stat().st_size > 1024:
-        raise SaveError("WORLD_ATTACHMENT_INVALID", "reference too large")
     try:
-        row = exact_fields(decode_json(reference.read_bytes()), ("format", "working_name"))
+        row = exact_fields(decode_json(body), ("format", "working_name"))
         if row["format"] != "reverie-world-attachment/v1":
             raise ValueError("reference format")
         target = _target(base, text_value(row["working_name"]))
-        if not target.is_file():
-            raise SaveError("WORLD_ATTACHMENT_MISSING", "referenced world is missing")
-        return target
     except ValueError as error:
         raise SaveError("WORLD_ATTACHMENT_INVALID", "invalid reference") from error
+    if not target.is_file():
+        # A slot load may have replaced the reference and retired this target.
+        if _read_reference(reference) != body:
+            raise SaveError("WORLD_VIEW_CHANGED", "active working branch changed")
+        raise SaveError("WORLD_ATTACHMENT_MISSING", "referenced world is missing")
+    return target
 
 
 def remember_world(base: Path, active: Path) -> None:
