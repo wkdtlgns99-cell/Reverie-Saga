@@ -80,14 +80,16 @@ raise SystemExit(main())
 
 
 @contextmanager
-def pipe(path: Path, *, opening_fault: str = "") -> Iterator[tuple[IO[bytes], IO[bytes]]]:
+def pipe(
+    path: Path, *, opening_fault: str = "", seed: str = ""
+) -> Iterator[tuple[IO[bytes], IO[bytes]]]:
     entry = (
         ("-c", _OPENING_FAULT, opening_fault)
         if opening_fault
         else ("-m", "app.world_village_bridge")
     )
     with subprocess.Popen(
-        [sys.executable, "-B", *entry, "--working", str(path)],
+        [sys.executable, "-B", *entry, "--working", str(path), *(("--seed", seed) if seed else ())],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
@@ -186,7 +188,9 @@ def test_upgrade_preserves_legacy_world_and_slots_and_supports_replay(tmp_path: 
         upgraded = retained.checkpoint.core
         assert upgraded.tick == before.tick and upgraded.pending == before.pending
         assert (
-            tuple(c for c in upgraded.components if not isinstance(c, (VillageRecord, CombatRecord)))
+            tuple(
+                c for c in upgraded.components if not isinstance(c, (VillageRecord, CombatRecord))
+            )
             == before.components
         )
         bundle = combat_world_bundle(

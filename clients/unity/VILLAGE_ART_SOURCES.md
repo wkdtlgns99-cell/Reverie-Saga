@@ -5,7 +5,7 @@ The files in `Assets/Reverie/VillageArt` are selected originals from Kenney pack
 | Pack | Imported files |
 |---|---|
 | [Fantasy Town Kit 2.0](https://kenney.nl/assets/fantasy-town-kit) | `wall.fbx`, `wall-wood-door.fbx`, `roof.fbx`, `tree.fbx`, `rock-small.fbx`, `colormap.png` |
-| [Mini Dungeon](https://kenney.nl/assets/mini-dungeon) | `weapon-sword.fbx` as `sword.fbx` and its palette as `sword-colormap.png` |
+| [Mini Dungeon](https://kenney.nl/assets/mini-dungeon) | `weapon-sword.fbx` as `sword.fbx` and its palette as `sword-colormap.png`. The `dungeon-*.fbx` files are the gate, floor, detailed floor, wall and orc from the same pack. |
 | [Particle Pack](https://kenney.nl/assets/particle-pack) | Transparent `spark_01.png` |
 
 The source archives include their own license notices. Git tracks the exact imported files.

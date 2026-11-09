@@ -40,6 +40,13 @@ the files when the folder is refreshed. Git excludes this local folder. The 2D v
 available when a local model or animation is missing. The map pieces, sword and spark are
 included as [CC0 assets](VILLAGE_ART_SOURCES.md).
 
+Choose **Reverie → 시드로 새 마을 열기** to start a small generated world with a new
+64-digit hexadecimal seed, or paste a previous seed to reopen that world. The editor stores
+each seed's working save under `tmp/generated-village/v1/<seed>/game.sqlite`. The same seed
+uses the same versioned placement plan across fresh saves. Walk to the tile immediately
+north of the stone gate and select **던전 안 둘러보기** to see the small room and orc.
+The dungeon view is for placement inspection and holds the village clock until you return.
+
 ## Play the current world's supply quest
 
 In the Unity editor, choose **Reverie → 보급 의뢰 플레이** without entering Play mode.

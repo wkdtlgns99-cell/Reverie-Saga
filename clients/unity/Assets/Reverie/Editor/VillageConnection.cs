@@ -26,10 +26,12 @@ namespace ReverieSaga
             public string value;
         }
 
-        internal VillageConnection(string root, string path)
+        internal VillageConnection(string root, string path, string seed = null)
         {
             if (path != null && (path.Contains("\"") || path.Contains("\n") || path.Contains("\r")))
                 throw new ArgumentException("VILLAGE_PATH");
+            if (seed != null && !System.Text.RegularExpressions.Regex.IsMatch(seed, VillageLayout.SeedPattern))
+                throw new ArgumentException("WORLD_SEED");
             string python = Path.Combine(root, ".venv", "Scripts", "python.exe");
             if (!File.Exists(python))
                 throw new IOException("VILLAGE_PYTHON_MISSING");
@@ -38,7 +40,8 @@ namespace ReverieSaga
                 FileName = python,
                 WorkingDirectory = root,
                 Arguments = "-B -m app.world_village_bridge" +
-                    (path == null ? "" : " --working \"" + path + "\""),
+                    (path == null ? "" : " --working \"" + path + "\"") +
+                    (seed == null ? "" : " --seed " + seed),
                 UseShellExecute = false,
                 CreateNoWindow = true,
                 RedirectStandardInput = true,

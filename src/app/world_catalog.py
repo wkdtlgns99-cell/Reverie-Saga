@@ -2,6 +2,7 @@
 
 import argparse
 from collections.abc import Sequence
+from dataclasses import replace
 from pathlib import Path
 import sys
 
@@ -28,6 +29,16 @@ def load_social(world: WorldCatalog, path: Path = DEVELOPMENT_SOCIAL) -> SocialC
 
 def load_transport(world: WorldCatalog, path: Path = DEVELOPMENT_TRANSPORT) -> TransportRules:
     return decode_transport(object_value(decode_json(path.read_bytes())), world)
+
+
+def seeded_world(seed: str) -> tuple[WorldCatalog, SocialCatalog, TransportRules]:
+    world = generate_world(seed)
+    template = load_world()
+    social = replace(load_social(template), world_seed=seed)
+    transport = replace(load_transport(template), world_seed=seed)
+    social.validate(world)
+    transport.validate(world)
+    return world, social, transport
 
 
 def main(argv: Sequence[str] | None = None) -> int:

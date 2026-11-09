@@ -102,6 +102,7 @@ namespace ReverieSaga
             public int entrance_x;
             public int entrance_y;
             public string[] rows;
+            public VillageLayout layout;
             public Landmark[] landmarks;
             public Supply supply;
             public string nearby;
@@ -121,7 +122,7 @@ namespace ReverieSaga
         Task<string> pending;
         Snapshot snapshot;
         Font font;
-        string workingPath;
+        [SerializeField] string workingPath;
         string error;
         string queuedDirection;
         long requestId;
@@ -140,19 +141,40 @@ namespace ReverieSaga
         Village3DPreview preview;
         bool show3D = true;
         bool previewFailed;
+        bool showDungeon;
+        [SerializeField] string worldSeed;
 
         [MenuItem("Reverie/마을 걷기")]
         public static void Open() => OpenWorking(null);
 
         internal static WorldVillageWindow OpenWorking(string path)
+            => OpenVillage(null, path, "마을 걷기");
+
+        internal static WorldVillageWindow OpenSeeded(string seed)
         {
-            var window = GetWindow<WorldVillageWindow>("마을 걷기");
+            if (!Regex.IsMatch(seed, VillageLayout.SeedPattern))
+                throw new ArgumentException("WORLD_SEED");
+            return OpenVillage(seed, null, "물버들 " + seed.Substring(0, 8));
+        }
+
+        static WorldVillageWindow OpenVillage(string seed, string path, string title)
+        {
+            foreach (var open in Resources.FindObjectsOfTypeAll<WorldVillageWindow>())
+                if ((open.worldSeed ?? "") == (seed ?? "") &&
+                    (open.workingPath ?? "") == (path ?? ""))
+                {
+                    open.Focus();
+                    if (open.connection == null)
+                        open.Connect();
+                    return open;
+                }
+            var window = CreateInstance<WorldVillageWindow>();
+            window.worldSeed = seed;
+            window.workingPath = path;
+            window.titleContent = new GUIContent(title);
             window.minSize = new Vector2(500, 440);
-            if (window.connection == null)
-            {
-                window.workingPath = path;
-                window.Connect();
-            }
+            window.Show();
+            window.Connect();
             return window;
         }
 
@@ -168,7 +190,8 @@ namespace ReverieSaga
             try
             {
                 string root = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", ".."));
-                connection = new VillageConnection(root, workingPath);
+                connection = new VillageConnection(root, String.IsNullOrEmpty(workingPath) ? null : workingPath,
+                    String.IsNullOrEmpty(worldSeed) ? null : worldSeed);
                 Send("inspect", "");
             }
             catch (Exception exception) when (ExpectedFailure(exception))
@@ -279,6 +302,11 @@ namespace ReverieSaga
             foreach (string row in state.rows)
                 if (row == null || row.Length != width)
                     throw new IOException("VILLAGE_RESPONSE");
+            if (state.layout == null)
+                throw new IOException("VILLAGE_LAYOUT");
+            state.layout.Validate(state.rows);
+            if (!String.IsNullOrEmpty(worldSeed) && state.layout.seed != worldSeed)
+                throw new IOException("WORLD_SEED");
             if (!Walkable(state, state.x, state.y) ||
                 !Walkable(state, state.entrance_x, state.entrance_y))
                 throw new IOException("VILLAGE_RESPONSE");
@@ -348,7 +376,7 @@ namespace ReverieSaga
 
         void AdvanceInput(double now, double elapsed, bool wasPending)
         {
-            if (paused || snapshot == null || connection == null ||
+            if (paused || showDungeon || snapshot == null || connection == null ||
                 wasPending || pending != null || now < animationEnd)
                 return;
             var combat = snapshot.Battle;
@@ -399,6 +427,14 @@ namespace ReverieSaga
 
         void HandleInput(Event input)
         {
+            if (showDungeon && input.type == EventType.KeyDown && input.keyCode == KeyCode.Escape)
+            {
+                showDungeon = false;
+                input.Use();
+                return;
+            }
+            if (showDungeon)
+                return;
             if (input.type != EventType.KeyDown && input.type != EventType.KeyUp)
                 return;
             if (input.keyCode == KeyCode.Escape)
@@ -502,9 +538,26 @@ namespace ReverieSaga
             string notice = String.IsNullOrEmpty(error) ? snapshot.status : ErrorText(error);
             EditorGUILayout.LabelField(String.IsNullOrEmpty(notice) ? " " : notice, text);
             scroll = EditorGUILayout.BeginScrollView(scroll);
+            if (showDungeon)
+            {
+                EditorGUILayout.LabelField("남쪽 석굴 · 내부 둘러보기", text);
+                Draw3D(text);
+                if (GUILayout.Button("마을로 돌아가기"))
+                    showDungeon = false;
+                EditorGUILayout.EndScrollView();
+                return;
+            }
             show3D = EditorGUILayout.ToggleLeft("3D 도트 화면", show3D);
             if (!show3D || !Draw3D(text))
                 DrawMap(text);
+            if (show3D && !previewFailed && (preview != null || Village3DPreview.HasRig) && CanInteract() &&
+                snapshot.x == snapshot.layout.gate_x && snapshot.y == snapshot.layout.gate_y - 1 &&
+                GUILayout.Button("던전 안 둘러보기"))
+            {
+                keys.Clear();
+                queuedDirection = null;
+                showDungeon = true;
+            }
             DrawWorldCombat(text);
             DrawSupply(text);
             using (new EditorGUI.DisabledScope(!CanInteract()))
@@ -528,7 +581,12 @@ namespace ReverieSaga
             try
             {
                 if (preview == null)
-                    preview = new Village3DPreview(snapshot.rows);
+                    preview = new Village3DPreview(snapshot.rows, snapshot.layout);
+                if (showDungeon)
+                {
+                    GUI.DrawTexture(area, preview.RenderDungeon(), ScaleMode.ScaleToFit, false);
+                    return true;
+                }
                 foreach (var npc in snapshot.supply.residents)
                     preview.SetResident(npc.id, npc.x, npc.y);
                 double now = EditorApplication.timeSinceStartup;
@@ -726,6 +784,8 @@ namespace ReverieSaga
                 }
             GUI.Label(new Rect(area.x + snapshot.entrance_x * size + 2,
                 area.y + snapshot.entrance_y * size, size * 2, size), "입구", label);
+            GUI.Label(new Rect(area.x + snapshot.layout.gate_x * size + 2,
+                area.y + snapshot.layout.gate_y * size, size * 2, size), "석굴", label);
             var combat = snapshot.Battle;
             if (combat != null && combat.bandit_hp > 0 && combat.active)
                 GUI.Label(new Rect(area.x + combat.bandit_x * size,
@@ -764,6 +824,7 @@ namespace ReverieSaga
 
         void Disconnect()
         {
+            showDungeon = false;
             preview?.Dispose();
             preview = null;
             previewFailed = false;
