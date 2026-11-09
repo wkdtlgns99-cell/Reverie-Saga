@@ -33,6 +33,7 @@ namespace ReverieSaga
         readonly Material sparkMaterial;
         readonly Material blue;
         readonly Material red;
+        GameObject dungeonOrc;
         Vector3 heading = Vector3.forward;
         double hitAt = double.NegativeInfinity;
         bool playerHit;
@@ -248,7 +249,8 @@ namespace ReverieSaga
                 var tile = DungeonOffset + Tile(item.x, item.y);
                 if (item.kind == "orc")
                 {
-                    Fit(orc, tile + Vector3.up * .14f, 1.05f, material, null).name = "Dungeon orc";
+                    dungeonOrc = Fit(orc, tile + Vector3.up * .14f, 1.05f, material, null);
+                    dungeonOrc.name = "Dungeon orc";
                     continue;
                 }
                 Fit(floors[item.variant], tile, 1f, material, null, horizontal: true);
@@ -259,15 +261,6 @@ namespace ReverieSaga
                         piece.transform.rotation = Quaternion.Euler(0, 90, 0);
                 }
             }
-        }
-
-        internal RenderTexture RenderDungeon()
-        {
-            var focus = DungeonOffset + Tile(2, 2);
-            camera.transform.position = focus + new Vector3(2.4f, 6.2f, -6.1f);
-            camera.transform.LookAt(focus + Vector3.up * .1f);
-            camera.Render();
-            return target;
         }
 
         internal void Hit(bool playerAttacked, double now)
@@ -290,18 +283,21 @@ namespace ReverieSaga
         }
 
         internal RenderTexture Render(Vector2 point, Vector2 direction, bool walking,
-            bool visible, bool showBandit, Vector2 banditTile, double now)
+            bool visible, bool showBandit, Vector2 banditTile, double now, bool dungeon = false)
         {
-            var feet = Tile(point.x, point.y);
-            var opponent = Tile(banditTile.x, banditTile.y);
+            var offset = dungeon ? DungeonOffset + Vector3.up * .14f : Vector3.zero;
+            var feet = offset + Tile(point.x, point.y);
+            var opponent = offset + Tile(banditTile.x, banditTile.y);
             if (direction.sqrMagnitude > .01f)
                 heading = Tile(direction.x, direction.y).normalized;
             if (showBandit && (opponent - feet).sqrMagnitude > .01f)
                 heading = (opponent - feet).normalized;
             player.SetActive(visible);
-            bandit.SetActive(visible && showBandit);
+            bandit.SetActive(visible && showBandit && !dungeon);
+            if (dungeon)
+                dungeonOrc.SetActive(showBandit);
             foreach (var resident in residents.Values)
-                resident.SetActive(visible);
+                resident.SetActive(visible && !dungeon);
             player.transform.SetPositionAndRotation(feet, Quaternion.LookRotation(heading));
             bandit.transform.position = opponent;
             float elapsed = (float)(now - hitAt);
@@ -323,10 +319,15 @@ namespace ReverieSaga
                 if (walking)
                     player.transform.position += Vector3.up * (.04f * Mathf.Abs(Mathf.Sin((float)now * 30)));
             }
-            var focus = Vector3.Lerp(feet, opponent, showBandit ? .38f : 0);
-            focus.x = Mathf.Clamp(focus.x, 3.4f, 9.5f);
-            focus.z = Mathf.Clamp(focus.z, -6.2f, -1.8f);
-            camera.transform.position = focus + new Vector3(1.7f, 5.6f, -7.2f);
+            var focus = DungeonOffset + Tile(2, 2);
+            if (!dungeon)
+            {
+                focus = Vector3.Lerp(feet, opponent, showBandit ? .38f : 0);
+                focus.x = Mathf.Clamp(focus.x, 3.4f, 9.5f);
+                focus.z = Mathf.Clamp(focus.z, -6.2f, -1.8f);
+            }
+            camera.transform.position = focus + (dungeon ? new Vector3(2.4f, 6.2f, -6.1f) :
+                new Vector3(1.7f, 5.6f, -7.2f));
             camera.transform.LookAt(focus + Vector3.up * .2f);
             float impact = elapsed - (playerHit ? .25f : .06f);
             spark.SetActive(visible && impact >= 0 && impact < .24f);

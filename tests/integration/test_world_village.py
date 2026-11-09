@@ -14,6 +14,7 @@ from app.engine_bridge import read_exact, write_frame
 from app.headless import replay_runner
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, load_social, load_transport, load_world
 from app.world_combat_registry import combat_world_bundle
+from app.world_dungeon_registry import dungeon_world_bundle
 from app.world_observer import read_world
 from app.world_session import foot_command
 from app.world_supply_bridge import exchange
@@ -34,6 +35,8 @@ from domain.canonical import (
 )
 from domain.world import elaborate_place
 from domain.world_combat import CombatRecord
+from domain.world_dungeon import DungeonRecord
+from domain.world_village_layout import dungeon_blueprint
 from domain.world_village import ENTRANCE, VillagePosition, VillageRecord
 from tests.integration.test_world_knowledge import commit
 
@@ -189,7 +192,9 @@ def test_upgrade_preserves_legacy_world_and_slots_and_supports_replay(tmp_path: 
         assert upgraded.tick == before.tick and upgraded.pending == before.pending
         assert (
             tuple(
-                c for c in upgraded.components if not isinstance(c, (VillageRecord, CombatRecord))
+                c
+                for c in upgraded.components
+                if not isinstance(c, (VillageRecord, CombatRecord, DungeonRecord))
             )
             == before.components
         )
@@ -199,6 +204,9 @@ def test_upgrade_preserves_legacy_world_and_slots_and_supports_replay(tmp_path: 
                 scenario.place_id,
             ),
             scenario.place_id,
+        )
+        bundle = dungeon_world_bundle(
+            bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id
         )
         assert (
             replay_runner(
@@ -392,6 +400,9 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
             scenario.place_id,
         ),
         scenario.place_id,
+    )
+    bundle = dungeon_world_bundle(
+        bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id
     )
     with open_knowledge_world(path, world, scenario, social, transport) as owner:
         segment = owner.retained_segment()

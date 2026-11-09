@@ -10,6 +10,7 @@ from adapters.sqlite_store import SqliteCommitStore, validate_save
 from adapters.world_attachment import current_world, remember_world
 from app.durable import DurableSession
 from app.world_combat_registry import combat_world_bundle
+from app.world_dungeon_registry import dungeon_world_bundle
 from app.headless import state_io
 from app.world_session import world_checkpoint
 from app.world_transport_registry import transport_world_bundle
@@ -20,15 +21,17 @@ from contracts.state_io import StateIO
 from domain.canonical import pack
 from domain.world import WorldCatalog
 from domain.world_combat import CombatRecord, CombatState
+from domain.world_dungeon import DungeonRecord, DungeonState
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
 from domain.world_transport import TransportRules
 from domain.world_travel import WORLD_ACTOR
 from domain.world_village import ENTRANCE, VillageRecord
+from domain.world_village_layout import dungeon_blueprint
 
 
 def _upgrade(
-    previous: DurableCheckpoint, io: StateIO, *, combat: bool = False
+    previous: DurableCheckpoint, io: StateIO, *, combat: bool = False, dungeon: bool = False
 ) -> DurableCheckpoint:
     core, protocol = previous.core, previous.protocol
     pins = io.pins
@@ -48,8 +51,10 @@ def _upgrade(
     records = core.components
     if not any(isinstance(record, VillageRecord) for record in records):
         records = (*records, VillageRecord(WORLD_ACTOR, ENTRANCE))
-    if combat:
+    if combat and not any(isinstance(record, CombatRecord) for record in records):
         records = (*records, CombatRecord(WORLD_ACTOR, CombatState()))
+    if dungeon:
+        records = (*records, DungeonRecord(WORLD_ACTOR, DungeonState()))
     components = tuple(
         sorted(
             records,
@@ -96,14 +101,15 @@ def _current_owner(
 def _upgrade_working(
     base: Path, source: Path, bundle: FeatureBundle, io: StateIO, legacy: LegacySlotProfile
 ) -> DurableSession:
-    try:
-        former = SqliteCommitStore.open(source, io=legacy.io)
-        selected = legacy
-    except SaveError as error:
-        if error.code != "UNSUPPORTED_RULESET" or legacy.older is None:
-            raise
-        selected = legacy.older
-        former = SqliteCommitStore.open(source, io=selected.io)
+    selected = legacy
+    while True:
+        try:
+            former = SqliteCommitStore.open(source, io=selected.io)
+            break
+        except SaveError as error:
+            if error.code != "UNSUPPORTED_RULESET" or selected.older is None:
+                raise
+            selected = selected.older
     try:
         if current_world(base) != source:
             raise SaveError("WORLD_VIEW_CHANGED", "working branch changed")
@@ -177,6 +183,11 @@ def open_knowledge_world(
                     combat_legacy,
                 )
             except SaveError as error:
+                if error.code != "UNSUPPORTED_RULESET":
+                    raise
+            try:
+                return open_dungeon_world(base, world, scenario, social, transport, migrate=False)
+            except SaveError as error:
                 if error.code != "UNSUPPORTED_RULESET" or not village:
                     raise
             return _upgrade_working(base, source, new, io, legacy)
@@ -196,6 +207,12 @@ def open_knowledge_world(
     except SaveError as error:
         if error.code != "UNSUPPORTED_RULESET" or not (village or combat):
             raise
+    if combat:
+        try:
+            return open_dungeon_world(base, world, scenario, social, transport, migrate=False)
+        except SaveError as error:
+            if error.code != "UNSUPPORTED_RULESET":
+                raise
     return _upgrade_working(base, source, new, io, legacy)
 
 
@@ -206,12 +223,67 @@ def _combat_legacy(old: StateIO, village: StateIO, current: StateIO) -> LegacySl
     return LegacySlotProfile(village, upgrade, LegacySlotProfile(old, upgrade))
 
 
-def validate_knowledge_world(path: Path, old: FeatureBundle, place_id: str) -> DurableCheckpoint:
+def open_dungeon_world(
+    base: Path,
+    world: WorldCatalog,
+    scenario: SupplyScenario,
+    social: SocialCatalog,
+    transport: TransportRules,
+    *,
+    migrate: bool = True,
+) -> DurableSession:
+    source = current_world(base)
+    old = transport_world_bundle(world, social, transport, scenario, knowledge=True)
+    village = village_world_bundle(old, scenario.place_id)
+    combat = combat_world_bundle(village, scenario.place_id)
+    bundle = dungeon_world_bundle(
+        combat, dungeon_blueprint(world, scenario.place_id), scenario.place_id
+    )
+    io = state_io((bundle,))
+
+    def upgrade(previous: DurableCheckpoint) -> DurableCheckpoint:
+        return _upgrade(previous, io, combat=True, dungeon=True)
+
+    legacy = LegacySlotProfile(
+        state_io((combat,)),
+        upgrade,
+        LegacySlotProfile(
+            state_io((village,)), upgrade, LegacySlotProfile(state_io((old,)), upgrade)
+        ),
+    )
+    if migrate and not source.exists():
+        initial = world_checkpoint(
+            world, supply=scenario, social=social, transport=transport, knowledge=True
+        )
+        return _current_owner(
+            base, SqliteCommitStore.create(source, upgrade(initial), io=io), bundle, io, legacy
+        )
+    try:
+        store = SqliteCommitStore.open(source, io=io)
+    except SaveError as error:
+        if error.code != "UNSUPPORTED_RULESET" or not migrate:
+            raise
+        return _upgrade_working(base, source, bundle, io, legacy)
+    return _current_owner(base, store, bundle, io, legacy)
+
+
+def validate_knowledge_world(
+    path: Path, old: FeatureBundle, place_id: str, world: WorldCatalog
+) -> DurableCheckpoint:
+    def village() -> FeatureBundle:
+        return village_world_bundle(old, place_id)
+
+    def combat() -> FeatureBundle:
+        return combat_world_bundle(village(), place_id)
+
     return validate_save(
         path,
         io=state_io((old,)),
         fallbacks=(
-            lambda: state_io((village_world_bundle(old, place_id),)),
-            lambda: state_io((combat_world_bundle(village_world_bundle(old, place_id), place_id),)),
+            lambda: state_io((village(),)),
+            lambda: state_io((combat(),)),
+            lambda: state_io(
+                (dungeon_world_bundle(combat(), dungeon_blueprint(world, place_id), place_id),)
+            ),
         ),
     )

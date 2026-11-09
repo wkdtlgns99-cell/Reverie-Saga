@@ -1,0 +1,7 @@
+# RS-OWN-UNITY-DUNGEON-PLAY — Walk the Seeded Stone Room
+
+READY. Baseline `a1a584d64e24c0296274319115a9dcf8b8cb7103`. Primary 2 simulation, with 5 presentation, 6 persistence and 7 integration. Existing blueprint supplies the gate and orc positions. The director selected a player-initiated first attack. Mere sight and nearby movement leave exploration active. A cardinally adjacent melee strike resolves once before the turn order starts.
+
+The existing world owner controls entry from the tile north of the seeded gate and exit from interior tile (2, 3). Admission checks bounds and prevents entering the live orc's tile. The room and the village use the same clock. Entry, exit, steps and admitted combat actions each consume one second. Outside combat the village idle clock applies; during combat ordinary steps, exit and idle are gated. Turn scheduling, hit amounts and separate NPC actions reuse the village combat rules. The dungeon encounter owns its own durable health and turn order. Ordinary village commands remain gated while inside.
+
+Use an additive save profile. Existing saves retain village location, quest and combat state. Add a new initial dungeon component during upgrade and keep the former file. Verify old saves, walking and wall/occupancy errors, admission during combat, restart/retry/replay, victory and exit. Unity must display and control the actual durable room. Demonstrate the real window on this workstation before protected merge.

@@ -114,7 +114,9 @@ def read_world(working: Path = KNOWLEDGE_WORLD_PATH) -> JsonObject:
         world, load_social(world), load_transport(world), AUTHORED_SUPPLY_SCENARIO, knowledge=True
     )
     try:
-        checkpoint = validate_knowledge_world(source, bundle, AUTHORED_SUPPLY_SCENARIO.place_id)
+        checkpoint = validate_knowledge_world(
+            source, bundle, AUTHORED_SUPPLY_SCENARIO.place_id, world
+        )
     except SaveError as error:
         # Loading a slot can retire the selected file before its validation starts.
         _require_current_source(working, source)

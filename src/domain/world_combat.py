@@ -69,10 +69,14 @@ class CombatState:
     bandit_hp: int = MAX_HP
     last_actor: EntityId = EntityId("")
     last_action: str = ""
+    opponent: EntityId = BANDIT
 
     def __post_init__(self) -> None:
         require_integer(self.player_hp, 0, MAX_HP)
         require_integer(self.bandit_hp, 0, MAX_HP)
+        require_namespace(self.opponent)
+        if self.opponent == WORLD_ACTOR:
+            raise ValueError("COMBAT_OPPONENT")
         if (
             type(self.order) is not tuple
             or len(self.order) > 4
@@ -83,7 +87,7 @@ class CombatState:
             require_namespace(actor)
         if self.order and (
             WORLD_ACTOR not in self.order
-            or BANDIT not in self.order
+            or self.opponent not in self.order
             or min(self.player_hp, self.bandit_hp) == 0
         ):
             raise ValueError("COMBAT_ACTIVE")
@@ -130,20 +134,27 @@ def resolve_ambush(position: VillagePosition, local: LocalDetail) -> CombatState
         OpeningActor(EntityId(resident.id), x, y, speed=2)
         for resident, (x, y) in zip(local.residents[:2], SUPPLY_RESIDENT_TILES, strict=True)
     )
-    order = opening_order((player, bandit, *residents), bandit, player)
+    return resolve_opening((player, bandit, *residents), bandit, player)
+
+
+def resolve_opening(
+    actors: tuple[OpeningActor, ...], attacker: OpeningActor, target: OpeningActor
+) -> CombatState:
+    player_attacked = attacker.actor_id == WORLD_ACTOR
     return CombatState(
-        order,
-        MAX_HP - BANDIT_DAMAGE,
-        MAX_HP,
-        BANDIT,
+        opening_order(actors, attacker, target),
+        MAX_HP if player_attacked else MAX_HP - BANDIT_DAMAGE,
+        MAX_HP - PLAYER_DAMAGE if player_attacked else MAX_HP,
+        attacker.actor_id,
         "open",
+        target.actor_id if player_attacked else attacker.actor_id,
     )
 
 
 def perform_action(state: CombatState, operation: str) -> CombatState:
     actor = state.current
     player_hp = max(
-        0, state.player_hp - BANDIT_DAMAGE * int(actor == BANDIT and operation == "attack")
+        0, state.player_hp - BANDIT_DAMAGE * int(actor == state.opponent and operation == "attack")
     )
     bandit_hp = max(
         0, state.bandit_hp - PLAYER_DAMAGE * int(actor == WORLD_ACTOR and operation == "attack")
