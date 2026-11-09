@@ -37,6 +37,7 @@ from domain.primitives import ComponentAddress, EntityId, FrozenPayload, Tick, T
 from domain.state_types import ComponentRecord, CoreSnapshot
 from domain.world_combat import (
     ACTION_SECONDS,
+    BANDIT,
     COMBAT_SCHEMA,
     CombatRecord,
     CombatState,
@@ -46,7 +47,7 @@ from domain.world_travel import WORLD_ACTOR
 from orchestration.world_population import _StateView
 
 
-def _encode(state: CombatState) -> JsonObject:
+def encode_combat(state: CombatState) -> JsonObject:
     return {
         "order": state.order,
         "player_hp": state.player_hp,
@@ -56,7 +57,7 @@ def _encode(state: CombatState) -> JsonObject:
     }
 
 
-def _decode(document: JsonObject) -> CombatState:
+def decode_combat(document: JsonObject, opponent: EntityId = BANDIT) -> CombatState:
     row = exact_fields(document, ("order", "player_hp", "bandit_hp", "last_actor", "last_action"))
     return CombatState(
         tuple(EntityId(text_value(actor)) for actor in array_value(row["order"])),
@@ -64,6 +65,7 @@ def _decode(document: JsonObject) -> CombatState:
         int_value(row["bandit_hp"]),
         EntityId(text_value(row["last_actor"])),
         text_value(row["last_action"]),
+        opponent,
     )
 
 
@@ -76,6 +78,7 @@ class CombatAdapter:
             type(record) is not CombatRecord
             or record.entity_id != WORLD_ACTOR
             or type(record.state) is not CombatState
+            or record.state.opponent != BANDIT
         ):
             raise ValueError("COMBAT_RECORD")
 
@@ -89,11 +92,11 @@ class CombatAdapter:
         self.validate(record)
         if not isinstance(record, CombatRecord):
             raise ValueError("COMBAT_RECORD")
-        return {"state": _encode(record.state)}
+        return {"state": encode_combat(record.state)}
 
     def decode(self, entity_id: EntityId, fields: JsonObject) -> ComponentRecord:
         record = CombatRecord(
-            entity_id, _decode(object_value(exact_fields(fields, ("state",))["state"]))
+            entity_id, decode_combat(object_value(exact_fields(fields, ("state",))["state"]))
         )
         self.validate(record)
         return record
@@ -108,20 +111,26 @@ class CombatPayloadCodec:
             if type(payload) is CombatAction:
                 return {"operation": text_value(payload.operation)}
             if type(payload) is CombatPatch:
-                return {"state": _encode(payload.state)}
+                return {"state": encode_combat(payload.state)}
             if type(payload) is CombatDelta:
-                return {"before": _encode(payload.before), "after": _encode(payload.after)}
+                return {
+                    "before": encode_combat(payload.before),
+                    "after": encode_combat(payload.after),
+                }
         raise SchemaError("UNSUPPORTED_SCHEMA", "combat payload")
 
     def decode(self, document: JsonObject) -> FrozenPayload:
         if self.schema == CombatAction.SCHEMA:
             return CombatAction(text_value(exact_fields(document, ("operation",))["operation"]))
         if self.schema == CombatPatch.SCHEMA:
-            return CombatPatch(_decode(object_value(exact_fields(document, ("state",))["state"])))
+            return CombatPatch(
+                decode_combat(object_value(exact_fields(document, ("state",))["state"]))
+            )
         if self.schema == CombatDelta.SCHEMA:
             row = exact_fields(document, ("before", "after"))
             return CombatDelta(
-                _decode(object_value(row["before"])), _decode(object_value(row["after"]))
+                decode_combat(object_value(row["before"])),
+                decode_combat(object_value(row["after"])),
             )
         raise SchemaError("UNSUPPORTED_SCHEMA", "combat payload")
 

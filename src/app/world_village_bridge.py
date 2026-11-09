@@ -19,11 +19,12 @@ from app.world_catalog import (
     seeded_world,
 )
 from app.world_session import world_command
-from app.world_village_session import open_knowledge_world
+from app.world_village_session import open_dungeon_world
 from app.world_village_supply import VillageResident, VillageSupply, village_supply
 from contracts.persistence import SaveError
 from contracts.turn import TurnCommitted, TurnOutcome
 from contracts.world_combat import CombatAction
+from contracts.world_dungeon import DungeonAction
 from contracts.world_supply import SupplyAction
 from contracts.world_time import WorldWait
 from contracts.world_village import VillageStep
@@ -31,6 +32,7 @@ from domain.canonical import JsonObject, decode_json, exact_fields, int_value, t
 from domain.primitives import MAX_INT
 from domain.world_combat import BANDIT, BANDIT_POSITION, CombatRecord, CombatState
 from domain.world_conversation import ConversationRecord
+from domain.world_dungeon import ENTRY, ORC, DungeonRecord, DungeonState, in_melee_range
 from domain.world import WorldCatalog
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
@@ -44,7 +46,7 @@ from domain.world_village import (
     VillagePosition,
     VillageRecord,
 )
-from domain.world_village_layout import village_layout
+from domain.world_village_layout import dungeon_blueprint, village_layout
 
 FORMAT = "reverie-world-village/v1"
 
@@ -56,6 +58,11 @@ class _Scene:
     speaking: bool
     tick: int
     combat: CombatState | None
+    dungeon: DungeonState | None
+
+    @property
+    def inside(self) -> bool:
+        return self.dungeon is not None and self.dungeon.tile is not None
 
     @property
     def available(self) -> bool:
@@ -83,6 +90,7 @@ class VillageBridge:
         self.social = social
         self.name = world.place(scenario.place_id).name
         self.layout = village_layout(world, scenario.place_id)
+        self.blueprint = dungeon_blueprint(world, scenario.place_id)
         self._last: tuple[int, str, str, JsonObject] | None = None
         self._talking = ""
         self._trial: RoadCombatTrial | None = None
@@ -107,6 +115,12 @@ class VillageBridge:
                 self.close()
             elif action != "inspect" or value:
                 error = "VILLAGE_COMBAT_ACTIVE"
+        elif action == "dungeon" and scene.dungeon is not None:
+            error = self._submit(DungeonAction(value))
+            if not error:
+                self._talking = ""
+        elif scene.inside and (action != "inspect" or value):
+            error = "DUNGEON_INSIDE"
         elif action == "inspect" and not value and scene.ambush_due:
             error = self._submit(CombatAction("ambush"))
         elif scene.ambush_due:
@@ -191,7 +205,9 @@ class VillageBridge:
             self._talking = ""
         return error
 
-    def _submit(self, payload: VillageStep | WorldWait | SupplyAction | CombatAction) -> str:
+    def _submit(
+        self, payload: VillageStep | WorldWait | SupplyAction | CombatAction | DungeonAction
+    ) -> str:
         command = world_command(self.owner.protocol(), payload)
         outcome: TurnOutcome
         try:
@@ -218,7 +234,42 @@ class VillageBridge:
         combat = next(
             (item.state for item in core.components if isinstance(item, CombatRecord)), None
         )
-        return _Scene(position, local, bool(speech.remaining), core.tick, combat)
+        dungeon = next(
+            (item.state for item in core.components if isinstance(item, DungeonRecord)), None
+        )
+        return _Scene(position, local, bool(speech.remaining), core.tick, combat, dungeon)
+
+    def _dungeon(self, scene: _Scene) -> JsonObject | None:
+        room = scene.dungeon
+        if room is None:
+            return None
+        fight = room.combat
+        gate = self.blueprint
+        x, y = room.tile or ENTRY
+        names = {WORLD_ACTOR: "나", ORC: "오크"}
+        return {
+            "inside": scene.inside,
+            "can_enter": scene.available
+            and not scene.fighting
+            and not scene.inside
+            and (scene.position.x, scene.position.y) == (gate.gate_x, gate.gate_y - 1),
+            "can_exit": room.tile == ENTRY and not fight.order,
+            "can_engage": scene.inside
+            and not fight.order
+            and not fight.resolved
+            and in_melee_range((x, y), gate),
+            "x": x,
+            "y": y,
+            "orc_x": gate.orc_x,
+            "orc_y": gate.orc_y,
+            "active": bool(fight.order),
+            "player_turn": fight.current == WORLD_ACTOR,
+            "player_hp": fight.player_hp,
+            "orc_hp": fight.bandit_hp,
+            "order": tuple(names[actor] for actor in fight.order),
+            "last_actor": names.get(fight.last_actor, ""),
+            "last_action": fight.last_action,
+        }
 
     @staticmethod
     def _combat(scene: _Scene, supply: VillageSupply) -> JsonObject | None:
@@ -256,7 +307,7 @@ class VillageBridge:
             "name": self.name,
             "available": scene.available
             and self._trial is None
-            and not (scene.fighting or scene.ambush_due),
+            and not (scene.fighting or scene.ambush_due or scene.inside),
             "status": (
                 "이 마을에 도착하면 걸을 수 있습니다."
                 if not scene.local
@@ -285,11 +336,14 @@ class VillageBridge:
             ),
             "can_start_road_test": self._trial is None
             and not scene.fighting
+            and not scene.inside
             and self._at_entrance(scene),
             "has_road_test": self._trial is not None,
             "road_test": self._trial.wire() if self._trial is not None else None,
             "has_world_combat": scene.combat is not None and scene.local,
             "world_combat": self._combat(scene, supply),
+            "has_dungeon": scene.dungeon is not None,
+            "dungeon": self._dungeon(scene),
         }
 
 
@@ -309,9 +363,7 @@ def main(argv: Sequence[str] | None = None) -> int:
             working = (
                 args.working or Path("tmp/generated-village/v1") / world.seed_hex / "game.sqlite"
             )
-        with open_knowledge_world(
-            working, world, scenario, social, transport, combat=True
-        ) as owner:
+        with open_dungeon_world(working, world, scenario, social, transport) as owner:
             bridge = VillageBridge(owner, scenario, social, world)
             try:
                 while (frame := read_frame(sys.stdin.buffer)) is not None:
