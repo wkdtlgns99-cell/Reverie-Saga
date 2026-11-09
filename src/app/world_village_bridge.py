@@ -32,7 +32,8 @@ from domain.canonical import JsonObject, decode_json, exact_fields, int_value, t
 from domain.primitives import MAX_INT
 from domain.world_combat import BANDIT, BANDIT_POSITION, CombatRecord, CombatState
 from domain.world_conversation import ConversationRecord
-from domain.world_dungeon import ENTRY, ORC, DungeonRecord, DungeonState, in_melee_range
+from domain.world_dungeon import ENTRY, ORC, POMMEL_DAMAGE, POMMEL_NAME, STARTER_SWORD_NAME
+from domain.world_dungeon import DungeonRecord, DungeonState, in_melee_range
 from domain.world import WorldCatalog
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
@@ -266,6 +267,10 @@ class VillageBridge:
             "player_turn": fight.current == WORLD_ACTOR,
             "player_hp": fight.player_hp,
             "orc_hp": fight.bandit_hp,
+            "weapon": STARTER_SWORD_NAME,
+            "pommel_name": POMMEL_NAME,
+            "pommel_damage": POMMEL_DAMAGE,
+            "pommel_used": room.pommel_used,
             "order": tuple(names[actor] for actor in fight.order),
             "last_actor": names.get(fight.last_actor, ""),
             "last_action": fight.last_action,

@@ -12,8 +12,9 @@ from contracts.world_dungeon import (
     DungeonDelta,
 )
 from domain.primitives import Phase
-from domain.world_combat import OpeningActor, perform_action, resolve_opening
-from domain.world_dungeon import ENTRY, ORC, DungeonState, dungeon_step
+from domain.world_combat import POMMEL, STAGGER, OpeningActor, perform_action, resolve_opening
+from domain.world_dungeon import ENTRY, ORC, POMMEL_DAMAGE
+from domain.world_dungeon import DungeonState, dungeon_step
 from domain.world_travel import WORLD_ACTOR
 from domain.world_village import DIRECTIONS
 from domain.world_village_layout import DungeonBlueprint
@@ -61,6 +62,12 @@ class DungeonEngine:
             player = OpeningActor(WORLD_ACTOR, *tile, speed=3, readiness=1)
             orc = OpeningActor(ORC, self.blueprint.orc_x, self.blueprint.orc_y, speed=3)
             return replace(state, combat=resolve_opening((player, orc), player, orc))
+        if operation == POMMEL:
+            hit = perform_action(state.combat, "attack", player_damage=POMMEL_DAMAGE)
+            return replace(state, combat=replace(hit, last_action=POMMEL), pommel_used=True)
+        if operation == "advance" and state.combat.last_action == POMMEL:
+            skipped = perform_action(state.combat, "hold")
+            return replace(state, combat=replace(skipped, last_action=STAGGER))
         return replace(
             state,
             combat=perform_action(state.combat, "attack" if operation == "advance" else operation),

@@ -18,6 +18,8 @@ ACTION_SECONDS = 1
 MAX_HP = 5
 PLAYER_DAMAGE = 2
 BANDIT_DAMAGE = 1
+POMMEL = "pommel"
+STAGGER = "stagger"
 
 
 @dataclass(frozen=True, slots=True)
@@ -96,7 +98,11 @@ class CombatState:
             "open",
             "attack",
             "hold",
+            POMMEL,
+            STAGGER,
         ):
+            raise ValueError("COMBAT_ACTION")
+        if self.opponent == BANDIT and self.last_action in (POMMEL, STAGGER):
             raise ValueError("COMBAT_ACTION")
         if bool(self.last_actor) != bool(self.last_action):
             raise ValueError("COMBAT_LAST_ACTION")
@@ -151,13 +157,15 @@ def resolve_opening(
     )
 
 
-def perform_action(state: CombatState, operation: str) -> CombatState:
+def perform_action(
+    state: CombatState, operation: str, *, player_damage: int = PLAYER_DAMAGE
+) -> CombatState:
     actor = state.current
     player_hp = max(
         0, state.player_hp - BANDIT_DAMAGE * int(actor == state.opponent and operation == "attack")
     )
     bandit_hp = max(
-        0, state.bandit_hp - PLAYER_DAMAGE * int(actor == WORLD_ACTOR and operation == "attack")
+        0, state.bandit_hp - player_damage * int(actor == WORLD_ACTOR and operation == "attack")
     )
     return replace(
         state,

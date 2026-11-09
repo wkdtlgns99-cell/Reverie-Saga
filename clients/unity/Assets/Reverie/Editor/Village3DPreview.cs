@@ -15,6 +15,7 @@ namespace ReverieSaga
         const string Rig = "Assets/Reverie/LocalVillageArt/";
         internal const string RigInstructions = "3D 모델 준비: LocalVillageArt에 Y Bot 및 검·방패 FBX 3개를 넣어 주세요.";
         const float StrikeSeconds = .54f;
+        const float BodyGap = .035f;
         static readonly Vector3 DungeonOffset = new Vector3(64, 0, 0);
         readonly Scene scene;
         readonly Camera camera;
@@ -27,6 +28,13 @@ namespace ReverieSaga
         readonly GameObject player;
         readonly GameObject bandit;
         readonly GameObject playerRig;
+        readonly Vector3 rigRestPosition;
+        readonly Quaternion rigRestRotation;
+        readonly Vector3 rigRestScale;
+        readonly Transform hips;
+        readonly Vector3 hipsRest;
+        readonly VillageBodyProfile idleBody;
+        readonly VillageBodyProfile strikeBody;
         readonly Transform swordTip;
         readonly LineRenderer trail;
         readonly GameObject spark;
@@ -34,9 +42,13 @@ namespace ReverieSaga
         readonly Material blue;
         readonly Material red;
         GameObject dungeonOrc;
+        Bounds orcBody;
+        Vector3 orcRestPosition;
+        readonly Queue<(float time, Vector3 position)> dungeonTrail = new();
         Vector3 heading = Vector3.forward;
         double hitAt = double.NegativeInfinity;
         bool playerHit;
+        bool pommelHit;
 
         internal static bool HasRig =>
             AssetDatabase.LoadAssetAtPath<GameObject>(Rig + "Y Bot.fbx") != null &&
@@ -75,10 +87,20 @@ namespace ReverieSaga
                 red = Material("Standard", new Color(.89f, .30f, .20f));
                 player = Actor("Player", blue, out playerRig);
                 bandit = Actor("Bandit", red, out _);
-                var hand = playerRig.GetComponentsInChildren<Transform>()
-                    .FirstOrDefault(bone => bone.name.EndsWith("RightHand", StringComparison.Ordinal));
-                if (hand == null)
-                    throw new InvalidOperationException("Y Bot right hand missing");
+                rigRestPosition = playerRig.transform.localPosition;
+                rigRestRotation = playerRig.transform.localRotation;
+                rigRestScale = playerRig.transform.localScale;
+                var playerBody = playerRig.GetComponentsInChildren<SkinnedMeshRenderer>();
+                if (playerBody.Length == 0)
+                    throw new InvalidOperationException("Y Bot skinned mesh missing");
+                var bones = playerRig.GetComponentsInChildren<Transform>();
+                hips = bones.FirstOrDefault(bone => bone.name.EndsWith("Hips", StringComparison.Ordinal));
+                var hand = bones.FirstOrDefault(bone => bone.name.EndsWith("RightHand", StringComparison.Ordinal));
+                if (hips == null || hand == null)
+                    throw new InvalidOperationException("Y Bot hips or right hand missing");
+                hipsRest = player.transform.InverseTransformPoint(hips.position);
+                idleBody = new VillageBodyProfile(player.transform, playerBody, t => SampleDungeonPose(idle, t));
+                strikeBody = new VillageBodyProfile(player.transform, playerBody, t => SampleDungeonPose(strike, t));
                 var sword = Make("Sword grip");
                 sword.transform.SetParent(hand, false);
                 sword.transform.localPosition = new Vector3(0, .07f, 0);
@@ -251,6 +273,8 @@ namespace ReverieSaga
                 {
                     dungeonOrc = Fit(orc, tile + Vector3.up * .14f, 1.05f, material, null);
                     dungeonOrc.name = "Dungeon orc";
+                    orcRestPosition = dungeonOrc.transform.position;
+                    orcBody = VillageBodyProfile.RestBounds(dungeonOrc);
                     continue;
                 }
                 Fit(floors[item.variant], tile, 1f, material, null, horizontal: true);
@@ -263,10 +287,12 @@ namespace ReverieSaga
             }
         }
 
-        internal void Hit(bool playerAttacked, double now)
+        internal void Hit(bool playerAttacked, double now, bool pommel = false)
         {
             hitAt = now;
             playerHit = playerAttacked;
+            pommelHit = pommel;
+            dungeonTrail.Clear();
         }
 
         internal bool IsPlaying(double now) => now - hitAt < StrikeSeconds;
@@ -282,6 +308,67 @@ namespace ReverieSaga
             resident.transform.position = Tile(x, y);
         }
 
+        void SampleDungeonPose(AnimationClip clip, float normalized)
+        {
+            clip.SampleAnimation(playerRig, normalized * clip.length);
+            playerRig.transform.SetLocalPositionAndRotation(rigRestPosition, rigRestRotation);
+            playerRig.transform.localScale = rigRestScale;
+            var root = player.transform;
+            var motion = root.InverseTransformPoint(hips.position);
+            hips.position = root.TransformPoint(hipsRest.x, motion.y, hipsRest.z);
+        }
+
+        void SeparateDungeonBodies(Vector3 axis, Vector3 origin, Bounds playerBox)
+        {
+            float nearOrc = Vector3.Dot(dungeonOrc.transform.position + orcBody.center - origin, axis) -
+                VillageBodyProfile.Radius(orcBody.extents, axis);
+            var root = player.transform;
+            float nearPlayer = Vector3.Dot(root.TransformPoint(playerBox.center) - origin, axis) +
+                VillageBodyProfile.Radius(playerBox.extents, root.InverseTransformDirection(axis));
+            player.transform.position -= axis * Mathf.Max(0, nearPlayer - nearOrc + BodyGap);
+        }
+
+        void PoseDungeon(Vector3 feet, Vector3 opponent, bool showOrc, bool swinging,
+            float elapsed, float impact, double now)
+        {
+            dungeonOrc.SetActive(showOrc);
+            dungeonOrc.transform.position = orcRestPosition;
+            float progress = Mathf.Clamp01(elapsed / StrikeSeconds);
+            float idleSeconds = Mathf.Max(.01f, idle.length);
+            float pose = swinging ? (pommelHit ? .45f * Mathf.Sin(progress * Mathf.PI) : progress) :
+                (float)(now % idleSeconds / idleSeconds);
+            SampleDungeonPose(swinging ? strike : idle, pose);
+
+            var axis = (opponent - feet).normalized;
+            if (showOrc && axis.sqrMagnitude > .01f)
+            {
+                if (impact >= 0 && impact < .24f)
+                {
+                    float recoil = Mathf.Sin(Mathf.PI * impact / .24f);
+                    player.transform.position -= axis * (recoil * (playerHit ? .045f : .12f));
+                    dungeonOrc.transform.position += axis * (recoil * (playerHit ? .12f : .045f));
+                }
+                SeparateDungeonBodies(axis, feet, (swinging ? strikeBody : idleBody).At(pose));
+            }
+
+            if (swinging && !pommelHit)
+            {
+                while (dungeonTrail.Count > 0 && elapsed - dungeonTrail.Peek().time > .15f)
+                    dungeonTrail.Dequeue();
+                dungeonTrail.Enqueue((elapsed, swordTip.position));
+                trail.enabled = elapsed >= .10f && dungeonTrail.Count > 1;
+                if (trail.enabled)
+                {
+                    trail.positionCount = dungeonTrail.Count;
+                    int i = 0;
+                    foreach (var point in dungeonTrail)
+                        trail.SetPosition(i++, point.position);
+                }
+            }
+            else
+                trail.enabled = false;
+        }
+
         internal RenderTexture Render(Vector2 point, Vector2 direction, bool walking,
             bool visible, bool showBandit, Vector2 banditTile, double now, bool dungeon = false)
         {
@@ -294,16 +381,17 @@ namespace ReverieSaga
                 heading = (opponent - feet).normalized;
             player.SetActive(visible);
             bandit.SetActive(visible && showBandit && !dungeon);
-            if (dungeon)
-                dungeonOrc.SetActive(showBandit);
             foreach (var resident in residents.Values)
                 resident.SetActive(visible && !dungeon);
             player.transform.SetPositionAndRotation(feet, Quaternion.LookRotation(heading));
             bandit.transform.position = opponent;
             float elapsed = (float)(now - hitAt);
+            float impact = elapsed - (playerHit ? (pommelHit ? .17f : .25f) : .06f);
             bool swinging = playerHit && elapsed < StrikeSeconds;
             trail.enabled = swinging && elapsed >= .10f;
-            if (swinging)
+            if (dungeon)
+                PoseDungeon(feet, opponent, showBandit, swinging, elapsed, impact, now);
+            else if (swinging)
             {
                 trail.positionCount = 8;
                 for (int i = 0; i < 8; i++)
@@ -329,14 +417,18 @@ namespace ReverieSaga
             camera.transform.position = focus + (dungeon ? new Vector3(2.4f, 6.2f, -6.1f) :
                 new Vector3(1.7f, 5.6f, -7.2f));
             camera.transform.LookAt(focus + Vector3.up * .2f);
-            float impact = elapsed - (playerHit ? .25f : .06f);
             spark.SetActive(visible && impact >= 0 && impact < .24f);
             if (spark.activeSelf)
             {
-                spark.transform.position = (playerHit ? opponent : feet) + Vector3.up * .78f;
+                var struck = playerHit ? opponent : feet;
+                if (dungeon)
+                    struck = Vector3.Lerp(player.transform.position, dungeonOrc.transform.position,
+                        playerHit ? .78f : .22f);
+                spark.transform.position = struck + Vector3.up * .78f;
                 spark.transform.rotation = camera.transform.rotation;
                 spark.transform.localScale = Vector3.one * (.58f + 3 * impact);
-                sparkMaterial.color = new Color(1f, .73f, .26f, 1f - impact / .24f);
+                sparkMaterial.color = new Color(1f, pommelHit ? .93f : .73f,
+                    pommelHit ? .68f : .26f, 1f - impact / .24f);
             }
             camera.Render();
             return target;

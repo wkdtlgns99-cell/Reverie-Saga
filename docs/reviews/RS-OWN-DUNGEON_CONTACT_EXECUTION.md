@@ -1,0 +1,9 @@
+# Mulbeodeul Dungeon Contact — Verification
+
+Primary 5 presentation, with 2 simulation, 3 data, 6 persistence and 7 integration. Baseline `5dcd4c67b6d28e97f95e3f5c2ef097fe48d9e4c3`. [Work order](../work_orders/RS-OWN-DUNGEON_CONTACT.md)
+
+- Unity 6000.3.25f1 graphics batch used the installed Y Bot rig and imported orc. In the raw imported attack pose the minimum separating-axis gap was −0.8550 Unity units. The updated preview measured at least +0.0496 units across 440 strike samples in four directions and 42 walking samples alongside the orc. It also checked opposing recoil and player recoil when struck. The rendered strike sample averaged 0.73 ms in this self-reviewed batch. The mesh bounds are generated once per preview. Rendering looks up the bounds and does no CPU mesh baking. Captures, probe and `DUNGEON_CONTACT_NATIVE_PASS` are under `tmp/native-dungeon-contact`.
+- The production Python bridge gave the player a short sword and a one-use pommel action. The focused regression verifies 1 HP damage, exact retry, rejection during the orc turn, resume before that turn, consumption of the orc's next action without HP loss, rejection after use, and a final normal slash. The targeted world and engineering suite passed 30 tests. Ruff, Ruff quality, strict mypy and both import checks passed.
+- In the visible editor, a separate seeded save was opened at the first player turn. The displayed sword and skill button worked. The orc dropped from 3 HP to 2, the player stayed at 5 HP, the orc's separate turn was skipped and the skill became unavailable. The editor was left open at the following player turn.
+
+Recoil is a presentation offset within the existing tile. The starter loadout is fixed for this encounter. The pommel uses a shortened sample of the installed strike clip, with separate feedback and committed stagger. Protected exact-head CI is required for merge.
