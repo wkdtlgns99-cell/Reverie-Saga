@@ -2,20 +2,24 @@
 
 from pathlib import Path
 
+import pytest
+
 from app.world_catalog import AUTHORED_SUPPLY_SCENARIO, seeded_world
-from app.headless import replay_runner
+from adapters.sqlite_store import SqliteCommitStore
+from app.headless import replay_runner, state_io
 from app.world_combat_registry import combat_world_bundle
 from app.world_dungeon_registry import dungeon_world_bundle
-from app.world_session import world_command
+from app.world_session import world_checkpoint, world_command
 from app.world_transport_registry import transport_world_bundle
 from app.world_village_registry import village_world_bundle
-from app.world_village_session import open_dungeon_world, open_knowledge_world
+from app.world_village_session import _upgrade, open_dungeon_world, open_knowledge_world
 from contracts.replay import ReplayFixture
 from contracts.turn import TurnCommitted, TurnRejected
 from contracts.world_dungeon import DungeonAction
 from contracts.world_time import WorldWait
 from contracts.world_village import VillageStep
-from domain.world_dungeon import ORC, DungeonRecord
+from domain.world_dungeon import DungeonRecord
+from domain.world_dungeon_loadout import ORC, ORC_ENCOUNTER
 from domain.world_travel import WORLD_ACTOR
 from domain.world_village_layout import dungeon_blueprint
 from tests.integration.test_world_knowledge import commit
@@ -78,6 +82,7 @@ def test_dungeon_moves_and_uses_the_existing_turn_rules_across_reopen(tmp_path: 
             combat_world_bundle(village_world_bundle(old_bundle, place), place),
             dungeon_blueprint(world, place),
             place,
+            loadouts=True,
         )
         retained = owner.retained_segment()
         assert (
@@ -151,3 +156,95 @@ def test_pommel_is_saved_once_and_spends_the_orcs_separate_turn(tmp_path: Path) 
         assert (rejected["tick"], rejected["revision"]) == (8, skipped["revision"])
         won = send(streams, 4, "dungeon", "attack")
         assert object_value(won["dungeon"])["orc_hp"] == 0 and won["tick"] == 9
+
+
+def test_swap_spends_exactly_one_turn_and_cannot_refresh_a_used_skill(tmp_path: Path) -> None:
+    path = tmp_path / "dungeon.sqlite"
+    seed = "3" * 64
+    with pipe(path, seed=seed) as streams:
+        for request in range(1, 5):
+            send(streams, request, "step", "right")
+        send(streams, 5, "dungeon", "enter")
+        assert send(streams, 6, "dungeon", "equip:unknown")["error"] == "DUNGEON_WEAPON_UNKNOWN"
+        assert send(streams, 7, "dungeon", "equip:sword")["error"] == "DUNGEON_ALREADY_EQUIPPED"
+        assert send(streams, 8, "dungeon", "engage")["tick"] == 6
+        send(streams, 9, "dungeon", "pommel")
+        send(streams, 10, "dungeon", "advance")
+        swapped = send(streams, 11, "dungeon", "equip:spear")
+        room = object_value(swapped["dungeon"])
+        assert (swapped["tick"], room["weapon_id"], room["player_turn"], room["orc_hp"]) == (9, "spear", False, 2)
+        assert send(streams, 11, "dungeon", "equip:spear") == swapped
+        assert send(streams, 12, "dungeon", "equip:hammer")["error"] == "COMBAT_WRONG_TURN"
+    with pipe(path, seed=seed) as streams:
+        assert send(streams, 1, "inspect")["dungeon"] == room
+        send(streams, 2, "dungeon", "advance")
+        assert send(streams, 3, "dungeon", "pommel")["error"] == "DUNGEON_SKILL_WRONG_WEAPON"
+        send(streams, 4, "dungeon", "equip:sword")
+        send(streams, 5, "dungeon", "advance")
+        rejected = send(streams, 6, "dungeon", "pommel")
+        assert rejected["error"] == "DUNGEON_SKILL_SPENT" and rejected["tick"] == 12
+
+
+def test_saved_v1_dungeon_upgrades_with_its_pending_orc_turn(tmp_path: Path) -> None:
+    world, social, transport = seeded_world("3" * 64)
+    scenario = AUTHORED_SUPPLY_SCENARIO
+    place = scenario.place_id
+    old = transport_world_bundle(world, social, transport, scenario, knowledge=True)
+    combat = combat_world_bundle(village_world_bundle(old, place), place)
+    v1 = dungeon_world_bundle(combat, dungeon_blueprint(world, place), place)
+    io = state_io((v1,))
+    original = world_checkpoint(world, supply=scenario, social=social, transport=transport, knowledge=True)
+    path = tmp_path / "v1.sqlite"
+    store = SqliteCommitStore.create(path, _upgrade(original, io, combat=True, dungeon=ORC_ENCOUNTER), io=io)
+    store.close()
+    args = (path, world, scenario, social, transport)
+    with open_dungeon_world(*args, migrate=False) as owner:
+        for _ in range(4):
+            commit(owner, VillageStep("right"))
+        for op in ("enter", "engage", "pommel"):
+            commit(owner, DungeonAction(op))
+        old_rows = owner.snapshot().components
+    old_bytes = path.read_bytes()
+    with open_dungeon_world(*args) as owner:
+        assert owner.working_path != path and path.read_bytes() == old_bytes
+        assert owner.snapshot().components == old_rows and owner.snapshot().tick == 7
+        commit(owner, DungeonAction("advance"))
+        commit(owner, DungeonAction("equip:hammer"))
+        room = next(row.state for row in owner.snapshot().components if isinstance(row, DungeonRecord))
+        assert (room.weapon_id, room.pommel_used, room.combat.player_hp) == ("hammer", True, 5)
+
+
+@pytest.mark.parametrize(
+    ("trial", "weapon", "skill", "after_open", "after_skill", "first_player_turn", "hp_after"),
+    [
+        ("slime", "spear", "thrust", 3, 0, False, 4),
+        ("guard", "hammer", "crush", 4, 2, True, 5),
+    ],
+)
+def test_isolated_sparring_uses_the_same_loadout_and_opponent_rules(
+    tmp_path: Path, trial: str, weapon: str, skill: str, after_open: int, after_skill: int,
+    first_player_turn: bool, hp_after: int,
+) -> None:
+    seed = "3" * 64
+    with pipe(tmp_path / "unused", seed=seed, trial=trial) as streams:
+        fresh = object_value(send(streams, 1, "inspect")["dungeon"])
+        assert fresh["inside"] is True and fresh["opponent_kind"] == trial
+        setup = send(streams, 2, "dungeon", "equip:" + weapon)
+        assert setup["tick"] == 1 and object_value(setup["dungeon"])["weapon_id"] == weapon
+        start = object_value(send(streams, 3, "dungeon", "engage")["dungeon"])
+        assert (start["orc_hp"], start["player_turn"]) == (after_open, first_player_turn)
+        request = 4
+        if not first_player_turn:
+            send(streams, request, "dungeon", "advance")
+            request += 1
+        struck = object_value(send(streams, request, "dungeon", skill)["dungeon"])
+        assert (struck["orc_hp"], struck["last_skill"], struck["skill_used"]) == (after_skill, skill, True)
+        if after_skill:
+            skipped = send(streams, request + 1, "dungeon", "advance")
+            struck = object_value(skipped["dungeon"])
+            assert struck["last_action"] == "stagger" and struck["player_turn"] is True
+        assert struck["player_hp"] == hp_after
+    with pipe(tmp_path / "unused", seed=seed, trial=trial) as streams:
+        assert send(streams, 1, "inspect")["dungeon"] == struck
+    assert not (tmp_path / "tmp/generated-village").exists()
+    assert (tmp_path / "tmp/dungeon-trials/v1" / trial / seed / "game.sqlite").is_file()

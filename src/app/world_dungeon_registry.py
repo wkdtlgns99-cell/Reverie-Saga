@@ -9,7 +9,8 @@ from contracts.world_dungeon import DUNGEON_FAMILY, DUNGEON_OWNER, DUNGEON_PAYLO
 from domain.canonical import array_value, object_value, seal
 from domain.primitives import EntityId, FieldSpec, Phase
 from domain.world_combat import ACTION_SECONDS
-from domain.world_dungeon import DUNGEON_SCHEMA, ENTRY, ORC
+from domain.world_dungeon import DUNGEON_SCHEMA, ENTRY
+from domain.world_dungeon_loadout import ORC_ENCOUNTER, SWITCH_USES_TURN, WEAPONS, DungeonOpponent
 from domain.world_travel import WORLD_ACTOR
 from domain.world_village_layout import ROOM_SIZE, DungeonBlueprint
 from engines.world_dungeon import DungeonEngine
@@ -27,7 +28,8 @@ from orchestration.world_transport import JourneyGate
 
 
 def dungeon_world_bundle(
-    base: FeatureBundle, blueprint: DungeonBlueprint, place_id: str
+    base: FeatureBundle, blueprint: DungeonBlueprint, place_id: str,
+    *, opponent: DungeonOpponent = ORC_ENCOUNTER, loadouts: bool = False,
 ) -> FeatureBundle:
     schema = dict(base.schema_document)
     schema["components"] = (
@@ -61,10 +63,19 @@ def dungeon_world_bundle(
         "entrance": (blueprint.gate_x, blueprint.gate_y),
         "room_size": ROOM_SIZE,
         "entry": ENTRY,
-        "orc": (ORC, blueprint.orc_x, blueprint.orc_y),
+        "orc": (opponent.actor, blueprint.orc_x, blueprint.orc_y),
         "opener": WORLD_ACTOR,
         "action_seconds": ACTION_SECONDS,
     }
+    if loadouts:
+        rules["dungeon_loadout"] = {
+            "equipment_uses_turn": SWITCH_USES_TURN,
+            "weapons": tuple(
+                (w.id, w.damage, w.skill_id, w.skill_damage, w.staggers, w.switch_ticks) for w in WEAPONS
+            ),
+            "opponent": (opponent.kind, opponent.speed, opponent.damage),
+        }
+    adapter = DungeonAdapter(opponent.actor, loadouts=loadouts)
     bindings = tuple(
         replace(
             binding,
@@ -79,11 +90,12 @@ def dungeon_world_bundle(
     )
     return replace(
         base,
-        feature_id="world-transport-knowledge-village-dungeon-v1",
+        feature_id="world-transport-knowledge-village-dungeon-v2" if loadouts else
+        "world-transport-knowledge-village-dungeon-v1",
         bindings=(
             *bindings,
             EngineBinding(
-                DungeonEngine(blueprint),
+                DungeonEngine(blueprint, opponent),
                 "engines.world_dungeon",
                 (
                     NodeActivation(
@@ -112,18 +124,19 @@ def dungeon_world_bundle(
                 2,
             ),
         ),
-        read_adapters=(*base.read_adapters, AdapterBinding(DungeonAdapter())),
+        read_adapters=(*base.read_adapters, AdapterBinding(adapter)),
         command_routes=(
             *(DungeonGate(route) for route in base.command_routes),
             SpeechGate(
-                JourneyGate(DungeonAdmission(blueprint, EntityId(place_id))), knowledge=True
+                JourneyGate(DungeonAdmission(blueprint, EntityId(place_id), loadouts=loadouts)),
+                knowledge=True,
             ),
         ),
         delta_routes=(*base.delta_routes, DungeonReducer()),
-        codecs=(*base.codecs, *(DungeonPayloadCodec(cls.SCHEMA) for cls in DUNGEON_PAYLOADS)),
+        codecs=(*base.codecs, *(DungeonPayloadCodec(cls.SCHEMA, opponent.actor) for cls in DUNGEON_PAYLOADS)),
         schema_document=object_value(seal(schema)),
         rules_document=object_value(seal(rules)),
-        component_codecs=(*base.component_codecs, DungeonAdapter()),
+        component_codecs=(*base.component_codecs, adapter),
         patch_routes=(*base.patch_routes, DungeonPatchRoute()),
-        checkpoint_policy=DungeonCheckpointPolicy(base.checkpoint_policy),
+        checkpoint_policy=DungeonCheckpointPolicy(base.checkpoint_policy, adapter),
     )
