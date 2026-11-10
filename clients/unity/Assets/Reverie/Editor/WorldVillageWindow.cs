@@ -87,12 +87,21 @@ namespace ReverieSaga
         }
 
         [Serializable]
+        sealed class WeaponOption
+        {
+            public string id, name;
+            public int switch_ticks;
+        }
+
+        [Serializable]
         sealed class DungeonView
         {
-            public bool inside, can_enter, can_exit, can_engage, active, player_turn, pommel_used;
-            public int x, y, orc_x, orc_y, player_hp, orc_hp, pommel_damage;
+            public bool inside, can_enter, can_exit, can_engage, active, player_turn, skill_used, skill_staggers;
+            public int x, y, orc_x, orc_y, player_hp, orc_hp, attack_damage, skill_damage;
             public string[] order;
-            public string last_action, weapon, pommel_name;
+            public WeaponOption[] weapons;
+            public string last_action, last_skill, weapon, weapon_id, attack_name;
+            public string opponent_kind, opponent_name, skill_id, skill_name;
         }
 
         [Serializable]
@@ -157,6 +166,7 @@ namespace ReverieSaga
         bool show3D = true;
         bool previewFailed;
         [SerializeField] string worldSeed;
+        [SerializeField] string dungeonTrial;
 
         [MenuItem("Reverie/마을 걷기")]
         public static void Open() => OpenWorking(null);
@@ -171,10 +181,20 @@ namespace ReverieSaga
             return OpenVillage(seed, null, "물버들 " + seed.Substring(0, 8));
         }
 
-        static WorldVillageWindow OpenVillage(string seed, string path, string title)
+        [MenuItem("Reverie/석굴 전투 실험/이끼 슬라임")]
+        static void OpenSlimeTrial() => OpenTrial("slime", "석굴 실험 · 이끼 슬라임");
+
+        [MenuItem("Reverie/석굴 전투 실험/경비병 견습생")]
+        static void OpenGuardTrial() => OpenTrial("guard", "석굴 실험 · 경비병 견습생");
+
+        static void OpenTrial(string trial, string title) => OpenVillage(
+            Guid.NewGuid().ToString("N") + Guid.NewGuid().ToString("N"), null, title, trial);
+
+        static WorldVillageWindow OpenVillage(string seed, string path, string title, string trial = null)
         {
             foreach (var open in Resources.FindObjectsOfTypeAll<WorldVillageWindow>())
                 if ((open.worldSeed ?? "") == (seed ?? "") &&
+                    (open.dungeonTrial ?? "") == (trial ?? "") &&
                     (open.workingPath ?? "") == (path ?? ""))
                 {
                     open.Focus();
@@ -184,6 +204,7 @@ namespace ReverieSaga
                 }
             var window = CreateInstance<WorldVillageWindow>();
             window.worldSeed = seed;
+            window.dungeonTrial = trial;
             window.workingPath = path;
             window.titleContent = new GUIContent(title);
             window.minSize = new Vector2(500, 440);
@@ -205,7 +226,8 @@ namespace ReverieSaga
             {
                 string root = Path.GetFullPath(Path.Combine(Application.dataPath, "..", "..", ".."));
                 connection = new VillageConnection(root, String.IsNullOrEmpty(workingPath) ? null : workingPath,
-                    String.IsNullOrEmpty(worldSeed) ? null : worldSeed);
+                    String.IsNullOrEmpty(worldSeed) ? null : worldSeed,
+                    String.IsNullOrEmpty(dungeonTrial) ? null : dungeonTrial);
                 Send("inspect", "");
             }
             catch (Exception exception) when (ExpectedFailure(exception))
@@ -277,7 +299,7 @@ namespace ReverieSaga
                         prior != null && battle != null && battle.player_hp < prior.player_hp;
                     if (playerHit || enemyHit)
                     {
-                        preview.Hit(playerHit, now, next.InDungeon && next.Room.last_action == "pommel");
+                        preview.Hit(playerHit, now, next.InDungeon ? next.Room.last_skill : "");
                         nextCombatAction = Math.Max(nextCombatAction, now + .55);
                     }
                 }
@@ -337,8 +359,7 @@ namespace ReverieSaga
                 state.Room.order.Length > 2 || !Interior(state.Room.x, state.Room.y) ||
                 !Interior(state.Room.orc_x, state.Room.orc_y) || state.Room.player_hp < 0 ||
                 state.Room.orc_hp < 0 || state.Room.last_action == null ||
-                String.IsNullOrEmpty(state.Room.weapon) || String.IsNullOrEmpty(state.Room.pommel_name) ||
-                state.Room.pommel_damage < 1))
+                !ValidLoadout(state.Room)))
                 throw new IOException("DUNGEON_RESPONSE");
             if (!Walkable(state, state.x, state.y) ||
                 !Walkable(state, state.entrance_x, state.entrance_y))
@@ -376,6 +397,23 @@ namespace ReverieSaga
                 combat.bandit_hp < 0 || !Walkable(state, combat.bandit_x, combat.bandit_y) ||
                 combat.last_actor == null || combat.last_action == null))
                 throw new IOException("WORLD_COMBAT_RESPONSE");
+        }
+
+        static bool ValidLoadout(DungeonView room)
+        {
+            if ((room.opponent_kind != "orc" && room.opponent_kind != "slime" && room.opponent_kind != "guard") ||
+                String.IsNullOrEmpty(room.opponent_name) || String.IsNullOrEmpty(room.weapon) ||
+                String.IsNullOrEmpty(room.attack_name) || String.IsNullOrEmpty(room.skill_name) ||
+                String.IsNullOrEmpty(room.skill_id) || room.last_skill == null ||
+                room.attack_damage < 1 || room.skill_damage < 1 || room.weapons == null ||
+                room.weapons.Length < 1 || room.weapons.Length > 8)
+                return false;
+            var ids = new HashSet<string>();
+            foreach (var option in room.weapons)
+                if (option == null || !Village3DPreview.KnownWeapon(option.id) ||
+                    String.IsNullOrEmpty(option.name) || option.switch_ticks < 1 || !ids.Add(option.id))
+                    return false;
+            return ids.Contains(room.weapon_id);
         }
 
         static bool Interior(int x, int y) => x > 0 && y > 0 &&
@@ -603,41 +641,52 @@ namespace ReverieSaga
                     for (int x = 0; x < VillageLayout.RoomSize; x++)
                     {
                         string mark = (x == room.x && y == room.y) ? "나" :
-                            (x == room.orc_x && y == room.orc_y && room.orc_hp > 0) ? "오크" :
+                            (x == room.orc_x && y == room.orc_y && room.orc_hp > 0) ? "적" :
                             Interior(x, y) ? "·" : "벽";
                         GUILayout.Label(mark, text, GUILayout.Width(45));
                     }
                     EditorGUILayout.EndHorizontal();
                 }
             }
-            EditorGUILayout.LabelField($"내 체력 {room.player_hp} · 오크 체력 {room.orc_hp}", text);
+            EditorGUILayout.LabelField($"내 체력 {room.player_hp} · {room.opponent_name} 체력 {room.orc_hp}", text);
             EditorGUILayout.LabelField($"장착 무기 · {room.weapon}", text);
             if (room.active)
                 EditorGUILayout.LabelField(String.Join(" → ", room.order), text);
             else if (room.orc_hp == 0 || room.player_hp == 0)
                 EditorGUILayout.LabelField(room.orc_hp == 0 ? "전투 승리" : "전투 패배", text);
-            if (room.last_action == "pommel" && room.active)
-                EditorGUILayout.LabelField("오크가 비틀거립니다.", text);
+            if (!String.IsNullOrEmpty(room.last_skill) && room.active && room.skill_staggers)
+                EditorGUILayout.LabelField($"{room.opponent_name} · 비틀거림", text);
             else if (room.last_action == "stagger")
-                EditorGUILayout.LabelField("오크가 균형을 잃어 차례를 넘겼습니다.", text);
+                EditorGUILayout.LabelField($"{room.opponent_name} · 균형을 잃어 차례를 넘김", text);
             using (new EditorGUI.DisabledScope(paused || pending != null ||
                 (preview?.IsPlaying(EditorApplication.timeSinceStartup) ?? false)))
             {
                 if (room.active && room.player_turn)
                 {
-                    if (GUILayout.Button("베기")) Send("dungeon", "attack");
-                    using (new EditorGUI.DisabledScope(room.pommel_used))
+                    if (GUILayout.Button($"{room.attack_name} · 피해 {room.attack_damage}")) Send("dungeon", "attack");
+                    using (new EditorGUI.DisabledScope(room.skill_used))
                     {
-                        string skill = room.pommel_used ? $"{room.pommel_name} · 사용함" :
-                            $"{room.pommel_name} · 피해 {room.pommel_damage}, 오크 차례 넘기기";
-                        if (GUILayout.Button(skill)) Send("dungeon", "pommel");
+                        string effect = room.skill_staggers ? ", 상대 차례 넘기기" : "";
+                        string skill = room.skill_used ? $"{room.skill_name} · 사용함" :
+                            $"{room.skill_name} · 피해 {room.skill_damage}{effect}";
+                        if (GUILayout.Button(skill)) Send("dungeon", room.skill_id);
                     }
                     if (GUILayout.Button("자리 지키기")) Send("dungeon", "hold");
                 }
                 else if (room.active && !String.IsNullOrEmpty(error) && GUILayout.Button("행동 다시 시도"))
                     Send("dungeon", "advance");
-                else if (room.can_engage && GUILayout.Button("오크 공격"))
+                else if (room.can_engage && GUILayout.Button($"{room.opponent_name} 공격"))
                     Send("dungeon", "engage");
+                if (!room.active || room.player_turn)
+                {
+                    EditorGUILayout.LabelField(room.active ? "무기 교체 · 내 차례 사용" : "무기 교체", text);
+                    EditorGUILayout.BeginHorizontal();
+                    foreach (var option in room.weapons)
+                        using (new EditorGUI.DisabledScope(option.id == room.weapon_id))
+                            if (GUILayout.Button(new GUIContent(option.name, $"교체 시간 {option.switch_ticks}초")))
+                                Send("dungeon", "equip:" + option.id);
+                    EditorGUILayout.EndHorizontal();
+                }
                 if (room.can_exit && GUILayout.Button("마을로 나오기"))
                     Send("dungeon", "exit");
             }
@@ -657,7 +706,7 @@ namespace ReverieSaga
             try
             {
                 if (preview == null)
-                    preview = new Village3DPreview(snapshot.rows, snapshot.layout);
+                    preview = new Village3DPreview(snapshot.rows, snapshot.layout, snapshot.Room?.opponent_kind ?? "orc");
                 foreach (var npc in snapshot.supply.residents)
                     preview.SetResident(npc.id, npc.x, npc.y);
                 double now = EditorApplication.timeSinceStartup;
@@ -669,7 +718,7 @@ namespace ReverieSaga
                     var room = snapshot.Room;
                     var dungeonImage = preview.Render(point, direction, now < animationEnd, true,
                         room.orc_hp > 0 || preview.ShowDefeated(now),
-                        new Vector2(room.orc_x, room.orc_y), now, dungeon: true);
+                        new Vector2(room.orc_x, room.orc_y), now, dungeon: true, weapon: room.weapon_id);
                     GUI.DrawTexture(area, dungeonImage, ScaleMode.ScaleToFit, false);
                     return true;
                 }
@@ -813,6 +862,9 @@ namespace ReverieSaga
                 case "DUNGEON_OCCUPIED": return "오크가 서 있는 칸입니다.";
                 case "DUNGEON_GATE": return "입구 바로 앞에서 이용할 수 있습니다.";
                 case "DUNGEON_SKILL_SPENT": return "이번 전투에서 이미 사용한 기술입니다.";
+                case "DUNGEON_SKILL_WRONG_WEAPON": return "이 기술에 맞는 무기를 장착하세요.";
+                case "DUNGEON_ALREADY_EQUIPPED": return "이미 장착한 무기입니다.";
+                case "DUNGEON_WEAPON_UNKNOWN": return "장착할 수 없는 무기입니다.";
                 case "OUT_OF_RANGE": return "공격하려면 대상에게 더 가까이 가세요.";
                 case "SAVE_UNAVAILABLE": return "행동을 저장하지 못했습니다. 다시 시도해 주세요.";
                 case "VILLAGE_NPC_OUT_OF_REACH": return "주민의 바로 옆 칸에서 말을 걸어 주세요.";

@@ -36,19 +36,21 @@ namespace ReverieSaga
         readonly VillageBodyProfile idleBody;
         readonly VillageBodyProfile strikeBody;
         readonly Transform swordTip;
+        readonly Dictionary<string, (GameObject model, Transform tip)> weapons = new();
+        string heldWeapon = "sword";
         readonly LineRenderer trail;
         readonly GameObject spark;
         readonly Material sparkMaterial;
         readonly Material blue;
         readonly Material red;
-        GameObject dungeonOrc;
-        Bounds orcBody;
-        Vector3 orcRestPosition;
+        GameObject dungeonOpponent;
+        Bounds opponentBody;
+        Vector3 opponentRestPosition;
         readonly Queue<(float time, Vector3 position)> dungeonTrail = new();
         Vector3 heading = Vector3.forward;
         double hitAt = double.NegativeInfinity;
         bool playerHit;
-        bool pommelHit;
+        string hitSkill = "";
 
         internal static bool HasRig =>
             AssetDatabase.LoadAssetAtPath<GameObject>(Rig + "Y Bot.fbx") != null &&
@@ -58,7 +60,7 @@ namespace ReverieSaga
             Rig + "Y Bot@Sword And Shield " + action + ".fbx").OfType<AnimationClip>()
             .FirstOrDefault(clip => !clip.name.StartsWith("__preview__", StringComparison.Ordinal));
 
-        internal Village3DPreview(string[] rows, VillageLayout layout)
+        internal Village3DPreview(string[] rows, VillageLayout layout, string opponentKind = "orc")
         {
             model = AssetDatabase.LoadAssetAtPath<GameObject>(Rig + "Y Bot.fbx");
             idle = Clip("Idle");
@@ -82,7 +84,7 @@ namespace ReverieSaga
                 var town = Material("Standard", Color.white);
                 town.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "colormap.png");
                 BuildTown(rows, layout, town);
-                BuildDungeon(layout);
+                BuildDungeon(layout, opponentKind);
                 blue = Material("Standard", new Color(.24f, .62f, 1f));
                 red = Material("Standard", new Color(.89f, .30f, .20f));
                 player = Actor("Player", blue, out playerRig);
@@ -113,6 +115,8 @@ namespace ReverieSaga
                 swordTip = Make("Sword tip").transform;
                 swordTip.SetParent(swordModel.transform, false);
                 swordTip.position = sword.transform.TransformPoint(0, .62f, 0);
+                weapons.Add("sword", (swordModel, swordTip));
+                AddTrainingWeapons(sword.transform);
                 trail = Make("Sword trail").AddComponent<LineRenderer>();
                 trail.sharedMaterial = Material("Sprites/Default", Color.white);
                 trail.startColor = new Color(.46f, .82f, 1f, 0);
@@ -131,6 +135,45 @@ namespace ReverieSaga
                 Dispose();
                 throw;
             }
+        }
+
+        internal static bool KnownWeapon(string id) => id == "sword" || id == "spear" || id == "hammer";
+
+        void AddTrainingWeapons(Transform grip)
+        {
+            var wood = Material("Standard", new Color(.48f, .26f, .12f));
+            var metal = Material("Standard", new Color(.74f, .84f, .90f));
+            var dark = Material("Standard", new Color(.34f, .36f, .45f));
+            var spear = Make("Spear");
+            spear.transform.SetParent(grip, false);
+            WeaponPart(spear, "Shaft", PrimitiveType.Cylinder, .21f, new Vector3(.042f, .56f, .042f), wood);
+            var point = WeaponPart(spear, "Point", PrimitiveType.Cube, .80f, new Vector3(.11f, .17f, .06f), metal);
+            point.transform.localRotation = Quaternion.Euler(0, 0, 34);
+            weapons.Add("spear", (spear, point.transform));
+            spear.SetActive(false);
+            var hammer = Make("Hammer");
+            hammer.transform.SetParent(grip, false);
+            WeaponPart(hammer, "Handle", PrimitiveType.Cylinder, .12f, new Vector3(.075f, .35f, .075f), wood);
+            var head = WeaponPart(hammer, "Head", PrimitiveType.Cube, .49f, new Vector3(.34f, .17f, .21f), dark);
+            weapons.Add("hammer", (hammer, head.transform));
+            hammer.SetActive(false);
+        }
+
+        GameObject WeaponPart(GameObject weapon, string name, PrimitiveType shape, float height,
+            Vector3 size, Material material)
+        {
+            var part = Primitive(name, shape, Vector3.zero, size, material);
+            part.transform.SetParent(weapon.transform, false);
+            part.transform.localPosition = Vector3.up * height;
+            return part;
+        }
+
+        void EquipVisual(string weapon)
+        {
+            if (weapon == heldWeapon) return;
+            weapons[heldWeapon].model.SetActive(false);
+            weapons[weapon].model.SetActive(true);
+            heldWeapon = weapon;
         }
 
         GameObject Make(string name)
@@ -256,7 +299,7 @@ namespace ReverieSaga
             }
         }
 
-        void BuildDungeon(VillageLayout layout)
+        void BuildDungeon(VillageLayout layout, string opponentKind)
         {
             var material = Material("Standard", Color.white);
             material.mainTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(Art + "sword-colormap.png");
@@ -271,10 +314,9 @@ namespace ReverieSaga
                 var tile = DungeonOffset + Tile(item.x, item.y);
                 if (item.kind == "orc")
                 {
-                    dungeonOrc = Fit(orc, tile + Vector3.up * .14f, 1.05f, material, null);
-                    dungeonOrc.name = "Dungeon orc";
-                    orcRestPosition = dungeonOrc.transform.position;
-                    orcBody = VillageBodyProfile.RestBounds(dungeonOrc);
+                    dungeonOpponent = CreateOpponent(opponentKind, orc, material, tile + Vector3.up * .14f);
+                    opponentRestPosition = dungeonOpponent.transform.position;
+                    opponentBody = VillageBodyProfile.RestBounds(dungeonOpponent);
                     continue;
                 }
                 Fit(floors[item.variant], tile, 1f, material, null, horizontal: true);
@@ -287,11 +329,44 @@ namespace ReverieSaga
             }
         }
 
-        internal void Hit(bool playerAttacked, double now, bool pommel = false)
+        GameObject CreateOpponent(string kind, GameObject orc, Material skin, Vector3 feet)
+        {
+            if (kind == "orc")
+            {
+                var foe = Fit(orc, feet, 1.05f, skin, null);
+                foe.name = "Dungeon orc";
+                return foe;
+            }
+            if (kind == "guard")
+            {
+                var guard = Actor("Guard trainee", Material("Standard", new Color(.83f, .52f, .21f)), out var rig);
+                var localPosition = rig.transform.localPosition;
+                var localRotation = rig.transform.localRotation;
+                var localScale = rig.transform.localScale;
+                idle.SampleAnimation(rig, 0);
+                rig.transform.SetLocalPositionAndRotation(localPosition, localRotation);
+                rig.transform.localScale = localScale;
+                guard.transform.SetPositionAndRotation(feet, Quaternion.Euler(0, 180, 0));
+                return guard;
+            }
+            var slime = Make("Moss slime");
+            var jelly = Material("Standard", new Color(.21f, .71f, .43f));
+            var eye = Material("Standard", new Color(.11f, .22f, .13f));
+            WeaponPart(slime, "Jelly", PrimitiveType.Sphere, .27f, new Vector3(.80f, .57f, .70f), jelly);
+            for (int side = -1; side <= 1; side += 2)
+            {
+                var bead = WeaponPart(slime, "Eye", PrimitiveType.Sphere, .34f, Vector3.one * .095f, eye);
+                bead.transform.localPosition += new Vector3(side * .13f, 0, -.31f);
+            }
+            slime.transform.position = feet;
+            return slime;
+        }
+
+        internal void Hit(bool playerAttacked, double now, string skill = "")
         {
             hitAt = now;
             playerHit = playerAttacked;
-            pommelHit = pommel;
+            hitSkill = skill;
             dungeonTrail.Clear();
         }
 
@@ -320,22 +395,23 @@ namespace ReverieSaga
 
         void SeparateDungeonBodies(Vector3 axis, Vector3 origin, Bounds playerBox)
         {
-            float nearOrc = Vector3.Dot(dungeonOrc.transform.position + orcBody.center - origin, axis) -
-                VillageBodyProfile.Radius(orcBody.extents, axis);
+            float nearOpponent = Vector3.Dot(dungeonOpponent.transform.position + opponentBody.center - origin, axis) -
+                VillageBodyProfile.Radius(opponentBody.extents, axis);
             var root = player.transform;
             float nearPlayer = Vector3.Dot(root.TransformPoint(playerBox.center) - origin, axis) +
                 VillageBodyProfile.Radius(playerBox.extents, root.InverseTransformDirection(axis));
-            player.transform.position -= axis * Mathf.Max(0, nearPlayer - nearOrc + BodyGap);
+            player.transform.position -= axis * Mathf.Max(0, nearPlayer - nearOpponent + BodyGap);
         }
 
         void PoseDungeon(Vector3 feet, Vector3 opponent, bool showOrc, bool swinging,
             float elapsed, float impact, double now)
         {
-            dungeonOrc.SetActive(showOrc);
-            dungeonOrc.transform.position = orcRestPosition;
+            dungeonOpponent.SetActive(showOrc);
+            dungeonOpponent.transform.position = opponentRestPosition;
             float progress = Mathf.Clamp01(elapsed / StrikeSeconds);
             float idleSeconds = Mathf.Max(.01f, idle.length);
-            float pose = swinging ? (pommelHit ? .45f * Mathf.Sin(progress * Mathf.PI) : progress) :
+            float pose = swinging ? (hitSkill == "pommel" || heldWeapon == "spear" ?
+                .45f * Mathf.Sin(progress * Mathf.PI) : progress) :
                 (float)(now % idleSeconds / idleSeconds);
             SampleDungeonPose(swinging ? strike : idle, pose);
 
@@ -346,16 +422,16 @@ namespace ReverieSaga
                 {
                     float recoil = Mathf.Sin(Mathf.PI * impact / .24f);
                     player.transform.position -= axis * (recoil * (playerHit ? .045f : .12f));
-                    dungeonOrc.transform.position += axis * (recoil * (playerHit ? .12f : .045f));
+                    dungeonOpponent.transform.position += axis * (recoil * (playerHit ? .12f : .045f));
                 }
                 SeparateDungeonBodies(axis, feet, (swinging ? strikeBody : idleBody).At(pose));
             }
 
-            if (swinging && !pommelHit)
+            if (swinging && hitSkill != "pommel")
             {
                 while (dungeonTrail.Count > 0 && elapsed - dungeonTrail.Peek().time > .15f)
                     dungeonTrail.Dequeue();
-                dungeonTrail.Enqueue((elapsed, swordTip.position));
+                dungeonTrail.Enqueue((elapsed, weapons[heldWeapon].tip.position));
                 trail.enabled = elapsed >= .10f && dungeonTrail.Count > 1;
                 if (trail.enabled)
                 {
@@ -370,8 +446,9 @@ namespace ReverieSaga
         }
 
         internal RenderTexture Render(Vector2 point, Vector2 direction, bool walking,
-            bool visible, bool showBandit, Vector2 banditTile, double now, bool dungeon = false)
+            bool visible, bool showBandit, Vector2 banditTile, double now, bool dungeon = false, string weapon = "sword")
         {
+            EquipVisual(weapon);
             var offset = dungeon ? DungeonOffset + Vector3.up * .14f : Vector3.zero;
             var feet = offset + Tile(point.x, point.y);
             var opponent = offset + Tile(banditTile.x, banditTile.y);
@@ -386,7 +463,7 @@ namespace ReverieSaga
             player.transform.SetPositionAndRotation(feet, Quaternion.LookRotation(heading));
             bandit.transform.position = opponent;
             float elapsed = (float)(now - hitAt);
-            float impact = elapsed - (playerHit ? (pommelHit ? .17f : .25f) : .06f);
+            float impact = elapsed - (playerHit ? (hitSkill == "pommel" ? .17f : .25f) : .06f);
             bool swinging = playerHit && elapsed < StrikeSeconds;
             trail.enabled = swinging && elapsed >= .10f;
             if (dungeon)
@@ -422,13 +499,16 @@ namespace ReverieSaga
             {
                 var struck = playerHit ? opponent : feet;
                 if (dungeon)
-                    struck = Vector3.Lerp(player.transform.position, dungeonOrc.transform.position,
+                    struck = Vector3.Lerp(player.transform.position, dungeonOpponent.transform.position,
                         playerHit ? .78f : .22f);
                 spark.transform.position = struck + Vector3.up * .78f;
                 spark.transform.rotation = camera.transform.rotation;
                 spark.transform.localScale = Vector3.one * (.58f + 3 * impact);
-                sparkMaterial.color = new Color(1f, pommelHit ? .93f : .73f,
-                    pommelHit ? .68f : .26f, 1f - impact / .24f);
+                var tint = hitSkill == "thrust" ? new Color(.42f, .90f, 1f) :
+                    hitSkill == "crush" ? new Color(1f, .52f, .22f) :
+                    hitSkill == "pommel" ? new Color(1f, .93f, .68f) : new Color(1f, .73f, .26f);
+                tint.a = 1f - impact / .24f;
+                sparkMaterial.color = tint;
             }
             camera.Render();
             return target;

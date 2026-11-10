@@ -2,6 +2,7 @@
 
 from collections.abc import Iterator
 from contextlib import contextmanager
+import os
 from pathlib import Path
 import subprocess
 import sys
@@ -84,18 +85,21 @@ raise SystemExit(main())
 
 @contextmanager
 def pipe(
-    path: Path, *, opening_fault: str = "", seed: str = ""
+    path: Path, *, opening_fault: str = "", seed: str = "", trial: str = ""
 ) -> Iterator[tuple[IO[bytes], IO[bytes]]]:
     entry = (
         ("-c", _OPENING_FAULT, opening_fault)
         if opening_fault
         else ("-m", "app.world_village_bridge")
     )
+    location = ("--dungeon-trial", trial) if trial else ("--working", str(path))
     with subprocess.Popen(
-        [sys.executable, "-B", *entry, "--working", str(path), *(("--seed", seed) if seed else ())],
+        [sys.executable, "-B", *entry, *location, *(("--seed", seed) if seed else ())],
         stdin=subprocess.PIPE,
         stdout=subprocess.PIPE,
         stderr=subprocess.PIPE,
+        cwd=path.parent if trial else None,
+        env={**os.environ, "PYTHONPATH": str(Path(__file__).resolve().parents[2] / "src")} if trial else None,
     ) as process:
         assert (
             process.stdin is not None and process.stdout is not None and process.stderr is not None
@@ -206,7 +210,7 @@ def test_upgrade_preserves_legacy_world_and_slots_and_supports_replay(tmp_path: 
             scenario.place_id,
         )
         bundle = dungeon_world_bundle(
-            bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id
+            bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id, loadouts=True
         )
         assert (
             replay_runner(
@@ -402,7 +406,7 @@ def test_walk_up_and_complete_supply_in_one_village_session(tmp_path: Path) -> N
         scenario.place_id,
     )
     bundle = dungeon_world_bundle(
-        bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id
+        bundle, dungeon_blueprint(world, scenario.place_id), scenario.place_id, loadouts=True
     )
     with open_knowledge_world(path, world, scenario, social, transport) as owner:
         segment = owner.retained_segment()

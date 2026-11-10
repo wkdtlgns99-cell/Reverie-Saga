@@ -144,13 +144,14 @@ def resolve_ambush(position: VillagePosition, local: LocalDetail) -> CombatState
 
 
 def resolve_opening(
-    actors: tuple[OpeningActor, ...], attacker: OpeningActor, target: OpeningActor
+    actors: tuple[OpeningActor, ...], attacker: OpeningActor, target: OpeningActor,
+    *, player_damage: int = PLAYER_DAMAGE,
 ) -> CombatState:
     player_attacked = attacker.actor_id == WORLD_ACTOR
     return CombatState(
         opening_order(actors, attacker, target),
         MAX_HP if player_attacked else MAX_HP - BANDIT_DAMAGE,
-        MAX_HP - PLAYER_DAMAGE if player_attacked else MAX_HP,
+        MAX_HP - player_damage if player_attacked else MAX_HP,
         attacker.actor_id,
         "open",
         target.actor_id if player_attacked else attacker.actor_id,
@@ -158,11 +159,12 @@ def resolve_opening(
 
 
 def perform_action(
-    state: CombatState, operation: str, *, player_damage: int = PLAYER_DAMAGE
+    state: CombatState, operation: str, *, player_damage: int = PLAYER_DAMAGE,
+    opponent_damage: int = BANDIT_DAMAGE,
 ) -> CombatState:
     actor = state.current
     player_hp = max(
-        0, state.player_hp - BANDIT_DAMAGE * int(actor == state.opponent and operation == "attack")
+        0, state.player_hp - opponent_damage * int(actor == state.opponent and operation == "attack")
     )
     bandit_hp = max(
         0, state.bandit_hp - player_damage * int(actor == WORLD_ACTOR and operation == "attack")

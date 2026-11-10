@@ -1,6 +1,6 @@
 """Versioned decoration of the walkable Mulbeodeul map from world data."""
 
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from hashlib import sha256
 
 from domain.canonical import JsonObject
@@ -50,20 +50,21 @@ def _choose(key: str, label: str, count: int) -> int:
     return int.from_bytes(sha256(f"{key}:{label}".encode()).digest()[:8]) % count
 
 
-def dungeon_blueprint(world: WorldCatalog, place_id: str) -> DungeonBlueprint:
+def dungeon_blueprint(world: WorldCatalog, place_id: str, *, trial: bool = False) -> DungeonBlueprint:
     key, _ = _layout_key(world, place_id)
     # Side lanes leave the entrance, the authored ambush and its attacker unobstructed.
     candidates = (2, 3, 4, 5, 10, 11)
-    return DungeonBlueprint(
+    blueprint = DungeonBlueprint(
         candidates[_choose(key, "dungeon-entry", len(candidates))],
         len(VILLAGE_ROWS) - 1,
         1 + _choose(key, "orc", ROOM_SIZE - 2),
     )
+    return replace(blueprint, orc_x=2) if trial else blueprint
 
 
-def village_layout(world: WorldCatalog, place_id: str) -> JsonObject:
+def village_layout(world: WorldCatalog, place_id: str, *, trial: bool = False) -> JsonObject:
     key, terrain = _layout_key(world, place_id)
-    blueprint = dungeon_blueprint(world, place_id)
+    blueprint = dungeon_blueprint(world, place_id, trial=trial)
 
     def choose(label: str, count: int) -> int:
         return _choose(key, label, count)

@@ -32,8 +32,9 @@ from domain.canonical import JsonObject, decode_json, exact_fields, int_value, t
 from domain.primitives import MAX_INT
 from domain.world_combat import BANDIT, BANDIT_POSITION, CombatRecord, CombatState
 from domain.world_conversation import ConversationRecord
-from domain.world_dungeon import ENTRY, ORC, POMMEL_DAMAGE, POMMEL_NAME, STARTER_SWORD_NAME
-from domain.world_dungeon import DungeonRecord, DungeonState, in_melee_range
+from domain.world_dungeon import ENTRY, DungeonRecord, DungeonState, in_melee_range
+from domain.world_dungeon_loadout import ORC_ENCOUNTER, TRIAL_OPPONENTS, WEAPONS
+from domain.world_dungeon_loadout import DungeonOpponent, opponent_by_kind
 from domain.world import WorldCatalog
 from domain.world_social import SocialCatalog
 from domain.world_supply import SupplyScenario
@@ -85,13 +86,16 @@ class VillageBridge:
         scenario: SupplyScenario,
         social: SocialCatalog,
         world: WorldCatalog,
+        opponent: DungeonOpponent = ORC_ENCOUNTER,
     ) -> None:
         self.owner = owner
         self.scenario = scenario
         self.social = social
         self.name = world.place(scenario.place_id).name
-        self.layout = village_layout(world, scenario.place_id)
-        self.blueprint = dungeon_blueprint(world, scenario.place_id)
+        self.opponent = opponent
+        trial = opponent != ORC_ENCOUNTER
+        self.layout = village_layout(world, scenario.place_id, trial=trial)
+        self.blueprint = dungeon_blueprint(world, scenario.place_id, trial=trial)
         self._last: tuple[int, str, str, JsonObject] | None = None
         self._talking = ""
         self._trial: RoadCombatTrial | None = None
@@ -247,7 +251,8 @@ class VillageBridge:
         fight = room.combat
         gate = self.blueprint
         x, y = room.tile or ENTRY
-        names = {WORLD_ACTOR: "나", ORC: "오크"}
+        names = {WORLD_ACTOR: "나", self.opponent.actor: self.opponent.name}
+        weapon = room.weapon
         return {
             "inside": scene.inside,
             "can_enter": scene.available
@@ -267,9 +272,21 @@ class VillageBridge:
             "player_turn": fight.current == WORLD_ACTOR,
             "player_hp": fight.player_hp,
             "orc_hp": fight.bandit_hp,
-            "weapon": STARTER_SWORD_NAME,
-            "pommel_name": POMMEL_NAME,
-            "pommel_damage": POMMEL_DAMAGE,
+            "opponent_kind": self.opponent.kind,
+            "opponent_name": self.opponent.name,
+            "weapon_id": weapon.id,
+            "weapon": weapon.name,
+            "attack_name": weapon.attack_name,
+            "attack_damage": weapon.damage,
+            "skill_id": weapon.skill_id,
+            "skill_name": weapon.skill_name,
+            "skill_damage": weapon.skill_damage,
+            "skill_staggers": weapon.staggers,
+            "skill_used": room.skill_used(weapon.skill_id),
+            "last_skill": room.last_skill,
+            "weapons": tuple({"id": w.id, "name": w.name, "switch_ticks": w.switch_ticks} for w in WEAPONS),
+            "pommel_name": WEAPONS[0].skill_name,
+            "pommel_damage": WEAPONS[0].skill_damage,
             "pommel_used": room.pommel_used,
             "order": tuple(names[actor] for actor in fight.order),
             "last_actor": names.get(fight.last_actor, ""),
@@ -356,8 +373,12 @@ def main(argv: Sequence[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--working", type=Path)
     parser.add_argument("--seed", help="Open a generated world using a 64-digit lowercase hex seed")
+    parser.add_argument("--dungeon-trial", choices=tuple(foe.kind for foe in TRIAL_OPPONENTS))
     args = parser.parse_args(argv)
+    if args.dungeon_trial and (args.working or not args.seed):
+        parser.error("--dungeon-trial requires --seed and its own working path")
     try:
+        opponent = opponent_by_kind(args.dungeon_trial) if args.dungeon_trial else ORC_ENCOUNTER
         scenario = AUTHORED_SUPPLY_SCENARIO
         if args.seed is None:
             world = load_world()
@@ -368,8 +389,10 @@ def main(argv: Sequence[str] | None = None) -> int:
             working = (
                 args.working or Path("tmp/generated-village/v1") / world.seed_hex / "game.sqlite"
             )
-        with open_dungeon_world(working, world, scenario, social, transport) as owner:
-            bridge = VillageBridge(owner, scenario, social, world)
+            if args.dungeon_trial:
+                working = Path("tmp/dungeon-trials/v1") / opponent.kind / world.seed_hex / "game.sqlite"
+        with open_dungeon_world(working, world, scenario, social, transport, opponent=opponent) as owner:
+            bridge = VillageBridge(owner, scenario, social, world, opponent)
             try:
                 while (frame := read_frame(sys.stdin.buffer)) is not None:
                     write_frame(sys.stdout.buffer, bridge.request(frame))

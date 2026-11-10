@@ -37,12 +37,12 @@ from domain.world_combat import ACTION_SECONDS, POMMEL
 from domain.world_dungeon import (
     DUNGEON_SCHEMA,
     ENTRY,
-    ORC,
     DungeonRecord,
     DungeonState,
     dungeon_step,
     in_melee_range,
 )
+from domain.world_dungeon_loadout import ORC, SWORD, weapon_by_id, weapon_for_skill
 from domain.world_travel import WORLD_ACTOR
 from domain.world_village import DIRECTIONS
 from domain.world_village_layout import DungeonBlueprint
@@ -54,31 +54,42 @@ def _encode(state: DungeonState) -> JsonObject:
     combat = encode_combat(state.combat)
     if state.pommel_used:
         combat = {**combat, "pommel_used": True}
+    if state.weapon_id != SWORD or state.other_skills_used:
+        combat = {**combat, "loadout": (state.weapon_id, state.other_skills_used, state.last_other_skill)}
     return {"tile": state.tile, "combat": combat}
 
 
-def _decode(value: JsonObject) -> DungeonState:
+def _decode(value: JsonObject, opponent: EntityId) -> DungeonState:
     row = exact_fields(value, ("tile", "combat"))
     combat = dict(object_value(row["combat"]))
     used = "pommel_used" in combat
     if used and combat.pop("pommel_used") is not True:
         raise ValueError("DUNGEON_SKILL")
+    weapon, spent, last = array_value(combat.pop("loadout", (SWORD, (), "")))
     tile = None
     if row["tile"] is not None:
         x, y = array_value(row["tile"])
         tile = int_value(x), int_value(y)
-    return DungeonState(tile, decode_combat(combat, ORC), used)
+    return DungeonState(
+        tile, decode_combat(combat, opponent), used, text_value(weapon),
+        tuple(text_value(skill) for skill in array_value(spent)), text_value(last),
+    )
 
 
 class DungeonAdapter:
     key = DUNGEON
     schema = DUNGEON_SCHEMA
 
+    def __init__(self, opponent: EntityId = ORC, *, loadouts: bool = False) -> None:
+        self.opponent, self.loadouts = opponent, loadouts
+
     def _record(self, record: ComponentRecord) -> DungeonRecord:
         if (
             type(record) is not DungeonRecord
             or record.entity_id != WORLD_ACTOR
             or type(record.state) is not DungeonState
+            or record.state.combat.opponent != self.opponent
+            or (not self.loadouts and (record.state.weapon_id != SWORD or record.state.other_skills_used))
         ):
             raise ValueError("DUNGEON_RECORD")
         return record
@@ -95,15 +106,16 @@ class DungeonAdapter:
 
     def decode(self, entity_id: EntityId, fields: JsonObject) -> ComponentRecord:
         record = DungeonRecord(
-            entity_id, _decode(object_value(exact_fields(fields, ("state",))["state"]))
+            entity_id, _decode(object_value(exact_fields(fields, ("state",))["state"]), self.opponent)
         )
         self.validate(record)
         return record
 
 
 class DungeonPayloadCodec:
-    def __init__(self, schema: TypeKey) -> None:
+    def __init__(self, schema: TypeKey, opponent: EntityId = ORC) -> None:
         self.schema = schema
+        self.opponent = opponent
 
     def encode(self, payload: FrozenPayload) -> JsonObject:
         if payload.schema == self.schema:
@@ -119,11 +131,13 @@ class DungeonPayloadCodec:
         if self.schema == DungeonAction.SCHEMA:
             return DungeonAction(text_value(exact_fields(document, ("operation",))["operation"]))
         if self.schema == DungeonPatch.SCHEMA:
-            return DungeonPatch(_decode(object_value(exact_fields(document, ("state",))["state"])))
+            row = exact_fields(document, ("state",))
+            return DungeonPatch(_decode(object_value(row["state"]), self.opponent))
         if self.schema == DungeonDelta.SCHEMA:
             row = exact_fields(document, ("before", "after"))
             return DungeonDelta(
-                _decode(object_value(row["before"])), _decode(object_value(row["after"]))
+                _decode(object_value(row["before"]), self.opponent),
+                _decode(object_value(row["after"]), self.opponent),
             )
         raise SchemaError("UNSUPPORTED_SCHEMA", "dungeon payload")
 
@@ -146,8 +160,9 @@ class DungeonAdmission:
     schema = DungeonAction.SCHEMA
     reads = (DUNGEON_FAMILY, COMBAT_FAMILY, VILLAGE_FAMILY, TRAVEL_FAMILY)
 
-    def __init__(self, blueprint: DungeonBlueprint, place_id: EntityId) -> None:
+    def __init__(self, blueprint: DungeonBlueprint, place_id: EntityId, *, loadouts: bool = False) -> None:
         self.blueprint, self.place_id = blueprint, place_id
+        self.loadouts = loadouts
 
     def _enter(self, state: ReadPort, room: DungeonState) -> str:
         if room.tile is not None:
@@ -175,12 +190,22 @@ class DungeonAdmission:
         if room.tile is None:
             return "DUNGEON_OUTSIDE"
         fight = room.combat
+        if self.loadouts and operation.startswith("equip:"):
+            if fight.order and fight.current != WORLD_ACTOR:
+                return "COMBAT_WRONG_TURN"
+            target = weapon_by_id(operation.removeprefix("equip:"))
+            if target is None:
+                return "DUNGEON_WEAPON_UNKNOWN"
+            return "DUNGEON_ALREADY_EQUIPPED" if target.id == room.weapon_id else ""
         if fight.order:
-            if operation not in ("advance", "attack", "hold", POMMEL):
+            skill = weapon_for_skill(operation) if self.loadouts or operation == POMMEL else None
+            if skill is None and operation not in ("advance", "attack", "hold"):
                 return "DUNGEON_COMBAT_ACTIVE"
             if (operation == "advance") == (fight.current == WORLD_ACTOR):
                 return "COMBAT_WRONG_TURN"
-            return "DUNGEON_SKILL_SPENT" if operation == POMMEL and room.pommel_used else ""
+            if skill is not None and skill.id != room.weapon_id:
+                return "DUNGEON_SKILL_WRONG_WEAPON"
+            return "DUNGEON_SKILL_SPENT" if room.skill_used(operation) else ""
         if operation == "exit":
             return "" if room.tile == ENTRY else "DUNGEON_GATE"
         if operation == "wait":
@@ -204,8 +229,13 @@ class DungeonAdmission:
         if error:
             return TurnRejected(failure(error), command.expected_revision)
         key = "a1-" + hash_document("dungeon-action/v1", (world_id, command.command_id))
+        payload = command.payload
+        target = weapon_by_id(payload.operation.removeprefix("equip:")) if (
+            type(payload) is DungeonAction and payload.operation.startswith("equip:")
+        ) else None
+        seconds = ACTION_SECONDS if target is None else target.switch_ticks
         return AdmittedCommand(
-            TurnPlan(command, start_tick, Tick(start_tick + ACTION_SECONDS)),
+            TurnPlan(command, start_tick, Tick(start_tick + seconds)),
             AdmittedAction(command.actor_id, command.payload, key),
         )
 
@@ -251,14 +281,15 @@ class DungeonPatchRoute:
 
 
 class DungeonCheckpointPolicy:
-    def __init__(self, base: CheckpointPolicy) -> None:
+    def __init__(self, base: CheckpointPolicy, adapter: DungeonAdapter) -> None:
         self.base = base
+        self.adapter = adapter
 
     def validate(self, core: CoreSnapshot, protocol: ProtocolSnapshot) -> None:
         rows = tuple(row for row in core.components if isinstance(row, DungeonRecord))
         if len(rows) != 1:
             raise ValueError("DUNGEON_CHECKPOINT")
-        DungeonAdapter().validate(rows[0])
+        self.adapter.validate(rows[0])
         self.base.validate(
             replace(core, components=tuple(row for row in core.components if row is not rows[0])),
             protocol,

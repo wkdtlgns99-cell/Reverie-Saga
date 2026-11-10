@@ -46,10 +46,14 @@ each seed's working save under `tmp/generated-village/v1/<seed>/game.sqlite`. Th
 uses the same versioned placement plan across fresh saves. Walk to the tile immediately
 north of the stone gate and select **던전 들어가기**. Walk inside with WASD or the arrow keys.
 Stand beside the orc and choose **오크 공격** to resolve the first strike and start the turns.
-The equipped **짧은 검** can **베기** for 2 damage. **칼자루 치기** deals 1 damage once per
-fight and makes a surviving orc lose its next action. Both models recoil briefly on a hit.
+Use **무기 교체** to equip a short sword, spear or hammer. A swap in combat uses your turn.
+The current weapon supplies its own basic attack and one-use skill. **칼자루 치기** and
+**충격 강타** make a surviving opponent lose its next action. **정밀 찌르기** deals 3 damage.
+Both models recoil briefly on a hit.
 After the fight, walk back to the entry tile and choose **마을로 나오기**. Reopening retains
-the dungeon tile, health, combat turn and spent skill in the same working save.
+the dungeon tile, health, combat turn, equipped weapon and spent skills in the same working save.
+The **Reverie → 석굴 전투 실험** submenu opens a fresh, separate slime or guard encounter.
+Experiment saves stay under `tmp/dungeon-trials/v1/`.
 
 ## Play the current world's supply quest
 
